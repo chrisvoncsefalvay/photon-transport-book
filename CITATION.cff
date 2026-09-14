@@ -7,6 +7,7 @@ authors:
     given-names: Chris
 repository-code: "https://github.com/chrisvoncsefalvay/photon-transport-book"
 license: CC-BY-NC-4.0
-version: 0.0.0-bootstrap
-date-released: 2026-09-07
+version: 1.0.0
+doi: 10.5281/zenodo.22758650
+date-released: 2026-09-14
 url: "https://photontransport.com/"

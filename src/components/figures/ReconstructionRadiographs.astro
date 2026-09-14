@@ -51,7 +51,7 @@ const height = record.extent_uv_mm[3] - record.extent_uv_mm[2];
 const number = (value: number) => Number(value.toPrecision(4)).toString();
 const description = acquired
   ? "The acquired fitting frame and effective-model prediction share detector samples and a display window. Residuals locate the remaining signal mismatch, with excluded samples marked in purple."
-  : "A complete withheld view compares observations, generating means and reconstructed predictions in three energy channels. Structured residuals reveal image disagreement that remains outside the fitting views.";
+  : "The same earlier reconstruction predicts a complete withheld view in three energy channels. Observations, generating means and predictions show the image disagreement remaining outside the fitting views.";
 ---
 
 <FigurePlate {id} title={record.title} {description} width="full">

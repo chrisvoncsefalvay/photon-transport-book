@@ -10,7 +10,7 @@ import { parseDocument } from "yaml";
  * @property {string} version Version without a leading v.
  * @property {string} date Canonical CFF date in YYYY-MM-DD form.
  * @property {string} repositoryCode
- * @property {boolean} released Whether CFF supplies a DOI; no network publication check.
+ * @property {boolean} released Whether the CFF version has no prerelease suffix; no network publication check.
  * @property {string} [doi]
  * @property {string} [url]
  * @property {string} [publisher]
@@ -137,6 +137,7 @@ export async function loadBookCitation({
   if (!Array.isArray(cff.authors) || !cff.authors.length) {
     throw new Error("CITATION.cff authors must contain at least one person");
   }
+  const editionVersion = version(cff.version, "CITATION.cff version");
   /** @type {BookCitation} */
   const book = {
     title: text(cff.title, "CITATION.cff title"),
@@ -153,13 +154,15 @@ export async function loadBookCitation({
               `CITATION.cff authors[${index}].given-names`,
             ),
     })),
-    version: version(cff.version, "CITATION.cff version"),
+    version: editionVersion,
     date: date(cff["date-released"]),
     repositoryCode: publicUrl(
       cff["repository-code"],
       "CITATION.cff repository-code",
     ),
-    released: false,
+    // Build metadata does not make an edition a prerelease. A DOI is an
+    // optional identifier, not evidence that an edition is or is not a draft.
+    released: !editionVersion.split("+", 1)[0].includes("-"),
   };
   if (
     expectedVersion !== undefined &&
@@ -181,7 +184,6 @@ export async function loadBookCitation({
       );
     }
     book.doi = doi;
-    book.released = true;
   }
   if (requireDoi && !ZENODO_DOI.test(book.doi ?? "")) {
     throw new Error(
@@ -330,6 +332,7 @@ function apaAuthors(authors) {
  */
 export function createPageCitation(book, options) {
   const { title, pathname, chapterNumber, part } = options;
+  const draft = !book.released;
   if (!["chapter", "appendix", "page", "book"].includes(part)) {
     throw new Error("Citation part must be chapter, appendix, page or book");
   }
@@ -363,8 +366,8 @@ export function createPageCitation(book, options) {
   add("year", book.date.slice(0, 4));
   add("date", book.date);
   add("version", book.version);
-  if (book.doi) {
-    add("doi", book.doi);
+  add("doi", book.doi);
+  if (!draft) {
     if (book.publisher) add("publisher", book.publisher);
     if (part === "page") add("howpublished", `Page in ${book.title}`);
     if (book.sourceCommit) add("note", `Source commit ${book.sourceCommit}`);
@@ -379,7 +382,7 @@ export function createPageCitation(book, options) {
     );
   }
   add("url", url);
-  const type = !book.doi
+  const type = draft
     ? "unpublished"
     : part === "book"
       ? "book"
@@ -398,9 +401,9 @@ export function createPageCitation(book, options) {
       ...(part !== "book" ? { container: book.title } : {}),
       edition: `${chapter ? `${part === "appendix" ? chapter : `Chapter ${chapter}`}, ` : ""}Version ${book.version}`,
       url: book.doi ? `https://doi.org/${book.doi}` : url,
-      draft: !book.doi,
+      draft,
     },
-    statusText: `${book.doi ? "Version" : "Unpublished draft · version"} ${book.version} · ${book.date}${book.doi ? ` · DOI ${book.doi}` : ""}`,
+    statusText: `${draft ? "Unpublished draft · version" : "Version"} ${book.version} · ${book.date}${book.doi ? ` · DOI ${book.doi}` : ""}`,
     ...(book.doi ? { doi: book.doi } : {}),
   };
 }

@@ -54,6 +54,21 @@ describe("chapter catalogue", () => {
     );
   });
 
+  it("stores a revision in every reader chapter and appendix", () => {
+    for (const chapter of chapters) {
+      const source = readFileSync(
+        new URL(
+          `../../src/pages${chapter.href.slice(0, -1)}.mdx`,
+          import.meta.url,
+        ),
+        "utf8",
+      );
+      const frontmatter = parse(source.split("---", 3)[1]!);
+      expect(frontmatter.revision, chapter.href).toMatch(/^\d+\.\d+\.\d+$/);
+      expect(frontmatter, chapter.href).not.toHaveProperty("status");
+    }
+  });
+
   it("resolves adjacent navigation without wrapping", () => {
     expect(chapterNeighbours(chapters[0].href)).toEqual({ next: chapters[1] });
     expect(chapterNeighbours(chapters[4].href)).toEqual({

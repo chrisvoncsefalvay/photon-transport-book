@@ -34,10 +34,12 @@ citation version and generated source-manifest hash. Vercel's public Git commit
 is recorded separately when the deployment provides a verified repository
 identity.
 
-Website publication does not register a formal book edition. It creates no DOI,
-release date or version. The existing citation remains a draft until an edition
-is registered. A prepared formal release still has to satisfy its separate DOI
-and frozen-citation checks.
+The website publishes the edition identified by `CITATION.cff`. Version 1.0.0,
+released on 14 September 2026, is citable at <https://photontransport.com/>
+without a DOI. Deployment preserves the authored version and release date.
+Explicit prerelease versions, such as `0.0.0-bootstrap` or `1.1.0-rc.1`, retain
+draft citations. Registering an archived edition with Zenodo remains a separate
+process with its own reserved-DOI and frozen-citation checks.
 
 ## Vercel
 

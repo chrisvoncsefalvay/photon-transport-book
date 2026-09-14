@@ -9,8 +9,7 @@
   font: 500 var(--size--1) / 1.45 var(--font-ui);
 }
 .material-response p,
-.material-response li,
-.material-response dl {
+.material-response li {
   font: 400 var(--size--1) / 1.6 var(--font-ui);
 }
 .material-response-reading,
@@ -109,13 +108,6 @@
   height: auto;
   object-fit: fill;
   background: var(--paper-inset);
-}
-.material-response-identities dd {
-  margin: 0 0 0.65rem;
-  overflow-wrap: anywhere;
-}
-.material-response-identities code {
-  font-size: 0.72rem;
 }
 @media (max-width: 48rem) {
   .material-response-matrices {

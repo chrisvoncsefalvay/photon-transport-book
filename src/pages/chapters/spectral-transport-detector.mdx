@@ -1,7 +1,7 @@
 ---
 layout: ../../layouts/ChapterLayout.astro
 title: From an X-ray spectrum to a detector measurement
-status: Draft
+revision: "1.0.0"
 scope: An X-ray beam contains photons with different energies. Predicting the measurement means combining their energy-dependent transmission with the detector’s response.
 chapterNumber: "08"
 ---
@@ -239,7 +239,7 @@ The adapter's default `field_domain="fractions"` adopts a narrower basis than th
 
 The validator accumulates stored fractions in binary64 and allows an excess of at most $2^{-24}$ above one: independently rounding a nonnegative partition to binary32 can create that much excess without changing its intended occupancy. Individual fractions must still lie in `[0, 1]`. Larger violations are rejected, never rescaled to sum to one. Silent renormalisation would change material amounts and their derivatives while leaving the array shape reassuringly intact.
 
-The explicit `field_domain="nonnegative"` option instead accepts finite, nonnegative dimensionless equivalent-basis coefficients without upper or sum caps. Those coefficients are not volume fractions: their normalisation belongs in the supplied basis attenuation, in $\mathrm{mm}^{-1}$. [Chapter 12](/chapters/reconstruction/#figure-acquired-spectral) uses that domain for the acquired PMMA/Al-equivalent example.
+The explicit `field_domain="nonnegative"` option instead accepts finite, nonnegative dimensionless equivalent-basis coefficients without upper or sum caps. Those coefficients are not volume fractions: their normalisation belongs in the supplied basis attenuation, in $\mathrm{mm}^{-1}$.
 
 With paths available, `spectral_signal` launches the following pixel-owned sum. Coefficients are material-major with energy contiguous. Weights and response are either shared energy vectors or energy-major pixel arrays, and `wp.static` removes the unused indexing branch for the prepared layout. The number of materials and energies belongs to that specialisation, rather than varying within a warp.
 

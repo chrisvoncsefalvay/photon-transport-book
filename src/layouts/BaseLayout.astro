@@ -36,12 +36,13 @@ const {
   eyebrow,
   citation,
 } = Astro.props;
+const bookCitation = await loadBookCitation();
 const metadata = createSiteMetadata({
   pathname: Astro.url.pathname,
   title,
   description,
+  bookCitation,
 });
-const bookCitation = await loadBookCitation();
 const editionVersion = `v${bookCitation.version}`;
 const pageCitation = createPageCitation(bookCitation, {
   title,

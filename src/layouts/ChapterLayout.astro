@@ -13,7 +13,8 @@ interface Heading {
 
 interface ChapterMetadata {
   title: string;
-  status: string;
+  revision?: string;
+  status?: string;
   scope: string;
   chapterNumber?: string;
   description?: string;
@@ -29,6 +30,7 @@ interface Props extends Partial<ChapterMetadata> {
 const metadata = Astro.props.frontmatter ?? Astro.props;
 const {
   title,
+  revision,
   status,
   scope,
   chapterNumber,
@@ -36,11 +38,23 @@ const {
   navigationFrom = Astro.url.pathname,
   part = "chapter",
 } = metadata;
-if (!title || !status || !scope) {
+if (!title || !scope) {
+  throw new Error("Chapter layouts require title and scope frontmatter.");
+}
+const isDesignSystemDemo =
+  Astro.url.pathname === "/chapters/design-system/" && chapterNumber === "D";
+if (
+  !isDesignSystemDemo &&
+  (typeof revision !== "string" ||
+    !/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/.test(revision))
+) {
   throw new Error(
-    "Chapter layouts require title, status and scope frontmatter.",
+    "Reader chapters and appendices require a revision such as 1.0.0.",
   );
 }
+const revisionLabel = isDesignSystemDemo
+  ? (status ?? "Internal demonstration")
+  : `Rev. ${revision}`;
 const description = requestedDescription ?? scope;
 const contentsTitle =
   chapters.find((chapter) => chapter.href === Astro.url.pathname)?.shortTitle ??
@@ -55,7 +69,7 @@ const sectionLabel = chapterNumber
 <BaseLayout
   title={`${title} — Differentiable Photon Transport`}
   {description}
-  eyebrow={status}
+  eyebrow={revisionLabel}
   citation={{ title, part, ...(chapterNumber ? { chapterNumber } : {}) }}
 >
   <div class="chapter-header-panel" slot="header-panel">
@@ -75,7 +89,7 @@ const sectionLabel = chapterNumber
       <header class="chapter-header">
         <div class="chapter-header__meta">
           <span>{sectionLabel}</span>
-          <span>{status}</span>
+          <span>{revisionLabel}</span>
         </div>
         <h1>{title}</h1>
         <p class="chapter-header__scope">{scope}</p>

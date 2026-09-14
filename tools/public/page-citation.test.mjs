@@ -54,7 +54,7 @@ async function freeze(root, citation, changes = {}) {
   return metadata;
 }
 
-test("synthetic draft uses only canonical CFF metadata and no DOI", async (t) => {
+test("synthetic stable edition uses canonical CFF metadata without requiring a DOI", async (t) => {
   const { root } = await fixture(t);
   const book = await loadBookCitation({ root, expectedVersion: "1.2.3" });
   assert.deepEqual(book, {
@@ -63,17 +63,16 @@ test("synthetic draft uses only canonical CFF metadata and no DOI", async (t) =>
     version: "1.2.3",
     date: "2032-02-29",
     repositoryCode: syntheticCff["repository-code"],
-    released: false,
+    released: true,
   });
   assert.deepEqual(JSON.parse(JSON.stringify(book)), book);
   const citation = createPageCitation(book, page);
-  assert.match(citation.bibtex, /^@unpublished\{/);
+  assert.match(citation.bibtex, /^@incollection\{/);
   assert.match(citation.bibtex, /chapter = \{2\}/);
   assert.match(citation.bibtex, /year = \{2032\}/);
-  assert.match(
-    citation.bibtex,
-    /Unpublished draft, version 1\.2\.3, dated 2032-02-29/,
-  );
+  assert.match(citation.bibtex, /version = \{1\.2\.3\}/);
+  assert.match(citation.bibtex, /date = \{2032-02-29\}/);
+  assert.doesNotMatch(citation.bibtex, /unpublished|draft/i);
   assert.match(
     citation.bibtex,
     /url = \{https:\/\/example\.invalid\/public\/book\}/,
@@ -85,8 +84,92 @@ test("synthetic draft uses only canonical CFF metadata and no DOI", async (t) =>
   assert.equal(citation.doi, undefined);
   assert.equal(citation.formatted.authors, "von Example, C. J.");
   assert.equal(citation.formatted.edition, "Chapter 2, Version 1.2.3");
-  assert.equal(citation.formatted.draft, true);
+  assert.equal(citation.formatted.draft, false);
   assert.equal(citation.formatted.container, syntheticCff.title);
+  assert.equal(citation.statusText, "Version 1.2.3 · 2032-02-29");
+});
+
+test("synthetic released book and appendix use their canonical site URLs without a DOI", async (t) => {
+  const { root } = await fixture(t, {
+    version: "1.0.0",
+    url: "https://example.invalid/edition/",
+  });
+  const book = await loadBookCitation({ root });
+  for (const [options, type, url] of [
+    [
+      { title: "Homepage", pathname: "/", part: "book" },
+      "book",
+      "https://example.invalid/edition/",
+    ],
+    [
+      {
+        ...page,
+        pathname: "/appendix/theory/",
+        part: "appendix",
+        chapterNumber: "A",
+      },
+      "incollection",
+      "https://example.invalid/edition/appendix/theory/",
+    ],
+    [
+      { title: "About", pathname: "/about/", part: "page" },
+      "misc",
+      "https://example.invalid/edition/about/",
+    ],
+  ]) {
+    const citation = createPageCitation(book, options);
+    assert.ok(citation.bibtex.startsWith(`@${type}{`));
+    assert.equal(citation.formatted.url, url);
+    assert.equal(citation.formatted.draft, false);
+    assert.equal(citation.statusText, "Version 1.0.0 · 2032-02-29");
+    assert.doesNotMatch(
+      citation.bibtex,
+      /doi =|publisher =|unpublished|draft/i,
+    );
+    if (options.part === "book")
+      assert.equal(citation.formatted.title, syntheticCff.title);
+    if (options.part === "appendix")
+      assert.match(citation.bibtex, /chapter = \{Appendix A\}/);
+  }
+});
+
+test("synthetic prerelease versions retain draft citations even with a reserved DOI", async (t) => {
+  for (const editionVersion of [
+    "0.0.0-bootstrap",
+    "1.2.3-rc.1",
+    "1.2.3-beta.1+preview-build",
+  ]) {
+    for (const doi of [undefined, SYNTHETIC_DOI]) {
+      const { root } = await fixture(t, { version: editionVersion, doi });
+      const book = await loadBookCitation({ root });
+      const citation = createPageCitation(book, page);
+      assert.equal(book.released, false);
+      assert.match(citation.bibtex, /^@unpublished\{/);
+      assert.ok(
+        citation.bibtex.includes(
+          `Unpublished draft, version ${editionVersion}`,
+        ),
+      );
+      assert.equal(citation.formatted.draft, true);
+      assert.ok(
+        citation.statusText.startsWith(
+          `Unpublished draft · version ${editionVersion}`,
+        ),
+      );
+      assert.equal(citation.doi, doi);
+      if (doi) assert.ok(citation.bibtex.includes(`doi = {${doi}}`));
+    }
+  }
+});
+
+test("synthetic build metadata alone does not turn a released edition into a draft", async (t) => {
+  const { root } = await fixture(t, { version: "1.0.0+website-build" });
+  const book = await loadBookCitation({ root });
+  assert.equal(book.released, true);
+  const citation = createPageCitation(book, page);
+  assert.match(citation.bibtex, /^@incollection\{/);
+  assert.equal(citation.formatted.draft, false);
+  assert.equal(citation.statusText, "Version 1.0.0+website-build · 2032-02-29");
 });
 
 test("synthetic edition chapter retains book DOI and explicit canonical page URL", async (t) => {

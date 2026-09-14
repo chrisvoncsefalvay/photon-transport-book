@@ -64,10 +64,17 @@ export function createSiteMetadata({
   pathname,
   title = BOOK_TITLE,
   description = BOOK_DESCRIPTION,
+  bookCitation,
 }: {
   pathname: string;
   title?: string;
   description?: string;
+  bookCitation?: {
+    version: string;
+    date: string;
+    released: boolean;
+    doi?: string;
+  };
 }) {
   const canonical = canonicalPageUrl(pathname);
   const path = new URL(canonical).pathname;
@@ -108,7 +115,22 @@ export function createSiteMetadata({
       inLanguage: SITE_LANGUAGE,
       author: { "@id": authorId },
       image: SOCIAL_IMAGE.url,
-      sameAs: BOOK_REPOSITORY,
+      sameAs: bookCitation?.doi
+        ? [BOOK_REPOSITORY, `https://doi.org/${bookCitation.doi}`]
+        : BOOK_REPOSITORY,
+      ...(bookCitation
+        ? { bookEdition: bookCitation.version, version: bookCitation.version }
+        : {}),
+      ...(bookCitation?.released ? { datePublished: bookCitation.date } : {}),
+      ...(bookCitation?.doi
+        ? {
+            identifier: {
+              "@type": "PropertyValue",
+              propertyID: "DOI",
+              value: bookCitation.doi,
+            },
+          }
+        : {}),
       isAccessibleForFree: true,
       ...(isHome
         ? {

@@ -2,6 +2,7 @@ import { readFileSync, readdirSync } from "node:fs";
 import type { APIContext } from "astro";
 import { describe, expect, it } from "vitest";
 import { parse } from "yaml";
+import { loadBookCitation } from "../../tools/public/page-citation.mjs";
 import { chapters } from "../../src/lib/chapters";
 import {
   AUTHOR_NAME,
@@ -183,6 +184,76 @@ describe("site metadata", () => {
         { position: 2, name: "About", item: `${SITE_URL}about/` },
       ],
     });
+  });
+
+  it("derives edition metadata from the canonical CFF citation on every reader page", async () => {
+    const citation = await loadBookCitation();
+    for (const pathname of readerPagePaths) {
+      const data = createSiteMetadata({
+        pathname,
+        bookCitation: citation,
+      }).structuredData!;
+      const book = data["@graph"].find((node) => node["@type"] === "Book")!;
+      expect(book.bookEdition, pathname).toBe(citation.version);
+      expect(book.version, pathname).toBe(citation.version);
+      expect(book.datePublished, pathname).toBe(
+        citation.released ? citation.date : undefined,
+      );
+      if (citation.doi) {
+        expect(book.identifier, pathname).toEqual({
+          "@type": "PropertyValue",
+          propertyID: "DOI",
+          value: citation.doi,
+        });
+        expect(book.sameAs, pathname).toEqual([
+          BOOK_REPOSITORY,
+          `https://doi.org/${citation.doi}`,
+        ]);
+      } else {
+        expect(book.identifier, pathname).toBeUndefined();
+      }
+    }
+  });
+
+  it("can describe a released URL-only edition without inventing a DOI", () => {
+    // Synthetic citation values exercise metadata mapping, not a publication record.
+    const bookCitation = {
+      version: "2.3.4",
+      date: "2032-02-29",
+      released: true,
+    };
+    const data = createSiteMetadata({
+      pathname: "/",
+      bookCitation,
+    }).structuredData!;
+    const book = data["@graph"].find((node) => node["@type"] === "Book")!;
+    expect(book).toMatchObject({
+      bookEdition: "2.3.4",
+      version: "2.3.4",
+      datePublished: "2032-02-29",
+      sameAs: BOOK_REPOSITORY,
+    });
+    expect(book.identifier).toBeUndefined();
+  });
+
+  it("does not assign a publication date to a prerelease with a reserved DOI", () => {
+    // Synthetic reserved identifier; no deposit or publication is claimed.
+    const bookCitation = {
+      version: "2.3.4-rc.1",
+      date: "2032-02-29",
+      released: false,
+      doi: "10.5281/zenodo.999999999999",
+    };
+    const data = createSiteMetadata({
+      pathname: "/",
+      bookCitation,
+    }).structuredData!;
+    const book = data["@graph"].find((node) => node["@type"] === "Book")!;
+    expect(book.bookEdition).toBe(bookCitation.version);
+    expect(book.version).toBe(bookCitation.version);
+    expect(book.datePublished).toBeUndefined();
+    expect(book.identifier).toMatchObject({ value: bookCitation.doi });
+    expect(book.sameAs).toContain(`https://doi.org/${bookCitation.doi}`);
   });
 
   it.each([

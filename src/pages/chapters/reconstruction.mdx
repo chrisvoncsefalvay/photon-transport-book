@@ -1,12 +1,11 @@
 ---
 layout: ../../layouts/ChapterLayout.astro
 title: Reconstructing a volume from its X-ray projections
-status: Draft
+revision: "1.0.0"
 scope: Here the unknown is the attenuation field itself. We use projection gradients to recover it, with regularisation to constrain what the available views leave uncertain.
 chapterNumber: "12"
 ---
 
-import MaterialResponseFigure from "../../components/figures/MaterialResponseFigure.astro";
 import WorkedExample from "../../components/figures/WorkedExample.astro";
 import ReconstructionComparison from "../../components/figures/ReconstructionComparison.astro";
 import ApplicationFigures from "../../components/figures/ApplicationFigures.astro";
@@ -20,7 +19,7 @@ The registration problem gave us a volume and asked where it was. Reconstruction
 
 [Chapter 4](/chapters/volumes-line-integrals/) defined the sampled field and [Chapter 5](/chapters/differentiating-projection/) its discrete derivatives. We will use those operators directly, first with a primary monochromatic count model. [Chapter 8's spectral model](/chapters/spectral-transport-detector/) then lets us ask a harder question: which material mixtures are consistent with energy-resolved measurements?
 
-The scalar example implements fixed-geometry voxel reconstruction with a quadratic spatial penalty. The complete material workflow in §12.8 extends that calculation to an assigned water/bone field from CT-derived anatomy, with simulated spectral observations and independent recovery checks. Its assigned fractions are not measurements of patient composition. In §12.9, earlier failed and unfinished runs show how to investigate numerical errors and distinguish them from limitations of the measurements.
+The scalar example implements fixed-geometry voxel reconstruction with a quadratic spatial penalty. The complete material workflow in §12.8 extends that calculation to an assigned water/bone field from CT-derived anatomy, with simulated spectral observations and independent recovery checks. Its assigned fractions are not measurements of patient composition.
 
 ## 12.1 Specify the unknown volume and measured projections
 
@@ -171,7 +170,7 @@ The retained checkpoints show why the stopping point matters. At 50 accepted upd
 
 A single attenuation field cannot explain how the same object changes appearance across distinct spectra. Represent attenuation instead as a combination of supplied energy-dependent basis curves. Alvarez and Macovski developed the energy-selective basis formulation. The inverse problem concerns basis coefficients, whose physical interpretation depends on the chosen model. <Citation keys={["alvarez1976"]} />
 
-The default material domain uses **volume fractions** $f_m(\mathbf x)$ of supplied reference materials, with $f_m\geq0$ and $\sum_m f_m\leq1$. The acquired example below selects the explicit nonnegative domain instead. Its dimensionless PMMA- and Al-equivalent coefficients have no fraction-sum constraint, and the supplied attenuation curves carry their reference normalisation. Neither domain infers a mass density from the name of its output field. With linear reference attenuation $a_m(E)$ in $\mathrm{mm}^{-1}$,
+The default material domain uses **volume fractions** $f_m(\mathbf x)$ of supplied reference materials, with $f_m\geq0$ and $\sum_m f_m\leq1$. The supplied acquired-phantom reconstruction selects the explicit nonnegative domain instead. Its dimensionless PMMA- and Al-equivalent coefficients have no fraction-sum constraint, and the supplied attenuation curves carry their reference normalisation. Neither domain infers a mass density from the name of its output field. With linear reference attenuation $a_m(E)$ in $\mathrm{mm}^{-1}$,
 
 $$
 \mu(\mathbf x,E)=\sum_m f_m(\mathbf x)a_m(E),
@@ -248,7 +247,7 @@ D_{\mathrm{WLS}}=\frac12\sum_{k,p,c}m_{kpc}w_{kpc}
 \bigl(\widehat y_{kpc}-y_{kpc}\bigr)^2.
 $$
 
-$K$ already includes integrated energy-bin populations and the spatial open-beam factors. The fixed validity mask is $m_{kpc}$: the sum is restricted to valid entries, and invalid observations are skipped before residual arithmetic. The acquired-phantom study in §12.9 sets $w$ to inverse squared predicted air signal, making the weighted residual contribution dimensionless. These deterministic weights do not estimate a joint inverse noise covariance. Nor does fitting $K$ identify the source spectrum and detector response separately. In that acquisition, the cumulative Total channel contains the High channel; the same photons do not become independent by appearing in two arrays.
+$K$ already includes integrated energy-bin populations and the spatial open-beam factors. The fixed validity mask is $m_{kpc}$: the sum is restricted to valid entries, and invalid observations are skipped before residual arithmetic. The supplied acquired-phantom reconstruction sets $w$ to inverse squared predicted air signal, making the weighted residual contribution dimensionless. These deterministic weights do not estimate a joint inverse noise covariance. Nor does fitting $K$ identify the source spectrum and detector response separately. In that acquisition, the cumulative Total channel contains the High channel; the same photons do not become independent by appearing in two arrays.
 
 ## 12.7 Validate the volume independently
 
@@ -290,78 +289,9 @@ Armijo requires the objective to decrease at accepted updates; it does not requi
 
 The final mappings are 7.11812 and 5.25572. Across both replicates, each material's whole-box RMSE is below 0.0083, and withheld generating-mean error is below 0.102 Poisson standard deviations RMS. Both reconstructions pass all three kinds of check. The half-deviance need not vanish: the observed counts contain Poisson fluctuations, and the objective also charges the spatial penalty. Numerical completion, material accuracy and prediction of unseen views remain separate questions, even in this deliberately matched coarse model.
 
-## 12.9 Learning from failures
-
-The successful workflow above also gives us a reference for diagnosing an unsuccessful reconstruction. A convincing slice can conceal a disagreement between the objective and its gradient, a solve that still has useful updates to make, or a calibration that cannot predict reserved measurements. These failures call for different remedies. The earlier attempts below show how to choose the next check from the evidence, before changing another solver setting and hoping for better manners.
-
-The worked driver retains every accepted update, prescribed checkpoints, each metric preparation and the individual stage returns. Those records let us compare an earlier field with the returned one and construct a controlled replay at a saved endpoint. The command exits unsuccessfully if either final replicate fails acceptance, so a completed output directory cannot quietly pass for a completed reconstruction. Keep the failed records when making a repair: they supply the inputs needed to test whether it addresses the original problem.
-
-### Find where the objective loses precision
-
-The original execution exposed a precision problem worth keeping in the lesson. One replicate passed the mapping threshold of 10; the other failed its line search at 77.962. Replaying a trial at that endpoint with the saved final gradient showed a decrease of 0.00441149 in an independent FP64 calculation, whereas FP32 paths and means gave an increase of 0.000218335. The exact failing-iteration gradient was not saved, so this is a controlled reproduction of the precision defect at the endpoint. The gradient and the rounded objective were asking the line search to believe different things. Accumulating the loss in FP64 was insufficient: information had already been discarded upstream.
-
-The replay matters because it holds the proposed field change fixed. We are comparing two evaluations of the same trial, so a different optimisation trajectory cannot explain the reversed sign. Near the solution, the decrease we need to resolve can be small relative to the two objective values being compared. Rounding a material path or a predicted count can obscure that decrease before the final reduction begins. A more precise accumulator can add the values it receives carefully; it cannot recover digits those values no longer contain.
-
-The repaired composition therefore retains FP64 material paths, predicted means and their cotangents, while fields and voxel gradients remain FP32. Version 3 keeps FP32 acquisition generation and the exact original observations, then reruns both fits from uniform water under the same scientific thresholds. The failed version remains part of the record.
-
-A fitting-only replay from the failed endpoint then reached the original threshold after one accepted update, with the CUDA and independent CPU mappings both equal to 8.97828. This is a focused test of the repair at the point where the old calculation failed. It does not exercise acquisition or the preceding optimisation from the initial field. The complete workflow therefore reruns both prescribed fits from uniform water, producing the successful results in §12.8.
-
-If a line search repeatedly rejects a trial that the gradient predicts should decrease the objective, retain the accepted field, its gradient and the first rejected trial. Recompute that trial's objective change independently and check the directional derivative at the accepted field. Follow any discrepancy through the intermediate paths and predicted signals before changing the acceptance tolerance. Loosening the tolerance here would have concealed the arithmetic disagreement while leaving its cause intact.
-
-### Check the stopping state before interpreting material response
-
-The earlier CT-derived spectral study below retained a 1,000-update endpoint without establishing stationarity or noise-limited recovery. Its assigned water/bone phantom used the historical NIST ICRU-44 calculation. The matched reference and reconstruction slices, line profiles and withheld radiographs show that recorded endpoint; they are not further completed outcomes of the worked protocol.
-
-These views answer useful intermediate questions. The slices show where the returned fields differ from the assigned reference, and the withheld radiographs show what those fields predict away from the fitting views. Neither display tells us how much the fields would change if optimisation continued. To interpret a material error as a property of the reconstruction model, we first need evidence that unfinished optimisation is no longer dominating it.
-
 <ReconstructionFigure id="figure-12-4" />
 
 <ReconstructionRadiographs id="figure-12-5" />
-
-The sensitivity matrix in §12.6 describes the local signal response. A reconstructed field also depends on regularisation, constraints and the stopping rule. To see their combined effect, we can perturb one assigned material and measure the change in both recovered fields. [Figure](#figure-material-response) records such an experiment. The control scales both assigned fractions by 0.9 to leave room within the simplex. Each injection adds 0.025 to one material at native voxel centres within a closed ball of radius 15 mm centred at $(25,0,0)$ mm. The response calculation uses the injection pattern averaged onto the 32³ reconstruction grid. Two noise replicates each contain a control, a water injection and a bone injection, using the same 36 broad-angle views and fixed physical response. Shared Poisson components couple the three scenarios within a replicate.
-
-Let $p_v$ be the averaged injection pattern, $V_v$ the voxel volume and $\varepsilon=0.025$. Write $\widehat f_m^{(0)}$ for the control reconstruction and $\widehat f_m^{(j)}$ for the reconstruction after injecting material $j$. The dimensionless response gain is
-
-$
-G_{mj}=\frac{\sum_v V_v p_v\bigl(\widehat f_{mv}^{(j)}-\widehat f_{mv}^{(0)}\bigr)}{\varepsilon\sum_v V_v p_v^2}.
-$
-
-Recovered materials index the rows and injected materials index the columns. Diagonal entries measure recovery of the intended component, while off-diagonal entries measure its response in the other field. The maps and outside-pattern integrals show where that response spreads. The three fits share the control-derived absolute stopping threshold within each replicate, alongside a maximum of 100 accepted updates and a soft solve cap of 120 seconds. These finite differences include the effects of noise, regularisation, constraints and the recorded stopping state. The range across two replicates is descriptive.
-
-The normalisation gives the gains a direct interpretation. If the reconstructed change exactly reproduced the injected pattern in its intended material, its diagonal gain would be one. If the other material did not change, the corresponding off-diagonal gain would be zero. A smaller diagonal value therefore records a weaker recovered change along that pattern. It does not, by itself, identify why the change is weaker.
-
-Across the two replicates, the mean gain is 0.408 for water recovered after a water injection and 0.497 for bone recovered after a bone injection. The corresponding cross-component gains are 0.029 in bone after the water injection and −0.012 in water after the bone injection. For both materials, the recovered change along the injection pattern is smaller than the injected change. All six fits reached their time limits after 76 accepted updates, with the stationarity criterion unmet. These measurements describe the recorded reconstruction algorithm under this protocol.
-
-That stopping point is still affecting the response. Between accepted updates 50 and 76, the mean water and bone gains rise from 0.310 and 0.434 to 0.408 and 0.497; the mean water response to a bone injection changes from −0.118 to −0.012. Each fit's objective falls by about 40% over those same 26 updates. Their final Euclidean mappings are approximately $9.32\times10^4$, against a threshold of 10. The reduced gains therefore include unfinished optimisation. These records cannot establish how much suppression or cross-response would remain at stationarity, or assign it to regularisation, constraints or spectral sensitivity alone.
-
-The next experiment should hold the observations, injections and stopping criterion fixed while bringing every fit to the required stationary state. Compare the gains along the way to establish whether they have settled. Only then change the penalty or acquisition to investigate its effect on material separation. If completing those solves is impractical, report the gains as the response of the recorded, time-limited algorithm. Matching wall-clock budgets can answer a computational question, but it does not remove the need to state what the solver had achieved when the clock stopped.
-
-<MaterialResponseFigure id="figure-material-response" />
-
-### Test calibration before interpreting material coefficients
-
-The acquired phantom in [Figure](#figure-acquired-spectral) adds a less accommodating example. Its two cumulative detector channels are correlated, so the reconstruction uses the recorded weighted least-squares model rather than pretending they are independent Poisson counts.
-
-The response was fitted to 42 slab pairs, with 13 further pairs reserved to test prediction beyond calibration fitting. Its maximum absolute Low-channel pair-mean bias is 0.021483 in normalised transmission, exceeding the frozen engineering tolerance of 0.020000. This reserved discrepancy shows why fitting a response and obtaining plausible fields do not establish quantitative concentrations; the physical cause remains unassigned.
-
-The reserved slab measurements test a part of the problem that more reconstruction iterations cannot repair. They ask whether the calibrated response predicts a known object that was excluded from calibration fitting. If it fails there, allowing the unknown volume to compensate can produce plausible coefficients without resolving the response error. Recheck the measurement processing and calibration inputs, then test a specific explanation against independent measurements. The discrepancy identifies a failed prediction test; it does not identify which physical assumption caused it.
-
-We therefore retain PMMA- and Al-equivalent coefficients, the observed residuals and the incomplete convergence record. Interpreting the rods as recovered hydroxyapatite concentrations would exceed the evidence. The reconstruction also reaches its time limit: the objective falls from 3772.21 to 877.71, but its mapping remains 0.00977345 against the unchanged 0.000113596 threshold. Passing the calibration gate alone would not establish either numerical completion or hydroxyapatite concentration accuracy. The FP64 repair in the worked simulation does not diagnose this separate calibration discrepancy.
-
-There are consequently two unfinished investigations. The response must pass an independent prediction check, and the reconstruction must reach its declared stopping criterion. Fixing either one leaves the other to be tested. Even after both pass, interpreting basis coefficients as a concentration requires an independently justified material model and a concentration reference. The successful assigned-fraction simulation shows how to perform those checks when the generating model is known; it cannot supply the missing evidence for an acquired specimen.
-
-Of the 120 acquired views excluded from final fitting, four had already been previewed for qualitative geometry and domain assessment. The primary residual summary therefore uses the remaining 116 views. The displayed volume is the central $\pm4$ mm slab, and its open crop faces are not recovered rod ends.
-
-This distinction also determines how we use the residuals. The 116 untouched views can test prediction beyond the views used to develop and fit the calculation. A discrepancy there may guide a new hypothesis, but once those images have been used to tune that hypothesis, they are no longer an untouched final check. Retaining that history prevents a sequence of plausible adjustments from turning the evaluation set into another fitting set.
-
-The figures use `dpt.material_reconstruction.MaterialReconstruction`. The [spectral input recipe and run commands](https://github.com/chrisvoncsefalvay/photon-transport-book/blob/main/experiments/spectral-reconstruction/README.md) specify the count/fraction interface and the supplied physical inputs, and the [material API contract](https://github.com/chrisvoncsefalvay/photon-transport-book/blob/main/python/dpt/README.md) also describes the signal-WLS and nonnegative modes. The open xraylib/SpekPy recipe defines a separate ICRP bone model. It does not retrospectively reproduce the historical NIST ICRU-44 calculation in the earlier CT-derived panel above.
-
-<ReconstructionFigure id="figure-acquired-spectral" caseId="hap" />
-
-<ReconstructionRadiographs
-  id="figure-acquired-spectral-radiographs"
-  caseId="hap"
-/>
 
 Throughout this chapter, someone else chose the acquisition. [Chapter 13](/chapters/acquisition-design/) makes that choice part of the problem: which next view, and which allocation of exposure, would improve a specified registration or reconstruction task?
 
