@@ -1,0 +1,578 @@
+---
+layout: ../../layouts/ChapterLayout.astro
+title: When the X-ray changes but the object has not moved
+status: Draft
+scope: Exposure, spectrum and detector response can change an image without any object motion. An optimiser that cannot account for them may move the object to explain the wrong cause.
+chapterNumber: "07"
+---
+
+import Citation from "../../components/citations/Citation.astro";
+import Bibliography from "../../components/citations/Bibliography.astro";
+import RecordedFigure from "../../components/figures/RecordedFigure.astro";
+import RadiographStudy from "../../components/figures/RadiographStudy.astro";
+import EquationNote from "../../components/marginalia/EquationNote.astro";
+import MarginNote from "../../components/marginalia/MarginNote.astro";
+import Source from "../../components/source/Source.astro";
+
+The object has not moved, yet the next image is brighter. Perhaps more photons were emitted. Perhaps the detector gain changed. Perhaps the display software has helpfully decided that yesterday's greyscale was insufficiently dramatic. A pose optimiser supplied with a fixed intensity model can respond to all three by moving the anatomy.
+
+The difficulty extends beyond brightness. A different spectrum changes the relative transmission through thick and thin regions. Scatter fills in contrast. Blur spreads an edge across neighbouring pixels. Some of these changes resemble motion closely enough that reducing image error can increase pose error.
+
+A useful acquisition model keeps photons, detector signal and processed greyscale in their own units. It also needs observations that distinguish an acquisition change from a pose change. Otherwise the fit can trade one against the other while leaving the predicted image unchanged.
+
+The code now needs to expose those acquisition assumptions. We will extend [the pose evaluator from Chapter 6](/chapters/recovering-pose/#66-the-canonical-optimisation-loop) with named calibration parameters and multiple views, while retaining its fixed pose chart and optimiser. `SpectralPoseEvaluator` supplies this composition. Its material and spectral calculations are developed in [Chapter 8](/chapters/spectral-transport-detector/#84-energy-quadrature-and-material-paths). Here the question is which quantities a fit is allowed to change, and what evidence could distinguish them.
+
+## 7.1 Separate motion from acquisition changes
+
+Let $\mathbf{G}_{WO}$ describe the rigid object pose and let $\boldsymbol{\eta}$ collect acquisition parameters. These may include exposure, spectrum, scatter, detector response and processing settings. They are called _nuisance parameters_ because pose is the quantity we want, not because the underlying physics is optional.
+
+For a detector with a fixed count-to-signal gain, a linear mean model is
+
+$$
+\mathbf{f}(\mathbf{G},\boldsymbol{\eta}) = g\mathbf{H} \left\{ a\left[ \mathbf{P}(\mathbf{G},\boldsymbol{\psi}) {}+\mathbf{S}(\mathbf{G},\boldsymbol{\psi}) \right] \right\} + b\mathbf{1}.
+$$
+
+<EquationNote term="\mathbf{P}">
+  Expected primary counts at unit exposure.
+</EquationNote>
+
+<EquationNote term="\mathbf{S}">
+  Expected scatter counts at unit exposure.
+</EquationNote>
+
+<EquationNote term="g">
+  Fixed count-to-signal gain (signal units per count).
+</EquationNote>
+
+In [equation (7.1)](#equation-7-1), $\mathbf{P}$ and $\mathbf{S}$ are expected primary and scatter counts at unit exposure, $a>0$ is a relative exposure, $\mathbf{H}$ is a linear spatial response, $g>0$ is gain in signal units per count, and $b$ is a uniform offset in signal units. The parameters $\boldsymbol{\psi}$ describe the remaining acquisition conditions. Spatially varying gains and offsets can replace the scalars when calibration supports them.
+
+The equation describes a mean. It does not specify the distribution of an observation or the order in which random detector events occur. Those details determine noise covariance. Subsequent nonlinear processing acts on the random observation, and its expected output need not equal the same processing applied to $\mathbf{f}$.
+
+Keeping the stages separate prevents several unit errors. Scatter counts can be added to primary counts before conversion to signal. An electronic offset is added in signal units. An offset measured after logarithmic processing belongs to another domain again. A single additive term cannot move between these locations without changing its meaning.
+
+Near a reference pose and acquisition, the first-order change in the predicted image is
+
+$$
+\begin{gathered}
+\Delta\mathbf{f} \approx \mathbf{J}_{\xi}\Delta\boldsymbol{\xi} + \mathbf{J}_{\eta}\Delta\boldsymbol{\eta},\\
+\mathbf{J}_{\xi} = \frac{\partial\mathbf{f}}{\partial\boldsymbol{\xi}},\\
+\mathbf{J}_{\eta} = \frac{\partial\mathbf{f}}{\partial\boldsymbol{\eta}}.
+\end{gathered}
+$$
+
+<EquationNote term="\mathbf{J}_{\eta}">
+  Image Jacobian with respect to acquisition parameters.
+</EquationNote>
+
+<EquationNote term="\Delta\boldsymbol{\xi}">
+  Local rigid pose increment.
+</EquationNote>
+
+The two contributions in [equation (7.2)](#equation-7-2) can point in similar image directions. An intensity change is not necessarily harmless to pose recovery merely because its physical cause is non-geometric. What matters is whether the pose Jacobian can reproduce it on the observed region.
+
+For now we keep the object attenuation field fixed. Deformation or a change in material composition requires a scene parameter as well. Assigning those effects to acquisition would conceal a different modelling error.
+
+## 7.2 Exposure, gain and offsets
+
+Fluence and gain can produce the same mean brightness change while producing different noise changes. Let $N\sim\operatorname{Poisson}(a\lambda_0)$ and let the recorded signal be $Y=gN+b+\varepsilon$, where the independent electronic noise has zero mean and variance $\sigma_e^2$. Then
+
+$$
+\begin{gathered}
+\mathbb{E}[Y]=ga\lambda_0+b,\\
+\operatorname{Var}(Y)=g^2a\lambda_0+\sigma_e^2.
+\end{gathered}
+$$
+
+<EquationNote term="a">
+  Positive exposure relative to the reference exposure.
+</EquationNote>
+
+<EquationNote term="\sigma_e^2">
+  Electronic noise variance in squared signal units.
+</EquationNote>
+
+Doubling exposure in [equation (7.3)](#equation-7-3) doubles both the photon-dependent mean above offset and the photon variance in signal units. Doubling gain doubles that mean but multiplies the photon variance by four ([Figure](#figure-7-1)). From the mean alone, only the product $ga$ is identifiable. Repeated calibrated measurements and an adequate noise model can supply additional information.
+
+<RecordedFigure
+  id="figure-7-1"
+  title="Exposure and gain leave different noise signatures"
+  description="Doubling exposure or gain gives the same increase in mean signal above the offset, but different noise distributions. Photon-noise variance in signal units doubles with exposure and quadruples with gain, providing a way to distinguish the two changes."
+/>
+
+Dark observations constrain electronic offsets and readout noise. Open-beam observations constrain the spatial response to illumination, but their interpretation still depends on exposure and spectrum. A flat field taken under a different spectrum may not calibrate material-dependent transmission under the new spectrum.
+
+<RadiographStudy
+  kind="noise"
+  id="figure-radiograph-noise"
+  title="The same low-contrast patch at four exposures"
+  description="The same low-contrast patch appears in recorded Poisson observations with 10–10,000 expected background counts per pixel. With the underlying synthetic projection and display window fixed, the increasing visibility comes from reduced relative count noise."
+/>
+
+`CalibrationSpec` turns the mean-model ambiguity into an interface constraint. The input to `calibrate` is an expected detector response, after any declared spatial spread, and its output is gain times exposure times that response, plus the electronic offset. The output unit is required because a count image and an image in detector signal units admit different observation models. The low-level operator allows a fixed calibration map to vary across pixels, but an optimised gain or offset must be a shared scalar.
+
+<Source
+  file="python/dpt/detector.py"
+  region="calibration-identifiability"
+  caption="Calibration units and the exposure–gain ambiguity"
+/>
+
+The rejection of simultaneously active exposure and gain follows directly from [equation (7.3)](#equation-7-3): their image derivatives cannot separate the two factors from the mean. The code therefore makes the caller fix one. Allowing both and waiting for the optimiser to discover the null direction would merely make the same identifiability calculation more expensive. A fitted per-pixel correction is excluded for a related reason: it could consume the residual that is supposed to constrain pose.
+
+Exposure controls may alter more than photon number. AAPM Task Group 125 describes fluoroscopic control systems that adjust tube potential, current, pulse width and filtration. Similar displayed brightness can therefore accompany different spectral and temporal conditions. The recorded acquisition settings help distinguish these changes from a scalar gain adjustment. <Citation keys={["rauch2012"]} />
+
+When scale and offset are uncertain but spatial response is otherwise modelled, fit an affine correction to the predicted image. Let $\mathbf{q}(\mathbf{G})$ be a fixed-domain image prediction, and use fixed positive weights $w_p$:
+
+$$
+\begin{gathered}
+\mathcal{D}(\mathbf{G},\alpha,b) = \frac{1}{2} \sum_p w_p \left[ \alpha q_p(\mathbf{G})+b-y_p \right]^2,\\
+\alpha>0.
+\end{gathered}
+$$
+
+<EquationNote term="\alpha">
+  Positive image-domain scale coefficient.
+</EquationNote>
+
+<EquationNote term="w_p">Fixed positive weight for pixel p.</EquationNote>
+
+The scale $\alpha$ in [equation (7.4)](#equation-7-4) is an image-domain nuisance coefficient, and it need not separately identify exposure or detector gain. With weights independent of $\alpha$, $b$ and pose, this is a weighted least-squares problem. Weights computed once from observed counts remain fixed in this solve. Weights updated from the predicted counts or other fitted parameters instead require differentiating that dependence or declaring a frozen-weight approximation.
+
+Write weighted means as $\bar q_w=\sum_pw_pq_p/\sum_pw_p$ and $\bar y_w=\sum_pw_py_p/\sum_pw_p$. Differentiating with respect to the offset gives $b=\bar y_w-\alpha\bar q_w$. Substitution leaves a one-parameter regression whose unconstrained minimiser is
+
+$$
+\begin{gathered}
+\alpha_* = \frac{ \sum_pw_p(q_p-\bar q_w)(y_p-\bar y_w) }{ \sum_pw_p(q_p-\bar q_w)^2 },\\
+b_*=\bar y_w-\alpha_*\bar q_w.
+\end{gathered}
+$$
+
+<EquationNote term="\alpha_*">
+  Unconstrained weighted least-squares scale estimate.
+</EquationNote>
+
+<EquationNote term="b_*">
+  Offset estimate paired with the fitted scale.
+</EquationNote>
+
+The denominator in [equation (7.5)](#equation-7-5) must be positive. A constant predicted image cannot separately identify scale and offset. If the unconstrained scale is nonpositive, it is outside the stated model, so use a specified positive lower bound and solve the corresponding constrained problem.
+
+This elimination of nuisance parameters is called _profiling_. At each pose, use the best admissible scale and offset, then compare poses through the resulting objective. For an interior solution $\alpha_*>0$ and a nonconstant observation, the profiled discrepancy can be written using weighted correlation $c_w$:
+
+$$
+\begin{gathered}
+\mathcal{D}_{\mathrm{prof}}(\mathbf{G}) = \frac{1}{2} \sum_pw_p(y_p-\bar y_w)^2 {}\cdot \left[1-c_w(\mathbf{G})^2\right],\\
+c_w = \frac{ \sum_pw_p(q_p-\bar q_w)(y_p-\bar y_w) }{ \sqrt{ \sum_pw_p(q_p-\bar q_w)^2 {}\cdot \sum_pw_p(y_p-\bar y_w)^2 } }.
+\end{gathered}
+$$
+
+<EquationNote term="c_w">
+  Weighted correlation of the centred images.
+</EquationNote>
+
+[Equation (7.6)](#equation-7-6) shows exactly which discrepancies the fit removes. Among poses with positive correlation, minimising this objective gives the same ordering as maximising weighted correlation. The factor multiplying $1-c_w^2$ depends only on the fixed observations and weights. A negative correlation would also look favourable after squaring, which is why the positive-scale condition cannot be discarded.
+
+<MarginNote label="Differentiating a profiled objective">
+  At a smooth interior nuisance optimum, the nuisance gradient is zero. The
+  chain-rule term through the fitted scale and offset therefore vanishes when
+  differentiating the profiled objective with respect to pose.
+</MarginNote>
+
+A spatially uniform offset may represent a calibrated electronic bias. It cannot generally represent scatter, heel-effect variations or a spatially varying detector response. Their images need not be affine copies of the prediction.
+
+Profiling is available mathematically under the assumptions just derived. The library's recovery adapter instead fits the declared scale and offset jointly with pose. This permits named groups to share a parameter across views and permits explicit calibration priors. It does not evaluate [equation (7.5)](#equation-7-5) at each trial, so a result from that adapter must be described as a joint fit rather than an affine-profiled one.
+
+## 7.3 Spectrum, filtration and beam hardening
+
+A scalar exposure changes how many incident photons are available. A spectral change also changes how strongly different material paths attenuate them.
+
+For a single homogeneous material of path length $\ell$ in millimetres, collect the incident spectrum and the relevant nonnegative linear detector weighting into normalised weights $w_k$. With $\sum_kw_k=1$, $w_k\geq0$ and fixed attenuation coefficients $\mu_k$ in $\mathrm{mm}^{-1}$, the normalised expected transmission is
+
+$$
+\begin{gathered}
+T(\ell) = \sum_k w_k e^{-\mu_k\ell},\\
+L_{\mathrm{eff}}(\ell)=-\log T(\ell).
+\end{gathered}
+$$
+
+<EquationNote term="w_k">
+  Normalised incident weight of spectral component k.
+</EquationNote>
+
+<EquationNote term="\mu_k">
+  Attenuation coefficient for component k (mm⁻¹).
+</EquationNote>
+
+The averaging in [equation (7.7)](#equation-7-7) occurs before the logarithm. The weights can describe photon counts or a linear energy-weighted mean, provided numerator and open-beam normalisation use the same response. They do not turn an energy-integrating detector into a Poisson counter.
+
+Define the transmitted weights $\pi_k(\ell)=w_ke^{-\mu_k\ell}/T(\ell)$. They sum to one and shift towards components with smaller attenuation as the material thickens. Differentiating the effective optical depth gives
+
+$$
+\begin{gathered}
+\frac{\mathrm{d}L_{\mathrm{eff}}}{\mathrm{d}\ell} = \sum_k\pi_k(\ell)\mu_k,\\
+\frac{\mathrm{d}^2L_{\mathrm{eff}}}{\mathrm{d}\ell^2} = -\operatorname{Var}_{\pi(\ell)}(\mu) \leq0.
+\end{gathered}
+$$
+
+<EquationNote term="\pi_k(\ell)">
+  Fraction of transmitted signal from component k.
+</EquationNote>
+
+<EquationNote term="\operatorname{Var}_{\pi(\ell)}(\mu)">
+  Attenuation variance under the transmitted weights (mm⁻²).
+</EquationNote>
+
+In [equation (7.8)](#equation-7-8), the slope is the attenuation averaged over the transmitted components. Its derivative is minus their variance. The log signal is therefore concave in homogeneous path length, with a constant slope only when all nonzero-weight components have the same attenuation. In ordinary diagnostic spectra this preferential removal of more strongly attenuated components commonly shifts the transmitted spectrum towards higher energies: beam hardening.
+
+For an exact two-component example, take equal incident weights and attenuation coefficients $0.01$ and $0.03\ \mathrm{mm}^{-1}$. The arithmetic of the mixture gives the values in [Table 7.1](#table-7-1), including the discrepancy from using the incident mean coefficient.
+
+<div className="prose-table" role="region" aria-label="Two-component spectral transmission" tabIndex={0}>
+
+| Path length $\ell$ (mm) | Transmission $T$ | Effective optical depth $-\log T$ | Optical depth from the incident mean coefficient $0.02\ \mathrm{mm}^{-1}$ |
+| ----------------------- | ---------------- | --------------------------------- | ------------------------------------------------------------------------- |
+| 0                       | 1                | 0                                 | 0                                                                         |
+| 50                      | 0.414830         | 0.879885                          | 1                                                                         |
+| 100                     | 0.208833         | 1.566219                          | 2                                                                         |
+
+</div>
+
+Doubling the path from 50 to 100 mm does not double the effective optical depth ([Figure](#figure-7-2)). An effective coefficient fitted to the thinner path consequently overpredicts attenuation through the thicker one. A pose fit can partly hide that error by shortening thick paths, thereby making a spectral error look like a geometric correction.
+
+<RecordedFigure
+  id="figure-7-2"
+  title="A spectrum changes as the path thickens"
+  description="In the two-component beam, the more strongly attenuated component loses weight as the path thickens. Effective optical depth consequently bends away from a straight line, so one constant attenuation coefficient cannot describe every thickness."
+/>
+
+With several materials, the energy-dependent optical depth is a sum of their material path lengths weighted by their attenuation coefficients:
+
+$$
+\begin{gathered}
+L_k = \sum_{m=1}^{M}\mu_{mk}\ell_m,\\
+T(\boldsymbol{\ell}) = \sum_k w_k \exp\!\left(-\sum_m\mu_{mk}\ell_m\right).
+\end{gathered}
+$$
+
+<EquationNote term="\ell_m">
+  Physical path length through material m (mm).
+</EquationNote>
+
+The material dependence in [equation (7.9)](#equation-7-9) prevents a single global scale from correcting every ray after a spectral change. Two rays with equal transmission under one spectrum can respond differently to another if their material compositions differ. Filtration changes the incident weights, and object attenuation then changes the transmitted weights separately on every path.
+
+Estimating an arbitrary spectrum from one projection of uncertain anatomy is usually underdetermined. A low-dimensional spectral model, recorded acquisition settings and independent material-thickness information constrain a more interpretable problem. [Chapter 8](/chapters/spectral-transport-detector/#83-polychromatic-transmission) develops the spectral and detector integration needed to evaluate such a model.
+
+## 7.4 Scatter and background structure
+
+Scatter adds photons that have changed direction within the object or surrounding scene. Its spatial distribution depends on illumination, material, geometry and detector acceptance. It is not generally a constant veil, although a slowly varying approximation can be useful over a restricted region. <Citation keys={["dance2014"]} />
+
+For local primary signal $P$ and approximately unchanged scatter signal $S$ across a small feature, a primary difference $\Delta P$ has observed relative contrast
+
+$$
+\begin{gathered}
+C_{\mathrm{obs}} = \frac{\Delta P}{P+S} = \frac{P}{P+S}\,C_{\mathrm{primary}},\\
+C_{\mathrm{primary}}=\frac{\Delta P}{P}.
+\end{gathered}
+$$
+
+<EquationNote term="P">Local primary signal.</EquationNote>
+
+<EquationNote term="S">
+  Local scatter signal in the same units as the primary.
+</EquationNote>
+
+The factor in [equation (7.10)](#equation-7-10) quantifies the dilution. If $S=P$, the contrast is halved. This argument assumes the scatter contribution is effectively equal on the two sides of the feature, and it does not assert that scatter is uniform across the whole detector.
+
+In a count-domain model with open-beam mean $n_0>0$, primary optical depth $L$ and additive mean scatter $s\geq0$, write
+
+$$
+\begin{gathered}
+\lambda=n_0e^{-L}+s,\\
+\frac{\partial[-\log(\lambda/n_0)]}{\partial L} = \frac{n_0e^{-L}}{n_0e^{-L}+s}.
+\end{gathered}
+$$
+
+<EquationNote term="\lambda">Expected total photon count.</EquationNote>
+
+<EquationNote term="s">Additive expected scatter count.</EquationNote>
+
+The derivative in [equation (7.11)](#equation-7-11) holds $n_0$ and $s$ fixed. It shows why scatter changes more than the baseline of a log projection: it reduces sensitivity to changes in the primary optical depth. When pose also changes scatter, the full pose derivative includes that additional dependence.
+
+A smooth background model can use a small set of detector basis functions. With $B_{pq}$ denoting their values, write
+
+$$
+s_p = \sum_{q=1}^{Q}B_{pq}c_q, \qquad s_p\geq0.
+$$
+
+<EquationNote term="B_{pq}">
+  Background basis function q evaluated at pixel p.
+</EquationNote>
+
+<EquationNote term="c_q">
+  Coefficient of background basis function q.
+</EquationNote>
+
+[Equation (7.12)](#equation-7-12) can describe broad variation with relatively few coefficients. Nonnegative basis functions with nonnegative coefficients are one way to enforce the sign condition. This is an image approximation. The coefficients do not separately identify the scattering events that produced the signal.
+
+Giving every pixel an unconstrained additive correction would let the correction reproduce every residual. Even nonnegative per-pixel scatter can explain a large class of positive discrepancies and weaken pose recovery. Restricting spatial bandwidth, bounding magnitude from calibration or tying the background across acquisitions reduces this freedom.
+
+A change in collimation supplies useful physical evidence because it changes the illuminated material that produces scatter. Cropping an already acquired image removes pixels from analysis but leaves the photons that reached the retained pixels unchanged. Cropping therefore cannot reproduce the scatter reduction from physical collimation.
+
+The present spectral recovery composition contains primary signal, optional fixed spatial response and electronic calibration. It has no fitted scatter field. An externally supplied additive image would remain a prescribed background until a transport calculation or calibration justified calling it scatter. [Chapter 9](/chapters/scattering-stochastic-transport/#94-sources-boundaries-and-detector-scores) supplies complete-history detector scores, which include both primary and scattered arrivals, so adding that total to an existing primary image would count the primary twice.
+
+## 7.5 Detector blur, noise and processing
+
+A blur operator acts differently depending on where it enters image formation. A deterministic filter applied after photon detection mixes already random pixel values. A detector that spreads each photon's charge over several pixels generates a correlated response event by event. Both can have a similar mean blur while requiring different noise models.
+
+For a definite post-detection model, let independent Poisson counts have mean vector $\boldsymbol{\lambda}$, and let the output be $\mathbf{Y}=\mathbf{H}\mathbf{N}+\boldsymbol{\varepsilon}$, with independent zero-mean electronic noise of covariance $\mathbf{C}_e$. Then
+
+$$
+\begin{gathered}
+\mathbb{E}[\mathbf{Y}] = \mathbf{H}\boldsymbol{\lambda},\\
+\operatorname{Cov}(\mathbf{Y}) = \mathbf{H}\operatorname{diag}(\boldsymbol{\lambda}) \mathbf{H}^{\mathsf T} + \mathbf{C}_e.
+\end{gathered}
+$$
+
+<EquationNote term="\mathbf{H}">
+  Deterministic linear filter applied to observed counts.
+</EquationNote>
+
+<EquationNote term="\mathbf{C}_e">
+  Covariance of electronic noise added after filtering.
+</EquationNote>
+
+The off-diagonal entries in [equation (7.13)](#equation-7-13) arise when output pixels share input counts. Treating those outputs as independent Poisson counts would change both their variance and their dependence. This formula assumes $\mathbf{H}$ is deterministic and that electronic noise is added after the filter. A different order changes its covariance contribution.
+
+Blur can also couple directly to pose. Consider a one-dimensional sharp feature $q(x-\delta)$ and a blur kernel whose centroid is displaced by $\kappa$, so that $h_\kappa(x)=h_0(x-\kappa)$. Convolution gives
+
+$$
+(h_\kappa*q(\,\cdot-\delta))(x) = (h_0*q)(x-\delta-\kappa).
+$$
+
+<EquationNote term="\delta">
+  Feature displacement along coordinate x.
+</EquationNote>
+
+<EquationNote term="\kappa">
+  Blur-kernel centroid displacement along coordinate x.
+</EquationNote>
+
+Only the sum $\delta+\kappa$ appears in [equation (7.14)](#equation-7-14). A free kernel shift and a geometric image shift are exactly confounded in this model. Fixing the kernel centroid from calibration removes that freedom. Estimating blur width can still be useful, but width and centroid have different geometric consequences.
+
+The identical profiles in [Figure](#figure-7-3) make this ambiguity explicit.
+
+<RecordedFigure
+  id="figure-7-3"
+  title="Kernel displacement and geometric displacement coincide"
+  description="Different combinations of image shift and kernel shift produce identical profiles when their total displacement is the same. The resulting image alone cannot tell how much of the shift came from geometry and how much from the response kernel."
+/>
+
+For nonlinear processing $\mathbf{z}=\mathcal{Q}(\mathbf{Y})$, a first-order covariance approximation around the mean $\boldsymbol{\mu}=\mathbb{E}[\mathbf{Y}]$ is
+
+$$
+\operatorname{Cov}(\mathbf{z}) \approx \mathbf{J}_{\mathcal{Q}}(\boldsymbol{\mu}) \operatorname{Cov}(\mathbf{Y}) \mathbf{J}_{\mathcal{Q}}(\boldsymbol{\mu})^{\mathsf T}.
+$$
+
+<EquationNote term="\mathbf{J}_{\mathcal{Q}}(\boldsymbol{\mu})">
+  Processing Jacobian evaluated at the mean input.
+</EquationNote>
+
+[Equation (7.15)](#equation-7-15) requires a differentiable processing map and fluctuations small enough for its local linearisation. Clipping violates that approximation at the clipping boundary and removes local intensity sensitivity in saturated regions. A log transform is also poorly approximated by a first-order expansion near zero.
+
+Temporal filtering introduces another coupling. A displayed fluoroscopic frame may combine observations from several earlier poses. Rendering one instantaneous pose and fitting it to that mixture can place an edge between positions the anatomy actually occupied. If timing and temporal response are known, predict the exposure-weighted sequence or blur over motion. Otherwise the frame does not supply an unambiguous instantaneous-pose observation.
+
+For digital X-ray objects, DICOM distinguishes FOR PROCESSING from FOR PRESENTATION images. FOR PROCESSING images already include detector corrections, while an ORIGINAL image intended for presentation may include operations such as unsharp masking. These labels do not specify the full processing sequence. Establish that sequence before choosing the measurement likelihood. <Citation keys={["dicomPS33"]} />
+
+## 7.6 Jointly estimate pose and nuisance parameters
+
+Suppose a fixed whitening transform has placed both the residual and its Jacobians in noise-normalised coordinates. Write the current residual as $\mathbf{r}$, the pose Jacobian as $\mathbf{A}$ and the nuisance Jacobian as $\mathbf{B}$. Local increments solve
+
+$$
+\underset{\Delta\mathbf{u},\,\Delta\boldsymbol{\eta}}{\operatorname{minimise}} \frac{1}{2} \left\| \mathbf{r} + \mathbf{A}\Delta\mathbf{u} + \mathbf{B}\Delta\boldsymbol{\eta} \right\|^2.
+$$
+
+<EquationNote term="\mathbf{A}">
+  Whitened image Jacobian for scaled pose.
+</EquationNote>
+
+<EquationNote term="\mathbf{B}">
+  Whitened image Jacobian for nuisance parameters.
+</EquationNote>
+
+The pose variable $\mathbf{u}$ in [equation (7.16)](#equation-7-16) uses the [dimensionless scaling from Chapter 6](/chapters/recovering-pose/#63-parameter-scales-and-pose-updates). Scale nuisance coordinates sensibly as well. A log-gain increment, for example, describes a relative multiplicative change while keeping gain positive.
+
+`CalibrationBlock` gives those coordinates a fixed meaning for an entire solve. A view names its calibration group: views carrying the same name use the same gain, exposure and offset. An active positive scale is its reference value multiplied by `exp(scale_step * z)`. An active offset is its reference plus `offset_step * z`, in the declared signal unit. The parameter vector begins with the six scaled pose coordinates and then contains these named nuisance blocks in their declared order.
+
+<Source
+  file="python/dpt/spectral_recovery.py"
+  region="calibration-parameter-chart"
+  caption="Shared scale and offset parameters"
+/>
+
+The `gradient` method supplies the chart's chain factors. A derivative with respect to physical gain must be multiplied by the represented gain and `scale_step` before it becomes a derivative with respect to `z`. This multiplication retains binary64 range: storing a very small physical partial in binary32 first could erase it before a large gain made its chart derivative useful. Device calibration values themselves use binary32. As with the earlier operators, the derivative describes the smooth physical calculation at those represented values, not the discontinuous map that rounds a real number into storage.
+
+Optional prior precisions penalise the dimensionless coordinates relative to their references. They are added once per group, however many views share that group. Such a prior supplies additional information, and its effect must remain distinguishable from information supplied by the images.
+
+For full-column-rank $\mathbf{B}$ and unconstrained local nuisance increments, minimisation over the nuisance coordinates gives
+
+$$
+\Delta\boldsymbol{\eta}_* = - \left(\mathbf{B}^{\mathsf T}\mathbf{B}\right)^{-1} \mathbf{B}^{\mathsf T} \left( \mathbf{r}+\mathbf{A}\Delta\mathbf{u} \right).
+$$
+
+<EquationNote term="\Delta\boldsymbol{\eta}_*">
+  Best unconstrained local nuisance increment for this pose step.
+</EquationNote>
+
+Substituting [equation (7.17)](#equation-7-17) into the local objective removes the image directions that nuisance changes can fit. The remaining pose curvature is
+
+$$
+\begin{gathered}
+\mathbf{I}_{u\mid\eta} = \mathbf{A}^{\mathsf T} \left(\mathbf{I}-\mathbf{P}_B\right) \mathbf{A},\\
+\mathbf{P}_B = \mathbf{B} \left(\mathbf{B}^{\mathsf T}\mathbf{B}\right)^{-1} \mathbf{B}^{\mathsf T}.
+\end{gathered}
+$$
+
+<EquationNote term="\mathbf{I}_{u\mid\eta}">
+  Local pose information after fitting nuisance increments.
+</EquationNote>
+
+<EquationNote term="\mathbf{P}_B">
+  Orthogonal projector onto the nuisance image directions.
+</EquationNote>
+
+The matrix in [equation (7.18)](#equation-7-18) is the Schur complement of the nuisance block in the joint normal equations. It gives the local data information left for pose after nuisance fitting. If a pose-induced image direction lies entirely in the column space of $\mathbf{B}$, the nuisance fit can absorb it and the corresponding information vanishes. Rank-deficient nuisance models require a pseudoinverse or an identifiable reparameterisation, and active constraints require the corresponding constrained local problem.
+
+For one pose direction with image derivative $\mathbf{a}$ and one nuisance direction $\mathbf{b}$, define their cosine $c=\mathbf{a}^{\mathsf T}\mathbf{b}/(\|\mathbf{a}\|\|\mathbf{b}\|)$, with both vectors nonzero. The remaining information reduces to
+
+$$
+I_{u\mid\eta} = \|\mathbf{a}\|^2(1-c^2).
+$$
+
+<EquationNote term="c">
+  Cosine between the pose and nuisance image derivatives.
+</EquationNote>
+
+In [equation (7.19)](#equation-7-19), orthogonal effects leave pose information unchanged. At $c=0.9$, only 19% of the information remains, and at $c=0.99$, only 1.99% remains. A nuisance parameter can be physically reasonable and still make pose substantially harder to estimate.
+
+[Figure](#figure-7-4) shows how quickly the remaining information falls as the two effects become parallel.
+
+<RecordedFigure
+  id="figure-7-4"
+  title="Similar image effects consume pose information"
+  description="The fraction of local pose information remaining falls as the whitened pose and nuisance derivatives become parallel or antiparallel. Orthogonal effects remain distinguishable, while parallel effects allow the nuisance fit to absorb all information about that pose direction."
+/>
+
+Calibration supplies information about nuisance quantities independently of the registration image. In a quadratic local model with nuisance precision $\boldsymbol{\Lambda}_{\eta}\succeq0$, the effective pose curvature becomes
+
+$$
+\mathbf{I}_{u,\mathrm{cal}} = \mathbf{A}^{\mathsf T}\mathbf{A} - \mathbf{A}^{\mathsf T}\mathbf{B} \cdot \left( \mathbf{B}^{\mathsf T}\mathbf{B} + \boldsymbol{\Lambda}_{\eta} \right)^{-1} \mathbf{B}^{\mathsf T}\mathbf{A}
+$$
+
+provided the matrix being inverted is positive definite. [Equation (7.20)](#equation-7-20) interpolates between freely fitted nuisance quantities and strongly constrained calibration. Its extra curvature comes from the calibration or prior. It should not be attributed entirely to the registration image.
+
+<EquationNote term="\boldsymbol{\Lambda}_{\eta}">
+  Local nuisance precision supplied by calibration or a prior.
+</EquationNote>
+
+Multiple acquisitions can share an object pose while having separate exposures, or share detector response parameters while containing different known object poses. Sharing a parameter forces one value to explain every view in its group. Different viewing geometries can make a pose change and that nuisance change produce distinguishable collections of image changes, even when their effects overlap in one view. In the local analysis above, combine the views by stacking their residuals and Jacobian rows while keeping one column for each shared parameter. Write those dependencies before fitting. If every image has both a free exposure and a free scalar detector gain, their products remain confounded in the means. Adding images with the same freedom does not resolve it.
+
+The implemented multi-view problem takes the first of those arrangements: every `SpectralView` observes one shared object-to-world pose through its own fixed source and detector geometry. Each view also declares its observation domain and calibration group. Material fractions, coefficient tables, energy weights, detector response and any blur stencil remain fixed. This is enough to ask whether a pose estimate changes when a constrained calibration error is allowed to explain brightness, but it cannot infer an unknown spectrum or a moving object independently in each view.
+
+<Source
+  file="python/dpt/spectral_recovery.py"
+  region="spectral-recovery-composition"
+  caption="Pose and calibration gradients for each view"
+/>
+
+Read the forward calls in order: material paths produce a spectral mean, the optional spatial operator spreads it, calibration converts it to the observation's units, and the objective returns its image seed. The reverse calls follow those dependencies backwards. `calibration_vjp` separates nuisance derivatives from the image seed. `blur_transpose` returns that seed through the finite spatial response, and the spectral and material-projector VJPs finally return a pose derivative. `_assemble` weights and sums the view losses and pose derivatives in the fixed chart, and sums each nuisance derivative into its named group. No detector-by-parameter Jacobian is needed.
+
+Preparation allocates the image buffers and validates immutable inputs. A trial transfers only pose and calibration values to CUDA, while losses, small gradients and status words return at a declared checkpoint. That is why the repeated calls use `validate=False`: each operator retains its shape and ownership checks while avoiding repeated scans of fixed inputs. It remains necessary to inspect numerical status before accepting the trial. The inner `finally` also matters. Pinned host memory can still be in use by an asynchronous copy when an exception occurs, so draining the owning stream prevents the next trial from overwriting it prematurely.
+
+A count-domain Poisson objective has stricter entry conditions here: unit gain, zero offset, no fitted gain or offset, no spatial blur and a detection-probability response. A general calibrated signal uses a declared signal-domain discrepancy. The adapter cannot infer the correct likelihood from the fact that an array happens to be non-negative.
+
+## 7.7 Controlled mismatch experiments
+
+A useful mismatch experiment changes one physical cause while holding pose fixed. For exposure, keep geometry, spectrum and detector response fixed while changing incident fluence. For gain, keep the photon process fixed and change the signal conversion. These interventions have different variance predictions even when their mean images agree.
+
+Begin with cases whose forward dependencies are explicit. The affine model isolates scale and offset. The two-component spectral model isolates path-dependent hardening. The shifted-kernel example isolates an exact blur-pose ambiguity. Each answers a specific question before several effects are combined.
+
+For a nuisance condition $\boldsymbol{\eta}$ and repeated observations indexed by $r$, let $\widehat{\mathbf{G}}_r$ be the recovered pose and $\mathbf{G}_*$ the fixed reference. Express local left pose errors in a common coordinate system:
+
+$$
+\begin{gathered}
+\mathbf{e}_r = \operatorname{vee} \left[ \log\!\left( \widehat{\mathbf{G}}_r\mathbf{G}_*^{-1} \right) \right],\\
+\bar{\mathbf{e}} = \frac{1}{R}\sum_{r=1}^{R}\mathbf{e}_r.
+\end{gathered}
+$$
+
+<EquationNote term="\mathbf{e}_r">
+  Left Lie-algebra pose error for repetition r.
+</EquationNote>
+
+<EquationNote term="\bar{\mathbf{e}}">
+  Mean local pose-error vector.
+</EquationNote>
+
+The errors in [equation (7.21)](#equation-7-21) use the same translation-first convention as the optimiser, with translational Lie coordinates in millimetres and rotation coordinates in radians. They describe bias locally when the errors lie within a consistent branch of the logarithm. Widely separated solutions should be reported as separate outcomes rather than averaged through a branch discontinuity.
+
+Across repetitions, estimate the covariance of those local errors:
+
+$$
+\begin{gathered}
+\widehat{\mathbf{C}}_{\mathrm{pose}} = \frac{1}{R-1} {}\cdot \sum_{r=1}^{R} \left(\mathbf{e}_r-\bar{\mathbf{e}}\right) \left(\mathbf{e}_r-\bar{\mathbf{e}}\right)^{\mathsf T},\\
+R>1.
+\end{gathered}
+$$
+
+<EquationNote term="\widehat{\mathbf{C}}_{\mathrm{pose}}">
+  Sample covariance of the local pose errors.
+</EquationNote>
+
+The mean error in [equation (7.21)](#equation-7-21) separates systematic displacement from the spread measured by [equation (7.22)](#equation-7-22). A model extension can reduce bias while increasing variance because it adds nuisance freedom. Reporting only a mean image loss hides that tradeoff. The experiments in [Table 7.2](#table-7-2) isolate acquisition changes while holding the physical pose fixed.
+
+<div className="prose-table" role="region" aria-label="Acquisition mismatch experiments" tabIndex={0}>
+
+| Changed quantity at fixed pose | Quantities held fixed                                         | Diagnostic comparison                                                     |
+| ------------------------------ | ------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| Incident exposure              | Spectrum, geometry, detector gain and processing              | Mean and variance scaling and pose bias with and without exposure fitting |
+| Electronic gain or offset      | Incident photon distribution and geometry                     | Signal-domain calibration and affine-profiled pose                        |
+| Spectral weights               | Geometry, material paths and chosen open-beam normalisation   | Residual dependence on material thickness and composition                 |
+| Scatter-producing illumination | Object pose and detector settings                             | Broad residual structure and sensitivity to collimation                   |
+| Spatial response               | Geometry, photon process and kernel centroid where calibrated | Edge width, neighbouring-pixel covariance and pose variance               |
+| Temporal response              | Known motion and acquisition timing                           | Difference between instantaneous and temporally integrated predictions    |
+
+</div>
+
+A controlled comparison uses the same pose initialisation rule, fit region and stopping criteria across model variants. Otherwise a change in recovery can come from the optimiser's opportunity to search rather than the added physics. Keep acquisition conditions used to select nuisance bounds separate from those used to assess the resulting model.
+
+Repeated noise draws can be paired across model variants to compare their response to the same observation. The repetitions must still be independent across trials when estimating uncertainty from them. For acquired data, record the calibration, exposure timing and reference-pose uncertainty alongside the image: those observations determine what the experiment can distinguish.
+
+The canonical driver, `experiments/acquisition-mismatch/run.py`, uses [the evaluator in Listing 7.3](#listing-7-3) to compare fixed calibration with the declared joint fit, starting both from the same pose and calibration references. Fitting views supply the objective and derivatives. Held-out views are evaluated only after fitting, using the fitted groups without another calibration fit. Their losses therefore answer a predictive question rather than providing another opportunity to tune the model.
+
+The driver records accepted parameters and termination reasons as well as fitting and held-out losses. Its inputs still determine what those records establish. In particular, a vacuum field has no pose-dependent attenuation: recovering a gain from its open-beam signal cannot demonstrate pose recovery. Spatially informative fields and independent geometric references are required for that claim. Source and input digests make an experiment traceable, but they cannot make an unidentifiable experiment informative.
+
+## 7.8 Choose the next model term
+
+Residual shape can suggest a missing mechanism, but it rarely identifies one uniquely. Broad positive residuals may indicate scatter, an offset or an underpredicted primary signal. Edge residuals may indicate pose, blur, deformation or a calibration error. Include a model term when a discriminating observation supports it and the fit constrains its effect.
+
+The joint Jacobian provides a local test of that constraint. For a proposed nuisance derivative $\mathbf{b}$, remove the part already explained by the current model Jacobian $\mathbf{K}$:
+
+$$
+\mathbf{b}_{\perp} = \left(\mathbf{I}-\mathbf{K}\mathbf{K}^{+}\right)\mathbf{b}
+$$
+
+where $\mathbf{K}^{+}$ is the Moore–Penrose pseudoinverse. [Equation (7.23)](#equation-7-23) uses the same whitened image coordinates for both quantities. If $\mathbf{b}_{\perp}=0$, the new parameter has no distinct first-order image effect at this configuration. If it is small, calibration or another acquisition may be needed to separate its contribution.
+
+<EquationNote term="\mathbf{K}^{+}">
+  Moore–Penrose pseudoinverse of the current model Jacobian.
+</EquationNote>
+
+<EquationNote term="\mathbf{b}_{\perp}">
+  New image effect orthogonal to the existing model directions.
+</EquationNote>
+
+This test is local. A nonlinear parameter can become distinguishable over a wider range of conditions, and an informative calibration exposure can reveal effects hidden in the anatomy image. Conversely, a numerically independent derivative is not enough to justify a physical interpretation if the proposed model does not describe the acquisition.
+
+Compare extended models on observations that constrain the new term. Use calibrated dark and open-beam data for detector response, material-dependent observations for spectrum, and changes in illuminated volume for scatter. Evaluate residual structure, independent pose error and predictive performance under those conditions. A more flexible model will usually lower its fitting objective, but the question is whether its extra freedom predicts the changes the experiment actually imposed.
+
+The next chapter follows the spectral calculation from the source, through material paths, to the detector-weighted signal. [Scattering in Chapter 9](/chapters/scattering-stochastic-transport/#91-beyond-the-uncollided-photon) then adds photons whose routes through that scene are no longer the direct source-to-pixel segments.
+
+<Bibliography keys={["rauch2012", "dance2014", "dicomPS33"]} />

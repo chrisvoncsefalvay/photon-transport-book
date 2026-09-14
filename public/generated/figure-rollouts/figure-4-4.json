@@ -1,0 +1,69 @@
+{
+  "formula": "4.15-4.16",
+  "parameters": {
+    "curvature_mm_inverse_cubed": 1e-06,
+    "intercept_mm_inverse": 0.01,
+    "length_mm": 100.0,
+    "linear_mm_inverse_squared": 0.0,
+    "sample_counts": [
+      5,
+      10,
+      20,
+      40,
+      80,
+      160,
+      320
+    ]
+  },
+  "rows": [
+    {
+      "exact": 1.3333333333333333,
+      "midpoint": 1.33,
+      "predicted_error": 0.003333333333333333,
+      "samples": 5,
+      "signed_error": 0.0033333333333331883
+    },
+    {
+      "exact": 1.3333333333333333,
+      "midpoint": 1.3325,
+      "predicted_error": 0.0008333333333333333,
+      "samples": 10,
+      "signed_error": 0.0008333333333332416
+    },
+    {
+      "exact": 1.3333333333333333,
+      "midpoint": 1.333125,
+      "predicted_error": 0.00020833333333333332,
+      "samples": 20,
+      "signed_error": 0.0002083333333333659
+    },
+    {
+      "exact": 1.3333333333333333,
+      "midpoint": 1.33328125,
+      "predicted_error": 5.208333333333333e-05,
+      "samples": 40,
+      "signed_error": 5.2083333333285964e-05
+    },
+    {
+      "exact": 1.3333333333333333,
+      "midpoint": 1.3333203125,
+      "predicted_error": 1.3020833333333332e-05,
+      "samples": 80,
+      "signed_error": 1.3020833333321491e-05
+    },
+    {
+      "exact": 1.3333333333333333,
+      "midpoint": 1.333330078125,
+      "predicted_error": 3.255208333333333e-06,
+      "samples": 160,
+      "signed_error": 3.2552083333303727e-06
+    },
+    {
+      "exact": 1.3333333333333333,
+      "midpoint": 1.33333251953125,
+      "predicted_error": 8.138020833333333e-07,
+      "samples": 320,
+      "signed_error": 8.13802083277082e-07
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "id": "book-figures-noise",
+  "chapter": "chapters-4-10",
+  "experiment": "archived-figure-rollouts",
+  "source_commit": "dba22055a71c9e7d59205c5019df2108fdc623dd",
+  "generator": "tools/public/import-figure-rollouts.mjs",
+  "mode": "stochastic-independent-realisations",
+  "stochastic": true,
+  "seeds": [
+    193717
+  ],
+  "created_at": "2026-09-11T10:47:42Z",
+  "parameters": {
+    "group": "noise",
+    "provenance": "/generated/figure-rollouts/provenance.json"
+  },
+  "notes": "source_commit identifies the curation checkout, not the archived producer. Producer source digests, configurations and actual run times are preserved in provenance.json. Input payloads are byte-identical to the verified archive.",
+  "outputs": [
+    "public/generated/figure-rollouts/detector-noise.json"
+  ],
+  "output_digests": {
+    "public/generated/figure-rollouts/detector-noise.json": "d40b28dbb84c562b979257fa68dd22cd5ea120975d055340d6793c91ec3fec4c"
+  },
+  "source_digests": {
+    "tools/public/import-figure-rollouts.mjs": "51946c2bb03f145bc0db9e15c7b6d44a1b008b445c811eb55b679896171638b9"
+  }
+}

@@ -1,0 +1,160 @@
+{
+  "schema_version": 1,
+  "title": "CT-derived vertebral-region bone in water",
+  "source": "https://doi.org/10.7937/tcia.2019.tt7f4v7o",
+  "rights": "CC BY 3.0; Rister et al., CT-ORG, TCIA",
+  "source_affine": [
+    [
+      -0.775390625,
+      0.0,
+      0.0,
+      199.1123046875
+    ],
+    [
+      0.0,
+      0.775390625,
+      0.0,
+      -27.1123046875
+    ],
+    [
+      0.0,
+      0.0,
+      1.0,
+      -1114.0999755859375
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "native_crop_xyz": [
+    [
+      160,
+      352
+    ],
+    [
+      48,
+      240
+    ],
+    [
+      256,
+      448
+    ]
+  ],
+  "crop_selection": "Private native-mask inspection moved proposed z208:400 to z256:448 to remove inferior iliac bone. X160:352 and Y48:240 unchanged.",
+  "reorientation": "Lossless X reversal from source LAS header to RAS; no native resampling",
+  "laterality": "header-derived; source laterality not independently established",
+  "object_centre_source_ras_mm": [
+    1.0,
+    84.15625,
+    -762.5999755859375
+  ],
+  "body_rule": "Entire known rectangular box is filled; no HU threshold or patient body mask",
+  "material_assignment": {
+    "water": "1 - assigned bone fraction everywhere inside known box",
+    "bone": "0.65 on archived CT-ORG label5, otherwise zero; no mask smoothing or editing",
+    "vacuum": "Zero inside assigned reference box; vacuum outside finite box",
+    "interpretation": "Declared controlled phantom at fixed reference densities; not CT-calibrated patient tissue"
+  },
+  "boundary": "Known finite water-filled rectangular phantom; vacuum outside; not a complete patient scan",
+  "native_assigned_material_volume_mm3": [
+    3936701.1388966586,
+    318741.8611033413
+  ],
+  "format": "worked-material-basis-v1",
+  "source_files": {
+    "volume-2.nii.gz": {
+      "sha256": "ca702e58f0fb736ff4bc407aac0c4b698b8689f3f7e0281da32a546a87ae8a40"
+    },
+    "labels-2.nii.gz": {
+      "sha256": "c5951c1065f517c9e8e794aec0a921ae0ebaa2198d4b38f0ed492bc7aca74e8f"
+    }
+  },
+  "forward_grid": {
+    "shape": [
+      16,
+      16,
+      16
+    ],
+    "spacing_mm": [
+      9.3046875,
+      9.3046875,
+      12.0
+    ],
+    "origin_mm": [
+      -69.78515625,
+      -69.78515625,
+      -90.0
+    ],
+    "orientation": [
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  },
+  "original_forward_grid": {
+    "shape": [
+      192,
+      192,
+      192
+    ],
+    "spacing_mm": [
+      0.775390625,
+      0.775390625,
+      1.0
+    ],
+    "origin_mm": [
+      -74.0498046875,
+      -74.0498046875,
+      -95.5
+    ],
+    "orientation": [
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  },
+  "original_forward_fractions_sha256": "554055c69f10c5b0e22924f04776100d824429cd9cde6cc6e41c9f966365f14d",
+  "original_anatomy_record_sha256": "90aaceba152e90df841000f302a22166966019f76c912b6898e5e59fb9130803",
+  "coarse_averaging": {
+    "factors_zyx": [
+      12,
+      12,
+      12
+    ],
+    "arithmetic": "FP64 block mean, narrowed once to FP32; preserve physical support",
+    "function": "experiments/reconstruction-study/_study.py:coarse_cells",
+    "source_sha256": "afc04a025f09aa9bda2ba528211ffc9ef12905e3f886234ec1343e949f6edc24"
+  },
+  "outputs": {
+    "forward-fractions.npy": {
+      "sha256": "5c8bd82c378f28830d9daf7af6338f6c631dfb9b4dba2b4a2fbd6a0e3d323c90",
+      "shape": [
+        2,
+        16,
+        16,
+        16
+      ],
+      "dtype": "float32",
+      "role": "Acquisition generation and independent post-fit evaluation only"
+    }
+  },
+  "implementation": {
+    "source_license_manifest_sha256": "b849e0c8f5770ec527020b791348f7041f078c52b554e0c5832aa46ae974d96b"
+  },
+  "scientific_role": "Matched coarse instructional material model; no claim of patient composition, anatomical resolution or model-mismatch recovery"
+}

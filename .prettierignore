@@ -1,0 +1,11 @@
+.astro/
+.beagle/
+.release-staging/
+.venv/
+dist/
+node_modules/
+public/generated/
+pnpm-lock.yaml
+# Recorded development protocol and generated receipts retain their bound bytes.
+experiments/worked-reconstruction/protocol-v1.json
+notes/worked-examples/**/*.json

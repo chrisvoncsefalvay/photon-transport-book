@@ -1,0 +1,15 @@
+% Original typesetting, Latin Modern 2.005; see ATTRIBUTIONS.md.
+% Monoenergetic, elastic scattering; p integrates to one over outgoing directions.
+% Position and time arguments are suppressed; sigma_t = sigma_a + sigma_s.
+\documentclass[border=2pt]{standalone}
+\usepackage{amsmath,lmodern}
+\begin{document}
+$\displaystyle\begin{aligned}
+\frac{1}{c}\frac{\partial L}{\partial t}
++ \boldsymbol{\omega}\!\cdot\!\nabla L
+&= -\sigma_{\mathrm{t}}L + Q \\[5pt]
+&\quad+\sigma_{\mathrm{s}}\!\int_{S^{2}}
+p(\boldsymbol{\omega}'\!\to\!\boldsymbol{\omega})\,
+L(\boldsymbol{\omega}')\,\mathrm{d}\boldsymbol{\omega}'
+\end{aligned}$
+\end{document}

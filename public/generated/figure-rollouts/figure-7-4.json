@@ -1,0 +1,2024 @@
+{
+  "formula": "7.19",
+  "parameters": {
+    "cosines": [
+      -1.0,
+      -0.995,
+      -0.99,
+      -0.985,
+      -0.98,
+      -0.975,
+      -0.97,
+      -0.965,
+      -0.96,
+      -0.955,
+      -0.95,
+      -0.945,
+      -0.94,
+      -0.935,
+      -0.93,
+      -0.925,
+      -0.92,
+      -0.915,
+      -0.91,
+      -0.905,
+      -0.9,
+      -0.895,
+      -0.89,
+      -0.885,
+      -0.88,
+      -0.875,
+      -0.87,
+      -0.865,
+      -0.86,
+      -0.855,
+      -0.85,
+      -0.845,
+      -0.84,
+      -0.835,
+      -0.83,
+      -0.825,
+      -0.82,
+      -0.815,
+      -0.81,
+      -0.805,
+      -0.8,
+      -0.795,
+      -0.79,
+      -0.785,
+      -0.78,
+      -0.775,
+      -0.77,
+      -0.765,
+      -0.76,
+      -0.755,
+      -0.75,
+      -0.745,
+      -0.74,
+      -0.735,
+      -0.73,
+      -0.725,
+      -0.72,
+      -0.715,
+      -0.71,
+      -0.705,
+      -0.7,
+      -0.695,
+      -0.69,
+      -0.685,
+      -0.68,
+      -0.675,
+      -0.67,
+      -0.665,
+      -0.66,
+      -0.655,
+      -0.65,
+      -0.645,
+      -0.64,
+      -0.635,
+      -0.63,
+      -0.625,
+      -0.62,
+      -0.615,
+      -0.61,
+      -0.605,
+      -0.6,
+      -0.595,
+      -0.59,
+      -0.585,
+      -0.58,
+      -0.575,
+      -0.57,
+      -0.565,
+      -0.56,
+      -0.555,
+      -0.55,
+      -0.545,
+      -0.54,
+      -0.535,
+      -0.53,
+      -0.525,
+      -0.52,
+      -0.515,
+      -0.51,
+      -0.505,
+      -0.5,
+      -0.495,
+      -0.49,
+      -0.485,
+      -0.48,
+      -0.475,
+      -0.47,
+      -0.465,
+      -0.46,
+      -0.455,
+      -0.45,
+      -0.445,
+      -0.44,
+      -0.435,
+      -0.43,
+      -0.425,
+      -0.42,
+      -0.415,
+      -0.41,
+      -0.405,
+      -0.4,
+      -0.395,
+      -0.39,
+      -0.385,
+      -0.38,
+      -0.375,
+      -0.37,
+      -0.365,
+      -0.36,
+      -0.355,
+      -0.35,
+      -0.345,
+      -0.34,
+      -0.335,
+      -0.33,
+      -0.325,
+      -0.32,
+      -0.315,
+      -0.31,
+      -0.305,
+      -0.3,
+      -0.295,
+      -0.29,
+      -0.285,
+      -0.28,
+      -0.275,
+      -0.27,
+      -0.265,
+      -0.26,
+      -0.255,
+      -0.25,
+      -0.245,
+      -0.24,
+      -0.235,
+      -0.23,
+      -0.225,
+      -0.22,
+      -0.215,
+      -0.21,
+      -0.205,
+      -0.2,
+      -0.195,
+      -0.19,
+      -0.185,
+      -0.18,
+      -0.175,
+      -0.17,
+      -0.165,
+      -0.16,
+      -0.155,
+      -0.15,
+      -0.145,
+      -0.14,
+      -0.135,
+      -0.13,
+      -0.125,
+      -0.12,
+      -0.115,
+      -0.11,
+      -0.105,
+      -0.1,
+      -0.095,
+      -0.09,
+      -0.085,
+      -0.08,
+      -0.075,
+      -0.07,
+      -0.065,
+      -0.06,
+      -0.055,
+      -0.05,
+      -0.045,
+      -0.04,
+      -0.035,
+      -0.03,
+      -0.025,
+      -0.02,
+      -0.015,
+      -0.01,
+      -0.005,
+      0.0,
+      0.005,
+      0.01,
+      0.015,
+      0.02,
+      0.025,
+      0.03,
+      0.035,
+      0.04,
+      0.045,
+      0.05,
+      0.055,
+      0.06,
+      0.065,
+      0.07,
+      0.075,
+      0.08,
+      0.085,
+      0.09,
+      0.095,
+      0.1,
+      0.105,
+      0.11,
+      0.115,
+      0.12,
+      0.125,
+      0.13,
+      0.135,
+      0.14,
+      0.145,
+      0.15,
+      0.155,
+      0.16,
+      0.165,
+      0.17,
+      0.175,
+      0.18,
+      0.185,
+      0.19,
+      0.195,
+      0.2,
+      0.205,
+      0.21,
+      0.215,
+      0.22,
+      0.225,
+      0.23,
+      0.235,
+      0.24,
+      0.245,
+      0.25,
+      0.255,
+      0.26,
+      0.265,
+      0.27,
+      0.275,
+      0.28,
+      0.285,
+      0.29,
+      0.295,
+      0.3,
+      0.305,
+      0.31,
+      0.315,
+      0.32,
+      0.325,
+      0.33,
+      0.335,
+      0.34,
+      0.345,
+      0.35,
+      0.355,
+      0.36,
+      0.365,
+      0.37,
+      0.375,
+      0.38,
+      0.385,
+      0.39,
+      0.395,
+      0.4,
+      0.405,
+      0.41,
+      0.415,
+      0.42,
+      0.425,
+      0.43,
+      0.435,
+      0.44,
+      0.445,
+      0.45,
+      0.455,
+      0.46,
+      0.465,
+      0.47,
+      0.475,
+      0.48,
+      0.485,
+      0.49,
+      0.495,
+      0.5,
+      0.505,
+      0.51,
+      0.515,
+      0.52,
+      0.525,
+      0.53,
+      0.535,
+      0.54,
+      0.545,
+      0.55,
+      0.555,
+      0.56,
+      0.565,
+      0.57,
+      0.575,
+      0.58,
+      0.585,
+      0.59,
+      0.595,
+      0.6,
+      0.605,
+      0.61,
+      0.615,
+      0.62,
+      0.625,
+      0.63,
+      0.635,
+      0.64,
+      0.645,
+      0.65,
+      0.655,
+      0.66,
+      0.665,
+      0.67,
+      0.675,
+      0.68,
+      0.685,
+      0.69,
+      0.695,
+      0.7,
+      0.705,
+      0.71,
+      0.715,
+      0.72,
+      0.725,
+      0.73,
+      0.735,
+      0.74,
+      0.745,
+      0.75,
+      0.755,
+      0.76,
+      0.765,
+      0.77,
+      0.775,
+      0.78,
+      0.785,
+      0.79,
+      0.795,
+      0.8,
+      0.805,
+      0.81,
+      0.815,
+      0.82,
+      0.825,
+      0.83,
+      0.835,
+      0.84,
+      0.845,
+      0.85,
+      0.855,
+      0.86,
+      0.865,
+      0.87,
+      0.875,
+      0.88,
+      0.885,
+      0.89,
+      0.895,
+      0.9,
+      0.905,
+      0.91,
+      0.915,
+      0.92,
+      0.925,
+      0.93,
+      0.935,
+      0.94,
+      0.945,
+      0.95,
+      0.955,
+      0.96,
+      0.965,
+      0.97,
+      0.975,
+      0.98,
+      0.985,
+      0.99,
+      0.995,
+      0.999,
+      0.9999,
+      1.0
+    ]
+  },
+  "rows": [
+    {
+      "cosine": -1.0,
+      "information_fraction": 0.0
+    },
+    {
+      "cosine": -0.995,
+      "information_fraction": 0.00997500000000001
+    },
+    {
+      "cosine": -0.99,
+      "information_fraction": 0.01990000000000002
+    },
+    {
+      "cosine": -0.985,
+      "information_fraction": 0.029775000000000024
+    },
+    {
+      "cosine": -0.98,
+      "information_fraction": 0.03960000000000004
+    },
+    {
+      "cosine": -0.975,
+      "information_fraction": 0.049375000000000044
+    },
+    {
+      "cosine": -0.97,
+      "information_fraction": 0.05910000000000005
+    },
+    {
+      "cosine": -0.965,
+      "information_fraction": 0.06877500000000006
+    },
+    {
+      "cosine": -0.96,
+      "information_fraction": 0.07840000000000007
+    },
+    {
+      "cosine": -0.955,
+      "information_fraction": 0.08797500000000008
+    },
+    {
+      "cosine": -0.95,
+      "information_fraction": 0.09750000000000009
+    },
+    {
+      "cosine": -0.945,
+      "information_fraction": 0.10697500000000008
+    },
+    {
+      "cosine": -0.94,
+      "information_fraction": 0.1164000000000001
+    },
+    {
+      "cosine": -0.935,
+      "information_fraction": 0.1257749999999999
+    },
+    {
+      "cosine": -0.93,
+      "information_fraction": 0.13509999999999991
+    },
+    {
+      "cosine": -0.925,
+      "information_fraction": 0.14437499999999992
+    },
+    {
+      "cosine": -0.92,
+      "information_fraction": 0.15359999999999993
+    },
+    {
+      "cosine": -0.915,
+      "information_fraction": 0.16277499999999995
+    },
+    {
+      "cosine": -0.91,
+      "information_fraction": 0.17189999999999994
+    },
+    {
+      "cosine": -0.905,
+      "information_fraction": 0.18097499999999994
+    },
+    {
+      "cosine": -0.9,
+      "information_fraction": 0.18999999999999995
+    },
+    {
+      "cosine": -0.895,
+      "information_fraction": 0.19897499999999996
+    },
+    {
+      "cosine": -0.89,
+      "information_fraction": 0.2079
+    },
+    {
+      "cosine": -0.885,
+      "information_fraction": 0.216775
+    },
+    {
+      "cosine": -0.88,
+      "information_fraction": 0.22559999999999997
+    },
+    {
+      "cosine": -0.875,
+      "information_fraction": 0.234375
+    },
+    {
+      "cosine": -0.87,
+      "information_fraction": 0.2431
+    },
+    {
+      "cosine": -0.865,
+      "information_fraction": 0.251775
+    },
+    {
+      "cosine": -0.86,
+      "information_fraction": 0.2604
+    },
+    {
+      "cosine": -0.855,
+      "information_fraction": 0.268975
+    },
+    {
+      "cosine": -0.85,
+      "information_fraction": 0.2775000000000001
+    },
+    {
+      "cosine": -0.845,
+      "information_fraction": 0.28597500000000003
+    },
+    {
+      "cosine": -0.84,
+      "information_fraction": 0.29440000000000005
+    },
+    {
+      "cosine": -0.835,
+      "information_fraction": 0.30277500000000007
+    },
+    {
+      "cosine": -0.83,
+      "information_fraction": 0.3111000000000001
+    },
+    {
+      "cosine": -0.825,
+      "information_fraction": 0.3193750000000001
+    },
+    {
+      "cosine": -0.82,
+      "information_fraction": 0.32760000000000006
+    },
+    {
+      "cosine": -0.815,
+      "information_fraction": 0.3357750000000001
+    },
+    {
+      "cosine": -0.81,
+      "information_fraction": 0.34389999999999993
+    },
+    {
+      "cosine": -0.805,
+      "information_fraction": 0.3519749999999999
+    },
+    {
+      "cosine": -0.8,
+      "information_fraction": 0.35999999999999993
+    },
+    {
+      "cosine": -0.795,
+      "information_fraction": 0.36797499999999994
+    },
+    {
+      "cosine": -0.79,
+      "information_fraction": 0.37589999999999996
+    },
+    {
+      "cosine": -0.785,
+      "information_fraction": 0.383775
+    },
+    {
+      "cosine": -0.78,
+      "information_fraction": 0.39159999999999995
+    },
+    {
+      "cosine": -0.775,
+      "information_fraction": 0.3993749999999999
+    },
+    {
+      "cosine": -0.77,
+      "information_fraction": 0.40709999999999996
+    },
+    {
+      "cosine": -0.765,
+      "information_fraction": 0.414775
+    },
+    {
+      "cosine": -0.76,
+      "information_fraction": 0.4224
+    },
+    {
+      "cosine": -0.755,
+      "information_fraction": 0.42997499999999994
+    },
+    {
+      "cosine": -0.75,
+      "information_fraction": 0.4375
+    },
+    {
+      "cosine": -0.745,
+      "information_fraction": 0.444975
+    },
+    {
+      "cosine": -0.74,
+      "information_fraction": 0.4524
+    },
+    {
+      "cosine": -0.735,
+      "information_fraction": 0.459775
+    },
+    {
+      "cosine": -0.73,
+      "information_fraction": 0.4671
+    },
+    {
+      "cosine": -0.725,
+      "information_fraction": 0.47437500000000005
+    },
+    {
+      "cosine": -0.72,
+      "information_fraction": 0.48160000000000003
+    },
+    {
+      "cosine": -0.715,
+      "information_fraction": 0.488775
+    },
+    {
+      "cosine": -0.71,
+      "information_fraction": 0.49590000000000006
+    },
+    {
+      "cosine": -0.705,
+      "information_fraction": 0.5029750000000001
+    },
+    {
+      "cosine": -0.7,
+      "information_fraction": 0.51
+    },
+    {
+      "cosine": -0.695,
+      "information_fraction": 0.5169750000000001
+    },
+    {
+      "cosine": -0.69,
+      "information_fraction": 0.5239
+    },
+    {
+      "cosine": -0.685,
+      "information_fraction": 0.5307749999999999
+    },
+    {
+      "cosine": -0.68,
+      "information_fraction": 0.5376
+    },
+    {
+      "cosine": -0.675,
+      "information_fraction": 0.5443749999999999
+    },
+    {
+      "cosine": -0.67,
+      "information_fraction": 0.5510999999999999
+    },
+    {
+      "cosine": -0.665,
+      "information_fraction": 0.5577749999999999
+    },
+    {
+      "cosine": -0.66,
+      "information_fraction": 0.5644
+    },
+    {
+      "cosine": -0.655,
+      "information_fraction": 0.570975
+    },
+    {
+      "cosine": -0.65,
+      "information_fraction": 0.5774999999999999
+    },
+    {
+      "cosine": -0.645,
+      "information_fraction": 0.583975
+    },
+    {
+      "cosine": -0.64,
+      "information_fraction": 0.5904
+    },
+    {
+      "cosine": -0.635,
+      "information_fraction": 0.5967749999999999
+    },
+    {
+      "cosine": -0.63,
+      "information_fraction": 0.6031
+    },
+    {
+      "cosine": -0.625,
+      "information_fraction": 0.609375
+    },
+    {
+      "cosine": -0.62,
+      "information_fraction": 0.6156
+    },
+    {
+      "cosine": -0.615,
+      "information_fraction": 0.621775
+    },
+    {
+      "cosine": -0.61,
+      "information_fraction": 0.6279
+    },
+    {
+      "cosine": -0.605,
+      "information_fraction": 0.6339750000000001
+    },
+    {
+      "cosine": -0.6,
+      "information_fraction": 0.6400000000000001
+    },
+    {
+      "cosine": -0.595,
+      "information_fraction": 0.6459750000000001
+    },
+    {
+      "cosine": -0.59,
+      "information_fraction": 0.6519
+    },
+    {
+      "cosine": -0.585,
+      "information_fraction": 0.657775
+    },
+    {
+      "cosine": -0.58,
+      "information_fraction": 0.6636000000000001
+    },
+    {
+      "cosine": -0.575,
+      "information_fraction": 0.669375
+    },
+    {
+      "cosine": -0.57,
+      "information_fraction": 0.6751
+    },
+    {
+      "cosine": -0.565,
+      "information_fraction": 0.680775
+    },
+    {
+      "cosine": -0.56,
+      "information_fraction": 0.6863999999999999
+    },
+    {
+      "cosine": -0.555,
+      "information_fraction": 0.691975
+    },
+    {
+      "cosine": -0.55,
+      "information_fraction": 0.6974999999999999
+    },
+    {
+      "cosine": -0.545,
+      "information_fraction": 0.7029749999999999
+    },
+    {
+      "cosine": -0.54,
+      "information_fraction": 0.7083999999999999
+    },
+    {
+      "cosine": -0.535,
+      "information_fraction": 0.713775
+    },
+    {
+      "cosine": -0.53,
+      "information_fraction": 0.7191
+    },
+    {
+      "cosine": -0.525,
+      "information_fraction": 0.7243749999999999
+    },
+    {
+      "cosine": -0.52,
+      "information_fraction": 0.7296
+    },
+    {
+      "cosine": -0.515,
+      "information_fraction": 0.7347750000000001
+    },
+    {
+      "cosine": -0.51,
+      "information_fraction": 0.7399
+    },
+    {
+      "cosine": -0.505,
+      "information_fraction": 0.7449749999999999
+    },
+    {
+      "cosine": -0.5,
+      "information_fraction": 0.75
+    },
+    {
+      "cosine": -0.495,
+      "information_fraction": 0.7549750000000001
+    },
+    {
+      "cosine": -0.49,
+      "information_fraction": 0.7599
+    },
+    {
+      "cosine": -0.485,
+      "information_fraction": 0.764775
+    },
+    {
+      "cosine": -0.48,
+      "information_fraction": 0.7696000000000001
+    },
+    {
+      "cosine": -0.475,
+      "information_fraction": 0.774375
+    },
+    {
+      "cosine": -0.47,
+      "information_fraction": 0.7791
+    },
+    {
+      "cosine": -0.465,
+      "information_fraction": 0.7837749999999999
+    },
+    {
+      "cosine": -0.46,
+      "information_fraction": 0.7884
+    },
+    {
+      "cosine": -0.455,
+      "information_fraction": 0.792975
+    },
+    {
+      "cosine": -0.45,
+      "information_fraction": 0.7975
+    },
+    {
+      "cosine": -0.445,
+      "information_fraction": 0.801975
+    },
+    {
+      "cosine": -0.44,
+      "information_fraction": 0.8064
+    },
+    {
+      "cosine": -0.435,
+      "information_fraction": 0.8107749999999999
+    },
+    {
+      "cosine": -0.43,
+      "information_fraction": 0.8151
+    },
+    {
+      "cosine": -0.425,
+      "information_fraction": 0.819375
+    },
+    {
+      "cosine": -0.42,
+      "information_fraction": 0.8236000000000001
+    },
+    {
+      "cosine": -0.415,
+      "information_fraction": 0.8277749999999999
+    },
+    {
+      "cosine": -0.41,
+      "information_fraction": 0.8319000000000001
+    },
+    {
+      "cosine": -0.405,
+      "information_fraction": 0.835975
+    },
+    {
+      "cosine": -0.4,
+      "information_fraction": 0.84
+    },
+    {
+      "cosine": -0.395,
+      "information_fraction": 0.843975
+    },
+    {
+      "cosine": -0.39,
+      "information_fraction": 0.8479000000000001
+    },
+    {
+      "cosine": -0.385,
+      "information_fraction": 0.851775
+    },
+    {
+      "cosine": -0.38,
+      "information_fraction": 0.8555999999999999
+    },
+    {
+      "cosine": -0.375,
+      "information_fraction": 0.859375
+    },
+    {
+      "cosine": -0.37,
+      "information_fraction": 0.8631000000000001
+    },
+    {
+      "cosine": -0.365,
+      "information_fraction": 0.866775
+    },
+    {
+      "cosine": -0.36,
+      "information_fraction": 0.8704
+    },
+    {
+      "cosine": -0.355,
+      "information_fraction": 0.8739750000000001
+    },
+    {
+      "cosine": -0.35,
+      "information_fraction": 0.8775000000000001
+    },
+    {
+      "cosine": -0.345,
+      "information_fraction": 0.8809750000000001
+    },
+    {
+      "cosine": -0.34,
+      "information_fraction": 0.8844
+    },
+    {
+      "cosine": -0.335,
+      "information_fraction": 0.887775
+    },
+    {
+      "cosine": -0.33,
+      "information_fraction": 0.8911
+    },
+    {
+      "cosine": -0.325,
+      "information_fraction": 0.894375
+    },
+    {
+      "cosine": -0.32,
+      "information_fraction": 0.8976
+    },
+    {
+      "cosine": -0.315,
+      "information_fraction": 0.900775
+    },
+    {
+      "cosine": -0.31,
+      "information_fraction": 0.9038999999999999
+    },
+    {
+      "cosine": -0.305,
+      "information_fraction": 0.9069750000000001
+    },
+    {
+      "cosine": -0.3,
+      "information_fraction": 0.9099999999999999
+    },
+    {
+      "cosine": -0.295,
+      "information_fraction": 0.9129750000000001
+    },
+    {
+      "cosine": -0.29,
+      "information_fraction": 0.9158999999999999
+    },
+    {
+      "cosine": -0.285,
+      "information_fraction": 0.918775
+    },
+    {
+      "cosine": -0.28,
+      "information_fraction": 0.9216
+    },
+    {
+      "cosine": -0.275,
+      "information_fraction": 0.924375
+    },
+    {
+      "cosine": -0.27,
+      "information_fraction": 0.9271
+    },
+    {
+      "cosine": -0.265,
+      "information_fraction": 0.9297750000000001
+    },
+    {
+      "cosine": -0.26,
+      "information_fraction": 0.9324
+    },
+    {
+      "cosine": -0.255,
+      "information_fraction": 0.9349749999999999
+    },
+    {
+      "cosine": -0.25,
+      "information_fraction": 0.9375
+    },
+    {
+      "cosine": -0.245,
+      "information_fraction": 0.9399750000000001
+    },
+    {
+      "cosine": -0.24,
+      "information_fraction": 0.9424
+    },
+    {
+      "cosine": -0.235,
+      "information_fraction": 0.9447749999999999
+    },
+    {
+      "cosine": -0.23,
+      "information_fraction": 0.9471
+    },
+    {
+      "cosine": -0.225,
+      "information_fraction": 0.9493750000000001
+    },
+    {
+      "cosine": -0.22,
+      "information_fraction": 0.9516
+    },
+    {
+      "cosine": -0.215,
+      "information_fraction": 0.9537750000000002
+    },
+    {
+      "cosine": -0.21,
+      "information_fraction": 0.9559
+    },
+    {
+      "cosine": -0.205,
+      "information_fraction": 0.9579750000000001
+    },
+    {
+      "cosine": -0.2,
+      "information_fraction": 0.96
+    },
+    {
+      "cosine": -0.195,
+      "information_fraction": 0.961975
+    },
+    {
+      "cosine": -0.19,
+      "information_fraction": 0.9639
+    },
+    {
+      "cosine": -0.185,
+      "information_fraction": 0.9657749999999999
+    },
+    {
+      "cosine": -0.18,
+      "information_fraction": 0.9676
+    },
+    {
+      "cosine": -0.175,
+      "information_fraction": 0.969375
+    },
+    {
+      "cosine": -0.17,
+      "information_fraction": 0.9710999999999999
+    },
+    {
+      "cosine": -0.165,
+      "information_fraction": 0.972775
+    },
+    {
+      "cosine": -0.16,
+      "information_fraction": 0.9743999999999999
+    },
+    {
+      "cosine": -0.155,
+      "information_fraction": 0.975975
+    },
+    {
+      "cosine": -0.15,
+      "information_fraction": 0.9774999999999999
+    },
+    {
+      "cosine": -0.145,
+      "information_fraction": 0.978975
+    },
+    {
+      "cosine": -0.14,
+      "information_fraction": 0.9804
+    },
+    {
+      "cosine": -0.135,
+      "information_fraction": 0.981775
+    },
+    {
+      "cosine": -0.13,
+      "information_fraction": 0.9830999999999999
+    },
+    {
+      "cosine": -0.125,
+      "information_fraction": 0.984375
+    },
+    {
+      "cosine": -0.12,
+      "information_fraction": 0.9856000000000001
+    },
+    {
+      "cosine": -0.115,
+      "information_fraction": 0.986775
+    },
+    {
+      "cosine": -0.11,
+      "information_fraction": 0.9879000000000001
+    },
+    {
+      "cosine": -0.105,
+      "information_fraction": 0.988975
+    },
+    {
+      "cosine": -0.1,
+      "information_fraction": 0.9900000000000001
+    },
+    {
+      "cosine": -0.095,
+      "information_fraction": 0.990975
+    },
+    {
+      "cosine": -0.09,
+      "information_fraction": 0.9919000000000001
+    },
+    {
+      "cosine": -0.085,
+      "information_fraction": 0.992775
+    },
+    {
+      "cosine": -0.08,
+      "information_fraction": 0.9936000000000001
+    },
+    {
+      "cosine": -0.075,
+      "information_fraction": 0.994375
+    },
+    {
+      "cosine": -0.07,
+      "information_fraction": 0.9951
+    },
+    {
+      "cosine": -0.065,
+      "information_fraction": 0.995775
+    },
+    {
+      "cosine": -0.06,
+      "information_fraction": 0.9964
+    },
+    {
+      "cosine": -0.055,
+      "information_fraction": 0.996975
+    },
+    {
+      "cosine": -0.05,
+      "information_fraction": 0.9974999999999999
+    },
+    {
+      "cosine": -0.045,
+      "information_fraction": 0.997975
+    },
+    {
+      "cosine": -0.04,
+      "information_fraction": 0.9984
+    },
+    {
+      "cosine": -0.035,
+      "information_fraction": 0.9987749999999999
+    },
+    {
+      "cosine": -0.03,
+      "information_fraction": 0.9991
+    },
+    {
+      "cosine": -0.025,
+      "information_fraction": 0.9993749999999999
+    },
+    {
+      "cosine": -0.02,
+      "information_fraction": 0.9996
+    },
+    {
+      "cosine": -0.015,
+      "information_fraction": 0.9997749999999999
+    },
+    {
+      "cosine": -0.01,
+      "information_fraction": 0.9999
+    },
+    {
+      "cosine": -0.005,
+      "information_fraction": 0.9999749999999998
+    },
+    {
+      "cosine": 0.0,
+      "information_fraction": 1.0
+    },
+    {
+      "cosine": 0.005,
+      "information_fraction": 0.9999749999999998
+    },
+    {
+      "cosine": 0.01,
+      "information_fraction": 0.9999
+    },
+    {
+      "cosine": 0.015,
+      "information_fraction": 0.9997749999999999
+    },
+    {
+      "cosine": 0.02,
+      "information_fraction": 0.9996
+    },
+    {
+      "cosine": 0.025,
+      "information_fraction": 0.9993749999999999
+    },
+    {
+      "cosine": 0.03,
+      "information_fraction": 0.9991
+    },
+    {
+      "cosine": 0.035,
+      "information_fraction": 0.9987749999999999
+    },
+    {
+      "cosine": 0.04,
+      "information_fraction": 0.9984
+    },
+    {
+      "cosine": 0.045,
+      "information_fraction": 0.997975
+    },
+    {
+      "cosine": 0.05,
+      "information_fraction": 0.9974999999999999
+    },
+    {
+      "cosine": 0.055,
+      "information_fraction": 0.996975
+    },
+    {
+      "cosine": 0.06,
+      "information_fraction": 0.9964
+    },
+    {
+      "cosine": 0.065,
+      "information_fraction": 0.995775
+    },
+    {
+      "cosine": 0.07,
+      "information_fraction": 0.9951
+    },
+    {
+      "cosine": 0.075,
+      "information_fraction": 0.994375
+    },
+    {
+      "cosine": 0.08,
+      "information_fraction": 0.9936000000000001
+    },
+    {
+      "cosine": 0.085,
+      "information_fraction": 0.992775
+    },
+    {
+      "cosine": 0.09,
+      "information_fraction": 0.9919000000000001
+    },
+    {
+      "cosine": 0.095,
+      "information_fraction": 0.990975
+    },
+    {
+      "cosine": 0.1,
+      "information_fraction": 0.9900000000000001
+    },
+    {
+      "cosine": 0.105,
+      "information_fraction": 0.988975
+    },
+    {
+      "cosine": 0.11,
+      "information_fraction": 0.9879000000000001
+    },
+    {
+      "cosine": 0.115,
+      "information_fraction": 0.986775
+    },
+    {
+      "cosine": 0.12,
+      "information_fraction": 0.9856000000000001
+    },
+    {
+      "cosine": 0.125,
+      "information_fraction": 0.984375
+    },
+    {
+      "cosine": 0.13,
+      "information_fraction": 0.9830999999999999
+    },
+    {
+      "cosine": 0.135,
+      "information_fraction": 0.981775
+    },
+    {
+      "cosine": 0.14,
+      "information_fraction": 0.9804
+    },
+    {
+      "cosine": 0.145,
+      "information_fraction": 0.978975
+    },
+    {
+      "cosine": 0.15,
+      "information_fraction": 0.9774999999999999
+    },
+    {
+      "cosine": 0.155,
+      "information_fraction": 0.975975
+    },
+    {
+      "cosine": 0.16,
+      "information_fraction": 0.9743999999999999
+    },
+    {
+      "cosine": 0.165,
+      "information_fraction": 0.972775
+    },
+    {
+      "cosine": 0.17,
+      "information_fraction": 0.9710999999999999
+    },
+    {
+      "cosine": 0.175,
+      "information_fraction": 0.969375
+    },
+    {
+      "cosine": 0.18,
+      "information_fraction": 0.9676
+    },
+    {
+      "cosine": 0.185,
+      "information_fraction": 0.9657749999999999
+    },
+    {
+      "cosine": 0.19,
+      "information_fraction": 0.9639
+    },
+    {
+      "cosine": 0.195,
+      "information_fraction": 0.961975
+    },
+    {
+      "cosine": 0.2,
+      "information_fraction": 0.96
+    },
+    {
+      "cosine": 0.205,
+      "information_fraction": 0.9579750000000001
+    },
+    {
+      "cosine": 0.21,
+      "information_fraction": 0.9559
+    },
+    {
+      "cosine": 0.215,
+      "information_fraction": 0.9537750000000002
+    },
+    {
+      "cosine": 0.22,
+      "information_fraction": 0.9516
+    },
+    {
+      "cosine": 0.225,
+      "information_fraction": 0.9493750000000001
+    },
+    {
+      "cosine": 0.23,
+      "information_fraction": 0.9471
+    },
+    {
+      "cosine": 0.235,
+      "information_fraction": 0.9447749999999999
+    },
+    {
+      "cosine": 0.24,
+      "information_fraction": 0.9424
+    },
+    {
+      "cosine": 0.245,
+      "information_fraction": 0.9399750000000001
+    },
+    {
+      "cosine": 0.25,
+      "information_fraction": 0.9375
+    },
+    {
+      "cosine": 0.255,
+      "information_fraction": 0.9349749999999999
+    },
+    {
+      "cosine": 0.26,
+      "information_fraction": 0.9324
+    },
+    {
+      "cosine": 0.265,
+      "information_fraction": 0.9297750000000001
+    },
+    {
+      "cosine": 0.27,
+      "information_fraction": 0.9271
+    },
+    {
+      "cosine": 0.275,
+      "information_fraction": 0.924375
+    },
+    {
+      "cosine": 0.28,
+      "information_fraction": 0.9216
+    },
+    {
+      "cosine": 0.285,
+      "information_fraction": 0.918775
+    },
+    {
+      "cosine": 0.29,
+      "information_fraction": 0.9158999999999999
+    },
+    {
+      "cosine": 0.295,
+      "information_fraction": 0.9129750000000001
+    },
+    {
+      "cosine": 0.3,
+      "information_fraction": 0.9099999999999999
+    },
+    {
+      "cosine": 0.305,
+      "information_fraction": 0.9069750000000001
+    },
+    {
+      "cosine": 0.31,
+      "information_fraction": 0.9038999999999999
+    },
+    {
+      "cosine": 0.315,
+      "information_fraction": 0.900775
+    },
+    {
+      "cosine": 0.32,
+      "information_fraction": 0.8976
+    },
+    {
+      "cosine": 0.325,
+      "information_fraction": 0.894375
+    },
+    {
+      "cosine": 0.33,
+      "information_fraction": 0.8911
+    },
+    {
+      "cosine": 0.335,
+      "information_fraction": 0.887775
+    },
+    {
+      "cosine": 0.34,
+      "information_fraction": 0.8844
+    },
+    {
+      "cosine": 0.345,
+      "information_fraction": 0.8809750000000001
+    },
+    {
+      "cosine": 0.35,
+      "information_fraction": 0.8775000000000001
+    },
+    {
+      "cosine": 0.355,
+      "information_fraction": 0.8739750000000001
+    },
+    {
+      "cosine": 0.36,
+      "information_fraction": 0.8704
+    },
+    {
+      "cosine": 0.365,
+      "information_fraction": 0.866775
+    },
+    {
+      "cosine": 0.37,
+      "information_fraction": 0.8631000000000001
+    },
+    {
+      "cosine": 0.375,
+      "information_fraction": 0.859375
+    },
+    {
+      "cosine": 0.38,
+      "information_fraction": 0.8555999999999999
+    },
+    {
+      "cosine": 0.385,
+      "information_fraction": 0.851775
+    },
+    {
+      "cosine": 0.39,
+      "information_fraction": 0.8479000000000001
+    },
+    {
+      "cosine": 0.395,
+      "information_fraction": 0.843975
+    },
+    {
+      "cosine": 0.4,
+      "information_fraction": 0.84
+    },
+    {
+      "cosine": 0.405,
+      "information_fraction": 0.835975
+    },
+    {
+      "cosine": 0.41,
+      "information_fraction": 0.8319000000000001
+    },
+    {
+      "cosine": 0.415,
+      "information_fraction": 0.8277749999999999
+    },
+    {
+      "cosine": 0.42,
+      "information_fraction": 0.8236000000000001
+    },
+    {
+      "cosine": 0.425,
+      "information_fraction": 0.819375
+    },
+    {
+      "cosine": 0.43,
+      "information_fraction": 0.8151
+    },
+    {
+      "cosine": 0.435,
+      "information_fraction": 0.8107749999999999
+    },
+    {
+      "cosine": 0.44,
+      "information_fraction": 0.8064
+    },
+    {
+      "cosine": 0.445,
+      "information_fraction": 0.801975
+    },
+    {
+      "cosine": 0.45,
+      "information_fraction": 0.7975
+    },
+    {
+      "cosine": 0.455,
+      "information_fraction": 0.792975
+    },
+    {
+      "cosine": 0.46,
+      "information_fraction": 0.7884
+    },
+    {
+      "cosine": 0.465,
+      "information_fraction": 0.7837749999999999
+    },
+    {
+      "cosine": 0.47,
+      "information_fraction": 0.7791
+    },
+    {
+      "cosine": 0.475,
+      "information_fraction": 0.774375
+    },
+    {
+      "cosine": 0.48,
+      "information_fraction": 0.7696000000000001
+    },
+    {
+      "cosine": 0.485,
+      "information_fraction": 0.764775
+    },
+    {
+      "cosine": 0.49,
+      "information_fraction": 0.7599
+    },
+    {
+      "cosine": 0.495,
+      "information_fraction": 0.7549750000000001
+    },
+    {
+      "cosine": 0.5,
+      "information_fraction": 0.75
+    },
+    {
+      "cosine": 0.505,
+      "information_fraction": 0.7449749999999999
+    },
+    {
+      "cosine": 0.51,
+      "information_fraction": 0.7399
+    },
+    {
+      "cosine": 0.515,
+      "information_fraction": 0.7347750000000001
+    },
+    {
+      "cosine": 0.52,
+      "information_fraction": 0.7296
+    },
+    {
+      "cosine": 0.525,
+      "information_fraction": 0.7243749999999999
+    },
+    {
+      "cosine": 0.53,
+      "information_fraction": 0.7191
+    },
+    {
+      "cosine": 0.535,
+      "information_fraction": 0.713775
+    },
+    {
+      "cosine": 0.54,
+      "information_fraction": 0.7083999999999999
+    },
+    {
+      "cosine": 0.545,
+      "information_fraction": 0.7029749999999999
+    },
+    {
+      "cosine": 0.55,
+      "information_fraction": 0.6974999999999999
+    },
+    {
+      "cosine": 0.555,
+      "information_fraction": 0.691975
+    },
+    {
+      "cosine": 0.56,
+      "information_fraction": 0.6863999999999999
+    },
+    {
+      "cosine": 0.565,
+      "information_fraction": 0.680775
+    },
+    {
+      "cosine": 0.57,
+      "information_fraction": 0.6751
+    },
+    {
+      "cosine": 0.575,
+      "information_fraction": 0.669375
+    },
+    {
+      "cosine": 0.58,
+      "information_fraction": 0.6636000000000001
+    },
+    {
+      "cosine": 0.585,
+      "information_fraction": 0.657775
+    },
+    {
+      "cosine": 0.59,
+      "information_fraction": 0.6519
+    },
+    {
+      "cosine": 0.595,
+      "information_fraction": 0.6459750000000001
+    },
+    {
+      "cosine": 0.6,
+      "information_fraction": 0.6400000000000001
+    },
+    {
+      "cosine": 0.605,
+      "information_fraction": 0.6339750000000001
+    },
+    {
+      "cosine": 0.61,
+      "information_fraction": 0.6279
+    },
+    {
+      "cosine": 0.615,
+      "information_fraction": 0.621775
+    },
+    {
+      "cosine": 0.62,
+      "information_fraction": 0.6156
+    },
+    {
+      "cosine": 0.625,
+      "information_fraction": 0.609375
+    },
+    {
+      "cosine": 0.63,
+      "information_fraction": 0.6031
+    },
+    {
+      "cosine": 0.635,
+      "information_fraction": 0.5967749999999999
+    },
+    {
+      "cosine": 0.64,
+      "information_fraction": 0.5904
+    },
+    {
+      "cosine": 0.645,
+      "information_fraction": 0.583975
+    },
+    {
+      "cosine": 0.65,
+      "information_fraction": 0.5774999999999999
+    },
+    {
+      "cosine": 0.655,
+      "information_fraction": 0.570975
+    },
+    {
+      "cosine": 0.66,
+      "information_fraction": 0.5644
+    },
+    {
+      "cosine": 0.665,
+      "information_fraction": 0.5577749999999999
+    },
+    {
+      "cosine": 0.67,
+      "information_fraction": 0.5510999999999999
+    },
+    {
+      "cosine": 0.675,
+      "information_fraction": 0.5443749999999999
+    },
+    {
+      "cosine": 0.68,
+      "information_fraction": 0.5376
+    },
+    {
+      "cosine": 0.685,
+      "information_fraction": 0.5307749999999999
+    },
+    {
+      "cosine": 0.69,
+      "information_fraction": 0.5239
+    },
+    {
+      "cosine": 0.695,
+      "information_fraction": 0.5169750000000001
+    },
+    {
+      "cosine": 0.7,
+      "information_fraction": 0.51
+    },
+    {
+      "cosine": 0.705,
+      "information_fraction": 0.5029750000000001
+    },
+    {
+      "cosine": 0.71,
+      "information_fraction": 0.49590000000000006
+    },
+    {
+      "cosine": 0.715,
+      "information_fraction": 0.488775
+    },
+    {
+      "cosine": 0.72,
+      "information_fraction": 0.48160000000000003
+    },
+    {
+      "cosine": 0.725,
+      "information_fraction": 0.47437500000000005
+    },
+    {
+      "cosine": 0.73,
+      "information_fraction": 0.4671
+    },
+    {
+      "cosine": 0.735,
+      "information_fraction": 0.459775
+    },
+    {
+      "cosine": 0.74,
+      "information_fraction": 0.4524
+    },
+    {
+      "cosine": 0.745,
+      "information_fraction": 0.444975
+    },
+    {
+      "cosine": 0.75,
+      "information_fraction": 0.4375
+    },
+    {
+      "cosine": 0.755,
+      "information_fraction": 0.42997499999999994
+    },
+    {
+      "cosine": 0.76,
+      "information_fraction": 0.4224
+    },
+    {
+      "cosine": 0.765,
+      "information_fraction": 0.414775
+    },
+    {
+      "cosine": 0.77,
+      "information_fraction": 0.40709999999999996
+    },
+    {
+      "cosine": 0.775,
+      "information_fraction": 0.3993749999999999
+    },
+    {
+      "cosine": 0.78,
+      "information_fraction": 0.39159999999999995
+    },
+    {
+      "cosine": 0.785,
+      "information_fraction": 0.383775
+    },
+    {
+      "cosine": 0.79,
+      "information_fraction": 0.37589999999999996
+    },
+    {
+      "cosine": 0.795,
+      "information_fraction": 0.36797499999999994
+    },
+    {
+      "cosine": 0.8,
+      "information_fraction": 0.35999999999999993
+    },
+    {
+      "cosine": 0.805,
+      "information_fraction": 0.3519749999999999
+    },
+    {
+      "cosine": 0.81,
+      "information_fraction": 0.34389999999999993
+    },
+    {
+      "cosine": 0.815,
+      "information_fraction": 0.3357750000000001
+    },
+    {
+      "cosine": 0.82,
+      "information_fraction": 0.32760000000000006
+    },
+    {
+      "cosine": 0.825,
+      "information_fraction": 0.3193750000000001
+    },
+    {
+      "cosine": 0.83,
+      "information_fraction": 0.3111000000000001
+    },
+    {
+      "cosine": 0.835,
+      "information_fraction": 0.30277500000000007
+    },
+    {
+      "cosine": 0.84,
+      "information_fraction": 0.29440000000000005
+    },
+    {
+      "cosine": 0.845,
+      "information_fraction": 0.28597500000000003
+    },
+    {
+      "cosine": 0.85,
+      "information_fraction": 0.2775000000000001
+    },
+    {
+      "cosine": 0.855,
+      "information_fraction": 0.268975
+    },
+    {
+      "cosine": 0.86,
+      "information_fraction": 0.2604
+    },
+    {
+      "cosine": 0.865,
+      "information_fraction": 0.251775
+    },
+    {
+      "cosine": 0.87,
+      "information_fraction": 0.2431
+    },
+    {
+      "cosine": 0.875,
+      "information_fraction": 0.234375
+    },
+    {
+      "cosine": 0.88,
+      "information_fraction": 0.22559999999999997
+    },
+    {
+      "cosine": 0.885,
+      "information_fraction": 0.216775
+    },
+    {
+      "cosine": 0.89,
+      "information_fraction": 0.2079
+    },
+    {
+      "cosine": 0.895,
+      "information_fraction": 0.19897499999999996
+    },
+    {
+      "cosine": 0.9,
+      "information_fraction": 0.18999999999999995
+    },
+    {
+      "cosine": 0.905,
+      "information_fraction": 0.18097499999999994
+    },
+    {
+      "cosine": 0.91,
+      "information_fraction": 0.17189999999999994
+    },
+    {
+      "cosine": 0.915,
+      "information_fraction": 0.16277499999999995
+    },
+    {
+      "cosine": 0.92,
+      "information_fraction": 0.15359999999999993
+    },
+    {
+      "cosine": 0.925,
+      "information_fraction": 0.14437499999999992
+    },
+    {
+      "cosine": 0.93,
+      "information_fraction": 0.13509999999999991
+    },
+    {
+      "cosine": 0.935,
+      "information_fraction": 0.1257749999999999
+    },
+    {
+      "cosine": 0.94,
+      "information_fraction": 0.1164000000000001
+    },
+    {
+      "cosine": 0.945,
+      "information_fraction": 0.10697500000000008
+    },
+    {
+      "cosine": 0.95,
+      "information_fraction": 0.09750000000000009
+    },
+    {
+      "cosine": 0.955,
+      "information_fraction": 0.08797500000000008
+    },
+    {
+      "cosine": 0.96,
+      "information_fraction": 0.07840000000000007
+    },
+    {
+      "cosine": 0.965,
+      "information_fraction": 0.06877500000000006
+    },
+    {
+      "cosine": 0.97,
+      "information_fraction": 0.05910000000000005
+    },
+    {
+      "cosine": 0.975,
+      "information_fraction": 0.049375000000000044
+    },
+    {
+      "cosine": 0.98,
+      "information_fraction": 0.03960000000000004
+    },
+    {
+      "cosine": 0.985,
+      "information_fraction": 0.029775000000000024
+    },
+    {
+      "cosine": 0.99,
+      "information_fraction": 0.01990000000000002
+    },
+    {
+      "cosine": 0.995,
+      "information_fraction": 0.00997500000000001
+    },
+    {
+      "cosine": 0.999,
+      "information_fraction": 0.001999000000000002
+    },
+    {
+      "cosine": 0.9999,
+      "information_fraction": 0.00019998999999997798
+    },
+    {
+      "cosine": 1.0,
+      "information_fraction": 0.0
+    }
+  ]
+}

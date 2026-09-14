@@ -1,0 +1,341 @@
+{
+  "joints": {
+    "lift": {
+      "type": "prismatic",
+      "axis": [0, 1, 0],
+      "parent": "base"
+    },
+    "insertion": {
+      "type": "prismatic",
+      "axis": [1, 0, 0],
+      "parent": "lift"
+    },
+    "angulation": {
+      "type": "revolute",
+      "axis": [1, 0, 0],
+      "pivot": [0.376, 0.747, -0.446083],
+      "parent": "insertion",
+      "rotation_sign": -1
+    },
+    "orbital": {
+      "type": "revolute",
+      "axis": [0, 0, 1],
+      "pivot": [-0.79055878, 0.77172339, -0.44608279],
+      "parent": "angulation",
+      "rotation_sign": -1
+    }
+  },
+  "landmarks": {
+    "isocentre": [-0.79055878, 0.77172339, -0.44608279],
+    "source": [-0.79055878, 0.418, -0.44608279],
+    "detector": [-0.79055878, 1.12, -0.44608279],
+    "source_detector_axis": [0, 1, 0],
+    "source_detector_distance": 0.702
+  },
+  "cables": [
+    {
+      "link": "cable_base_support",
+      "component": 24,
+      "endpoint0": [0.232765, 0.343178, -0.410896],
+      "parent0": "base",
+      "endpoint1": [0.13, 0.704, -0.406],
+      "parent1": "support",
+      "suggested_sag_metres": 0.23
+    },
+    {
+      "link": "cable_support_orbital",
+      "component": 25,
+      "endpoint0": [-0.166342, 0.638725, -0.562917],
+      "parent0": "support",
+      "endpoint1": [0.207129, 0.485619, -0.445441],
+      "parent1": "base",
+      "suggested_sag_metres": 0.3,
+      "note": "Despite the retained link identifier, source-mesh port proximity identifies a support-to-base cable; neither end follows orbital rotation."
+    }
+  ],
+  "edge_format": {
+    "file": "c-arm-rig.edges.bin",
+    "dtype": "float32 little-endian",
+    "stride_floats": 13,
+    "fields": ["a.xyz", "b.xyz", "normal0.xyz", "normal1.xyz", "unconditional"],
+    "coordinates": "Y-up rest world metres"
+  },
+  "components": [
+    {
+      "name": "A23DOBJ_001_component_000",
+      "link": "base",
+      "edge_offset_bytes": 0,
+      "edge_count": 3074
+    },
+    {
+      "name": "A23DOBJ_001_component_001",
+      "link": "base",
+      "edge_offset_bytes": 159848,
+      "edge_count": 664
+    },
+    {
+      "name": "A23DOBJ_001_component_002",
+      "link": "lift",
+      "edge_offset_bytes": 194376,
+      "edge_count": 2326
+    },
+    {
+      "name": "A23DOBJ_001_component_003",
+      "link": "support",
+      "edge_offset_bytes": 315328,
+      "edge_count": 9242
+    },
+    {
+      "name": "A23DOBJ_001_component_004",
+      "link": "support",
+      "edge_offset_bytes": 795912,
+      "edge_count": 612
+    },
+    {
+      "name": "A23DOBJ_001_component_005",
+      "link": "base",
+      "edge_offset_bytes": 827736,
+      "edge_count": 841
+    },
+    {
+      "name": "A23DOBJ_001_component_006",
+      "link": "lift",
+      "edge_offset_bytes": 871468,
+      "edge_count": 1586
+    },
+    {
+      "name": "A23DOBJ_001_component_007",
+      "link": "orbital",
+      "edge_offset_bytes": 953940,
+      "edge_count": 20864
+    },
+    {
+      "name": "A23DOBJ_001_component_008",
+      "link": "support",
+      "edge_offset_bytes": 2038868,
+      "edge_count": 322
+    },
+    {
+      "name": "A23DOBJ_001_component_009",
+      "link": "base",
+      "edge_offset_bytes": 2055612,
+      "edge_count": 6117
+    },
+    {
+      "name": "A23DOBJ_001_component_010",
+      "link": "base",
+      "edge_offset_bytes": 2373696,
+      "edge_count": 1208
+    },
+    {
+      "name": "A23DOBJ_001_component_011",
+      "link": "base",
+      "edge_offset_bytes": 2436512,
+      "edge_count": 2971
+    },
+    {
+      "name": "A23DOBJ_001_component_012",
+      "link": "base",
+      "edge_offset_bytes": 2591004,
+      "edge_count": 6016
+    },
+    {
+      "name": "A23DOBJ_001_component_013",
+      "link": "base",
+      "edge_offset_bytes": 2903836,
+      "edge_count": 1243
+    },
+    {
+      "name": "A23DOBJ_001_component_014",
+      "link": "base",
+      "edge_offset_bytes": 2968472,
+      "edge_count": 3021
+    },
+    {
+      "name": "A23DOBJ_001_component_015",
+      "link": "base",
+      "edge_offset_bytes": 3125564,
+      "edge_count": 5961
+    },
+    {
+      "name": "A23DOBJ_001_component_016",
+      "link": "base",
+      "edge_offset_bytes": 3435536,
+      "edge_count": 1226
+    },
+    {
+      "name": "A23DOBJ_001_component_017",
+      "link": "base",
+      "edge_offset_bytes": 3499288,
+      "edge_count": 3002
+    },
+    {
+      "name": "A23DOBJ_001_component_018",
+      "link": "base",
+      "edge_offset_bytes": 3655392,
+      "edge_count": 1271
+    },
+    {
+      "name": "A23DOBJ_001_component_019",
+      "link": "base",
+      "edge_offset_bytes": 3721484,
+      "edge_count": 1924
+    },
+    {
+      "name": "A23DOBJ_001_component_020",
+      "link": "base",
+      "edge_offset_bytes": 3821532,
+      "edge_count": 1356
+    },
+    {
+      "name": "A23DOBJ_001_component_021",
+      "link": "base",
+      "edge_offset_bytes": 3892044,
+      "edge_count": 1553
+    },
+    {
+      "name": "A23DOBJ_001_component_022",
+      "link": "base",
+      "edge_offset_bytes": 3972800,
+      "edge_count": 1281
+    },
+    {
+      "name": "A23DOBJ_001_component_023",
+      "link": "base",
+      "edge_offset_bytes": 4039412,
+      "edge_count": 2025
+    },
+    {
+      "name": "A23DOBJ_001_component_024",
+      "link": "cable_base_support",
+      "edge_offset_bytes": 4144712,
+      "edge_count": 10984
+    },
+    {
+      "name": "A23DOBJ_001_component_025",
+      "link": "cable_support_orbital",
+      "edge_offset_bytes": 4715880,
+      "edge_count": 7816
+    },
+    {
+      "name": "A23DOBJ_001_component_026",
+      "link": "base",
+      "edge_offset_bytes": 5122312,
+      "edge_count": 8233
+    },
+    {
+      "name": "A23DOBJ_001_component_027",
+      "link": "orbital",
+      "edge_offset_bytes": 5550428,
+      "edge_count": 698
+    },
+    {
+      "name": "A23DOBJ_001_component_028",
+      "link": "orbital",
+      "edge_offset_bytes": 5586724,
+      "edge_count": 738
+    },
+    {
+      "name": "A23DOBJ_001_component_029",
+      "link": "orbital",
+      "edge_offset_bytes": 5625100,
+      "edge_count": 698
+    },
+    {
+      "name": "A23DOBJ_001_component_030",
+      "link": "orbital",
+      "edge_offset_bytes": 5661396,
+      "edge_count": 738
+    },
+    {
+      "name": "A23DOBJ_001_component_031",
+      "link": "support",
+      "edge_offset_bytes": 5699772,
+      "edge_count": 2825
+    },
+    {
+      "name": "A23DOBJ_001_component_032",
+      "link": "lift",
+      "edge_offset_bytes": 5846672,
+      "edge_count": 1765
+    },
+    {
+      "name": "A23DOBJ_001_component_033",
+      "link": "support",
+      "edge_offset_bytes": 5938452,
+      "edge_count": 1592
+    },
+    {
+      "name": "A23DOBJ_001_component_034",
+      "link": "support",
+      "edge_offset_bytes": 6021236,
+      "edge_count": 2251
+    },
+    {
+      "name": "A23DOBJ_001_component_035",
+      "link": "orbital",
+      "edge_offset_bytes": 6138288,
+      "edge_count": 645
+    },
+    {
+      "name": "A23DOBJ_001_component_036",
+      "link": "orbital",
+      "edge_offset_bytes": 6171828,
+      "edge_count": 640
+    },
+    {
+      "name": "A23DOBJ_001_component_037",
+      "link": "orbital",
+      "edge_offset_bytes": 6205108,
+      "edge_count": 637
+    },
+    {
+      "name": "A23DOBJ_001_component_038",
+      "link": "orbital",
+      "edge_offset_bytes": 6238232,
+      "edge_count": 640
+    },
+    {
+      "name": "A23DOBJ_001_component_039",
+      "link": "support",
+      "edge_offset_bytes": 6271512,
+      "edge_count": 1724
+    },
+    {
+      "name": "A23DOBJ_001_component_040",
+      "link": "base",
+      "edge_offset_bytes": 6361160,
+      "edge_count": 1288
+    },
+    {
+      "name": "A23DOBJ_001_component_041",
+      "link": "orbital",
+      "edge_offset_bytes": 6428136,
+      "edge_count": 6699
+    },
+    {
+      "name": "A23DOBJ_001_component_042",
+      "link": "orbital",
+      "edge_offset_bytes": 6776484,
+      "edge_count": 900
+    },
+    {
+      "name": "A23DOBJ_001_component_043",
+      "link": "base",
+      "edge_offset_bytes": 6823284,
+      "edge_count": 1939
+    },
+    {
+      "name": "A23DOBJ_001_component_044",
+      "link": "base",
+      "edge_offset_bytes": 6924112,
+      "edge_count": 1939
+    },
+    {
+      "name": "A23DOBJ_001_component_045",
+      "link": "base",
+      "edge_offset_bytes": 7024940,
+      "edge_count": 1939
+    }
+  ]
+}

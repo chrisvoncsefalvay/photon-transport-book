@@ -1,0 +1,376 @@
+---
+layout: ../../layouts/ChapterLayout.astro
+title: Reconstructing a volume from its X-ray projections
+status: Draft
+scope: Here the unknown is the attenuation field itself. We use projection gradients to recover it, with regularisation to constrain what the available views leave uncertain.
+chapterNumber: "12"
+---
+
+import MaterialResponseFigure from "../../components/figures/MaterialResponseFigure.astro";
+import WorkedExample from "../../components/figures/WorkedExample.astro";
+import ReconstructionComparison from "../../components/figures/ReconstructionComparison.astro";
+import ApplicationFigures from "../../components/figures/ApplicationFigures.astro";
+import ReconstructionFigure from "../../components/figures/ReconstructionFigure.astro";
+import ReconstructionRadiographs from "../../components/figures/ReconstructionRadiographs.astro";
+import Source from "../../components/source/Source.astro";
+import Citation from "../../components/citations/Citation.astro";
+import Bibliography from "../../components/citations/Bibliography.astro";
+
+The registration problem gave us a volume and asked where it was. Reconstruction takes away the volume. We keep the calibrated source and detector positions, supply several radiographs, and estimate the attenuation field that could have produced them. The forward calculation is familiar, but the unknown now has one coefficient per voxel, which rather changes the storage bill.
+
+[Chapter 4](/chapters/volumes-line-integrals/) defined the sampled field and [Chapter 5](/chapters/differentiating-projection/) its discrete derivatives. We will use those operators directly, first with a primary monochromatic count model. [Chapter 8's spectral model](/chapters/spectral-transport-detector/) then lets us ask a harder question: which material mixtures are consistent with energy-resolved measurements?
+
+The scalar example implements fixed-geometry voxel reconstruction with a quadratic spatial penalty. The complete material workflow in §12.8 extends that calculation to an assigned water/bone field from CT-derived anatomy, with simulated spectral observations and independent recovery checks. Its assigned fractions are not measurements of patient composition. In §12.9, earlier failed and unfinished runs show how to investigate numerical errors and distinguish them from limitations of the measurements.
+
+## 12.1 Specify the unknown volume and measured projections
+
+Let $\boldsymbol\mu\in\mathbb{R}^{N}$ contain nonnegative attenuation coefficients in $\mathrm{mm}^{-1}$. They are the samples of the trilinearly interpolated field from Chapter 4. The grid shape is $(n_z,n_y,n_x)$, x varies fastest in memory, and its origin is the first sample centre. Spacing is specified along the grid's x, y and z axes. An orientation matrix places those axes in object coordinates, and a fixed object-to-world transform places the volume in the calibrated acquisition.
+
+For view $k$, write the predicted optical depths as
+
+$$
+\mathbf L_k=A_k\boldsymbol\mu,
+\qquad
+\boldsymbol\lambda_k=\mathbf n_{0,k}\odot\exp(-\mathbf L_k).
+$$
+
+$A_k$ includes ray intersections with the volume support, the chosen midpoint quadrature and interpolation weights. Its entries have units of millimetres. $\mathbf n_{0,k}$ contains the calibrated expected open-beam counts, and $\boldsymbol\lambda_k$ is the predicted mean count image. The observed integer counts are $\mathbf y_k$. Conditioning on the supplied open-beam calibration treats its uncertainty as negligible. A noisy flat-field estimate would require another part of the statistical model.
+
+This model assumes independent photon counts, primary transmission and a monochromatic beam or an effective-energy approximation justified for the acquisition. An energy-integrating detector's processed pixel values do not become Poisson counts because we rename the file. Scatter, electronic noise and spectral hardening can all produce structured discrepancies that the optimiser will otherwise try to explain with incorrect attenuation.
+
+The example requires an initial attenuation volume as supplied input, together with measured counts and open-beam means for every view. It neither interprets Hounsfield units nor derives an attenuation conversion from a material name. All source arrays carry units, checksums and provenance. Before using or redistributing acquired scans and independent reference volumes, document the rights governing those uses.
+
+[Figure](#figure-12-1) separates known geometry from unknown coefficients. A coefficient whose interpolation support misses every measured ray has a zero column in the combined projector. No choice of optimiser can make those measurements constrain it.
+
+<ApplicationFigures id="figure-12-1" />
+
+## 12.2 Derive the discrete volume gradient
+
+For the fixed acquisition, $A_k$ is linear in the voxel coefficients. The exponential that follows it is nonlinear. A detector-space objective $\ell_k$ supplies a cotangent $\mathbf s_k=\partial\ell_k/\partial\boldsymbol\lambda_k$, giving
+
+$$
+\mathbf q_k=-\boldsymbol\lambda_k\odot\mathbf s_k,
+\qquad
+\nabla_{\boldsymbol\mu}\ell_k=A_k^{\mathsf T}\mathbf q_k.
+$$
+
+We use ordinary Euclidean inner products on the stored coefficient and detector vectors. Consequently, $A_k^{\mathsf T}$ is the matrix transpose of the _implemented_ discrete map. A continuous backprojection formula, or the transpose of a different interpolation rule, need not give this derivative. If we instead defined volume and detector inner products through mass matrices $M_v$ and $M_d$, their weighted adjoint would be $M_v^{-1}A_k^{\mathsf T}M_d$. Those weights cannot be added twice, once in the objective and again as an unexplained voxel-volume factor.
+
+Each reverse ray revisits its quadrature samples and scatters the seed through the same interpolation weights. Support clipping and the constant extension between the outer sample centres and half-cell faces remain the forward operator's rules. Siddon's radiological-path calculation is a useful reference for a different, cellwise-constant discretisation, but using its traversal does not make it the exact transpose of our sampled trilinear field. <Citation keys={["siddon1985"]} />
+
+The implementation sets `active_volume=True` and `active_pose=False`. It clears the shared voxel gradient once, then accumulates each view's contribution with `projection_vjp`. No system matrix or ray-by-sample tape is stored. The listing includes the count-space chain, so its seed differentiates the same objective and passes through the existing FP32 cotangent interfaces.
+
+<Source
+  file="python/dpt/examples/reconstruction.py"
+  region="example-reconstruction-volume-gradient"
+  caption="Accumulating the voxel gradient across views"
+/>
+
+[Figure](#figure-12-2) follows these quantities through both directions. Before accepting numerical results, test $\langle A\mathbf u,\mathbf v\rangle=\langle\mathbf u,A^{\mathsf T}\mathbf v\rangle$ with independently chosen vectors and check the composed objective along volume perturbations. A reverse pass that merely returns finite numbers has met a rather modest ambition.
+
+<ApplicationFigures id="figure-12-2" />
+
+## 12.3 Choose the likelihood and regularisation
+
+For independent Poisson observations, the code minimises the half-deviance, which differs from the negative log-likelihood by an observation-only constant:
+
+$$
+D(\boldsymbol\mu)
+=\sum_{k,p}\left[
+\lambda_{kp}-y_{kp}
++y_{kp}\log\!\left(\frac{y_{kp}}{\lambda_{kp}}\right)
+\right].
+$$
+
+For $y=0$, the contribution is $\lambda$, and we never evaluate $\log 0$ as an intermediate observation term. For positive $y$, the mean must be positive. The count derivative is $1-y/\lambda$, so the algebraically composed optical-depth derivative simplifies to $y-\lambda$. Thus
+
+$$
+\nabla D=\sum_k A_k^{\mathsf T}(\mathbf y_k-\boldsymbol\lambda_k),
+\qquad
+\nabla^2 D=\sum_k A_k^{\mathsf T}
+\operatorname{diag}(\boldsymbol\lambda_k)A_k.
+$$
+
+Under these fixed-geometry primary-count assumptions, the likelihood is convex in attenuation. That does not guarantee strict convexity or uniqueness. A null space survives wherever different coefficient fields have identical measured projections. Spectral mixing and joint geometry estimation will not generally retain this convenient structure.
+
+The application composes the existing objective and transmission VJPs. They store count seeds in FP32, so an intermediate $1-y/\lambda$ can exceed their range even when the simplified depth derivative is representable. Checked calls reject that evaluation. They also reject a mean rounded to zero beside a positive observation. The example does not silently floor it.
+
+Any voxel change in the likelihood’s null space is invisible to the measurements. A spatial penalty states which possible fields we prefer. Here we favour smaller differences between neighbouring coefficients, using quadratic neighbouring-voxel regularisation:
+
+$$
+\Phi(\boldsymbol\mu)=D(\boldsymbol\mu)+\beta R(\boldsymbol\mu),
+\qquad
+R=\frac{\Delta V}{2}\sum_{a\in\{x,y,z\}}
+\sum_{(i,j)\in\mathcal E_a}
+\left(\frac{\mu_j-\mu_i}{h_a}\right)^2,
+\qquad \boldsymbol\mu\geq0.
+$$
+
+$\mathcal E_a$ contains each neighbouring pair along axis $a$ once, $h_a$ is that axis's spacing and $\Delta V=h_xh_yh_z$. Edges beyond the grid are omitted. This adds no boundary penalty against exterior zero, even though the projector's field is zero outside its support. $R$ has units of $\mathrm{mm}^{-1}$, so $\beta$ has units of millimetres when the count objective is dimensionless. Replacing millimetres with centimetres therefore changes the numerical regularisation coefficient as well as the grid metadata.
+
+For one edge, the regulariser adds $\beta\Delta V(\mu_i-\mu_j)/h_a^2$ to voxel $i$ and its negative to voxel $j$. The implementation uses FP64 differences and loss reductions, with FP32 updates to the stored volume gradient.
+
+<Source
+  file="python/dpt/examples/reconstruction.py"
+  region="example-reconstruction-regularisation"
+  caption="The spatial penalty and its voxel gradient"
+/>
+
+Quadratic smoothing penalises sharp genuine boundaries alongside noise. Total variation or a learned prior would change that bias and require a different solver or derivative. Here, nonnegativity is enforced by projection after an update. Unlike an exponential parameterisation, projection permits exact zero attenuation without driving a latent variable towards minus infinity.
+
+The driver uses summed likelihood terms and all supplied pixels. Saturated or missing observations need an explicitly extended masking or censoring model before use, while zero observed counts are valid measurements. Choose $\beta$ and stopping rules on separate development data or a predefined protocol, keeping the final evaluation volume out of those choices.
+
+## 12.4 Plan the GPU reconstruction iteration
+
+The volume, trial volume, voxel gradient and update displacement remain on CUDA. Per-view observations, means and derivative buffers also stay there. Torch owns the voxel arrays, and Warp receives zero-copy views of their storage, and both frameworks use the same CUDA stream. Ownership lasts through the final stream synchronisation, including exception paths. The [Warp interoperability documentation](https://nvidia.github.io/warp/latest/user_guide/interoperability/pytorch.html) describes the array and stream conversions used here.
+
+An iteration evaluates every supplied view at the accepted volume, adds regularisation once, and chooses a projected step. With $\mathbf g=\nabla\Phi(\boldsymbol\mu)$,
+
+$$
+\boldsymbol\mu_{\alpha}=\max(0,\boldsymbol\mu-\alpha\mathbf g),
+\qquad
+\mathbf d_{\alpha}=\boldsymbol\mu_{\alpha}-\boldsymbol\mu.
+$$
+
+The line search accepts strict decrease satisfying $\Phi(\boldsymbol\mu_\alpha)\leq\Phi(\boldsymbol\mu)+c\,\mathbf g^{\mathsf T}\mathbf d_\alpha$, for configured $0<c<1$. It reduces $\alpha$ geometrically when this condition fails. The gradient has units of millimetres, so $\alpha$ has units of $\mathrm{mm}^{-2}$. The stopping quantity is $\|\mathbf d_{\alpha_0}\|_\infty/\alpha_0$ at a fixed configured reference step, measured in millimetres. A small objective change alone does not establish constrained stationarity.
+
+<Source
+  file="python/dpt/examples/reconstruction.py"
+  region="example-reconstruction-projected-armijo"
+  caption="Projected line search and the final prediction refresh"
+/>
+
+Failed searches and iteration budgets are recorded separately from the projected-gradient criterion. Trial evaluations leave the accepted gradient intact. The final projection refresh matters: the most recently rendered trial may have been rejected.
+
+The prepared volume workspace contains five FP32 arrays and two FP64 arrays, or $36N$ bytes before scalar buffers, plus six FP32 detector arrays per view and the canonical operator scratch. There is no optimiser history proportional to the iteration count. Torch finite checks and scalar reductions can allocate temporary storage. Checked operator calls synchronise, and Python receives scalar losses and line-search decisions.
+
+All views are retained on device in this implementation. When all views do not fit, processing bounded groups requires accumulating the full gradient before each update. Updating after each group would instead change the optimisation schedule. Profiling must distinguish the projector's memory access and FP32 atomic contention from the additional reduction and synchronisation costs. Atomic accumulation does not promise identical bits between runs, even though the objective contains no randomly sampled views.
+
+## 12.5 Reconstruct with fewer or restricted views
+
+Sparse angular sampling leaves gaps between otherwise broadly distributed views. Limited-angle acquisition restricts the directions themselves. Both can produce an apparently stable minimiser, but they constrain different structures poorly. Adding more views inside a narrow angular interval does not supply the missing directions outside it.
+
+Direct optimisation of voxel fields is also used by DiffVox, which combines differentiable rendering with its own reconstruction formulation. This lets us study voxel reconstruction before introducing a neural field. <Citation keys={["momeni2024diffvox"]} /> A flexible representation can express more possible volumes, but it cannot establish which unmeasured detail is correct.
+
+<details>
+<summary>Why the earlier sparse-versus-dense comparison needs matched stopping states</summary>
+
+[Figure](#figure-12-3) compares 144 broadly distributed views with 36 broad or 36 limited-angle views, holding the inverse grid and field of view fixed for each anatomy. The broad arrangements cover a full orbit, while the limited arrangement spans −60° to 60°. Three tilts are used in each arrangement. All three receive 28.8 million expected incident photons per detector pixel over the fitting acquisition: 200,000 per view in the dense case and 800,000 in the others. This fixes incident photon number without claiming equal absorbed dose. Another 24 whole views are reserved for evaluation, including nine inside the limited yaw interval and fifteen outside it.
+
+For the monochromatic observations, the baseline is post-log penalised weighted least squares, using the same counts, geometry, starting field and physical penalty as Poisson reconstruction. Its fixed observed-count weights approximate the inverse log-data variance, and zero counts are excluded and reported. Both use the same projector, so this compares objectives rather than independently implemented forward models. The spectral comparison instead uses separately simulated three-channel observations. Its two methods differ in their projected optimisation step: one uses a fixed material metric and the other uses a Euclidean projection. The latter was prescribed for dense coverage only. Filtered backprojection cannot simply be transferred from parallel-beam to this cone-beam geometry without changing the algorithm.
+
+The forty fits cover two anatomies and two noise replicates. Every fit reached its prescribed time limit with stationarity still unmet. The dense fits had 600 seconds each, and the sparse and limited fits had 300 seconds each. In all four matched anatomy/replicate pairs, the sparse material-metric fit has lower whole-box bone-fraction RMSE than its dense counterpart. It also completed 135–191 accepted updates against 70 for the dense fits. These records show the interaction between acquisition and the cost of an iteration. They cannot isolate the effect of angular sampling or rank converged solutions. The figure retains every outcome and uses the same physical planes and display windows throughout.
+
+The retained checkpoints show why the stopping point matters. At 50 accepted updates, the case-2 dense fits have slightly lower bone-fraction RMSE than the sparse fits, about 0.106 against 0.109; sparse overtakes them by the unequal final stopping points. Case 0 already slightly favours sparse at 50 updates. Optimisation progress therefore contributes to the recorded comparison, but does not explain every difference. Matching updates would still leave different acquisitions and objective geometries, so it would not by itself rank converged reconstructions either.
+
+<ReconstructionComparison id="figure-12-3" />
+
+</details>
+
+## 12.6 Extend reconstruction to spectral material decomposition
+
+A single attenuation field cannot explain how the same object changes appearance across distinct spectra. Represent attenuation instead as a combination of supplied energy-dependent basis curves. Alvarez and Macovski developed the energy-selective basis formulation. The inverse problem concerns basis coefficients, whose physical interpretation depends on the chosen model. <Citation keys={["alvarez1976"]} />
+
+The default material domain uses **volume fractions** $f_m(\mathbf x)$ of supplied reference materials, with $f_m\geq0$ and $\sum_m f_m\leq1$. The acquired example below selects the explicit nonnegative domain instead. Its dimensionless PMMA- and Al-equivalent coefficients have no fraction-sum constraint, and the supplied attenuation curves carry their reference normalisation. Neither domain infers a mass density from the name of its output field. With linear reference attenuation $a_m(E)$ in $\mathrm{mm}^{-1}$,
+
+$$
+\mu(\mathbf x,E)=\sum_m f_m(\mathbf x)a_m(E),
+\qquad
+b_{kpm}=(A_k\mathbf f_m)_p,
+\qquad
+\lambda_{kpc}=\sum_e s_{kce}
+\exp\!\left[-\sum_m a_m(E_e)b_{kpm}\right].
+$$
+
+The material paths $b_{kpm}$ are in millimetres. For this count-channel model, $s_{kce}$ is the expected incident photon population integrated over energy bin $e$, multiplied by the calibrated probability of detection in channel $c$. Energy integration or quadrature weights are already absorbed into that population, so multiplying by a bin width again would count it twice. An energy-weighted signal requires different response units and generally a different noise model. Unassigned fraction means zero contribution from the represented attenuators. It is not an implicit, calibrated air material.
+
+`MaterialTable` converts a supplied mass attenuation coefficient in $\mathrm{cm}^2/\mathrm g$ using its declared reference density in $\mathrm g/\mathrm{cm}^3$, then divides by ten to obtain $\mathrm{mm}^{-1}$. A table already in linear units has density included. Multiplying it by an unconstrained density again would change both its units and meaning. Mass-density basis reconstructions are possible, but they need a separate coefficient contract. Nor is a basis map automatically a tissue segmentation or a chemically unique composition.
+
+The per-ray material sensitivity is
+
+$$
+\frac{\partial\lambda_{kpc}}{\partial b_{kpm}}
+=-\sum_e s_{kce}a_m(E_e)
+\exp\!\left[-\sum_j a_j(E_e)b_{kpj}\right].
+$$
+
+Locally stable first-order separation of unrestricted material paths requires sufficient rank in this sensitivity matrix. Having as many channels as materials is only a counting condition: nearly proportional columns still make their separation unstable. Inspect the noise-weighted singular values after declaring coefficient scales, across representative material thicknesses. Spectral hardening changes those sensitivities with the object itself. Independent Poisson channels give Fisher weights $1/\lambda_c$, while detector effects that correlate channels require the appropriate likelihood instead. Alvarez's analysis of noninvertibility gives a reason to examine the map beyond a favourable local derivative. <Citation keys={["alvarez2017"]} />
+
+Projection-domain decomposition first estimates material paths on corresponding rays, then reconstructs each field. Its convenience depends on genuinely corresponding acquisitions, and the intermediate estimates carry correlated, nonuniform uncertainty. Joint material-volume reconstruction instead composes the material projector and spectral adjoint directly, with the declared field constraints and spatial priors. The fraction example uses the simplex constraint. It can combine different view geometries, but remains dependent on their combined information. Priors may couple otherwise ambiguous coefficients: that is additional information assumed by the reconstruction.
+
+Changing the unknown also changes the regulariser's units. For dimensionless material coefficients, the physical-gradient construction in §12.3 has units of millimetres, so its multiplier has units $\mathrm{mm}^{-1}$. For attenuation coefficients, that construction has units $\mathrm{mm}^{-1}$ and its multiplier has units of millimetres. Copying the monochromatic regularisation number into the material problem would quietly change what is being penalised.
+
+The two material sensitivity columns can differ greatly in scale and be nearly proportional. A Euclidean step limited by the strongly constrained combination can then make slow progress along the weak combination. The material solver therefore permits a symmetric positive definite matrix $H$ in its projection. With a positive spatial factor $D_i$, the metric at voxel $i$ is $H_i=D_iH$. It changes which feasible update we propose; the objective remains the summed Poisson half-deviance and the declared spatial penalty.
+
+For the fraction problem, let $\mathcal C=\{\mathbf u\in\mathbb R^2:\mathbf u\geq0,\ \mathbf1^{\mathsf T}\mathbf u\leq1\}$ and $\mathbf g_i=\nabla_{\mathbf f_i}\Phi$. The ordinary metric trial is
+
+$$
+\widetilde{\mathbf f}_i
+=\operatorname*{arg\,min}_{\mathbf u\in\mathcal C}
+\left\{\mathbf g_i^{\mathsf T}(\mathbf u-\mathbf f_i)
++\frac{1}{2\alpha}(\mathbf u-\mathbf f_i)^{\mathsf T}H_i(\mathbf u-\mathbf f_i)\right\}
+=\Pi_{\mathcal C}^{H_i}(\mathbf f_i-\alpha H_i^{-1}\mathbf g_i),
+$$
+
+where $\Pi^{H_i}$ denotes projection in the $H_i$ norm. For a fixed gradient and step, larger metric curvature reduces the unconstrained move in that direction; the projection enforces feasibility. The line search then decides whether to accept this trial.
+
+Spatial scaling matters because rays through different material thicknesses carry different count sensitivity. At the accepted field, let $\mathbf j_{kpc}$ be the two-component material-path derivative above. The expected Poisson Fisher block is $B_{kp}=\sum_c\mathbf j_{kpc}\mathbf j_{kpc}^{\mathsf T}/\lambda_{kpc}$. Choose $\kappa_{kp}$ as the largest eigenvalue of $H^{-1/2}B_{kp}H^{-1/2}$. The nonnegative interpolation weights give the spatial row bound
+
+$$
+\widetilde{\mathbf D}_{\mathrm{data}}
+=\sum_k A_k^{\mathsf T}
+\left[\boldsymbol\kappa_k\odot(A_k\mathbf 1)\right].
+$$
+
+For one ray with weights $a_i\geq0$, weighted Cauchy–Schwarz gives $\|\sum_i a_i\mathbf u_i\|_H^2\leq(\sum_i a_i)\sum_i a_i\|\mathbf u_i\|_H^2$. Combining this with $B\preceq\kappa H$ and summing rays produces the backprojected row bound. For the quadratic regulariser, let $d_i$ be the sum of incident edge weights $\beta\Delta V/h_a^2$ at voxel $i$. Adding $2d_i/\lambda_{\min}(H)$ to the raw scale bounds that regulariser's curvature as well.
+
+The preparation applies a declared positive floor and divides by the mean to obtain $\mathbf D$. This sets the mean scale to one and leaves the overall step length to $\alpha$; the curvature bound above concerns the raw, unnormalised scale. Preparation uses the current fitted field and supplied calibration, without opening the reference volume. This is a local expected-Fisher construction, not the complete observed Hessian of the nonlinear objective. The line search still has work to do.
+
+The metric sets the relative scaling of the update, but we still need its overall length, $\alpha$. The Barzilai–Borwein two-point rule uses the change in gradient over the preceding accepted step to propose that length. In fixed metric coordinates it gives $\alpha=(\sum_iD_i\mathbf s_i^{\mathsf T}H\mathbf s_i)/(\mathbf s^{\mathsf T}\mathbf y)$. <Citation keys={["barzilai1988"]} /> Here $\mathbf s$ and $\mathbf y$ are the differences between consecutive accepted fields and gradients. Nonpositive or nonfinite curvature falls back to ordinary step growth.
+
+The optional inertial proposal also extrapolates from the preceding accepted field before metric projection. Extrapolation can continue useful progress, but it can overshoot. The line search therefore tests the true objective with strict Armijo decrease, using the gradient at the current accepted field. If an inertial proposal fails, it retries the same step length without extrapolation.
+
+A metric refresh resets both the two-point and inertial histories. These safeguards govern which proposals are accepted; they do not supply a convergence-rate result for the spectral problem.
+
+The material solver retains its fields, trial fields, gradients and optional proposal histories on CUDA. Step selection and acceptance read back scalar reductions, while exporting fields or predictions is an explicit operation. Fisher preparation allocates its scratch between solves; it is not repeated inside each update. The host still controls the line search, so keeping the arrays on the GPU does not make the calculation entirely asynchronous.
+
+Stationarity is assessed separately: at the fixed diagnostic step $\alpha_0$, compute $\|\mathbf f-\Pi_{\mathcal C}(\mathbf f-\alpha_0\nabla\Phi)\|_\infty/\alpha_0$, with ordinary Euclidean projection onto the per-voxel simplex $\mathcal C$. Neither $H$ nor $\mathbf D$ enters this diagnostic. Otherwise, making the update metric sufficiently large could manufacture a small reported step while leaving the same unresolved gradient. That would be an admirably cheap reconstruction, provided nobody expected it to be finished.
+
+[Figure](#figure-worked-reconstruction) follows both material fields from the uniform start to accepted reconstructions and compares them with the assigned reference. Check the material-path and voxel VJPs independently before interpreting material separation. A single uncalibrated broadband image cannot support unrestricted multi-material reconstruction, and supplying more output channels in the software is unlikely to persuade it otherwise.
+
+For recorded mean signals, the effective spectral weights can also vary over detector pixels. Writing $K_{kpce}$ for the effective spectral kernel in stored-signal units gives
+
+$$
+\widehat y_{kpc}=\sum_e K_{kpce}
+\exp\!\left[-\sum_m a_m(E_e)b_{kpm}\right],
+\qquad
+D_{\mathrm{WLS}}=\frac12\sum_{k,p,c}m_{kpc}w_{kpc}
+\bigl(\widehat y_{kpc}-y_{kpc}\bigr)^2.
+$$
+
+$K$ already includes integrated energy-bin populations and the spatial open-beam factors. The fixed validity mask is $m_{kpc}$: the sum is restricted to valid entries, and invalid observations are skipped before residual arithmetic. The acquired-phantom study in §12.9 sets $w$ to inverse squared predicted air signal, making the weighted residual contribution dimensionless. These deterministic weights do not estimate a joint inverse noise covariance. Nor does fitting $K$ identify the source spectrum and detector response separately. In that acquisition, the cumulative Total channel contains the High channel; the same photons do not become independent by appearing in two arrays.
+
+## 12.7 Validate the volume independently
+
+A small projection residual establishes agreement on the measured rays under the chosen model. To assess prediction, reserve entire views before solver development and report their count-space residuals. To assess volume correctness, compare against an independently known attenuation reference in physical units, accounting for reference uncertainty and any required spatial registration. These checks answer different questions: [Figure](#figure-worked-reconstruction) reports withheld-view mean errors alongside the assigned and reconstructed material fields, and requires both assessments to pass.
+
+Start numerical verification with explicitly mathematical fields, whose definitions and discretisations are recorded. Use an independently implemented projector or different quadrature for forward reference checks, then compare directional derivatives over a range of perturbation sizes. Generating observations and reconstructing them with precisely the same discrete operator tests internal consistency while hiding shared modelling errors.
+
+For acquired data, separate plausible contributors to error through controlled studies: count noise with fixed calibration, perturbed geometry with otherwise fixed inputs, and forward-model mismatch such as unmodelled hardening. Report attenuation bias and spatial resolution with task-relevant quantities, not only an image similarity score. A smoothed volume can look agreeably quiet while erasing the structure the reconstruction was supposed to recover.
+
+Repeat acquisitions or justified noise replicates can estimate variability, provided the independence assumptions are stated. Local Hessian approximations give uncertainty conditional on the model and any prior, but they do not certify coverage when either is wrong. Include failed runs in the evaluation record and state how they affect aggregate metrics.
+
+## 12.8 Complete the reconstruction study
+
+The scalar example's case manifest supplies the grid, fixed pose and calibrated views, with provenance for each input array. Its `python/dpt/examples/README.md` input guide specifies the array descriptors and invocation. Output consists of the accepted attenuation volume, refreshed fitted-view count predictions and the optimisation history, with source snapshots and input hashes.
+
+The [complete material worked example](https://github.com/chrisvoncsefalvay/photon-transport-book/tree/main/experiments/worked-reconstruction) provides an executable acquisition-to-evaluation workflow with bundled, attributed inputs. CT-ORG case 2 supplies an assigned water/bone field, conservatively averaged from 192³ to 16³. That same coarse trilinear representation defines the simulated object and the unknowns. The experiment therefore asks whether the implemented inverse calculation recovers a known coarse field under its declared physical model; it does not test unresolved anatomical detail or establish patient composition.
+
+The 48 fitting views cover three full-azimuth orbits at tilts of −15°, 0° and 15°. Twelve further views, at different yaw angles, are reserved for evaluation. Each view uses a 48 × 48 detector covering the complete box. Before drawing counts, the driver compares 512 and 1,024 ray samples at every pixel and checks fixed rays against exact CPU integration. This checks the projection calculation before count noise enters the example.
+
+Both noise replicates start from uniform water. Each fit checks its derivatives independently, prepares the spatial metric at the initial field and refreshes it after 100 accepted updates. The supplied protocol fixes this schedule and the stopping criteria for both replicates. To reproduce the supplied observations exactly, the driver also verifies all four count-array hashes before either fit begins.
+
+Run the command in the worked-example README to execute the sequence below. It completes both fits before evaluating either against the reference field, so the first result cannot be used to tune the second.
+
+<Source
+  file="experiments/worked-reconstruction/run.py"
+  region="worked-reconstruction-workflow"
+  caption="Acquiring both replicates, fixing both reconstructions, then evaluating them"
+/>
+
+Let $G$ denote the infinity norm of the Euclidean projected-gradient mapping from §12.6, evaluated at the fixed diagnostic step $\alpha_0=10^{-6}$. The stopping test requires $G/G_0\leq10^{-4}$, relative to its uniform-start value $G_0$, and $\alpha_0G\leq10^{-5}$, the allowed mapped fraction displacement. The latter condition gives $G\leq10$; for these initial fields it is the stricter requirement. Each fit shares a soft budget of 1,200 seconds across its stages and may accept at most 6,000 updates.
+
+After fitting, an independent CPU simplex projection recomputes the mapping. Separate accuracy checks require whole-box RMSE no greater than 0.05 for each material and a withheld-view prediction error no greater than one generating Poisson standard deviation RMS across all twelve reserved views. Those predictions are compared with the generating means, so the check measures forward prediction error without adding another observation's count noise.
+
+Both recorded fits complete from uniform water. Their objectives fall from 34,193,738.24 and 34,180,078.94 to 165,071.27 and 164,412.08 after 475 and 426 accepted updates. Most of that reduction happens early. At update 100, the first objective is already 166,544.36, within 0.9% of its final value, but the mapping is still 1,831.10 against the threshold of 10. The nearly flat objective curve therefore hides substantial unfinished optimisation; the separate mapping curve tells us why the solve must continue.
+
+Armijo requires the objective to decrease at accepted updates; it does not require the projected-gradient mapping to decrease at every update. The material viewer starts at physical plane $z=0$. Use its controls to compare the two replicates and materials or move through the recorded slices. The fraction and signed-error windows remain fixed.
+
+<WorkedExample id="figure-worked-reconstruction" example="reconstruction" />
+
+The final mappings are 7.11812 and 5.25572. Across both replicates, each material's whole-box RMSE is below 0.0083, and withheld generating-mean error is below 0.102 Poisson standard deviations RMS. Both reconstructions pass all three kinds of check. The half-deviance need not vanish: the observed counts contain Poisson fluctuations, and the objective also charges the spatial penalty. Numerical completion, material accuracy and prediction of unseen views remain separate questions, even in this deliberately matched coarse model.
+
+## 12.9 Learning from failures
+
+The successful workflow above also gives us a reference for diagnosing an unsuccessful reconstruction. A convincing slice can conceal a disagreement between the objective and its gradient, a solve that still has useful updates to make, or a calibration that cannot predict reserved measurements. These failures call for different remedies. The earlier attempts below show how to choose the next check from the evidence, before changing another solver setting and hoping for better manners.
+
+The worked driver retains every accepted update, prescribed checkpoints, each metric preparation and the individual stage returns. Those records let us compare an earlier field with the returned one and construct a controlled replay at a saved endpoint. The command exits unsuccessfully if either final replicate fails acceptance, so a completed output directory cannot quietly pass for a completed reconstruction. Keep the failed records when making a repair: they supply the inputs needed to test whether it addresses the original problem.
+
+### Find where the objective loses precision
+
+The original execution exposed a precision problem worth keeping in the lesson. One replicate passed the mapping threshold of 10; the other failed its line search at 77.962. Replaying a trial at that endpoint with the saved final gradient showed a decrease of 0.00441149 in an independent FP64 calculation, whereas FP32 paths and means gave an increase of 0.000218335. The exact failing-iteration gradient was not saved, so this is a controlled reproduction of the precision defect at the endpoint. The gradient and the rounded objective were asking the line search to believe different things. Accumulating the loss in FP64 was insufficient: information had already been discarded upstream.
+
+The replay matters because it holds the proposed field change fixed. We are comparing two evaluations of the same trial, so a different optimisation trajectory cannot explain the reversed sign. Near the solution, the decrease we need to resolve can be small relative to the two objective values being compared. Rounding a material path or a predicted count can obscure that decrease before the final reduction begins. A more precise accumulator can add the values it receives carefully; it cannot recover digits those values no longer contain.
+
+The repaired composition therefore retains FP64 material paths, predicted means and their cotangents, while fields and voxel gradients remain FP32. Version 3 keeps FP32 acquisition generation and the exact original observations, then reruns both fits from uniform water under the same scientific thresholds. The failed version remains part of the record.
+
+A fitting-only replay from the failed endpoint then reached the original threshold after one accepted update, with the CUDA and independent CPU mappings both equal to 8.97828. This is a focused test of the repair at the point where the old calculation failed. It does not exercise acquisition or the preceding optimisation from the initial field. The complete workflow therefore reruns both prescribed fits from uniform water, producing the successful results in §12.8.
+
+If a line search repeatedly rejects a trial that the gradient predicts should decrease the objective, retain the accepted field, its gradient and the first rejected trial. Recompute that trial's objective change independently and check the directional derivative at the accepted field. Follow any discrepancy through the intermediate paths and predicted signals before changing the acceptance tolerance. Loosening the tolerance here would have concealed the arithmetic disagreement while leaving its cause intact.
+
+### Check the stopping state before interpreting material response
+
+The earlier CT-derived spectral study below retained a 1,000-update endpoint without establishing stationarity or noise-limited recovery. Its assigned water/bone phantom used the historical NIST ICRU-44 calculation. The matched reference and reconstruction slices, line profiles and withheld radiographs show that recorded endpoint; they are not further completed outcomes of the worked protocol.
+
+These views answer useful intermediate questions. The slices show where the returned fields differ from the assigned reference, and the withheld radiographs show what those fields predict away from the fitting views. Neither display tells us how much the fields would change if optimisation continued. To interpret a material error as a property of the reconstruction model, we first need evidence that unfinished optimisation is no longer dominating it.
+
+<ReconstructionFigure id="figure-12-4" />
+
+<ReconstructionRadiographs id="figure-12-5" />
+
+The sensitivity matrix in §12.6 describes the local signal response. A reconstructed field also depends on regularisation, constraints and the stopping rule. To see their combined effect, we can perturb one assigned material and measure the change in both recovered fields. [Figure](#figure-material-response) records such an experiment. The control scales both assigned fractions by 0.9 to leave room within the simplex. Each injection adds 0.025 to one material at native voxel centres within a closed ball of radius 15 mm centred at $(25,0,0)$ mm. The response calculation uses the injection pattern averaged onto the 32³ reconstruction grid. Two noise replicates each contain a control, a water injection and a bone injection, using the same 36 broad-angle views and fixed physical response. Shared Poisson components couple the three scenarios within a replicate.
+
+Let $p_v$ be the averaged injection pattern, $V_v$ the voxel volume and $\varepsilon=0.025$. Write $\widehat f_m^{(0)}$ for the control reconstruction and $\widehat f_m^{(j)}$ for the reconstruction after injecting material $j$. The dimensionless response gain is
+
+$
+G_{mj}=\frac{\sum_v V_v p_v\bigl(\widehat f_{mv}^{(j)}-\widehat f_{mv}^{(0)}\bigr)}{\varepsilon\sum_v V_v p_v^2}.
+$
+
+Recovered materials index the rows and injected materials index the columns. Diagonal entries measure recovery of the intended component, while off-diagonal entries measure its response in the other field. The maps and outside-pattern integrals show where that response spreads. The three fits share the control-derived absolute stopping threshold within each replicate, alongside a maximum of 100 accepted updates and a soft solve cap of 120 seconds. These finite differences include the effects of noise, regularisation, constraints and the recorded stopping state. The range across two replicates is descriptive.
+
+The normalisation gives the gains a direct interpretation. If the reconstructed change exactly reproduced the injected pattern in its intended material, its diagonal gain would be one. If the other material did not change, the corresponding off-diagonal gain would be zero. A smaller diagonal value therefore records a weaker recovered change along that pattern. It does not, by itself, identify why the change is weaker.
+
+Across the two replicates, the mean gain is 0.408 for water recovered after a water injection and 0.497 for bone recovered after a bone injection. The corresponding cross-component gains are 0.029 in bone after the water injection and −0.012 in water after the bone injection. For both materials, the recovered change along the injection pattern is smaller than the injected change. All six fits reached their time limits after 76 accepted updates, with the stationarity criterion unmet. These measurements describe the recorded reconstruction algorithm under this protocol.
+
+That stopping point is still affecting the response. Between accepted updates 50 and 76, the mean water and bone gains rise from 0.310 and 0.434 to 0.408 and 0.497; the mean water response to a bone injection changes from −0.118 to −0.012. Each fit's objective falls by about 40% over those same 26 updates. Their final Euclidean mappings are approximately $9.32\times10^4$, against a threshold of 10. The reduced gains therefore include unfinished optimisation. These records cannot establish how much suppression or cross-response would remain at stationarity, or assign it to regularisation, constraints or spectral sensitivity alone.
+
+The next experiment should hold the observations, injections and stopping criterion fixed while bringing every fit to the required stationary state. Compare the gains along the way to establish whether they have settled. Only then change the penalty or acquisition to investigate its effect on material separation. If completing those solves is impractical, report the gains as the response of the recorded, time-limited algorithm. Matching wall-clock budgets can answer a computational question, but it does not remove the need to state what the solver had achieved when the clock stopped.
+
+<MaterialResponseFigure id="figure-material-response" />
+
+### Test calibration before interpreting material coefficients
+
+The acquired phantom in [Figure](#figure-acquired-spectral) adds a less accommodating example. Its two cumulative detector channels are correlated, so the reconstruction uses the recorded weighted least-squares model rather than pretending they are independent Poisson counts.
+
+The response was fitted to 42 slab pairs, with 13 further pairs reserved to test prediction beyond calibration fitting. Its maximum absolute Low-channel pair-mean bias is 0.021483 in normalised transmission, exceeding the frozen engineering tolerance of 0.020000. This reserved discrepancy shows why fitting a response and obtaining plausible fields do not establish quantitative concentrations; the physical cause remains unassigned.
+
+The reserved slab measurements test a part of the problem that more reconstruction iterations cannot repair. They ask whether the calibrated response predicts a known object that was excluded from calibration fitting. If it fails there, allowing the unknown volume to compensate can produce plausible coefficients without resolving the response error. Recheck the measurement processing and calibration inputs, then test a specific explanation against independent measurements. The discrepancy identifies a failed prediction test; it does not identify which physical assumption caused it.
+
+We therefore retain PMMA- and Al-equivalent coefficients, the observed residuals and the incomplete convergence record. Interpreting the rods as recovered hydroxyapatite concentrations would exceed the evidence. The reconstruction also reaches its time limit: the objective falls from 3772.21 to 877.71, but its mapping remains 0.00977345 against the unchanged 0.000113596 threshold. Passing the calibration gate alone would not establish either numerical completion or hydroxyapatite concentration accuracy. The FP64 repair in the worked simulation does not diagnose this separate calibration discrepancy.
+
+There are consequently two unfinished investigations. The response must pass an independent prediction check, and the reconstruction must reach its declared stopping criterion. Fixing either one leaves the other to be tested. Even after both pass, interpreting basis coefficients as a concentration requires an independently justified material model and a concentration reference. The successful assigned-fraction simulation shows how to perform those checks when the generating model is known; it cannot supply the missing evidence for an acquired specimen.
+
+Of the 120 acquired views excluded from final fitting, four had already been previewed for qualitative geometry and domain assessment. The primary residual summary therefore uses the remaining 116 views. The displayed volume is the central $\pm4$ mm slab, and its open crop faces are not recovered rod ends.
+
+This distinction also determines how we use the residuals. The 116 untouched views can test prediction beyond the views used to develop and fit the calculation. A discrepancy there may guide a new hypothesis, but once those images have been used to tune that hypothesis, they are no longer an untouched final check. Retaining that history prevents a sequence of plausible adjustments from turning the evaluation set into another fitting set.
+
+The figures use `dpt.material_reconstruction.MaterialReconstruction`. The [spectral input recipe and run commands](https://github.com/chrisvoncsefalvay/photon-transport-book/blob/main/experiments/spectral-reconstruction/README.md) specify the count/fraction interface and the supplied physical inputs, and the [material API contract](https://github.com/chrisvoncsefalvay/photon-transport-book/blob/main/python/dpt/README.md) also describes the signal-WLS and nonnegative modes. The open xraylib/SpekPy recipe defines a separate ICRP bone model. It does not retrospectively reproduce the historical NIST ICRU-44 calculation in the earlier CT-derived panel above.
+
+<ReconstructionFigure id="figure-acquired-spectral" caseId="hap" />
+
+<ReconstructionRadiographs
+  id="figure-acquired-spectral-radiographs"
+  caseId="hap"
+/>
+
+Throughout this chapter, someone else chose the acquisition. [Chapter 13](/chapters/acquisition-design/) makes that choice part of the problem: which next view, and which allocation of exposure, would improve a specified registration or reconstruction task?
+
+<Bibliography
+  keys={[
+    "siddon1985",
+    "momeni2024diffvox",
+    "alvarez1976",
+    "alvarez2017",
+    "barzilai1988",
+  ]}
+/>

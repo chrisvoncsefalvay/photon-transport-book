@@ -1,0 +1,178 @@
+---
+import { Code } from "astro:components";
+import { getSourceRegion } from "../../lib/source-catalogue";
+import { parseSourceVariants } from "../../../tools/public/source-variants.mjs";
+
+interface Props {
+  file: string;
+  region: string;
+  caption?: string;
+  listingNumber?: string;
+  languageLabel?: string;
+  /** Literal JSON: [{"label":"Warp","file":"python/example.py","region":"example"}]. */
+  variants?: string;
+}
+
+const { file, region, caption, listingNumber, languageLabel, variants } =
+  Astro.props;
+const source = await getSourceRegion(file, region);
+const languageLabels: Record<string, string> = {
+  c: "C",
+  cpp: "C++",
+  cuda: "CUDA",
+  python: "Python",
+  javascript: "JavaScript",
+  typescript: "TypeScript",
+  tsx: "TSX",
+  text: "Text",
+};
+const alternatives = parseSourceVariants(variants, `${file}#${region}`);
+const baseLabel = languageLabel ?? languageLabels[source.language];
+if (
+  alternatives.some(
+    (entry) =>
+      entry.label === baseLabel ||
+      (entry.file === file && entry.region === region),
+  )
+) {
+  throw new Error(
+    "A source variant duplicates the primary language or source region.",
+  );
+}
+const sources = [
+  { ...source, label: baseLabel },
+  ...(await Promise.all(
+    alternatives.map(async (entry) => ({
+      ...(await getSourceRegion(entry.file, entry.region)),
+      label: entry.label,
+    })),
+  )),
+];
+const isCollapsible = source.code.split(/\r?\n/).length > 7;
+---
+
+<figure
+  class="source-listing"
+  id={listingNumber ? `listing-${listingNumber.replace(".", "-")}` : undefined}
+  data-listing-number={listingNumber}
+  data-source-region={`${file}#${region}`}
+  data-collapsible={String(isCollapsible)}
+  data-expanded-horizontal="false"
+  data-expanded-vertical="false"
+>
+  <figcaption
+    class="source-listing__header"
+    title="Click to unroll, double click to expand"
+  >
+    <span>
+      <button
+        class="source-listing__toggle source-listing__label"
+        type="button"
+        aria-expanded={!isCollapsible}
+        aria-label={`${listingNumber ? `Listing ${listingNumber}. ` : ""}Toggle source height. Shift+Enter toggles page width.`}
+        >{listingNumber ? `Listing ${listingNumber}` : "Listing"}</button
+      >
+      {caption && <span class="source-listing__caption">{caption}</span>}
+    </span>
+    <span class="source-listing__tools">
+      <select
+        class="source-listing__language"
+        aria-label="Source language"
+        disabled={sources.length === 1}
+      >
+        {
+          sources.map((entry, index) => (
+            <option value={index}>{entry.label}</option>
+          ))
+        }
+      </select>
+      <a class="source-listing__link" href={source.url}>
+        <span data-source-file>{source.file}</span>
+        <span class="source-listing__lines"
+          >L{source.start_line}–{source.end_line}</span
+        >
+      </a>
+    </span>
+  </figcaption>
+  <div class="source-listing__body">
+    <div
+      class="source-listing__code"
+      role="region"
+      tabindex="0"
+      aria-label={`Source code from ${source.file}. Click or Enter to toggle height. Double-click or Shift+Enter to toggle page width.`}
+    >
+      {
+        sources.map((entry, index) => (
+          <div
+            class="source-listing__variant"
+            data-source-variant={index}
+            data-file={entry.file}
+            data-region={entry.region}
+            data-url={entry.url}
+            data-lines={`L${entry.start_line}–${entry.end_line}`}
+            data-collapsible={String(entry.code.split(/\r?\n/).length > 7)}
+            hidden={index !== 0}
+          >
+            <Code
+              code={entry.code}
+              lang={entry.language === "cuda" ? "cpp" : entry.language}
+              theme="github-light"
+              wrap
+              transformers={[
+                {
+                  line(node, line) {
+                    node.properties["data-source-line"] =
+                      entry.start_line + line - 1;
+                  },
+                },
+              ]}
+            />
+          </div>
+        ))
+      }
+      <span class="source-listing__fade" aria-hidden="true">
+        <span>Click to unroll, double click to expand</span>
+      </span>
+    </div>
+    <button
+      class="source-listing__copy"
+      type="button"
+      aria-label="Copy code"
+      title="Copy code"
+      hidden
+    >
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="currentColor"
+        aria-hidden="true"
+      >
+        <path
+          d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"
+        ></path>
+        <path
+          d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"
+        ></path>
+      </svg>
+    </button>
+    <span class="source-listing__copy-status sr-only" aria-live="polite"></span>
+  </div>
+  {
+    sources.length > 1 && (
+      <noscript>
+        <p class="source-listing__alternatives">
+          Other canonical sources:{" "}
+          {sources.slice(1).map((entry) => (
+            <a href={entry.url}>{entry.label}</a>
+          ))}
+        </p>
+      </noscript>
+    )
+  }
+</figure>
+
+<script>
+  import { mountSourceListings } from "../../lib/source-listing";
+  mountSourceListings();
+</script>

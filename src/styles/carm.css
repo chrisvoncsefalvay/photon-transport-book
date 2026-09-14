@@ -1,0 +1,405 @@
+.carm-figure {
+  display: block;
+  color: #344a53;
+  background: #eeeae2;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+  border-block: 1px solid #d8d4c9;
+  isolation: isolate;
+}
+.carm-figure * {
+  box-sizing: border-box;
+}
+.carm-figure p,
+.carm-figure dl,
+.carm-figure dd {
+  margin: 0;
+}
+.carm-figure button,
+.carm-figure input,
+.carm-figure select {
+  font-family: inherit;
+}
+.carm-figure .viewport {
+  position: relative;
+  height: clamp(460px, 66vh, 760px);
+  overflow: hidden;
+  background: #eeeae2;
+}
+.carm-figure canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  outline: none;
+}
+.carm-figure canvas:focus-visible {
+  outline: 2px solid #a4442d;
+  outline-offset: -3px;
+}
+.carm-figure .hud {
+  position: absolute;
+  top: 22px;
+  pointer-events: none;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 1px #f5f2eb;
+}
+.carm-figure .hud-left {
+  left: 24px;
+  max-width: 47%;
+}
+.carm-figure .hud-right {
+  right: 24px;
+  text-align: right;
+  max-width: 43%;
+}
+.carm-figure .hud-title {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin: 0 0 10px;
+}
+.carm-figure .hud-title select {
+  pointer-events: auto;
+  color: #344a53;
+  background: #f5f2ebe8;
+  border: 0;
+  border-bottom: 1px solid #b1b9b8;
+  font: inherit;
+  letter-spacing: normal;
+  padding: 4px;
+  margin-left: 6px;
+  min-height: 36px;
+}
+.carm-figure .hud-caption,
+.carm-figure .axis-key {
+  font-size: 10px;
+  margin: 5px 0;
+  line-height: 1.4;
+}
+.carm-figure .pose-readout {
+  font-size: 11px;
+  line-height: 1.65;
+  margin: 8px 0;
+}
+.carm-figure .pose-readout div {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}
+.carm-figure .pose-readout dt {
+  color: #65747a;
+  font-weight: 400;
+}
+.carm-figure .pose-readout dd {
+  margin: 0;
+  font-family: monospace;
+  white-space: pre;
+}
+.carm-figure .clinical-angle {
+  margin: 0;
+  font-family: Georgia, serif;
+  font-size: 24px;
+  line-height: 1.25;
+}
+.carm-figure .clinical-angle span {
+  display: inline-block;
+  min-width: 72px;
+  font-variant-numeric: tabular-nums;
+}
+.carm-figure .axis-key {
+  color: #6b787b;
+  max-width: 270px;
+}
+.carm-figure .view-toolbar {
+  position: absolute;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  width: max-content;
+  max-width: calc(100% - 20px);
+  background: #f8f6eff5;
+  padding: 4px;
+  border: 1px solid #d7d4c9;
+  border-radius: 3px;
+}
+.carm-figure .view-toolbar button {
+  flex: 0 0 auto;
+  min-width: 44px;
+  height: 44px;
+  padding: 0 10px;
+  background: transparent;
+  border: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  color: #344a53;
+  border-radius: 2px;
+}
+.carm-figure .view-toolbar [data-carm-id="heart"] {
+  font-size: 11px;
+}
+.carm-figure .view-toolbar button:hover {
+  background: #e5e0d6;
+}
+.carm-figure .view-toolbar button[aria-pressed="true"] {
+  background: #e5e0d6;
+}
+.carm-figure .view-toolbar [data-carm-id="heart"][aria-pressed="true"] {
+  background: #a4442d;
+  color: white;
+}
+.carm-figure .view-toolbar svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  stroke-width: 1.6;
+}
+.carm-figure .view-toolbar [data-carm-id="heart"][aria-pressed="true"] svg {
+  fill: currentColor;
+}
+.carm-figure .view-hint {
+  position: absolute;
+  bottom: 34px;
+  left: 24px;
+  font-size: 10px;
+  color: #65747a;
+  pointer-events: none;
+}
+.carm-figure .loading {
+  position: absolute;
+  left: 50%;
+  top: 45%;
+  transform: translate(-50%, -50%);
+  font-size: 13px;
+  background: #f5f2ebee;
+  padding: 14px;
+  text-align: center;
+}
+.carm-figure .loading[hidden] {
+  display: none;
+}
+.carm-figure .controls {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  background: #f8f6f0;
+}
+.carm-figure .joint-control {
+  display: grid;
+  grid-template-rows: subgrid;
+  grid-row: span 3;
+  padding: 20px 22px 16px;
+  border-top: 1px solid #d8d4c9;
+  border-right: 1px solid #d8d4c9;
+  min-width: 0;
+}
+.carm-figure .joint-control:last-child {
+  border-right: 0;
+}
+.carm-figure .joint-control[data-selected="true"] {
+  box-shadow: inset 0 3px #a4442d;
+}
+.carm-figure .joint-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+  gap: 5px;
+}
+.carm-figure .joint-heading label {
+  min-width: 0;
+  overflow-wrap: normal;
+  font-size: 11px;
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.carm-figure .joint-number {
+  display: flex;
+  flex-shrink: 0;
+  align-items: baseline;
+  gap: 4px;
+  font-family: Georgia, serif;
+  font-size: 21px;
+}
+.carm-figure .joint-number input {
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  width: 61px;
+  max-width: 100%;
+  padding: 0;
+  text-align: right;
+  appearance: textfield;
+}
+.carm-figure .joint-number input:focus {
+  border-bottom-color: #a4442d;
+}
+.carm-figure .joint-number input::-webkit-inner-spin-button {
+  appearance: none;
+}
+.carm-figure .joint-number span {
+  font-family: Arial, sans-serif;
+  font-size: 10px;
+}
+.carm-figure .joint-control input[type="range"] {
+  width: 100%;
+  accent-color: #a4442d;
+  cursor: pointer;
+  margin: 0;
+  height: 32px;
+}
+.carm-figure .joint-ends {
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+}
+.carm-figure .joint-ends button {
+  min-width: 0;
+  padding: 5px 0;
+  background: transparent;
+  border: 0;
+  color: #344a53;
+  font-size: 11px;
+  min-height: 44px;
+  cursor: pointer;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+.carm-figure .joint-ends button:last-child {
+  text-align: right;
+}
+.carm-figure .joint-ends button:hover {
+  color: #a4442d;
+}
+.carm-figure button:focus-visible,
+.carm-figure select:focus-visible,
+.carm-figure input:focus-visible {
+  outline: 2px solid #a4442d;
+  outline-offset: 2px;
+}
+.carm-figure button:disabled,
+.carm-figure input:disabled {
+  opacity: 0.4;
+  cursor: wait;
+}
+@media (max-width: 1100px) {
+  .carm-figure .joint-heading {
+    display: grid;
+    grid-template-rows: 1fr auto;
+    align-items: center;
+    gap: 6px;
+  }
+  .carm-figure .joint-number {
+    justify-self: end;
+  }
+  .carm-figure .view-hint {
+    display: none;
+  }
+  .carm-figure .joint-control {
+    padding: 16px 14px;
+  }
+}
+@media (max-width: 760px) {
+  .carm-figure .controls {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .carm-figure .joint-control:nth-child(2) {
+    border-right: 0;
+  }
+  .carm-figure .hud-left {
+    left: 14px;
+  }
+  .carm-figure .hud-right {
+    right: 14px;
+  }
+}
+@media (max-width: 620px) {
+  .carm-figure .viewport {
+    height: 560px;
+  }
+  .carm-figure .hud {
+    top: 14px;
+  }
+  .carm-figure .hud-left {
+    left: 10px;
+    max-width: 49%;
+  }
+  .carm-figure .hud-right {
+    right: 10px;
+    max-width: 42%;
+  }
+  .carm-figure .hud-title {
+    font-size: 8px;
+    letter-spacing: 0.03em;
+    margin-bottom: 6px;
+  }
+  .carm-figure .hud-title select {
+    display: block;
+    margin: 4px 0 0;
+    min-height: 36px;
+    font-size: 10px;
+  }
+  .carm-figure .hud-caption,
+  .carm-figure .axis-key {
+    font-size: 8px;
+  }
+  .carm-figure .pose-readout {
+    font-size: 9px;
+  }
+  .carm-figure .pose-readout div {
+    display: block;
+  }
+  .carm-figure .pose-readout dt {
+    font-size: 8px;
+  }
+  .carm-figure .clinical-angle {
+    font-size: 18px;
+    white-space: nowrap;
+  }
+  .carm-figure .clinical-angle span {
+    min-width: 48px;
+  }
+  .carm-figure .joint-control {
+    padding: 14px 10px;
+  }
+  .carm-figure .joint-heading {
+    flex-wrap: wrap;
+    row-gap: 6px;
+  }
+  .carm-figure .joint-heading label {
+    flex: 1 1 65px;
+    font-size: 10px;
+  }
+  .carm-figure .joint-number {
+    font-size: 19px;
+  }
+  .carm-figure .joint-number input {
+    width: 52px;
+  }
+  .carm-figure .joint-ends button {
+    font-size: 10px;
+  }
+  .carm-figure .view-toolbar {
+    bottom: 12px;
+  }
+  .carm-figure [data-carm-id="mode-label"] {
+    display: none;
+  }
+  .carm-figure .hud-left .axis-key {
+    max-width: 135px;
+  }
+}

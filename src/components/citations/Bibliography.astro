@@ -1,0 +1,57 @@
+---
+import { headingPermalinkPath } from "../../../tools/public/rehype-heading-permalinks.mjs";
+import { getCitationRenderer } from "../../lib/citations";
+
+interface Props {
+  keys?: string[];
+}
+
+const { keys } = Astro.props;
+const renderer = await getCitationRenderer();
+const selectedKeys = keys ?? renderer.keys;
+const entries = renderer.renderBibliography(selectedKeys);
+---
+
+<section class="bibliography" aria-labelledby="bibliography-heading">
+  <h2 id="bibliography-heading">
+    References<a
+      class="heading-permalink"
+      href="#bibliography-heading"
+      aria-label="Link to section References"
+    >
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <path d={headingPermalinkPath}></path>
+      </svg>
+    </a>
+  </h2>
+  {
+    entries.length > 0 ? (
+      <ol>
+        {entries.map((entry, index) => (
+          <li
+            id={selectedKeys[index]}
+            value={
+              renderer.style.format === "numeric"
+                ? renderer.citationNumber(selectedKeys[index]!)
+                : undefined
+            }
+            set:html={entry}
+          />
+        ))}
+      </ol>
+    ) : (
+      <p class="bibliography__empty">
+        References are resolved from the canonical CSL catalogue at build time.
+      </p>
+    )
+  }
+</section>

@@ -1,0 +1,266 @@
+.comparison-study {
+  display: block;
+  background: var(--paper-inset);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 0.875rem;
+  line-height: 1.55;
+}
+
+.comparison-study [hidden] {
+  display: none !important;
+}
+
+.comparison-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1.2rem 1.5rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.comparison-toolbar label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+}
+
+.comparison-toolbar select {
+  min-height: 2.65rem;
+  max-width: 100%;
+  border: 1px solid var(--rule-strong);
+  border-radius: 0;
+  padding: 0.5rem 2rem 0.5rem 0.75rem;
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+}
+
+.comparison-toolbar select:focus-visible,
+.comparison-table-scroll:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.comparison-method-heading {
+  padding: 1.35rem 1.5rem 0.65rem;
+}
+
+.comparison-study h3,
+.comparison-study h4 {
+  margin: 0 0 0.7rem;
+  font-family: var(--font-ui);
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+.comparison-study h3 {
+  font-size: 1rem;
+}
+
+.comparison-study h4 {
+  font-size: 0.875rem;
+}
+
+.comparison-method-heading p,
+.comparison-window,
+.comparison-image-card p {
+  margin: 0.5rem 0;
+  color: var(--ink-muted);
+  font-size: 0.8rem;
+}
+
+.comparison-image-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--comparison-columns), minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.comparison-image-card {
+  min-width: 0;
+}
+
+.comparison-radiographs > .comparison-image-grid {
+  row-gap: 0.7rem;
+}
+
+.comparison-radiographs > .comparison-image-grid > .comparison-image-card {
+  display: grid;
+  grid-row: span 2;
+  grid-template-rows: subgrid;
+}
+
+.comparison-radiographs > .comparison-image-grid > .comparison-image-card > h4 {
+  min-height: 0;
+  margin: 0;
+}
+
+.comparison-image-card img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: fill;
+  background: var(--paper);
+}
+
+.comparison-slice,
+.comparison-radiographs {
+  padding: 1.2rem 1.5rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.comparison-detail {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--rule);
+}
+
+.comparison-slice .comparison-detail,
+.comparison-radiographs .comparison-detail {
+  margin-top: 0.9rem;
+  padding: 0.9rem 0 0;
+}
+
+.comparison-study summary {
+  color: var(--accent);
+  cursor: pointer;
+}
+
+.comparison-study details[open] > summary {
+  margin-bottom: 1rem;
+}
+
+.comparison-study.is-enhanced .comparison-slice > summary {
+  display: none;
+}
+
+.comparison-unavailable {
+  display: grid;
+  place-items: center;
+  min-height: 8rem;
+  padding: 1rem;
+  border: 1px solid var(--rule);
+}
+
+.comparison-acquisition svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  fill: var(--technical);
+}
+
+.comparison-acquisition svg text {
+  fill: var(--ink-muted);
+  font: 11px var(--font-ui);
+}
+
+.comparison-angle-rule {
+  stroke: var(--rule);
+  stroke-width: 1;
+}
+
+.comparison-table-scroll {
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+}
+
+.comparison-study table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.comparison-study caption {
+  text-align: left;
+  padding: 0 0 1rem;
+  color: var(--ink-muted);
+}
+
+.comparison-study th,
+.comparison-study td {
+  padding: 0.55rem;
+  border-bottom: 1px solid var(--rule);
+  text-align: left;
+  vertical-align: top;
+}
+
+.comparison-study th {
+  font-weight: 500;
+}
+
+.comparison-download {
+  padding: 0 1.5rem;
+}
+
+@media (max-width: 760px) {
+  .comparison-image-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.1rem 0.8rem;
+  }
+
+  .comparison-acquisition .comparison-image-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 420px) {
+  .comparison-toolbar,
+  .comparison-method-heading,
+  .comparison-slice,
+  .comparison-radiographs,
+  .comparison-detail {
+    padding-inline: 1rem;
+  }
+
+  .comparison-toolbar label {
+    display: grid;
+    width: 100%;
+    gap: 0.35rem;
+  }
+
+  .comparison-image-card h4 {
+    min-height: 2.5em;
+  }
+}
+
+@media print {
+  .comparison-study [data-comparison-method][hidden],
+  .comparison-study .comparison-slice[data-print-default="true"][hidden] {
+    display: block !important;
+  }
+
+  .comparison-toolbar,
+  .comparison-study .comparison-slice[data-print-default="false"],
+  .comparison-slice .comparison-detail,
+  .comparison-radiographs .comparison-detail,
+  .comparison-acquisition {
+    display: none !important;
+  }
+
+  .comparison-slice[data-print-default="true"] > .comparison-image-grid,
+  .comparison-slice[data-print-default="true"] > .comparison-window,
+  .comparison-all-outcomes > .comparison-table-scroll {
+    display: block;
+  }
+
+  .comparison-slice[data-print-default="true"] > .comparison-image-grid,
+  .comparison-image-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--comparison-columns), minmax(0, 1fr));
+  }
+
+  .comparison-all-outcomes table {
+    font-size: 6pt;
+  }
+
+  .comparison-study th,
+  .comparison-study td {
+    padding: 0.2rem;
+  }
+
+  .comparison-image-card {
+    break-inside: avoid;
+  }
+}

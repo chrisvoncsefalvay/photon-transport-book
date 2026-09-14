@@ -1,0 +1,129 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Acknowledgements — Differentiable Photon Transport"
+  description="Acknowledgements for Differentiable Photon Transport — Volume I: Foundations."
+  citation={{ title: "Acknowledgements", part: "page" }}
+>
+  <section class="acknowledgements-page">
+    <header>
+      <p class="eyebrow">The people and projects behind the book</p>
+      <h1>Acknowledgements</h1>
+    </header>
+    <div class="prose">
+      <p>
+        I’m especially grateful to Tamás Földi for his encouragement, and to my
+        colleagues at HCLTech’s Robotics Intelligence CoE. My particular thanks
+        go to Pranav Doma, Unni Krishnan Achyuthan, Konstantin Severov and Peter
+        Molnar.
+      </p>
+      <p>
+        Binh Pham inspired the emphasis on visual explanation throughout this
+        book. There are considerably more pictures here because of him.
+      </p>
+      <h2>Research and reference works</h2>
+      <p>
+        I have returned repeatedly to the IAEA’s <a
+          href="https://www.iaea.org/publications/8841/diagnostic-radiology-physics"
+          ><em>Diagnostic Radiology Physics</em></a
+        >, edited by D. R. Dance, S. Christofides, A. D. A. Maidment, I. D.
+        McLean and K.-H. Ng, and to the work of its contributing authors. The
+        DICOM Standards Committee’s documentation has been equally useful for
+        keeping coordinate systems and image metadata straight.
+      </p>
+      <p>
+        The imaging and inverse-problem chapters draw extensively on the work of
+        Jeffrey H. Siewerdsen and his collaborators, Robert E. Alvarez and
+        Albert Macovski, and Vivek Gopalakrishnan, Polina Golland and their
+        collaborators on DiffDRR, DiffPose and DiffVox. My thanks to these
+        authors for the research and implementations discussed in the <a
+          href="/references/">bibliography</a
+        >.
+      </p>
+      <h2>Software</h2>
+      <p>
+        My thanks to the maintainers of <a href="https://github.com/NVIDIA/warp"
+          >NVIDIA Warp</a
+        > and <a href="https://pytorch.org/">PyTorch</a> for the tools used to build
+        and differentiate the transport code. The book’s pages and interactive figures
+        use <a href="https://astro.build/">Astro</a>, <a
+          href="https://threejs.org/">Three.js</a
+        > and <a href="https://katex.org/">KaTeX</a>.
+      </p>
+      <h2>Images, models and data</h2>
+      <p>
+        The anatomical examples draw on <a
+          href="https://doi.org/10.7937/tcia.2019.tt7f4v7o">CT-ORG</a
+        >, shared by Rister, Shivakumar, Nobashi and Rubin through The Cancer
+        Imaging Archive, and synthetic CT volumes generated with NVIDIA’s <a
+          href="https://github.com/NVIDIA-Medtech/NV-Generate-CTMR">MAISI</a
+        >. My thanks to both teams, and to Jakob Wasserthal and the University
+        Hospital Basel team for <a
+          href="https://doi.org/10.5281/zenodo.10047292">TotalSegmentator</a
+        >, whose conditioning masks also supply the pelvic surfaces used in the
+        figures. The photon-counting phantom examples use <a
+          href="https://doi.org/10.5281/zenodo.17328375"
+          >measurements released by Zhou and colleagues</a
+        >. These shared data underpin many of the book’s images and let us study
+        reconstruction using both acquired measurements and simulated
+        projections.
+      </p>
+      <p>
+        A23D supplied the C-arm and anatomical models used in the geometry
+        illustrations. The rendered views and annotations adapt those models for
+        the book. Lucide and Primer Octicons provide the interface icons, and
+        Bogusław Jackowski and Janusz M. Nowacki’s Latin Modern provides the
+        lettering for the opening transport equation.
+      </p>
+      <p>
+        The physical models owe much to J. H. Hubbell, S. M. Seltzer and the
+        NIST/XCOM team for their <a href="https://doi.org/10.18434/T4D01F"
+          >attenuation data</a
+        >, and to the developers of <a
+          href="https://doi.org/10.1016/j.sab.2011.09.011">xraylib</a
+        > and <a href="https://doi.org/10.1002/mp.14945">SpekPy</a>. The figure
+        records identify the inputs used in each example. Full credits, licences
+        and details of the derived assets are recorded in the <a
+          href="https://github.com/chrisvoncsefalvay/photon-transport-book/blob/main/ATTRIBUTIONS.md"
+          >attributions file</a
+        >.
+      </p>
+      <h2>Readers</h2>
+      <p>
+        Thank you for taking the time to work through the book. If a derivation
+        loses you, a figure is unclear or the code misbehaves, please <a
+          href="https://github.com/chrisvoncsefalvay/photon-transport-book/issues"
+          >open an issue on GitHub</a
+        >. A useful correction can start with “I don’t understand this.”
+      </p>
+      <h2>At home</h2>
+      <p>
+        Above all, thank you to my wife, Katie, for her love and support. And to
+        Oliver, our golden retriever, for his patience with a project that has
+        probably cost him a few walks. He did, however, thoroughly enjoy the
+        coloured-light volume projections.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .acknowledgements-page {
+    margin-inline: auto;
+    max-width: calc(var(--measure-prose) + 2 * var(--page-gutter));
+    padding: var(--space-8) var(--page-gutter) var(--space-6);
+  }
+
+  .acknowledgements-page > header {
+    border-block-end: 1px solid var(--rule-strong);
+    margin-block-end: var(--space-7);
+    padding-block-end: var(--space-6);
+  }
+
+  h1 {
+    margin-block-start: var(--space-4);
+    text-wrap: balance;
+  }
+</style>

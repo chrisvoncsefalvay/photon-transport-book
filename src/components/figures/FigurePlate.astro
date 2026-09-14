@@ -1,0 +1,35 @@
+---
+import { getFigureRegistry } from "../../../tools/public/lib/figure-registry.mjs";
+
+interface Props {
+  id: string;
+  title: string;
+  description?: string;
+  width?: "wide" | "full";
+}
+
+const { id, title, description, width = "wide" } = Astro.props;
+const { number } = getFigureRegistry(import.meta.env.DPT_PROJECT_ROOT).get(
+  Astro.url.pathname,
+  id,
+);
+---
+
+<figure
+  id={id}
+  data-figure-number={number}
+  class:list={["figure-plate", `breakout-${width}`]}
+>
+  <div class="figure-plate__surface">
+    <slot />
+  </div>
+  <figcaption class="figure-plate__caption">
+    <a
+      class="figure-plate__number eyebrow"
+      href={`#${id}`}
+      aria-label={`Link to figure ${number}`}>Figure {number}</a
+    >
+    <strong>{title}</strong>
+    {description && <span>{description}</span>}
+  </figcaption>
+</figure>

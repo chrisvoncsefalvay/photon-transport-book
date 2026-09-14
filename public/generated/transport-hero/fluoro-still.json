@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "method": "Static Three.js at reference camera with stationary mean of recorded photon-count frames; transparent capture omits equation and controls.",
+  "logicalSize": [
+    520,
+    470
+  ],
+  "rasterSize": [
+    1040,
+    940
+  ],
+  "browser": "151.0.7922.34",
+  "outputSha256": "9c42ad5e5012b2e740491833baec755ba54a96fc9f3eb25a8ff3db26edb62d1e",
+  "sources": {
+    "tools/public/render-transport-hero-still.mjs": "1c007c6120fbe3f0672c3861f1e10159c0ffa1a078c6f8f57839e1bf5265020f",
+    "src/lib/transport-hero-field.ts": "a4d17f378487e344469216968e441edf639d150067bdde36fce50ae917ddcc2a",
+    "src/lib/transport-hero-detector.ts": "fda5fe476777365f5de4247d362aef39c742f851c619ab28e37aa257ab3deb7f",
+    "src/lib/carm/conditional-lines.ts": "f20db294c244c9616a6fc038a967d0e75472479075250aac356e22187c4df655",
+    "pnpm-lock.yaml": "979177f17c6063f89e5d92712b1fdd719f8332bb42a75528a6db807fcd76398b",
+    "public/generated/transport-hero/pelvis-lod.json": "8d6c946dbdb3e2f3af0cef1139aae245d5117a43cf8f68ff35728abfc5dd29f3",
+    "public/generated/transport-hero/pelvis-lod.bin": "3bd4966ed8da2f2f46cc3c1b48d0ec0c006c3c0b0bec054ffdb88ce54659e5d5",
+    "public/generated/transport-hero/impact-record.json": "013e52170d290e2eb6ca5435cd94084577fa8849711d322bd4d29b5251c4afbd",
+    "public/generated/transport-hero/impact-atlas.png": "8863db6be2322ad0c2f49695427b74babce4aa88c79ccc94ede6b0b5813c388f"
+  }
+}

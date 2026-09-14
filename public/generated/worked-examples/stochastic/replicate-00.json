@@ -1,0 +1,1943 @@
+{
+  "seed": 2026091501,
+  "sampling_multiplier": 16,
+  "policy": {
+    "iterations": 100,
+    "replicates": 8,
+    "initial_batch": 65536,
+    "maximum_batch": 1048576,
+    "unique_history_budget": 256000000,
+    "initial_radius": 0.1,
+    "minimum_radius": 1e-07,
+    "maximum_radius": 1.0,
+    "acceptance_fraction": 0.1,
+    "standard_error_multiplier": 2.0,
+    "gradient_tolerance": 1e-05,
+    "relative_gradient_uncertainty": 0.5,
+    "proposal": "quadratic",
+    "numerical_gradient_allowance": 1e-12,
+    "final_validation_batch": 1048576,
+    "damping_relative": 1e-12,
+    "rank_tolerance": 1e-10,
+    "radius_growth_agreement": 0.75
+  },
+  "result": {
+    "parameters": [
+      -2.1480786399031255
+    ],
+    "reason": "gradient_band",
+    "unique_histories": 26214400,
+    "steps": [
+      {
+        "iteration": 0,
+        "accepted": true,
+        "mean_change": -0.00012840246154848369,
+        "change_standard_error": 6.170330880886925e-08,
+        "predicted_decrease": 0.000122929691639145,
+        "radius": 0.1,
+        "batch_size": 65536,
+        "first_history": 1048576,
+        "histories_used": 1048576
+      },
+      {
+        "iteration": 1,
+        "accepted": true,
+        "mean_change": -0.00017020941086288798,
+        "change_standard_error": 1.1174325459109346e-07,
+        "predicted_decrease": 0.00016120430482858723,
+        "radius": 0.2,
+        "batch_size": 65536,
+        "first_history": 3145728,
+        "histories_used": 1048576
+      },
+      {
+        "iteration": 2,
+        "accepted": true,
+        "mean_change": -1.770044328288724e-05,
+        "change_standard_error": 1.4849229936654358e-07,
+        "predicted_decrease": 1.7752854360528815e-05,
+        "radius": 0.4,
+        "batch_size": 65536,
+        "first_history": 5242880,
+        "histories_used": 1048576
+      },
+      {
+        "iteration": 3,
+        "accepted": true,
+        "mean_change": -3.0771996072157563e-08,
+        "change_standard_error": 2.9461270249993373e-09,
+        "predicted_decrease": 2.5331792836254425e-08,
+        "radius": 0.4,
+        "batch_size": 65536,
+        "first_history": 7340032,
+        "histories_used": 1048576
+      }
+    ],
+    "domain_rejections": [],
+    "gradient_attempts": [
+      {
+        "iteration": 0,
+        "parameters": [
+          -2.5257286443082556
+        ],
+        "batch_size": 65536,
+        "first_history": 0,
+        "histories_used": 1048576,
+        "gradient": [
+          -0.0013797171444322933
+        ],
+        "standard_error": [
+          1.213242795234026e-06
+        ],
+        "gradient_norm": 0.0013797171444322933,
+        "standard_error_norm": 1.213242795234026e-06,
+        "decision": "resolved",
+        "model_id": 0,
+        "pool": "proposal",
+        "band_method": "heuristic_euclidean_marginal_se",
+        "numerical_allowance": 0.0,
+        "replicate_gradients": [
+          [
+            -0.001378897165597698
+          ],
+          [
+            -0.0013774384423673781
+          ],
+          [
+            -0.0013739955987847096
+          ],
+          [
+            -0.0013812243322164413
+          ],
+          [
+            -0.00138447421500597
+          ],
+          [
+            -0.0013774549335623756
+          ],
+          [
+            -0.0013831756055120246
+          ],
+          [
+            -0.0013810768624117487
+          ]
+        ]
+      },
+      {
+        "iteration": 1,
+        "parameters": [
+          -2.4257286443082555
+        ],
+        "batch_size": 65536,
+        "first_history": 2097152,
+        "histories_used": 1048576,
+        "gradient": [
+          -0.0011729204528426551
+        ],
+        "standard_error": [
+          9.215892030836522e-07
+        ],
+        "gradient_norm": 0.0011729204528426551,
+        "standard_error_norm": 9.215892030836522e-07,
+        "decision": "resolved",
+        "model_id": 1,
+        "pool": "proposal",
+        "band_method": "heuristic_euclidean_marginal_se",
+        "numerical_allowance": 0.0,
+        "replicate_gradients": [
+          [
+            -0.0011711832211396688
+          ],
+          [
+            -0.0011712876732950656
+          ],
+          [
+            -0.0011704694525309842
+          ],
+          [
+            -0.0011755623328909902
+          ],
+          [
+            -0.0011749043343948467
+          ],
+          [
+            -0.0011751651634452846
+          ],
+          [
+            -0.0011755074922468007
+          ],
+          [
+            -0.0011692839527976
+          ]
+        ]
+      },
+      {
+        "iteration": 2,
+        "parameters": [
+          -2.2257286443082553
+        ],
+        "batch_size": 65536,
+        "first_history": 4194304,
+        "histories_used": 1048576,
+        "gradient": [
+          -0.00044130228451075114
+        ],
+        "standard_error": [
+          1.486584717977687e-06
+        ],
+        "gradient_norm": 0.00044130228451075114,
+        "standard_error_norm": 1.486584717977687e-06,
+        "decision": "resolved",
+        "model_id": 2,
+        "pool": "proposal",
+        "band_method": "heuristic_euclidean_marginal_se",
+        "numerical_allowance": 0.0,
+        "replicate_gradients": [
+          [
+            -0.0004453513142070032
+          ],
+          [
+            -0.0004454715059856685
+          ],
+          [
+            -0.00044070816150459886
+          ],
+          [
+            -0.00043510077663028884
+          ],
+          [
+            -0.0004403240289281111
+          ],
+          [
+            -0.00043678191591779
+          ],
+          [
+            -0.0004466167143542725
+          ],
+          [
+            -0.0004400638585582761
+          ]
+        ]
+      },
+      {
+        "iteration": 3,
+        "parameters": [
+          -2.1452719823618507
+        ],
+        "batch_size": 65536,
+        "first_history": 6291456,
+        "histories_used": 1048576,
+        "gradient": [
+          1.8051217481094206e-05
+        ],
+        "standard_error": [
+          3.255663389840158e-06
+        ],
+        "gradient_norm": 1.8051217481094206e-05,
+        "standard_error_norm": 3.255663389840158e-06,
+        "decision": "resolved",
+        "model_id": 3,
+        "pool": "proposal",
+        "band_method": "heuristic_euclidean_marginal_se",
+        "numerical_allowance": 0.0,
+        "replicate_gradients": [
+          [
+            4.170324091705863e-06
+          ],
+          [
+            3.0051578767801802e-05
+          ],
+          [
+            3.009071955203839e-05
+          ],
+          [
+            8.426955501310506e-06
+          ],
+          [
+            1.576980383253235e-05
+          ],
+          [
+            1.8014532268541634e-05
+          ],
+          [
+            2.1443206243316636e-05
+          ],
+          [
+            1.644261959150646e-05
+          ]
+        ]
+      },
+      {
+        "iteration": 4,
+        "parameters": [
+          -2.1480786399031255
+        ],
+        "batch_size": 65536,
+        "first_history": 8388608,
+        "histories_used": 1048576,
+        "gradient": [
+          2.0177041711258e-06
+        ],
+        "standard_error": [
+          2.234561043132812e-06
+        ],
+        "gradient_norm": 2.0177041711258e-06,
+        "standard_error_norm": 2.234561043132812e-06,
+        "decision": "gradient_band",
+        "model_id": 4,
+        "pool": "proposal",
+        "band_method": "heuristic_euclidean_marginal_se",
+        "numerical_allowance": 0.0,
+        "replicate_gradients": [
+          [
+            5.095480340338166e-06
+          ],
+          [
+            -9.190647405081362e-06
+          ],
+          [
+            3.937640948500696e-06
+          ],
+          [
+            1.1551762120686885e-05
+          ],
+          [
+            -4.387454073146053e-06
+          ],
+          [
+            3.978646833200802e-06
+          ],
+          [
+            1.0883000838257316e-06
+          ],
+          [
+            4.067904520681531e-06
+          ]
+        ]
+      }
+    ],
+    "termination_detail": "held_out_gradient_band",
+    "diagnostic_version": 2,
+    "acceptance_attempts": [
+      {
+        "iteration": 0,
+        "incumbent": [
+          -2.5257286443082556
+        ],
+        "candidate": [
+          -2.4257286443082555
+        ],
+        "model_id": 0,
+        "step": [
+          0.10000000000000009
+        ],
+        "predicted_decrease": 0.000122929691639145,
+        "radius": 0.1,
+        "batch_size": 65536,
+        "first_history": 1048576,
+        "histories_used": 1048576,
+        "required_histories": 1048576,
+        "replicate_changes": [
+          -0.0001282271702235856,
+          -0.0001286381253610346,
+          -0.00012842740120775628,
+          -0.00012844437786000185,
+          -0.00012842957172516396,
+          -0.00012829308068972384,
+          -0.0001286154136758126,
+          -0.00012814455164479087
+        ],
+        "mean_change": -0.00012840246154848369,
+        "standard_error": 6.170330880886925e-08,
+        "band_method": "heuristic_euclidean_marginal_se",
+        "look_index": 1,
+        "threshold": -1.22929691639145e-05,
+        "outcome": "accepted",
+        "agreement": 1.0445195122216997,
+        "boundary": true,
+        "proposal_diagnostics": {
+          "step": [
+            0.10000000000000009
+          ],
+          "predicted_decrease": 0.000122929691639145,
+          "boundary": true,
+          "rank": 1,
+          "condition": 1.0,
+          "damping": 0.0,
+          "curvature_scale": 0.003008404560816885,
+          "solver": "eigen",
+          "eigenvalues": [
+            0.003008404560816885
+          ]
+        }
+      },
+      {
+        "iteration": 1,
+        "incumbent": [
+          -2.4257286443082555
+        ],
+        "candidate": [
+          -2.2257286443082553
+        ],
+        "model_id": 1,
+        "step": [
+          0.20000000000000018
+        ],
+        "predicted_decrease": 0.00016120430482858723,
+        "radius": 0.2,
+        "batch_size": 65536,
+        "first_history": 3145728,
+        "histories_used": 1048576,
+        "required_histories": 1048576,
+        "replicate_changes": [
+          -0.0001705245061211317,
+          -0.00017035935697888818,
+          -0.0001696928247211292,
+          -0.00016985802319626435,
+          -0.00017058511521510835,
+          -0.0001700601382282599,
+          -0.00017036142387570795,
+          -0.0001702338985666142
+        ],
+        "mean_change": -0.00017020941086288798,
+        "standard_error": 1.1174325459109346e-07,
+        "band_method": "heuristic_euclidean_marginal_se",
+        "look_index": 1,
+        "threshold": -1.6120430482858722e-05,
+        "outcome": "accepted",
+        "agreement": 1.0558614488854756,
+        "boundary": true,
+        "proposal_diagnostics": {
+          "step": [
+            0.20000000000000018
+          ],
+          "predicted_decrease": 0.00016120430482858723,
+          "boundary": true,
+          "rank": 1,
+          "condition": 1.0,
+          "damping": 0.0,
+          "curvature_scale": 0.0036689892869971935,
+          "solver": "eigen",
+          "eigenvalues": [
+            0.0036689892869971935
+          ]
+        }
+      },
+      {
+        "iteration": 2,
+        "incumbent": [
+          -2.2257286443082553
+        ],
+        "candidate": [
+          -2.1452719823618507
+        ],
+        "model_id": 2,
+        "step": [
+          0.08045666194640466
+        ],
+        "predicted_decrease": 1.7752854360528815e-05,
+        "radius": 0.4,
+        "batch_size": 65536,
+        "first_history": 5242880,
+        "histories_used": 1048576,
+        "required_histories": 1048576,
+        "replicate_changes": [
+          -1.782856339545243e-05,
+          -1.7493251666391316e-05,
+          -1.7165281857993297e-05,
+          -1.7373801229141493e-05,
+          -1.7826432700159955e-05,
+          -1.7613523449439215e-05,
+          -1.857105250824621e-05,
+          -1.7731639456274e-05
+        ],
+        "mean_change": -1.770044328288724e-05,
+        "standard_error": 1.4849229936654358e-07,
+        "band_method": "heuristic_euclidean_marginal_se",
+        "look_index": 1,
+        "threshold": -1.7752854360528816e-06,
+        "outcome": "accepted",
+        "agreement": 0.9970477379818931,
+        "boundary": false,
+        "proposal_diagnostics": {
+          "step": [
+            0.08045666194640466
+          ],
+          "predicted_decrease": 1.7752854360528815e-05,
+          "boundary": false,
+          "rank": 1,
+          "condition": 1.0,
+          "damping": 0.0,
+          "curvature_scale": 0.005484968849499616,
+          "solver": "eigen",
+          "eigenvalues": [
+            0.005484968849499616
+          ]
+        }
+      },
+      {
+        "iteration": 3,
+        "incumbent": [
+          -2.1452719823618507
+        ],
+        "candidate": [
+          -2.1480786399031255
+        ],
+        "model_id": 3,
+        "step": [
+          -0.0028066575412748485
+        ],
+        "predicted_decrease": 2.5331792836254425e-08,
+        "radius": 0.4,
+        "batch_size": 65536,
+        "first_history": 7340032,
+        "histories_used": 1048576,
+        "required_histories": 1048576,
+        "replicate_changes": [
+          -2.395130946932489e-08,
+          -4.296368234085126e-08,
+          -3.575177115281863e-08,
+          -3.2461086529743884e-08,
+          -3.921231259122315e-08,
+          -2.6652850064543668e-08,
+          -1.805259117001335e-08,
+          -2.713036525874166e-08
+        ],
+        "mean_change": -3.0771996072157563e-08,
+        "standard_error": 2.9461270249993373e-09,
+        "band_method": "heuristic_euclidean_marginal_se",
+        "look_index": 1,
+        "threshold": -2.5331792836254427e-09,
+        "outcome": "accepted",
+        "agreement": 1.2147579238101622,
+        "boundary": false,
+        "proposal_diagnostics": {
+          "step": [
+            -0.0028066575412748485
+          ],
+          "predicted_decrease": 2.5331792836254425e-08,
+          "boundary": false,
+          "rank": 1,
+          "condition": 1.0,
+          "damping": 0.0,
+          "curvature_scale": 0.0064315710825531315,
+          "solver": "eigen",
+          "eigenvalues": [
+            0.0064315710825531315
+          ]
+        }
+      }
+    ],
+    "reservations": [
+      {
+        "operation": "model",
+        "iteration": 0,
+        "first_history": 0,
+        "required_histories": 1048576,
+        "reserved_histories": 1048576,
+        "checkpoint_histories": 17825792,
+        "pairs": [
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 0,
+              "count": 65536,
+              "source_namespace": "inverse-source-0"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 65536,
+              "count": 65536,
+              "source_namespace": "inverse-source-65536"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 131072,
+              "count": 65536,
+              "source_namespace": "inverse-source-131072"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 196608,
+              "count": 65536,
+              "source_namespace": "inverse-source-196608"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 262144,
+              "count": 65536,
+              "source_namespace": "inverse-source-262144"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 327680,
+              "count": 65536,
+              "source_namespace": "inverse-source-327680"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 393216,
+              "count": 65536,
+              "source_namespace": "inverse-source-393216"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 458752,
+              "count": 65536,
+              "source_namespace": "inverse-source-458752"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 524288,
+              "count": 65536,
+              "source_namespace": "inverse-source-524288"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 589824,
+              "count": 65536,
+              "source_namespace": "inverse-source-589824"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 655360,
+              "count": 65536,
+              "source_namespace": "inverse-source-655360"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 720896,
+              "count": 65536,
+              "source_namespace": "inverse-source-720896"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 786432,
+              "count": 65536,
+              "source_namespace": "inverse-source-786432"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 851968,
+              "count": 65536,
+              "source_namespace": "inverse-source-851968"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 917504,
+              "count": 65536,
+              "source_namespace": "inverse-source-917504"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 983040,
+              "count": 65536,
+              "source_namespace": "inverse-source-983040"
+            }
+          ]
+        ],
+        "status": "complete",
+        "attempted_replicates": 8,
+        "completed_replicates": 8
+      },
+      {
+        "operation": "acceptance",
+        "iteration": 0,
+        "first_history": 1048576,
+        "required_histories": 1048576,
+        "reserved_histories": 1048576,
+        "checkpoint_histories": 16777216,
+        "pairs": [
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 1048576,
+              "count": 65536,
+              "source_namespace": "inverse-source-1048576"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 1114112,
+              "count": 65536,
+              "source_namespace": "inverse-source-1114112"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 1179648,
+              "count": 65536,
+              "source_namespace": "inverse-source-1179648"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 1245184,
+              "count": 65536,
+              "source_namespace": "inverse-source-1245184"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 1310720,
+              "count": 65536,
+              "source_namespace": "inverse-source-1310720"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 1376256,
+              "count": 65536,
+              "source_namespace": "inverse-source-1376256"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 1441792,
+              "count": 65536,
+              "source_namespace": "inverse-source-1441792"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 1507328,
+              "count": 65536,
+              "source_namespace": "inverse-source-1507328"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 1572864,
+              "count": 65536,
+              "source_namespace": "inverse-source-1572864"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 1638400,
+              "count": 65536,
+              "source_namespace": "inverse-source-1638400"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 1703936,
+              "count": 65536,
+              "source_namespace": "inverse-source-1703936"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 1769472,
+              "count": 65536,
+              "source_namespace": "inverse-source-1769472"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 1835008,
+              "count": 65536,
+              "source_namespace": "inverse-source-1835008"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 1900544,
+              "count": 65536,
+              "source_namespace": "inverse-source-1900544"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 1966080,
+              "count": 65536,
+              "source_namespace": "inverse-source-1966080"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 2031616,
+              "count": 65536,
+              "source_namespace": "inverse-source-2031616"
+            }
+          ]
+        ],
+        "status": "complete",
+        "attempted_replicates": 8,
+        "completed_replicates": 8
+      },
+      {
+        "operation": "model",
+        "iteration": 1,
+        "first_history": 2097152,
+        "required_histories": 1048576,
+        "reserved_histories": 1048576,
+        "checkpoint_histories": 17825792,
+        "pairs": [
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 2097152,
+              "count": 65536,
+              "source_namespace": "inverse-source-2097152"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 2162688,
+              "count": 65536,
+              "source_namespace": "inverse-source-2162688"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 2228224,
+              "count": 65536,
+              "source_namespace": "inverse-source-2228224"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 2293760,
+              "count": 65536,
+              "source_namespace": "inverse-source-2293760"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 2359296,
+              "count": 65536,
+              "source_namespace": "inverse-source-2359296"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 2424832,
+              "count": 65536,
+              "source_namespace": "inverse-source-2424832"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 2490368,
+              "count": 65536,
+              "source_namespace": "inverse-source-2490368"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 2555904,
+              "count": 65536,
+              "source_namespace": "inverse-source-2555904"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 2621440,
+              "count": 65536,
+              "source_namespace": "inverse-source-2621440"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 2686976,
+              "count": 65536,
+              "source_namespace": "inverse-source-2686976"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 2752512,
+              "count": 65536,
+              "source_namespace": "inverse-source-2752512"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 2818048,
+              "count": 65536,
+              "source_namespace": "inverse-source-2818048"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 2883584,
+              "count": 65536,
+              "source_namespace": "inverse-source-2883584"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 2949120,
+              "count": 65536,
+              "source_namespace": "inverse-source-2949120"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 3014656,
+              "count": 65536,
+              "source_namespace": "inverse-source-3014656"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 3080192,
+              "count": 65536,
+              "source_namespace": "inverse-source-3080192"
+            }
+          ]
+        ],
+        "status": "complete",
+        "attempted_replicates": 8,
+        "completed_replicates": 8
+      },
+      {
+        "operation": "acceptance",
+        "iteration": 1,
+        "first_history": 3145728,
+        "required_histories": 1048576,
+        "reserved_histories": 1048576,
+        "checkpoint_histories": 16777216,
+        "pairs": [
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 3145728,
+              "count": 65536,
+              "source_namespace": "inverse-source-3145728"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 3211264,
+              "count": 65536,
+              "source_namespace": "inverse-source-3211264"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 3276800,
+              "count": 65536,
+              "source_namespace": "inverse-source-3276800"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 3342336,
+              "count": 65536,
+              "source_namespace": "inverse-source-3342336"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 3407872,
+              "count": 65536,
+              "source_namespace": "inverse-source-3407872"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 3473408,
+              "count": 65536,
+              "source_namespace": "inverse-source-3473408"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 3538944,
+              "count": 65536,
+              "source_namespace": "inverse-source-3538944"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 3604480,
+              "count": 65536,
+              "source_namespace": "inverse-source-3604480"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 3670016,
+              "count": 65536,
+              "source_namespace": "inverse-source-3670016"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 3735552,
+              "count": 65536,
+              "source_namespace": "inverse-source-3735552"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 3801088,
+              "count": 65536,
+              "source_namespace": "inverse-source-3801088"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 3866624,
+              "count": 65536,
+              "source_namespace": "inverse-source-3866624"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 3932160,
+              "count": 65536,
+              "source_namespace": "inverse-source-3932160"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 3997696,
+              "count": 65536,
+              "source_namespace": "inverse-source-3997696"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 4063232,
+              "count": 65536,
+              "source_namespace": "inverse-source-4063232"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 4128768,
+              "count": 65536,
+              "source_namespace": "inverse-source-4128768"
+            }
+          ]
+        ],
+        "status": "complete",
+        "attempted_replicates": 8,
+        "completed_replicates": 8
+      },
+      {
+        "operation": "model",
+        "iteration": 2,
+        "first_history": 4194304,
+        "required_histories": 1048576,
+        "reserved_histories": 1048576,
+        "checkpoint_histories": 17825792,
+        "pairs": [
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 4194304,
+              "count": 65536,
+              "source_namespace": "inverse-source-4194304"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 4259840,
+              "count": 65536,
+              "source_namespace": "inverse-source-4259840"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 4325376,
+              "count": 65536,
+              "source_namespace": "inverse-source-4325376"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 4390912,
+              "count": 65536,
+              "source_namespace": "inverse-source-4390912"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 4456448,
+              "count": 65536,
+              "source_namespace": "inverse-source-4456448"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 4521984,
+              "count": 65536,
+              "source_namespace": "inverse-source-4521984"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 4587520,
+              "count": 65536,
+              "source_namespace": "inverse-source-4587520"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 4653056,
+              "count": 65536,
+              "source_namespace": "inverse-source-4653056"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 4718592,
+              "count": 65536,
+              "source_namespace": "inverse-source-4718592"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 4784128,
+              "count": 65536,
+              "source_namespace": "inverse-source-4784128"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 4849664,
+              "count": 65536,
+              "source_namespace": "inverse-source-4849664"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 4915200,
+              "count": 65536,
+              "source_namespace": "inverse-source-4915200"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 4980736,
+              "count": 65536,
+              "source_namespace": "inverse-source-4980736"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 5046272,
+              "count": 65536,
+              "source_namespace": "inverse-source-5046272"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 5111808,
+              "count": 65536,
+              "source_namespace": "inverse-source-5111808"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 5177344,
+              "count": 65536,
+              "source_namespace": "inverse-source-5177344"
+            }
+          ]
+        ],
+        "status": "complete",
+        "attempted_replicates": 8,
+        "completed_replicates": 8
+      },
+      {
+        "operation": "acceptance",
+        "iteration": 2,
+        "first_history": 5242880,
+        "required_histories": 1048576,
+        "reserved_histories": 1048576,
+        "checkpoint_histories": 16777216,
+        "pairs": [
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 5242880,
+              "count": 65536,
+              "source_namespace": "inverse-source-5242880"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 5308416,
+              "count": 65536,
+              "source_namespace": "inverse-source-5308416"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 5373952,
+              "count": 65536,
+              "source_namespace": "inverse-source-5373952"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 5439488,
+              "count": 65536,
+              "source_namespace": "inverse-source-5439488"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 5505024,
+              "count": 65536,
+              "source_namespace": "inverse-source-5505024"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 5570560,
+              "count": 65536,
+              "source_namespace": "inverse-source-5570560"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 5636096,
+              "count": 65536,
+              "source_namespace": "inverse-source-5636096"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 5701632,
+              "count": 65536,
+              "source_namespace": "inverse-source-5701632"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 5767168,
+              "count": 65536,
+              "source_namespace": "inverse-source-5767168"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 5832704,
+              "count": 65536,
+              "source_namespace": "inverse-source-5832704"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 5898240,
+              "count": 65536,
+              "source_namespace": "inverse-source-5898240"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 5963776,
+              "count": 65536,
+              "source_namespace": "inverse-source-5963776"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 6029312,
+              "count": 65536,
+              "source_namespace": "inverse-source-6029312"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 6094848,
+              "count": 65536,
+              "source_namespace": "inverse-source-6094848"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 6160384,
+              "count": 65536,
+              "source_namespace": "inverse-source-6160384"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 6225920,
+              "count": 65536,
+              "source_namespace": "inverse-source-6225920"
+            }
+          ]
+        ],
+        "status": "complete",
+        "attempted_replicates": 8,
+        "completed_replicates": 8
+      },
+      {
+        "operation": "model",
+        "iteration": 3,
+        "first_history": 6291456,
+        "required_histories": 1048576,
+        "reserved_histories": 1048576,
+        "checkpoint_histories": 17825792,
+        "pairs": [
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 6291456,
+              "count": 65536,
+              "source_namespace": "inverse-source-6291456"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 6356992,
+              "count": 65536,
+              "source_namespace": "inverse-source-6356992"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 6422528,
+              "count": 65536,
+              "source_namespace": "inverse-source-6422528"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 6488064,
+              "count": 65536,
+              "source_namespace": "inverse-source-6488064"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 6553600,
+              "count": 65536,
+              "source_namespace": "inverse-source-6553600"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 6619136,
+              "count": 65536,
+              "source_namespace": "inverse-source-6619136"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 6684672,
+              "count": 65536,
+              "source_namespace": "inverse-source-6684672"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 6750208,
+              "count": 65536,
+              "source_namespace": "inverse-source-6750208"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 6815744,
+              "count": 65536,
+              "source_namespace": "inverse-source-6815744"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 6881280,
+              "count": 65536,
+              "source_namespace": "inverse-source-6881280"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 6946816,
+              "count": 65536,
+              "source_namespace": "inverse-source-6946816"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 7012352,
+              "count": 65536,
+              "source_namespace": "inverse-source-7012352"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 7077888,
+              "count": 65536,
+              "source_namespace": "inverse-source-7077888"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 7143424,
+              "count": 65536,
+              "source_namespace": "inverse-source-7143424"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 7208960,
+              "count": 65536,
+              "source_namespace": "inverse-source-7208960"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 7274496,
+              "count": 65536,
+              "source_namespace": "inverse-source-7274496"
+            }
+          ]
+        ],
+        "status": "complete",
+        "attempted_replicates": 8,
+        "completed_replicates": 8
+      },
+      {
+        "operation": "acceptance",
+        "iteration": 3,
+        "first_history": 7340032,
+        "required_histories": 1048576,
+        "reserved_histories": 1048576,
+        "checkpoint_histories": 16777216,
+        "pairs": [
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 7340032,
+              "count": 65536,
+              "source_namespace": "inverse-source-7340032"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 7405568,
+              "count": 65536,
+              "source_namespace": "inverse-source-7405568"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 7471104,
+              "count": 65536,
+              "source_namespace": "inverse-source-7471104"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 7536640,
+              "count": 65536,
+              "source_namespace": "inverse-source-7536640"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 7602176,
+              "count": 65536,
+              "source_namespace": "inverse-source-7602176"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 7667712,
+              "count": 65536,
+              "source_namespace": "inverse-source-7667712"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 7733248,
+              "count": 65536,
+              "source_namespace": "inverse-source-7733248"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 7798784,
+              "count": 65536,
+              "source_namespace": "inverse-source-7798784"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 7864320,
+              "count": 65536,
+              "source_namespace": "inverse-source-7864320"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 7929856,
+              "count": 65536,
+              "source_namespace": "inverse-source-7929856"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 7995392,
+              "count": 65536,
+              "source_namespace": "inverse-source-7995392"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 8060928,
+              "count": 65536,
+              "source_namespace": "inverse-source-8060928"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 8126464,
+              "count": 65536,
+              "source_namespace": "inverse-source-8126464"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 8192000,
+              "count": 65536,
+              "source_namespace": "inverse-source-8192000"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 8257536,
+              "count": 65536,
+              "source_namespace": "inverse-source-8257536"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 8323072,
+              "count": 65536,
+              "source_namespace": "inverse-source-8323072"
+            }
+          ]
+        ],
+        "status": "complete",
+        "attempted_replicates": 8,
+        "completed_replicates": 8
+      },
+      {
+        "operation": "model",
+        "iteration": 4,
+        "first_history": 8388608,
+        "required_histories": 1048576,
+        "reserved_histories": 1048576,
+        "checkpoint_histories": 17825792,
+        "pairs": [
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 8388608,
+              "count": 65536,
+              "source_namespace": "inverse-source-8388608"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 8454144,
+              "count": 65536,
+              "source_namespace": "inverse-source-8454144"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 8519680,
+              "count": 65536,
+              "source_namespace": "inverse-source-8519680"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 8585216,
+              "count": 65536,
+              "source_namespace": "inverse-source-8585216"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 8650752,
+              "count": 65536,
+              "source_namespace": "inverse-source-8650752"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 8716288,
+              "count": 65536,
+              "source_namespace": "inverse-source-8716288"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 8781824,
+              "count": 65536,
+              "source_namespace": "inverse-source-8781824"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 8847360,
+              "count": 65536,
+              "source_namespace": "inverse-source-8847360"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 8912896,
+              "count": 65536,
+              "source_namespace": "inverse-source-8912896"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 8978432,
+              "count": 65536,
+              "source_namespace": "inverse-source-8978432"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 9043968,
+              "count": 65536,
+              "source_namespace": "inverse-source-9043968"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 9109504,
+              "count": 65536,
+              "source_namespace": "inverse-source-9109504"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 9175040,
+              "count": 65536,
+              "source_namespace": "inverse-source-9175040"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 9240576,
+              "count": 65536,
+              "source_namespace": "inverse-source-9240576"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 9306112,
+              "count": 65536,
+              "source_namespace": "inverse-source-9306112"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 9371648,
+              "count": 65536,
+              "source_namespace": "inverse-source-9371648"
+            }
+          ]
+        ],
+        "status": "complete",
+        "attempted_replicates": 8,
+        "completed_replicates": 8
+      },
+      {
+        "operation": "final_validation",
+        "iteration": 4,
+        "first_history": 9437184,
+        "required_histories": 16777216,
+        "reserved_histories": 16777216,
+        "checkpoint_histories": 0,
+        "pairs": [
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 9437184,
+              "count": 1048576,
+              "source_namespace": "inverse-source-9437184"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 10485760,
+              "count": 1048576,
+              "source_namespace": "inverse-source-10485760"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 11534336,
+              "count": 1048576,
+              "source_namespace": "inverse-source-11534336"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 12582912,
+              "count": 1048576,
+              "source_namespace": "inverse-source-12582912"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 13631488,
+              "count": 1048576,
+              "source_namespace": "inverse-source-13631488"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 14680064,
+              "count": 1048576,
+              "source_namespace": "inverse-source-14680064"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 15728640,
+              "count": 1048576,
+              "source_namespace": "inverse-source-15728640"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 16777216,
+              "count": 1048576,
+              "source_namespace": "inverse-source-16777216"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 17825792,
+              "count": 1048576,
+              "source_namespace": "inverse-source-17825792"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 18874368,
+              "count": 1048576,
+              "source_namespace": "inverse-source-18874368"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 19922944,
+              "count": 1048576,
+              "source_namespace": "inverse-source-19922944"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 20971520,
+              "count": 1048576,
+              "source_namespace": "inverse-source-20971520"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 22020096,
+              "count": 1048576,
+              "source_namespace": "inverse-source-22020096"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 23068672,
+              "count": 1048576,
+              "source_namespace": "inverse-source-23068672"
+            }
+          ],
+          [
+            {
+              "seed": 2026091501,
+              "first_history": 24117248,
+              "count": 1048576,
+              "source_namespace": "inverse-source-24117248"
+            },
+            {
+              "seed": 2026091501,
+              "first_history": 25165824,
+              "count": 1048576,
+              "source_namespace": "inverse-source-25165824"
+            }
+          ]
+        ],
+        "status": "complete",
+        "attempted_replicates": 8,
+        "completed_replicates": 8
+      }
+    ],
+    "local_models": [
+      {
+        "model_id": 0,
+        "parameters": [
+          -2.5257286443082556
+        ],
+        "gradient": [
+          -0.0013797171444322933
+        ],
+        "curvature": [
+          [
+            0.003008404560816885
+          ]
+        ],
+        "first_history": 0,
+        "histories_used": 1048576,
+        "batch_size": 65536
+      },
+      {
+        "model_id": 1,
+        "parameters": [
+          -2.4257286443082555
+        ],
+        "gradient": [
+          -0.0011729204528426551
+        ],
+        "curvature": [
+          [
+            0.0036689892869971935
+          ]
+        ],
+        "first_history": 2097152,
+        "histories_used": 1048576,
+        "batch_size": 65536
+      },
+      {
+        "model_id": 2,
+        "parameters": [
+          -2.2257286443082553
+        ],
+        "gradient": [
+          -0.00044130228451075114
+        ],
+        "curvature": [
+          [
+            0.005484968849499616
+          ]
+        ],
+        "first_history": 4194304,
+        "histories_used": 1048576,
+        "batch_size": 65536
+      },
+      {
+        "model_id": 3,
+        "parameters": [
+          -2.1452719823618507
+        ],
+        "gradient": [
+          1.8051217481094206e-05
+        ],
+        "curvature": [
+          [
+            0.0064315710825531315
+          ]
+        ],
+        "first_history": 6291456,
+        "histories_used": 1048576,
+        "batch_size": 65536
+      },
+      {
+        "model_id": 4,
+        "parameters": [
+          -2.1480786399031255
+        ],
+        "gradient": [
+          2.0177041711258e-06
+        ],
+        "curvature": [
+          [
+            0.006397433459324593
+          ]
+        ],
+        "first_history": 8388608,
+        "histories_used": 1048576,
+        "batch_size": 65536
+      }
+    ],
+    "final_validation_attempts": [
+      {
+        "iteration": 4,
+        "parameters": [
+          -2.1480786399031255
+        ],
+        "batch_size": 1048576,
+        "first_history": 9437184,
+        "histories_used": 16777216,
+        "gradient": [
+          2.471399570485051e-06
+        ],
+        "standard_error": [
+          5.290346161690779e-07
+        ],
+        "gradient_norm": 2.471399570485051e-06,
+        "standard_error_norm": 5.290346161690779e-07,
+        "decision": "gradient_band",
+        "model_id": null,
+        "pool": "final_validation",
+        "band_method": "heuristic_euclidean_marginal_se",
+        "numerical_allowance": 0.0,
+        "replicate_gradients": [
+          [
+            7.007428963699633e-07
+          ],
+          [
+            5.004050586721922e-06
+          ],
+          [
+            4.017224292105246e-06
+          ],
+          [
+            1.355148064236071e-06
+          ],
+          [
+            2.0188926357780306e-06
+          ],
+          [
+            2.7654379985029646e-06
+          ],
+          [
+            1.0429450786571106e-06
+          ],
+          [
+            2.8667550115090988e-06
+          ]
+        ]
+      }
+    ],
+    "sampling_classification": "stochastic",
+    "proposal_policy": "quadratic",
+    "uncertainty_policy": "heuristic_euclidean_marginal_se",
+    "numerical_gradient_allowance": 1e-12,
+    "final_validation_batch": 1048576,
+    "final_validation_trigger": "proposal_gradient_band"
+  },
+  "amplitude": 0.11670818093182213,
+  "independent_optimum_interval": [
+    0.11666088480188352,
+    0.1166912369141689
+  ],
+  "reference_gradient_interval": [
+    9.294396220632688e-07,
+    2.5957110599444235e-06
+  ],
+  "reference_stationarity_pass": true,
+  "histories_traced_including_replay": 30408704,
+  "allocated_device_bytes": 88080492,
+  "scalar_download_bytes": 1216,
+  "parameter_upload_bytes": 488,
+  "elapsed_seconds_contended": 0.6339568451512605,
+  "deterministic_sampling": false
+}

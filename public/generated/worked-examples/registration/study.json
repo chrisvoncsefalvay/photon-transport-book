@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "passed": true,
+  "title": "From two radiographs to a recovered pose",
+  "description": "Recorded CT-ORG case 2 teaching example: assigned 80 keV attenuation, simulated counts, identity start and independently evaluated recovery.",
+  "images": [
+    {
+      "file": "images.png",
+      "pdf": "images.pdf",
+      "alt": "Both orthogonal views show initial predictions, supplied Poisson observations and recovered predictions in one fixed logarithmic window.",
+      "width": 3150,
+      "height": 2220
+    },
+    {
+      "file": "convergence.png",
+      "pdf": "convergence.pdf",
+      "alt": "16 accepted updates reduce the scaled gradient below 0.001. RMS target error falls from 3.77 mm to 0.010 mm.",
+      "width": 3150,
+      "height": 1050
+    }
+  ],
+  "measurements": [
+    {
+      "label": "Solver termination",
+      "value": "Gradient tolerance; 16 accepted updates",
+      "criterion": "Scaled gradient \u2264 0.001"
+    },
+    {
+      "label": "Final scaled gradient",
+      "value": "0.000119134",
+      "criterion": "\u2264 0.001"
+    },
+    {
+      "label": "RMS target error",
+      "value": "3.769 \u2192 0.00998 mm",
+      "criterion": "\u2264 1 mm"
+    },
+    {
+      "label": "Worst target error",
+      "value": "0.01220 mm",
+      "criterion": "\u2264 2 mm"
+    },
+    {
+      "label": "Reserved-view mean error",
+      "value": "0.00448 Poisson SD RMS",
+      "criterion": "\u2264 1 Poisson SD RMS in both views"
+    }
+  ],
+  "reading": "The optimiser sees the two count images, the known volume and fixed calibration. After fixing the result, the evaluator compares its action on the eight target points with their generating positions. The final gradient and target error answer different questions, and both pass.",
+  "reproduction": "https://github.com/chrisvoncsefalvay/photon-transport-book/tree/main/experiments/worked-applications"
+}

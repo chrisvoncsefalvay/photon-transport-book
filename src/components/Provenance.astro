@@ -1,0 +1,43 @@
+---
+interface Props {
+  status: "bootstrap" | "generated" | "reviewed";
+  sourceCommit?: string;
+  updated?: string;
+}
+
+const { status, sourceCommit, updated } = Astro.props;
+---
+
+<footer class="provenance">
+  <div>
+    <span class="eyebrow">Provenance</span>
+    <strong
+      >{status === "bootstrap" ? "Design-system demonstration" : status}</strong
+    >
+  </div>
+  <dl>
+    {
+      sourceCommit && (
+        <>
+          <>
+            <dt>Source commit</dt>
+            <dd>
+              <code>{sourceCommit}</code>
+            </dd>
+          </>
+        </>
+      )
+    }
+    {
+      updated && (
+        <>
+          <>
+            <dt>Updated</dt>
+            <dd>{updated}</dd>
+          </>
+        </>
+      )
+    }
+  </dl>
+  <p><slot /></p>
+</footer>

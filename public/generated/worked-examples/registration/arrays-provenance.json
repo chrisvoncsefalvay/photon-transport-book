@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "kind": "registration",
+  "source": "https://doi.org/10.7937/tcia.2019.tt7f4v7o",
+  "rights": "CC BY 3.0; Rister et al., CT-ORG, TCIA; assigned-material derivatives",
+  "source_file_sha256": {
+    "volume-2.nii.gz": "ca702e58f0fb736ff4bc407aac0c4b698b8689f3f7e0281da32a546a87ae8a40",
+    "labels-2.nii.gz": "c5951c1065f517c9e8e794aec0a921ae0ebaa2198d4b38f0ed492bc7aca74e8f"
+  },
+  "execution_records_sha256": {
+    "decision-00/run/run.json": "62d426815fa9838f09d60aece276ea4da8e6720a2912fa0dcb006502cb7d6813",
+    "decision-01/run/run.json": "4112bbf66cf173356eb5609ad993991fad4a3ff289f7febb7dda764c0b370b6b",
+    "decision-02/run/run.json": "662dcbebb123c3164023740097436c7c123b75ee9f772a3c8e374ac1290d6003",
+    "decision-03/run/run.json": "0627674fb9babdec9674d6d6015472b027d6839a33a3b7b72d7cfe1bceba4216",
+    "decision-04/run/run.json": "328ef8bda7f3ded79537386be2938ba5534af440400182084b1d1473223aaab5",
+    "decision-05/run/run.json": "9bdb3d6bded553ae8bdc1420bd981ef35aa88adb2ecfd3b8b978da1a68ef56cf",
+    "decision-06/run/run.json": "87a26a37b884a0281e3bca88279f8f5a662d27176d6d8fecdf2c37f49af8d98d",
+    "decision-07/run/run.json": "75c59c2d5331061352462bb59091774f4cc661acecfb60e36179b7626cc956bc",
+    "fits/base-00/run.json": "9a6c9f86964659f407093f10c4dccb7996baa2b35aad2929f65fbfb7a71b58d0",
+    "fits/base-01/run.json": "6d491bc6807ba4464301631f4d282d98ab4592eba8c568502c1c95d8bd4f2b35",
+    "fits/base-02/run.json": "2cdae3fbae2affe55d05c5224e78a74e21111ea11de018d3d493c717e017f359",
+    "fits/base-03/run.json": "66de91d696bac30195004170b9087bcb9cd04f75e71385ae306bddb2f008d447",
+    "fits/base-04/run.json": "32dba856aa57d9097f2455fe47284df947f67bcff31315d50ab1edc4fe08831a",
+    "fits/base-05/run.json": "015a2bd68f879921d8ab92a9e25a8b89a019b13026e33d7f6ac719f12243d302",
+    "fits/base-06/run.json": "2e76c8abc6b972e06c15ecf528cab46604da6de29a3437e516c0a552b0aeffce",
+    "fits/base-07/run.json": "6eda1a62954f69f76838624bb0d645a0af54fd6ca6f2d9b456be6e7a5a173582",
+    "fits/near_parallel-00/run.json": "92949bc44cb9bd540990619c880dee5fd7efe39f7bc4e0540502b9b8b0a4768f",
+    "fits/near_parallel-01/run.json": "60d9e6b3e6a3f6c1c8bbfb0b3b0757ae9340dfefd1c0cf33e7dcd0ca283559e1",
+    "fits/near_parallel-02/run.json": "16fae99a380473f9e9c937a1ae78b28db6c59f406211107eb04a8329266ae9d2",
+    "fits/near_parallel-03/run.json": "ef1b4bcbc2793c0af26ed00628a2716618fb10b643b90acbd7570d960e0a6f48",
+    "fits/near_parallel-04/run.json": "ef1211f4c8519341665ada2a5eebf6c6755027cdbfd99550bb4f932e30314df7",
+    "fits/near_parallel-05/run.json": "2bbe588339d877c291d65d22af85df27b1280993563b63a0300f05abe9170092",
+    "fits/near_parallel-06/run.json": "f8b66d31520cbaa4a3423cbaa8ee7caa96a9480cc9cd0d236d481fd660387a81",
+    "fits/near_parallel-07/run.json": "83b505c3300f3bd9c36e2d547dcfe1d74431b5f17074d8262b151e1f61c912c1",
+    "fits/registration/run.json": "39db8c7823a933347114cde4205645960a296f222012108fa74c719de86bc5c1",
+    "fits/selected-00/run.json": "78acd48ee214bef8eb90a44511571aec0f1c484cf58943c28ab020abb3ab79f0",
+    "fits/selected-01/run.json": "b6cda94c6e2fe69d57e516d9b0d3204ccbc4437546ab22ef31f232a321a3c5d7",
+    "fits/selected-02/run.json": "45816cbf5aa5e6345da9b081566e47faa3405e6de0dc37bace3efcea6c1992ca",
+    "fits/selected-03/run.json": "a577ef09b19baca0d013187c990b72233642d68ad7619fe5621a81252cace850",
+    "fits/selected-04/run.json": "09a6cf134238973d9f60ea06047e0b44f8312122cdd37218c58850cf9a0841c3",
+    "fits/selected-05/run.json": "47491b415d60b5802c421b8bea08d416d78615427277139a83df619aa402002f",
+    "fits/selected-06/run.json": "5de0ca0ef061c6c641ec6f83f13d2493e635a7bfda15f21a4a63a675bdb7839f",
+    "fits/selected-07/run.json": "333e2c9b59d51f9365494a5f9c796123649a21c4c815aaa822475181d7593668",
+    "run.json": "8817e6801b2d89abacd84a9b9725325e143745b21684ddc59365ff7f705e5928"
+  },
+  "verified_record_count": 34,
+  "verified_source_and_output_hash_count": 3237,
+  "input_sha256": {
+    "fits/registration/initial-r1-n00-a180.npy": "e6c66be0da299e36ddbaef6a883020d0cca3e974a44a4e8b5fca9750fe52b85c",
+    "observations/r1-n00-a180.npy": "05816482cfc55481ef4c7be854fcd615b1806e4f132fa172fc5ffb055499d357",
+    "fits/registration/prediction-r1-n00-a180.npy": "7567bcb3981adb24f1ad00bce253008857c86a763307e409bac26bfc4d9b6cb7",
+    "fits/registration/initial-r1-n00-a270.npy": "6fd1edf889f1ba3c626cc7a3242235cc8cf7292bcd04bccee10548894bc14875",
+    "observations/r1-n00-a270.npy": "3e87c868be8ec4efbbb439fad7987be51b95fef8749a6a5b7a3af9dbf56a3367",
+    "fits/registration/prediction-r1-n00-a270.npy": "a0db1c08e2c24f4ff34ad91155425229016939f96f7483a65a453c51647d5da5"
+  },
+  "curated_input_sha256": {},
+  "exporter": {
+    "file": "tools/public/export-worked-example-arrays.py",
+    "sha256": "3bbfdd25ab951053a803f59b12c726ea405cf55af5efe43d062295d076380831"
+  },
+  "output_sha256": {
+    "arrays.json": "9b9ed52ea20ae8d15b1a8ae3b8fa535d6feffcba3d4a4ff594baa57adde7cab1"
+  },
+  "verification": {
+    "array_count": 6,
+    "value_count": 98304,
+    "json_roundtrip": "bit-for-bit equality at each recorded dtype",
+    "processing": "C-order flattening only; all recorded numerical values retained"
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "formula": "4.3",
+  "grid": {
+    "orientation": [
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ],
+    "origin_mm": [
+      10.0,
+      -20.0,
+      30.0
+    ],
+    "shape": [
+      8,
+      8,
+      8
+    ],
+    "spacing_mm": [
+      0.5,
+      0.8,
+      2.0
+    ]
+  },
+  "parameter_status": "worked coordinates and spacings from section4.2; shape illustrative",
+  "points": [
+    {
+      "grid": [
+        2.0,
+        2.9999999999999982,
+        2.0
+      ],
+      "object_mm": [
+        11.0,
+        -17.6,
+        34.0
+      ]
+    },
+    {
+      "grid": [
+        0.5,
+        0.2499999999999991,
+        0.5
+      ],
+      "object_mm": [
+        10.25,
+        -19.8,
+        31.0
+      ]
+    }
+  ]
+}

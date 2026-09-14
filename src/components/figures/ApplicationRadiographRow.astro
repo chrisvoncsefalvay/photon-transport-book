@@ -1,0 +1,74 @@
+---
+import study from "../../../public/generated/application-study/study.json";
+interface Props {
+  view: (typeof study.examples)[number]["views"][number];
+}
+const { view } = Astro.props;
+const base = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/generated/application-study/`;
+const restricted = view.observed.invalid_pixels > 0;
+const panels = [
+  { label: "Observed counts", image: view.observed },
+  { label: "Initial prediction", image: view.initial },
+  { label: "Accepted prediction", image: view.final },
+  ...("residual" in view && view.residual
+    ? [{ label: "Observed − accepted", image: view.residual }]
+    : []),
+];
+const [first, end] = view.fitted_columns_half_open;
+if (
+  first === undefined ||
+  end === undefined ||
+  first < 0 ||
+  first >= end ||
+  end > 128
+)
+  throw new Error(`Invalid recorded detector support: ${view.view_id}`);
+---
+
+<section
+  class="application-radiograph-view"
+  aria-label={`${view.angle_degrees} degree detector view`}
+>
+  <h4>{view.angle_degrees}° view</h4>
+  <div
+    class:list={[
+      "application-radiograph-row",
+      { "has-three": panels.length === 3 },
+    ]}
+  >
+    {
+      panels.map(({ label, image }) => (
+        <div class="application-radiograph-panel">
+          <h5>{label}</h5>
+          <div
+            class:list={[
+              "application-image",
+              { "has-excluded": image.invalid_pixels > 0 },
+            ]}
+          >
+            <img
+              src={`${base}${image.file}`}
+              width={128}
+              height={128}
+              loading="lazy"
+              decoding="async"
+              alt={`${label} at ${view.angle_degrees} degrees. ${image.invalid_pixels > 0 ? "Only the central eight detector columns contain observations. The transparent remainder is excluded." : "CT-derived simulated radiograph, displayed at the recorded common window."}`}
+            />
+            {restricted && (
+              <span
+                class="application-fit-strip"
+                style={`left:${(100 * first) / 128}%;width:${(100 * (end - first)) / 128}%`}
+                aria-hidden="true"
+              />
+            )}
+          </div>
+          <p>
+            {image.display.includes("minus")
+              ? "Residual: −500 to +500 counts"
+              : "Negative-log display: 0–8"}
+          </p>
+        </div>
+      ))
+    }
+  </div>
+</section>

@@ -1,0 +1,1243 @@
+[
+  {
+    "id": "siddon1985",
+    "type": "article-journal",
+    "title": "Fast calculation of the exact radiological path for a three-dimensional CT array",
+    "author": [
+      {
+        "family": "Siddon",
+        "given": "Robert L."
+      }
+    ],
+    "container-title": "Medical Physics",
+    "volume": "12",
+    "issue": "2",
+    "page": "252-255",
+    "issued": {
+      "date-parts": [[1985, 3]]
+    },
+    "DOI": "10.1118/1.595715",
+    "URL": "https://doi.org/10.1118/1.595715",
+    "note": "Bootstrap fixture: a genuine primary source for exact radiological path calculation; metadata checked against the publisher record."
+  },
+  {
+    "id": "dance2014",
+    "type": "book",
+    "title": "Diagnostic Radiology Physics: A Handbook for Teachers and Students",
+    "editor": [
+      {
+        "family": "Dance",
+        "given": "D. R."
+      },
+      {
+        "family": "Christofides",
+        "given": "S."
+      },
+      {
+        "family": "Maidment",
+        "given": "A. D. A."
+      },
+      {
+        "family": "McLean",
+        "given": "I. D."
+      },
+      {
+        "family": "Ng",
+        "given": "K.-H."
+      }
+    ],
+    "publisher": "International Atomic Energy Agency",
+    "publisher-place": "Vienna",
+    "number": "STI/PUB/1564",
+    "ISBN": "978-92-0-131010-1",
+    "issued": {
+      "date-parts": [[2014, 9]]
+    },
+    "URL": "https://www.iaea.org/publications/8841/diagnostic-radiology-physics",
+    "note": "Editors, publication date and identifier checked against the IAEA book and publication record. Relevant chapters include 2, 4–8, 11 and 22."
+  },
+  {
+    "id": "fdaXray",
+    "type": "webpage",
+    "title": "Medical X-ray Imaging",
+    "author": [
+      {
+        "literal": "U.S. Food and Drug Administration"
+      }
+    ],
+    "issued": {
+      "date-parts": []
+    },
+    "accessed": {
+      "date-parts": [[2026, 9, 7]]
+    },
+    "URL": "https://www.fda.gov/radiation-emitting-products/medical-imaging/medical-x-ray-imaging",
+    "note": "Official FDA overview. No publication date is stated on the consulted page."
+  },
+  {
+    "id": "openstax2022",
+    "type": "book",
+    "title": "Anatomy and Physiology 2e",
+    "author": [
+      {
+        "family": "Betts",
+        "given": "J. Gordon"
+      },
+      {
+        "family": "Young",
+        "given": "Kelly A."
+      },
+      {
+        "family": "Wise",
+        "given": "James A."
+      },
+      {
+        "family": "Johnson",
+        "given": "Eddie"
+      },
+      {
+        "family": "Poe",
+        "given": "Brandon"
+      },
+      {
+        "family": "Kruse",
+        "given": "Dean H."
+      },
+      {
+        "family": "Korol",
+        "given": "Oksana"
+      },
+      {
+        "family": "Johnson",
+        "given": "Jody E."
+      },
+      {
+        "family": "Womble",
+        "given": "Mark"
+      },
+      {
+        "family": "DeSaix",
+        "given": "Peter"
+      }
+    ],
+    "edition": "2",
+    "publisher": "OpenStax",
+    "publisher-place": "Houston, Texas",
+    "issued": {
+      "date-parts": [[2022, 4, 20]]
+    },
+    "URL": "https://openstax.org/books/anatomy-and-physiology-2e/pages/1-6-anatomical-terminology",
+    "note": "Section 1.6, Anatomical Terminology. Authors and publication date follow the official OpenStax citation information."
+  },
+  {
+    "id": "dicomPS33",
+    "type": "standard",
+    "title": "DICOM PS3.3 2026c: Information Object Definitions",
+    "author": [
+      {
+        "literal": "DICOM Standards Committee"
+      }
+    ],
+    "publisher": "National Electrical Manufacturers Association",
+    "number": "PS3.3",
+    "version": "2026c",
+    "issued": {
+      "date-parts": [[2026]]
+    },
+    "accessed": {
+      "date-parts": [[2026, 9, 7]]
+    },
+    "URL": "https://dicom.nema.org/medical/dicom/current/output/chtml/part03/PS3.3.html",
+    "note": "The current online edition was 2026c when checked. Relevant sections include C.7.6.2, C.8.2, C.8.11.3, C.8.11.5 and C.11.2."
+  },
+  {
+    "id": "hernandez2014",
+    "type": "article-journal",
+    "title": "Tungsten anode spectral model using interpolating cubic splines: Unfiltered x-ray spectra from 20 kV to 640 kV",
+    "author": [
+      {
+        "family": "Hernandez",
+        "given": "Andrew M."
+      },
+      {
+        "family": "Boone",
+        "given": "John M."
+      }
+    ],
+    "container-title": "Medical Physics",
+    "volume": "41",
+    "issue": "4",
+    "page": "042101",
+    "issued": {
+      "date-parts": [[2014, 4]]
+    },
+    "DOI": "10.1118/1.4866216",
+    "URL": "https://doi.org/10.1118/1.4866216"
+  },
+  {
+    "id": "poludniowski2021",
+    "type": "article-journal",
+    "title": "Technical Note: SpekPy v2.0—a software toolkit for modeling x-ray tube spectra",
+    "author": [
+      {
+        "family": "Poludniowski",
+        "given": "Gavin"
+      },
+      {
+        "family": "Omar",
+        "given": "Artur"
+      },
+      {
+        "family": "Bujila",
+        "given": "Robert"
+      },
+      {
+        "family": "Andreo",
+        "given": "Pedro"
+      }
+    ],
+    "container-title": "Medical Physics",
+    "volume": "48",
+    "issue": "7",
+    "page": "3630-3637",
+    "issued": {
+      "date-parts": [[2021, 7]]
+    },
+    "DOI": "10.1002/mp.14945",
+    "URL": "https://doi.org/10.1002/mp.14945"
+  },
+  {
+    "id": "hubbell1995",
+    "type": "report",
+    "title": "Tables of X-Ray Mass Attenuation Coefficients and Mass Energy-Absorption Coefficients 1 keV to 20 MeV for Elements Z = 1 to 92 and 48 Additional Substances of Dosimetric Interest",
+    "author": [
+      {
+        "family": "Hubbell",
+        "given": "J. H."
+      },
+      {
+        "family": "Seltzer",
+        "given": "S. M."
+      }
+    ],
+    "publisher": "National Institute of Standards and Technology",
+    "publisher-place": "Gaithersburg, Maryland",
+    "number": "NISTIR 5632",
+    "issued": {
+      "date-parts": [[1995, 5]]
+    },
+    "DOI": "10.6028/NIST.IR.5632",
+    "URL": "https://doi.org/10.6028/NIST.IR.5632",
+    "note": "The May 1995 report is distinct from its updated online tables, NIST Standard Reference Database 126 (DOI 10.18434/T4D01F; data last updated July 2004)."
+  },
+  {
+    "id": "xcom",
+    "type": "dataset",
+    "title": "XCOM: Photon Cross Sections Database",
+    "author": [
+      {
+        "family": "Berger",
+        "given": "M. J."
+      },
+      {
+        "family": "Hubbell",
+        "given": "J. H."
+      },
+      {
+        "family": "Seltzer",
+        "given": "S. M."
+      },
+      {
+        "family": "Chang",
+        "given": "J."
+      },
+      {
+        "family": "Coursey",
+        "given": "J. S."
+      },
+      {
+        "family": "Sukumar",
+        "given": "R."
+      },
+      {
+        "family": "Zucker",
+        "given": "D. S."
+      },
+      {
+        "family": "Olsen",
+        "given": "K."
+      }
+    ],
+    "publisher": "National Institute of Standards and Technology",
+    "number": "NIST Standard Reference Database 8",
+    "issued": {
+      "date-parts": [[2010, 11]]
+    },
+    "accessed": {
+      "date-parts": [[2026, 9, 7]]
+    },
+    "DOI": "10.18434/T48G6X",
+    "URL": "https://doi.org/10.18434/T48G6X",
+    "note": "The date is the November 2010 data-content update stated by NIST, not the webpage modification date."
+  },
+  {
+    "id": "brooks1976",
+    "type": "article-journal",
+    "title": "Beam hardening in X-ray reconstructive tomography",
+    "author": [
+      {
+        "family": "Brooks",
+        "given": "R. A."
+      },
+      {
+        "family": "Di Chiro",
+        "given": "G."
+      }
+    ],
+    "container-title": "Physics in Medicine and Biology",
+    "volume": "21",
+    "issue": "3",
+    "page": "390-398",
+    "issued": {
+      "date-parts": [[1976, 5]]
+    },
+    "DOI": "10.1088/0031-9155/21/3/004",
+    "URL": "https://doi.org/10.1088/0031-9155/21/3/004"
+  },
+  {
+    "id": "alvarez1976",
+    "type": "article-journal",
+    "title": "Energy-selective reconstructions in X-ray computerised tomography",
+    "author": [
+      {
+        "family": "Alvarez",
+        "given": "R. E."
+      },
+      {
+        "family": "Macovski",
+        "given": "A."
+      }
+    ],
+    "container-title": "Physics in Medicine and Biology",
+    "volume": "21",
+    "issue": "5",
+    "page": "733-744",
+    "issued": {
+      "date-parts": [[1976, 9]]
+    },
+    "DOI": "10.1088/0031-9155/21/5/002",
+    "URL": "https://doi.org/10.1088/0031-9155/21/5/002"
+  },
+  {
+    "id": "alvarez2017",
+    "type": "article",
+    "title": "Conditions for the invertibility of dual energy data",
+    "author": [
+      {
+        "family": "Alvarez",
+        "given": "Robert"
+      }
+    ],
+    "container-title": "arXiv",
+    "number": "1711.10836",
+    "issued": {
+      "date-parts": [[2017, 11, 29]]
+    },
+    "DOI": "10.48550/arXiv.1711.10836",
+    "URL": "https://doi.org/10.48550/arXiv.1711.10836",
+    "note": "Preprint submitted 29 November 2017; version 2 revised 6 December 2017. Metadata checked against arXiv."
+  },
+  {
+    "id": "siewerdsen2001",
+    "type": "article-journal",
+    "title": "Cone-beam computed tomography with a flat-panel imager: Magnitude and effects of x-ray scatter",
+    "author": [
+      {
+        "family": "Siewerdsen",
+        "given": "Jeffrey H."
+      },
+      {
+        "family": "Jaffray",
+        "given": "David A."
+      }
+    ],
+    "container-title": "Medical Physics",
+    "volume": "28",
+    "issue": "2",
+    "page": "220-231",
+    "issued": {
+      "date-parts": [[2001, 2]]
+    },
+    "DOI": "10.1118/1.1339879",
+    "URL": "https://doi.org/10.1118/1.1339879"
+  },
+  {
+    "id": "xu2014",
+    "type": "article-journal",
+    "title": "Cascaded systems analysis of photon counting detectors",
+    "author": [
+      {
+        "family": "Xu",
+        "given": "J."
+      },
+      {
+        "family": "Zbijewski",
+        "given": "W."
+      },
+      {
+        "family": "Gang",
+        "given": "G."
+      },
+      {
+        "family": "Stayman",
+        "given": "J. W."
+      },
+      {
+        "family": "Taguchi",
+        "given": "K."
+      },
+      {
+        "family": "Lundqvist",
+        "given": "M."
+      },
+      {
+        "family": "Fredenberg",
+        "given": "E."
+      },
+      {
+        "family": "Carrino",
+        "given": "J. A."
+      },
+      {
+        "family": "Siewerdsen",
+        "given": "J. H."
+      }
+    ],
+    "container-title": "Medical Physics",
+    "volume": "41",
+    "issue": "10",
+    "page": "101907",
+    "issued": {
+      "date-parts": [[2014, 10]]
+    },
+    "DOI": "10.1118/1.4894733",
+    "URL": "https://doi.org/10.1118/1.4894733"
+  },
+  {
+    "id": "prakash2011",
+    "type": "article-journal",
+    "title": "Task-based modeling and optimization of a cone-beam CT scanner for musculoskeletal imaging",
+    "author": [
+      {
+        "family": "Prakash",
+        "given": "P."
+      },
+      {
+        "family": "Zbijewski",
+        "given": "W."
+      },
+      {
+        "family": "Gang",
+        "given": "G. J."
+      },
+      {
+        "family": "Ding",
+        "given": "Y."
+      },
+      {
+        "family": "Stayman",
+        "given": "J. W."
+      },
+      {
+        "family": "Yorkston",
+        "given": "J."
+      },
+      {
+        "family": "Carrino",
+        "given": "J. A."
+      },
+      {
+        "family": "Siewerdsen",
+        "given": "J. H."
+      }
+    ],
+    "container-title": "Medical Physics",
+    "volume": "38",
+    "issue": "10",
+    "page": "5612-5629",
+    "issued": {
+      "date-parts": [[2011]]
+    },
+    "DOI": "10.1118/1.3633937",
+    "URL": "https://doi.org/10.1118/1.3633937"
+  },
+  {
+    "id": "schneider1996",
+    "type": "article-journal",
+    "title": "The calibration of CT Hounsfield units for radiotherapy treatment planning",
+    "author": [
+      {
+        "family": "Schneider",
+        "given": "Uwe"
+      },
+      {
+        "family": "Pedroni",
+        "given": "Eros"
+      },
+      {
+        "family": "Lomax",
+        "given": "Antony"
+      }
+    ],
+    "container-title": "Physics in Medicine and Biology",
+    "volume": "41",
+    "issue": "1",
+    "page": "111-124",
+    "issued": {
+      "date-parts": [[1996, 1]]
+    },
+    "DOI": "10.1088/0031-9155/41/1/009",
+    "URL": "https://doi.org/10.1088/0031-9155/41/1/009"
+  },
+  {
+    "id": "rauch2012",
+    "type": "article-journal",
+    "title": "Functionality and operation of fluoroscopic automatic brightness control/automatic dose rate control logic in modern cardiovascular and interventional angiography systems: A Report of Task Group 125 Radiography/Fluoroscopy Subcommittee, Imaging Physics Committee, Science Council",
+    "author": [
+      {
+        "family": "Rauch",
+        "given": "Phillip"
+      },
+      {
+        "family": "Lin",
+        "given": "Pei-Jan Paul"
+      },
+      {
+        "family": "Balter",
+        "given": "Stephen"
+      },
+      {
+        "family": "Fukuda",
+        "given": "Atsushi"
+      },
+      {
+        "family": "Goode",
+        "given": "Allen"
+      },
+      {
+        "family": "Hartwell",
+        "given": "Gary"
+      },
+      {
+        "family": "LaFrance",
+        "given": "Terry"
+      },
+      {
+        "family": "Nickoloff",
+        "given": "Edward"
+      },
+      {
+        "family": "Shepard",
+        "given": "Jeff"
+      },
+      {
+        "family": "Strauss",
+        "given": "Keith"
+      }
+    ],
+    "container-title": "Medical Physics",
+    "volume": "39",
+    "issue": "5",
+    "page": "2826-2828",
+    "issued": {
+      "date-parts": [[2012, 5]]
+    },
+    "DOI": "10.1118/1.4704524",
+    "URL": "https://doi.org/10.1118/1.4704524"
+  },
+  {
+    "id": "otake2013",
+    "type": "article-journal",
+    "title": "Robust 3D–2D image registration: application to spine interventions and vertebral labeling in the presence of anatomical deformation",
+    "author": [
+      {
+        "family": "Otake",
+        "given": "Yoshito"
+      },
+      {
+        "family": "Wang",
+        "given": "Adam S."
+      },
+      {
+        "family": "Stayman",
+        "given": "J. Webster"
+      },
+      {
+        "family": "Uneri",
+        "given": "Ali"
+      },
+      {
+        "family": "Kleinszig",
+        "given": "Gerhard"
+      },
+      {
+        "family": "Vogt",
+        "given": "Sebastian"
+      },
+      {
+        "family": "Khanna",
+        "given": "A. Jay"
+      },
+      {
+        "family": "Gokaslan",
+        "given": "Ziya L."
+      },
+      {
+        "family": "Siewerdsen",
+        "given": "Jeffrey H."
+      }
+    ],
+    "container-title": "Physics in Medicine and Biology",
+    "volume": "58",
+    "issue": "23",
+    "page": "8535-8553",
+    "issued": {
+      "date-parts": [[2013, 12, 7]]
+    },
+    "DOI": "10.1088/0031-9155/58/23/8535",
+    "URL": "https://doi.org/10.1088/0031-9155/58/23/8535",
+    "note": "Author-name parsing checked against the author manuscript, PMCID PMC4915373; J. Webster is Stayman's given name, not part of the surname."
+  },
+  {
+    "id": "iaeaFluoroscopyDose",
+    "type": "webpage",
+    "title": "Radiation doses in interventional procedures",
+    "author": [
+      {
+        "literal": "International Atomic Energy Agency"
+      }
+    ],
+    "container-title": "Radiation Protection of Patients",
+    "issued": {
+      "date-parts": []
+    },
+    "accessed": {
+      "date-parts": [[2026, 9, 7]]
+    },
+    "URL": "https://www.iaea.org/resources/rpop/health-professionals/interventional-procedures/radiation-doses-in-interventional-fluoroscopy",
+    "note": "Official guidance: frequently asked questions about radiation doses in interventional fluoroscopy. No publication date is stated on the consulted page."
+  },
+  {
+    "id": "max1995",
+    "type": "article-journal",
+    "title": "Optical models for direct volume rendering",
+    "author": [
+      {
+        "family": "Max",
+        "given": "N."
+      }
+    ],
+    "container-title": "IEEE Transactions on Visualization and Computer Graphics",
+    "volume": "1",
+    "issue": "2",
+    "page": "99-108",
+    "issued": {
+      "date-parts": [[1995, 6]]
+    },
+    "DOI": "10.1109/2945.468400",
+    "URL": "https://doi.org/10.1109/2945.468400"
+  },
+  {
+    "id": "swank1973",
+    "type": "article-journal",
+    "title": "Absorption and noise in x-ray phosphors",
+    "author": [
+      {
+        "family": "Swank",
+        "given": "Robert K."
+      }
+    ],
+    "container-title": "Journal of Applied Physics",
+    "volume": "44",
+    "issue": "9",
+    "page": "4199-4203",
+    "issued": {
+      "date-parts": [[1973, 9, 1]]
+    },
+    "DOI": "10.1063/1.1662918",
+    "URL": "https://doi.org/10.1063/1.1662918"
+  },
+  {
+    "DOI": "10.1007/978-3-031-23179-7_1",
+    "URL": "https://doi.org/10.1007/978-3-031-23179-7_1",
+    "author": [
+      {
+        "family": "Gopalakrishnan",
+        "given": "Vivek"
+      },
+      {
+        "family": "Golland",
+        "given": "Polina"
+      }
+    ],
+    "collection-title": "Lecture Notes in Computer Science",
+    "container-title": "Clinical Image-Based Procedures",
+    "event-title": "CLIP 2022",
+    "id": "gopalakrishnan2023diffdrr",
+    "issued": {
+      "date-parts": [[2023, 1, 10]]
+    },
+    "note": "CLIP 2022 proceedings chapter. The year follows the Springer version of record, published in January 2023, rather than the 2022 conference and preprint.",
+    "page": "1-11",
+    "publisher": "Springer",
+    "publisher-place": "Cham",
+    "title": "Fast Auto-differentiable Digitally Reconstructed Radiographs for Solving Inverse Problems in Intraoperative Imaging",
+    "type": "paper-conference",
+    "volume": "13746"
+  },
+  {
+    "DOI": "10.1109/CVPR52733.2024.01108",
+    "URL": "https://doi.org/10.1109/CVPR52733.2024.01108",
+    "author": [
+      {
+        "family": "Gopalakrishnan",
+        "given": "Vivek"
+      },
+      {
+        "family": "Dey",
+        "given": "Neel"
+      },
+      {
+        "family": "Golland",
+        "given": "Polina"
+      }
+    ],
+    "container-title": "Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition",
+    "id": "gopalakrishnan2024diffpose",
+    "issued": {
+      "date-parts": [[2024]]
+    },
+    "page": "11662-11672",
+    "title": "Intraoperative 2D/3D Image Registration via Differentiable X-ray Rendering",
+    "type": "paper-conference"
+  },
+  {
+    "URL": "https://docs.pytorch.org/docs/2.14/notes/autograd.html",
+    "accessed": {
+      "date-parts": [[2026, 9, 8]]
+    },
+    "author": [
+      {
+        "literal": "PyTorch contributors"
+      }
+    ],
+    "container-title": "PyTorch documentation",
+    "id": "pytorch2026autograd",
+    "issued": {
+      "date-parts": [[2026, 8, 3]]
+    },
+    "note": "Version-pinned documentation. The issued date records the displayed last-update date.",
+    "title": "Autograd mechanics",
+    "type": "webpage"
+  },
+  {
+    "id": "lynch2017",
+    "type": "book",
+    "title": "Modern Robotics: Mechanics, Planning, and Control",
+    "author": [
+      {
+        "family": "Lynch",
+        "given": "Kevin M."
+      },
+      {
+        "family": "Park",
+        "given": "Frank C."
+      }
+    ],
+    "publisher": "Cambridge University Press",
+    "issued": {
+      "date-parts": [[2017]]
+    },
+    "DOI": "10.1017/9781316661239",
+    "URL": "https://doi.org/10.1017/9781316661239",
+    "ISBN": "9781107156302"
+  },
+  {
+    "id": "geant4InteractionLength",
+    "type": "webpage",
+    "title": "Physics Reference Manual: True Step Length",
+    "author": [
+      {
+        "literal": "Geant4 Collaboration"
+      }
+    ],
+    "URL": "https://geant4.web.cern.ch/documentation/pipelines/master/prm_html/PhysicsReferenceManual/generalities/particletransport/occurence.html",
+    "accessed": {
+      "date-parts": [[2026, 9, 9]]
+    },
+    "note": "Physics Reference Manual 11.2 (doc Rev8.0), as identified by the consulted page. The URL tracks master; accessed 9 September 2026.",
+    "issued": {
+      "date-parts": []
+    }
+  },
+  {
+    "id": "geant4Compton",
+    "type": "webpage",
+    "title": "Physics Reference Manual: Compton Scattering",
+    "author": [
+      {
+        "literal": "Geant4 Collaboration"
+      }
+    ],
+    "URL": "https://geant4.web.cern.ch/documentation/pipelines/master/prm_html/PhysicsReferenceManual/electromagnetic/gamma_incident/compton/compton.html",
+    "accessed": {
+      "date-parts": [[2026, 9, 9]]
+    },
+    "note": "Physics Reference Manual 11.2 (doc Rev8.0), as identified by the consulted page. The URL tracks master; accessed 9 September 2026.",
+    "issued": {
+      "date-parts": []
+    }
+  },
+  {
+    "id": "mohamed2020",
+    "type": "article-journal",
+    "title": "Monte Carlo Gradient Estimation in Machine Learning",
+    "author": [
+      {
+        "family": "Mohamed",
+        "given": "Shakir"
+      },
+      {
+        "family": "Rosca",
+        "given": "Mihaela"
+      },
+      {
+        "family": "Figurnov",
+        "given": "Michael"
+      },
+      {
+        "family": "Mnih",
+        "given": "Andriy"
+      }
+    ],
+    "container-title": "Journal of Machine Learning Research",
+    "volume": "21",
+    "issue": "132",
+    "page": "1-62",
+    "issued": {
+      "date-parts": [[2020]]
+    },
+    "URL": "https://jmlr.org/papers/v21/19-346.html",
+    "note": "Metadata checked against JMLR record and paper; sections 4–5 give score/pathwise estimators, differentiation conditions and support failures; section 7 discusses control variates."
+  },
+  {
+    "id": "li2018edges",
+    "type": "article-journal",
+    "title": "Differentiable Monte Carlo Ray Tracing through Edge Sampling",
+    "author": [
+      {
+        "family": "Li",
+        "given": "Tzu-Mao"
+      },
+      {
+        "family": "Aittala",
+        "given": "Miika"
+      },
+      {
+        "family": "Durand",
+        "given": "Frédo"
+      },
+      {
+        "family": "Lehtinen",
+        "given": "Jaakko"
+      }
+    ],
+    "container-title": "ACM Transactions on Graphics",
+    "volume": "37",
+    "issue": "6",
+    "page": "222:1-222:11",
+    "issued": {
+      "date-parts": [[2018, 11]]
+    },
+    "DOI": "10.1145/3272127.3275109",
+    "URL": "https://doi.org/10.1145/3272127.3275109",
+    "note": "Metadata and boundary-sampling argument checked against author-hosted paper, section 3. Author erratum to equation 16 inspected; the chapter does not reuse that equation. Author record: https://people.csail.mit.edu/tzumao/diffrt/"
+  },
+  {
+    "id": "vicini2021prb",
+    "type": "article-journal",
+    "title": "Path Replay Backpropagation: Differentiating Light Paths using Constant Memory and Linear Time",
+    "author": [
+      {
+        "family": "Vicini",
+        "given": "Delio"
+      },
+      {
+        "family": "Speierer",
+        "given": "Sébastien"
+      },
+      {
+        "family": "Jakob",
+        "given": "Wenzel"
+      }
+    ],
+    "container-title": "ACM Transactions on Graphics",
+    "volume": "40",
+    "issue": "4",
+    "page": "108:1-108:14",
+    "issued": {
+      "date-parts": [[2021, 8]]
+    },
+    "DOI": "10.1145/3450626.3459804",
+    "URL": "https://doi.org/10.1145/3450626.3459804",
+    "note": "Metadata checked against author record; full paper sections 3 and 5 inspected for replay construction, constant path-local memory, and the separate treatment required for moving discontinuities. Author record: https://rgl.epfl.ch/publications/Vicini2021PathReplay"
+  },
+  {
+    "id": "cuda130MathSingle",
+    "type": "webpage",
+    "title": "CUDA Math API Reference Manual 13.0: Single Precision Mathematical Functions",
+    "author": [
+      {
+        "literal": "NVIDIA Corporation"
+      }
+    ],
+    "issued": {
+      "date-parts": []
+    },
+    "accessed": {
+      "date-parts": [[2026, 9, 9]]
+    },
+    "URL": "https://docs.nvidia.com/cuda/archive/13.0.0/cuda-math-api/cuda_math_api/group__CUDA__MATH__SINGLE.html",
+    "note": "Version-pinned CUDA 13.0 documentation. Entries for expm1f and log1pf checked for operation definitions and endpoint behaviour; accuracy is referred to the Programming Guide rather than claimed to be correct rounding."
+  },
+  {
+    "id": "nvidia130FloatingPoint",
+    "type": "report",
+    "title": "Floating Point and IEEE 754",
+    "author": [
+      {
+        "family": "Whitehead",
+        "given": "Nathan"
+      },
+      {
+        "family": "Fit-Florea",
+        "given": "Alex"
+      }
+    ],
+    "publisher": "NVIDIA Corporation",
+    "version": "CUDA 13.0 documentation edition",
+    "issued": {
+      "date-parts": []
+    },
+    "accessed": {
+      "date-parts": [[2026, 9, 9]]
+    },
+    "URL": "https://docs.nvidia.com/cuda/archive/13.0.0/floating-point/index.html",
+    "note": "Authors verified in acknowledgements. Sections 2.3 and 4.3–4.4 support the distinction between FMA contraction, rounding and flush-to-zero. The documentation edition is pinned; no original publication date is inferred from that version."
+  },
+  {
+    "id": "warp117Tape",
+    "type": "software",
+    "title": "Warp 1.17.0: Tape implementation",
+    "author": [
+      {
+        "literal": "NVIDIA Warp contributors"
+      }
+    ],
+    "version": "1.17.0",
+    "issued": {
+      "date-parts": []
+    },
+    "accessed": {
+      "date-parts": [[2026, 9, 9]]
+    },
+    "URL": "https://github.com/NVIDIA/warp/blob/v1.17.0/warp/_src/tape.py",
+    "note": "Version-pinned primary source. Tape.record_func implementation and docstring checked for custom backward callback registration and tracking of arrays with allocated gradients. The transmission-specific accumulation and ownership rules are implemented in this book's library, not attributed to Warp."
+  },
+  {
+    "id": "liu1989lbfgs",
+    "type": "article-journal",
+    "title": "On the limited memory BFGS method for large scale optimization",
+    "author": [
+      {
+        "family": "Liu",
+        "given": "Dong C."
+      },
+      {
+        "family": "Nocedal",
+        "given": "Jorge"
+      }
+    ],
+    "container-title": "Mathematical Programming",
+    "volume": "45",
+    "issue": "1–3",
+    "page": "503–528",
+    "issued": {
+      "date-parts": [[1989, 8]]
+    },
+    "DOI": "10.1007/BF01589116",
+    "URL": "https://doi.org/10.1007/BF01589116",
+    "note": "Metadata checked against the publisher record. Author-hosted full paper section 2, Algorithm 2.1 and the following recursion inspected for retained correction pairs, Wolfe conditions and inverse-Hessian products: https://users.iems.northwestern.edu/~nocedal/PDFfiles/limited-memory.pdf. Fixed SE(3) charts, domain rejection and implementation-specific status rules are choices in this library, not results attributed to this paper."
+  },
+  {
+    "id": "salmon2011random123",
+    "type": "paper-conference",
+    "title": "Parallel random numbers: As easy as 1, 2, 3",
+    "author": [
+      {
+        "family": "Salmon",
+        "given": "John K."
+      },
+      {
+        "family": "Moraes",
+        "given": "Mark A."
+      },
+      {
+        "family": "Dror",
+        "given": "Ron O."
+      },
+      {
+        "family": "Shaw",
+        "given": "David E."
+      }
+    ],
+    "container-title": "Proceedings of 2011 International Conference for High Performance Computing, Networking, Storage and Analysis (SC '11)",
+    "publisher": "Association for Computing Machinery",
+    "issued": {
+      "date-parts": [[2011, 11]]
+    },
+    "DOI": "10.1145/2063384.2063405",
+    "URL": "https://doi.org/10.1145/2063384.2063405",
+    "note": "Title, authors and conference checked in the author-hosted paper; DOI checked against IEEE Xplore record 6114424. Sections 1 and 4 support counter/key generation, application-owned identities and Philox. Paper: https://www.thesalmons.org/john/random123/papers/random123sc11.pdf. This library defines its own history/event namespaces; no performance or full statistical-battery claim is transferred from the paper."
+  },
+  {
+    "id": "zhao2026maisi",
+    "type": "article-journal",
+    "title": "MAISI-v2: Accelerated 3D High-Resolution Medical Image Synthesis with Rectified Flow and Region-specific Contrastive Loss",
+    "author": [
+      {
+        "family": "Zhao",
+        "given": "Can"
+      },
+      {
+        "family": "Guo",
+        "given": "Pengfei"
+      },
+      {
+        "family": "Yang",
+        "given": "Dong"
+      },
+      {
+        "family": "He",
+        "given": "Yufan"
+      },
+      {
+        "family": "Tang",
+        "given": "Yucheng"
+      },
+      {
+        "family": "Simon",
+        "given": "Benjamin"
+      },
+      {
+        "family": "Belue",
+        "given": "Mason"
+      },
+      {
+        "family": "Harmon",
+        "given": "Stephanie"
+      },
+      {
+        "family": "Turkbey",
+        "given": "Baris"
+      },
+      {
+        "family": "Xu",
+        "given": "Daguang"
+      }
+    ],
+    "container-title": "Proceedings of the AAAI Conference on Artificial Intelligence",
+    "volume": "40",
+    "issue": "15",
+    "page": "13088-13098",
+    "issued": {
+      "date-parts": [[2026, 3, 14]]
+    },
+    "DOI": "10.1609/aaai.v40i15.38309",
+    "URL": "https://doi.org/10.1609/aaai.v40i15.38309",
+    "note": "MAISI-v2 rectified-flow CT generator used for Figure 1.1. Metadata and complete author order checked against the AAAI publisher page and Crossref on 10 September 2026."
+  },
+  {
+    "id": "momeni2024diffvox",
+    "type": "article",
+    "title": "Differentiable Voxel-based X-ray Rendering Improves Sparse-View 3D CBCT Reconstruction",
+    "author": [
+      {
+        "family": "Momeni",
+        "given": "Mohammadhossein"
+      },
+      {
+        "family": "Gopalakrishnan",
+        "given": "Vivek"
+      },
+      {
+        "family": "Dey",
+        "given": "Neel"
+      },
+      {
+        "family": "Golland",
+        "given": "Polina"
+      },
+      {
+        "family": "Frisken",
+        "given": "Sarah"
+      }
+    ],
+    "issued": {
+      "date-parts": [[2024, 11, 28]]
+    },
+    "publisher": "arXiv",
+    "DOI": "10.48550/arXiv.2411.19224",
+    "URL": "https://doi.org/10.48550/arXiv.2411.19224"
+  },
+  {
+    "id": "burger2021design",
+    "type": "article-journal",
+    "title": "Sequentially optimized projections in x-ray imaging",
+    "author": [
+      {
+        "family": "Burger",
+        "given": "M"
+      },
+      {
+        "family": "Hauptmann",
+        "given": "A"
+      },
+      {
+        "family": "Helin",
+        "given": "T"
+      },
+      {
+        "family": "Hyvönen",
+        "given": "N"
+      },
+      {
+        "family": "Puska",
+        "given": "J-P"
+      }
+    ],
+    "issued": {
+      "date-parts": [[2021, 6, 22]]
+    },
+    "container-title": "Inverse Problems",
+    "volume": "37",
+    "issue": "7",
+    "page": "075006",
+    "DOI": "10.1088/1361-6420/ac01a4",
+    "URL": "https://doi.org/10.1088/1361-6420/ac01a4"
+  },
+  {
+    "id": "hayakawa2014absorption",
+    "type": "article-journal",
+    "title": "Comparative analysis of discrete and continuous absorption weighting estimators used in Monte Carlo simulations of radiative transport in turbid media",
+    "author": [
+      {
+        "family": "Hayakawa",
+        "given": "Carole K."
+      },
+      {
+        "family": "Spanier",
+        "given": "Jerome"
+      },
+      {
+        "family": "Venugopalan",
+        "given": "Vasan"
+      }
+    ],
+    "container-title": "Journal of the Optical Society of America A",
+    "volume": "31",
+    "issue": "2",
+    "page": "301–311",
+    "issued": {
+      "date-parts": [[2014, 2]]
+    },
+    "DOI": "10.1364/JOSAA.31.000301",
+    "URL": "https://doi.org/10.1364/JOSAA.31.000301",
+    "note": "Crossref metadata and author manuscript checked 9 September 2026. Issue date February 2014; published online 20 January. Section 2 and Appendix B support scattering-rate flights with continuous absorption weighting. See the 2021 erratum before using the published numerical error/efficiency values. No X-ray adjoint or implementation performance claim is attributed to this optical model."
+  },
+  {
+    "id": "hayakawa2021erratum",
+    "type": "article-journal",
+    "title": "Comparative analysis of discrete and continuous absorption weighting estimators used in Monte Carlo simulations of radiative transport in turbid media: erratum",
+    "author": [
+      {
+        "family": "Hayakawa",
+        "given": "Carole K."
+      },
+      {
+        "family": "Spanier",
+        "given": "Jerome"
+      },
+      {
+        "family": "Venugopalan",
+        "given": "Vasan"
+      }
+    ],
+    "container-title": "Journal of the Optical Society of America A",
+    "volume": "38",
+    "issue": "5",
+    "page": "749",
+    "issued": {
+      "date-parts": [[2021, 5]]
+    },
+    "DOI": "10.1364/JOSAA.427204",
+    "URL": "https://doi.org/10.1364/JOSAA.427204",
+    "note": "Crossref and full erratum checked 9 September 2026. May issue, online 26 April. Corrects relative errors by a factor of 1/10 and efficiencies by 100; comparative conclusions unchanged."
+  },
+  {
+    "id": "chen2018stochastic",
+    "type": "article-journal",
+    "title": "Stochastic optimization using a trust-region method and random models",
+    "author": [
+      {
+        "family": "Chen",
+        "given": "R."
+      },
+      {
+        "family": "Menickelly",
+        "given": "M."
+      },
+      {
+        "family": "Scheinberg",
+        "given": "K."
+      }
+    ],
+    "container-title": "Mathematical Programming",
+    "volume": "169",
+    "issue": "2",
+    "page": "447–487",
+    "issued": {
+      "date-parts": [[2018]]
+    },
+    "DOI": "10.1007/s10107-017-1141-8",
+    "URL": "https://doi.org/10.1007/s10107-017-1141-8",
+    "note": "Publisher and Crossref metadata checked 9 September 2026. Online 12 April 2017; volume year 2018. April 2015 author manuscript section 2 and Algorithm 1 inspected at https://optimization-online.org/wp-content/uploads/2015/04/4865.pdf. Supports bounded random models and explicit model/function accuracy conditions. The library does not claim this convergence theorem for its empirical replicate bands."
+  },
+  {
+    "id": "barzilai1988",
+    "type": "article-journal",
+    "title": "Two-Point Step Size Gradient Methods",
+    "author": [
+      { "family": "Barzilai", "given": "Jonathan" },
+      { "family": "Borwein", "given": "Jonathan M." }
+    ],
+    "container-title": "IMA Journal of Numerical Analysis",
+    "volume": "8",
+    "issue": "1",
+    "page": "141–148",
+    "issued": { "date-parts": [[1988, 1, 1]] },
+    "DOI": "10.1093/imanum/8.1.141",
+    "URL": "https://doi.org/10.1093/imanum/8.1.141",
+    "note": "Publisher and Crossref metadata checked 14 September 2026. Original paper section 2, equation (6), page 142 inspected in the institutional scan at https://pages.cs.wisc.edu/~swright/726/handouts/barzilai-borwein.pdf. Supports the two-point secant step. Applying that formula in fixed metric coordinates gives the book's weighted numerator; simplex projection, monotone Armijo acceptance, inertial safeguards and metric refreshes are this implementation's choices, with no convergence-rate claim imported from the paper."
+  }
+]

@@ -1,0 +1,880 @@
+---
+import { renderToString } from "katex";
+import RecordedPlot from "./RecordedPlot.astro";
+import interval from "../../../public/generated/figure-rollouts/figure-5-2.json";
+import differences from "../../../public/generated/figure-rollouts/figure-5-3.json";
+import sphere from "../../../public/generated/figure-rollouts/figure-5-4.json";
+import gaussian from "../../../public/generated/figure-rollouts/figure-6-1.json";
+import geometry from "../../../public/generated/figure-rollouts/geometry.json";
+import projection from "../../../public/generated/figure-rollouts/projection-sensitivity.json";
+
+interface Props {
+  id: string;
+}
+
+const { id } = Astro.props;
+const math = (tex: string) =>
+  renderToString(tex, {
+    throwOnError: true,
+    strict: "error",
+    output: "htmlAndMathml",
+  });
+const tones = ["accent", "technical", "muted"] as const;
+const intervalReference = interval.series[0]!;
+// Place the step edges at the declared fixed midpoint nodes. The scan can skip
+// a crossing (notably for 32 nodes), but its adjacent recorded heights are kept.
+// Holding each scan row until the next row would move a jump by up to 0.125 mm.
+const intervalSteps = interval.series.map((sampled) => {
+  const nodes = Array.from(
+    { length: sampled.samples },
+    (_, index) =>
+      ((index + 0.5) * interval.parameters.ray_length_mm) / sampled.samples,
+  );
+  let previous = sampled.rows[0]!;
+  const x = [previous.entry_mm];
+  const y = [previous.midpoint];
+  for (const row of sampled.rows.slice(1)) {
+    if (row.midpoint !== previous.midpoint) {
+      const crossing = nodes.find(
+        (node) => node >= previous.entry_mm && node < row.entry_mm,
+      );
+      if (crossing === undefined)
+        throw new Error("Recorded staircase change has no fixed-node crossing");
+      x.push(crossing, crossing);
+      y.push(previous.midpoint, row.midpoint);
+    }
+    x.push(row.entry_mm);
+    y.push(row.midpoint);
+    previous = row;
+  }
+  return { samples: sampled.samples, x, y };
+});
+const differenceSteps = differences.rows.map((row) => row.step);
+// Zero is not a small positive error: leave it absent from logarithmic plots.
+const positive = (value: number | null) =>
+  value !== null && value > 0 ? value : null;
+const interiorSphere = sphere.rows.filter(
+  (row) => row.derivative_state === "interior",
+);
+const source = geometry.detector_geometry.source_mm;
+const detector = geometry.detector_geometry.origin_mm;
+const detectorCoordinates =
+  geometry.continuous_detector_coordinates_column_row[0]!;
+// An affine layout of the recorded collinear points, with source at 0 and the
+// detector plane at 1. This is a perspective schematic, not a metric section.
+const rayPoints = geometry.points_on_one_source_ray_mm.map((point) => {
+  const fraction = (point[0]! - source[0]!) / (detector[0]! - source[0]!);
+  return {
+    x: 36 + fraction * 288,
+    y: 182 - fraction * 92,
+    depth: point[0]! - source[0]!,
+  };
+});
+const mismatch = projection.mismatch_decomposition;
+const mismatchMaps = [
+  {
+    key: "mean",
+    title: "Mean mismatch",
+    formula: String.raw`\mathbf d`,
+    values: mismatch.mean_mismatch,
+  },
+  {
+    key: "pose",
+    title: "Absorbed by the pose fit",
+    formula: String.raw`\mathbf P_J\mathbf d`,
+    values: mismatch.pose_explainable,
+  },
+  {
+    key: "residual",
+    title: "Remaining residual",
+    formula: String.raw`(\mathbf I-\mathbf P_J)\mathbf d`,
+    values: mismatch.orthogonal_residual,
+  },
+];
+const colourLimit =
+  Math.ceil(
+    Math.max(...mismatchMaps.flatMap((map) => map.values.map(Math.abs))) / 5,
+  ) * 5;
+const cellColour = (value: number) =>
+  `color-mix(in srgb, var(--${value < 0 ? "technical" : "accent"}) ${(Math.abs(value) / colourLimit) * 100}%, var(--paper))`;
+const imageColumns = projection.geometry.shape[1]!;
+const imageRows = projection.geometry.shape[0]!;
+const norm = (values: number[]) => Math.hypot(...values);
+const coordinateLabels = ["t_x", "t_y", "t_z", "r_x", "r_y", "r_z"];
+---
+
+<div class="derivative-figures" data-recorded-derivative={id}>
+  {
+    id === "figure-5-2" && (
+      <>
+        <div class="recorded-panels">
+          <RecordedPlot
+            id={`${id}-values`}
+            title="The integral changes, but fixed samples jump"
+            xLabel="Entry position a (mm)"
+            yLabel="Optical depth L"
+            xDomain={[10, 60]}
+            yDomain={[0, 1.5]}
+            xTicks={[10, 20, 30, 40, 50, 60]}
+            yTicks={[0, 0.5, 1, 1.5]}
+            series={[
+              ...intervalSteps.map((sampled, index) => ({
+                label: `${sampled.samples} fixed samples`,
+                x: sampled.x,
+                y: sampled.y,
+                tone: tones[index]!,
+                mode: "step" as const,
+              })),
+              {
+                label: "Exact interval",
+                x: intervalReference.rows.map((row) => row.entry_mm),
+                y: intervalReference.rows.map((row) => row.exact),
+                tone: "ink",
+              },
+            ]}
+          />
+          <RecordedPlot
+            id={`${id}-derivatives`}
+            title="Their derivatives remain different"
+            xLabel="Entry position a (mm)"
+            yLabel="Entry derivative (mm⁻¹)"
+            xDomain={[10, 60]}
+            yDomain={[-0.025, 0.005]}
+            xTicks={[10, 20, 30, 40, 50, 60]}
+            yTicks={[-0.02, -0.01, 0]}
+            series={[
+              {
+                label: "Exact interval",
+                x: intervalReference.rows.map((row) => row.entry_mm),
+                y: intervalReference.rows.map(
+                  (row) => row.exact_entry_derivative_per_mm,
+                ),
+                tone: "ink",
+              },
+              {
+                label: "8-sample branches",
+                x: intervalReference.rows.map((row) => row.entry_mm),
+                y: intervalReference.rows.map(
+                  (row) => row.branch_entry_derivative_per_mm,
+                ),
+                tone: "accent",
+              },
+            ]}
+          />
+        </div>
+        <div class="figure-readings">
+          <p>
+            <span
+              set:html={math(
+                String.raw`\mu_0=0.02\,\mathrm{mm}^{-1},\quad b=80\,\mathrm{mm}`,
+              )}
+            />
+            <span>The exit stays fixed while the entry moves.</span>
+          </p>
+          <p>
+            <span
+              set:html={math(String.raw`\frac{\mathrm dL}{\mathrm da}=-\mu_0`)}
+            />
+            <span>
+              Every sampled branch is flat. At a sample crossing its derivative
+              is undefined. The gaps in the right-hand curve retain those
+              events.
+            </span>
+          </p>
+        </div>
+      </>
+    )
+  }
+
+  {
+    id === "figure-5-3" && (
+      <>
+        <p class="figure-formula">
+          <span set:html={math(String.raw`\Phi(z)=e^{-(1+0.7z)}`)} />
+          <span>
+            Central differences and a first-order Taylor check at z = 0
+          </span>
+        </p>
+        <div class="recorded-panels">
+          <RecordedPlot
+            id={`${id}-central`}
+            title="Central-difference error"
+            xLabel="Perturbation h"
+            yLabel="Absolute derivative error"
+            xScale="log"
+            yScale="log"
+            xDomain={[1e-16, 1]}
+            yDomain={[1e-13, 1]}
+            xTicks={[1e-16, 1e-12, 1e-8, 1e-4, 1]}
+            yTicks={[1e-12, 1e-8, 1e-4, 1]}
+            series={[
+              {
+                label: "Binary64 central difference",
+                x: differenceSteps,
+                y: differences.rows.map((row) =>
+                  positive(row.derivative_absolute_error),
+                ),
+                tone: "accent",
+              },
+            ]}
+          />
+          <RecordedPlot
+            id={`${id}-taylor`}
+            title="Subtracting the predicted linear change"
+            xLabel="Perturbation h"
+            yLabel="Absolute change or remainder"
+            xScale="log"
+            yScale="log"
+            xDomain={[1e-16, 1]}
+            yDomain={[1e-34, 1]}
+            xTicks={[1e-16, 1e-12, 1e-8, 1e-4, 1]}
+            yTicks={[1e-32, 1e-24, 1e-16, 1e-8, 1]}
+            series={[
+              {
+                label: "Uncorrected change",
+                x: differenceSteps,
+                y: differences.rows.map((row) =>
+                  positive(row.forward_difference),
+                ),
+                tone: "muted",
+              },
+              {
+                label: "Binary64 remainder",
+                x: differenceSteps,
+                y: differences.rows.map((row) =>
+                  positive(row.taylor_remainder),
+                ),
+                tone: "accent",
+              },
+              {
+                label: "100-digit reference remainder",
+                x: differenceSteps,
+                y: differences.rows.map((row) =>
+                  positive(Number(row.reference_taylor_remainder)),
+                ),
+                tone: "technical",
+                dash: true,
+              },
+            ]}
+          />
+        </div>
+        <div class="figure-readings">
+          <p>
+            <strong>Smooth truncation</strong>
+            <span>
+              Before round-off dominates, halving the step reduces both the
+              central-difference error and Taylor remainder by about four.
+            </span>
+          </p>
+          <p>
+            <strong>Floating-point subtraction</strong>
+            <span>
+              At small steps the binary64 curves depart from that trend. The
+              uncorrected change rounds to zero at h = 10⁻¹⁶. That point is
+              absent from the logarithmic axis.
+            </span>
+          </p>
+        </div>
+      </>
+    )
+  }
+
+  {
+    id === "figure-5-4" && (
+      <>
+        <p class="figure-formula">
+          <span
+            set:html={math(
+              String.raw`L(b)=2\mu_0\sqrt{R^2-b^2},\qquad 0\leq b<R`,
+            )}
+          />
+          <span>R = 10 mm, μ₀ = 0.02 mm⁻¹</span>
+        </p>
+        <div class="recorded-panels">
+          <RecordedPlot
+            id={`${id}-depth`}
+            title="The chord vanishes at the edge"
+            xLabel="Impact parameter b (mm)"
+            yLabel="Optical depth L"
+            xDomain={[0, 10.1]}
+            yDomain={[0, 0.4]}
+            xTicks={[0, 2, 4, 6, 8, 10]}
+            yTicks={[0, 0.1, 0.2, 0.3, 0.4]}
+            series={[
+              {
+                label: "Exact sphere chord",
+                x: sphere.rows.map((row) => row.impact_mm),
+                y: sphere.rows.map((row) => row.optical_depth),
+                tone: "ink",
+              },
+            ]}
+          />
+          <RecordedPlot
+            id={`${id}-gradient`}
+            title="The interior derivative grows towards tangency"
+            xLabel="Distance to tangency R − b (mm)"
+            yLabel="Derivative magnitude (mm⁻¹)"
+            xScale="log"
+            yScale="log"
+            xDomain={[1e-14, 10]}
+            yDomain={[1e-4, 1e6]}
+            xTicks={[1e-14, 1e-10, 1e-6, 0.01, 10]}
+            yTicks={[1e-4, 0.01, 1, 100, 1e4, 1e6]}
+            series={[
+              {
+                label: "Interior |dL/db|, with tangency to the left",
+                x: interiorSphere.map(
+                  (row) => sphere.parameters.radius_mm - row.impact_mm,
+                ),
+                y: interiorSphere.map((row) =>
+                  row.derivative_per_mm === null
+                    ? null
+                    : positive(Math.abs(row.derivative_per_mm)),
+                ),
+                tone: "accent",
+              },
+            ]}
+          />
+        </div>
+        <p class="boundary-note">
+          <span
+            set:html={math(
+              String.raw`b=R:\quad L=0,\qquad \lim_{b\to R^-}\frac{\mathrm dL}{\mathrm db}=-\infty`,
+            )}
+          />
+          <span>
+            There is no finite derivative at tangency. The logarithmic panel
+            contains only positive magnitudes at interior points.
+          </span>
+        </p>
+      </>
+    )
+  }
+
+  {
+    id === "figure-6-1" && (
+      <>
+        <div class="recorded-panels">
+          <RecordedPlot
+            id={`${id}-overlap`}
+            title="Wider features overlap over larger shifts"
+            xLabel="Shift δ (pixels)"
+            yLabel="Gaussian overlap"
+            xDomain={[-20, 20]}
+            yDomain={[0, 1]}
+            xTicks={[-20, -10, 0, 10, 20]}
+            yTicks={[0, 0.5, 1]}
+            series={gaussian.series.map((feature, index) => ({
+              label: `σ = ${feature.width_pixels} ${feature.width_pixels === 1 ? "pixel" : "pixels"}`,
+              x: feature.rows.map((row) => row.shift_pixels),
+              y: feature.rows.map((row) => row.overlap),
+              tone: tones[index]!,
+            }))}
+          />
+          <RecordedPlot
+            id={`${id}-gradient`}
+            title="The gradient also fades far from alignment"
+            xLabel="Shift δ (pixels)"
+            yLabel="Discrepancy derivative (pixel⁻¹)"
+            xDomain={[-20, 20]}
+            yDomain={[-0.45, 0.45]}
+            xTicks={[-20, -10, 0, 10, 20]}
+            yTicks={[-0.4, -0.2, 0, 0.2, 0.4]}
+            series={gaussian.series.map((feature, index) => ({
+              label: `σ = ${feature.width_pixels} ${feature.width_pixels === 1 ? "pixel" : "pixels"}`,
+              x: feature.rows.map((row) => row.shift_pixels),
+              y: feature.rows.map((row) => row.derivative_per_pixel),
+              tone: tones[index]!,
+            }))}
+          />
+        </div>
+        <div class="figure-readings">
+          <p>
+            <span
+              set:html={math(
+                String.raw`c_{\mathrm{ov}}(\delta)=e^{-\delta^2/(4\sigma^2)}`,
+              )}
+            />
+            <span>Normalised Gaussian overlap on an infinite domain.</span>
+          </p>
+          <p>
+            <span
+              set:html={math(
+                String.raw`\frac{\mathrm d(1-c_{\mathrm{ov}})}{\mathrm d\delta}=\frac{\delta}{2\sigma^2}c_{\mathrm{ov}}`,
+              )}
+            />
+            <span>
+              The discrepancy derivative is the negative of the overlap
+              derivative. Both tend to zero at large separation.
+            </span>
+          </p>
+        </div>
+      </>
+    )
+  }
+
+  {
+    id === "figure-6-2" && (
+      <>
+        <div class="recorded-panels perspective-panels">
+          <section class="perspective-panel">
+            <h4>Five positions, one projection</h4>
+            <svg
+              class="perspective-diagram"
+              viewBox="0 0 370 236"
+              role="img"
+              aria-labelledby={`${id}-ray-title ${id}-ray-description`}
+            >
+              <title id={`${id}-ray-title`}>Motion along one source ray</title>
+              <desc id={`${id}-ray-description`}>
+                Five recorded points have source-axis depths of 40, 60, 80, 100
+                and 120 millimetres. All project to detector column 13.55275 and
+                row 12.29925. Their relative positions along the drawn ray
+                follow their recorded depths. The layout is schematic.
+              </desc>
+              <path class="detector-plane" d="M324 47 V201" />
+              <path class="source-ray" d="M36 182 L324 90" />
+              <circle class="source-point" cx="36" cy="182" r="5" />
+              {rayPoints.map((point, index) => (
+                <circle class="ray-point" cx={point.x} cy={point.y} r="5">
+                  <title>
+                    {`Point ${index + 1}: source-axis depth ${point.depth} mm`}
+                  </title>
+                </circle>
+              ))}
+              <circle class="detector-point" cx="324" cy="90" r="7" />
+              <text x="20" y="217">
+                Source
+              </text>
+              <text x="352" y="31" text-anchor="end">
+                Detector
+              </text>
+              <text x="305" y="79" text-anchor="end">
+                p
+              </text>
+              <path
+                class="motion-arrow"
+                d="M120 171 L253 129 m-8 -2 8 2 -5 7 M120 171 l5 -7 m-5 7 8 2"
+              />
+              <text class="diagram-note" x="207" y="202" text-anchor="middle">
+                Depth changes
+              </text>
+            </svg>
+            <p class="projection-coordinate">
+              <span>Shared detector coordinate (column, row)</span>
+              <strong>
+                ({detectorCoordinates[0]!.toFixed(5)},{" "}
+                {detectorCoordinates[1]!.toFixed(5)})
+              </strong>
+            </p>
+          </section>
+          <section class="perspective-panel">
+            <h4>Rigid relationships couple the points</h4>
+            <svg
+              class="perspective-diagram"
+              viewBox="0 0 370 236"
+              role="img"
+              aria-labelledby={`${id}-rigid-title ${id}-rigid-description`}
+            >
+              <title id={`${id}-rigid-title`}>
+                Known distances constrain joint motion
+              </title>
+              <desc id={`${id}-rigid-description`}>
+                Conceptual diagram of three points on different source rays,
+                joined as a rigid triangle. Each point alone can move along its
+                ray. The three edge lengths must remain fixed when they belong
+                to one known rigid object.
+              </desc>
+              <path
+                class="context-ray"
+                d="M35 170 L325 39 M35 170 L325 106 M35 170 L325 202"
+              />
+              <path
+                class="rigid-triangle"
+                d="M200 95.5 L275 117 L190 187.1 Z"
+              />
+              <circle class="source-point" cx="35" cy="170" r="5" />
+              <circle class="ray-point" cx="200" cy="95.5" r="5" />
+              <circle class="ray-point" cx="275" cy="117" r="5" />
+              <circle class="ray-point" cx="190" cy="187.1" r="5" />
+              <text x="20" y="217">
+                Source
+              </text>
+              <text x="233" y="93" text-anchor="middle">
+                a
+              </text>
+              <text x="252" y="170">
+                b
+              </text>
+              <text x="177" y="146" text-anchor="end">
+                c
+              </text>
+              <text class="diagram-note" x="260" y="222" text-anchor="middle">
+                Fixed lengths
+              </text>
+            </svg>
+            <p class="projection-coordinate">
+              <span>Conceptual rigid constraint</span>
+              <strong
+                set:html={math(String.raw`\|\mathbf x_i-\mathbf x_j\|=d_{ij}`)}
+              />
+            </p>
+          </section>
+        </div>
+        <p class="boundary-note">
+          <span
+            set:html={math(
+              String.raw`\mathbf J_\pi(\mathbf x)(\mathbf x-\mathbf s)=\mathbf 0`,
+            )}
+          />
+          <span>
+            A point’s source-ray direction is invisible to its projection. Known
+            distances restrict how several points can move together. Unknown
+            object scale leaves a further depth ambiguity.
+          </span>
+        </p>
+      </>
+    )
+  }
+
+  {
+    id === "figure-6-3" && (
+      <>
+        <p class="figure-formula">
+          <span
+            set:html={math(
+              String.raw`\mathbf d=\mathbf P_J\mathbf d+(\mathbf I-\mathbf P_J)\mathbf d`,
+            )}
+          />
+          <span>A 3% gain mismatch, decomposed at the recorded pose</span>
+        </p>
+        <div class="mismatch-maps">
+          {mismatchMaps.map((map) => (
+            <section class="mismatch-map">
+              <h4>{map.title}</h4>
+              <p class="map-formula" set:html={math(map.formula)} />
+              <svg
+                viewBox={`0 0 ${imageColumns} ${imageRows}`}
+                role="img"
+                aria-labelledby={`${id}-${map.key}-title ${id}-${map.key}-description`}
+                shape-rendering="crispEdges"
+              >
+                <title id={`${id}-${map.key}-title`}>{map.title}</title>
+                <desc id={`${id}-${map.key}-description`}>
+                  {`${imageColumns} by ${imageRows} recorded detector values. Negative values are blue-grey and positive values are rust. All three maps use the same scale, from ${-colourLimit} to ${colourLimit} counts. This map ranges from ${Math.min(...map.values).toFixed(3)} to ${Math.max(...map.values).toFixed(3)} counts.`}
+                </desc>
+                {map.values.map((value, index) => (
+                  <rect
+                    x={index % imageColumns}
+                    y={imageRows - 1 - Math.floor(index / imageColumns)}
+                    width="1"
+                    height="1"
+                    style={`fill: ${cellColour(value)}`}
+                  />
+                ))}
+              </svg>
+              <p class="map-norm">
+                Image norm: {norm(map.values).toFixed(3)} counts
+              </p>
+            </section>
+          ))}
+        </div>
+        <div
+          class="colour-key"
+          aria-label={`Shared colour scale: minus ${colourLimit} to plus ${colourLimit} counts`}
+        >
+          <span>−{colourLimit}</span>
+          <span class="colour-ramp">
+            <span>0</span>
+          </span>
+          <span>+{colourLimit} counts</span>
+        </div>
+        <div class="bias-reading">
+          <h4>Pose bias predicted by this local fit</h4>
+          <dl>
+            {mismatch.local_scaled_pose_bias.map((value, index) => (
+              <div>
+                <dt
+                  set:html={math(String.raw`\Delta ${coordinateLabels[index]}`)}
+                />
+                <dd>
+                  {(value * projection.parameter_scales[index]!).toPrecision(4)}
+                  {index < 3 ? " mm" : " rad"}
+                </dd>
+              </div>
+            ))}
+          </dl>
+          <p>
+            All six Jacobian directions are retained at relative cutoff 10⁻⁸.
+            The residual is orthogonal to those directions under identity
+            weights. These are linearised pose increments, not a nonlinear
+            recovery result.
+          </p>
+        </div>
+      </>
+    )
+  }
+</div>
+
+<style>
+  .derivative-figures {
+    min-width: 0;
+  }
+
+  .figure-formula,
+  .boundary-note {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.7rem 1.5rem;
+    margin: 0 0 1.4rem;
+    font-family: var(--font-ui);
+    font-size: 0.85rem;
+  }
+
+  .figure-formula > span:last-child,
+  .boundary-note > span:last-child {
+    color: var(--ink-muted);
+  }
+
+  .boundary-note {
+    margin: 1.25rem 0 0;
+    padding-block-start: 1rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  .figure-readings {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem 2rem;
+    margin-block-start: 1.25rem;
+    padding-block-start: 1rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  .figure-readings p {
+    display: grid;
+    align-content: start;
+    gap: 0.7rem;
+    margin: 0;
+    font-family: var(--font-ui);
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+
+  .figure-readings p > span:last-child {
+    color: var(--ink-muted);
+  }
+
+  .perspective-panel,
+  .mismatch-map {
+    min-width: 0;
+  }
+
+  h4 {
+    margin: 0 0 0.8rem;
+    font-family: var(--font-ui);
+    font-size: 0.88rem;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  .perspective-diagram {
+    display: block;
+    width: 100%;
+    overflow: visible;
+  }
+
+  .perspective-diagram text {
+    fill: var(--ink);
+    font-family: var(--font-ui);
+    font-size: 16px;
+  }
+
+  .perspective-diagram .diagram-note {
+    fill: var(--ink-muted);
+    font-size: 14px;
+  }
+
+  .detector-plane {
+    stroke: var(--technical);
+    stroke-width: 3;
+  }
+
+  .source-ray,
+  .motion-arrow {
+    stroke: var(--ink);
+    stroke-width: 1.5;
+    fill: none;
+  }
+
+  .motion-arrow {
+    stroke: var(--accent);
+  }
+
+  .source-point {
+    fill: var(--ink);
+  }
+
+  .ray-point {
+    fill: var(--accent);
+    stroke: var(--paper);
+    stroke-width: 1.5;
+  }
+
+  .detector-point {
+    fill: var(--paper);
+    stroke: var(--technical);
+    stroke-width: 2;
+  }
+
+  .context-ray {
+    fill: none;
+    stroke: var(--ink-muted);
+    stroke-width: 1;
+    stroke-dasharray: 4 4;
+  }
+
+  .rigid-triangle {
+    fill: color-mix(in srgb, var(--technical) 8%, transparent);
+    stroke: var(--technical);
+    stroke-width: 2;
+  }
+
+  .projection-coordinate {
+    display: grid;
+    gap: 0.5rem;
+    margin: 1rem 0 0;
+    font-family: var(--font-ui);
+    font-size: 0.8rem;
+  }
+
+  .projection-coordinate > span {
+    color: var(--ink-muted);
+  }
+
+  .projection-coordinate strong {
+    font-size: 1rem;
+    font-weight: 500;
+  }
+
+  .mismatch-maps {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+
+  .mismatch-map h4 {
+    min-height: 2.5em;
+    margin-block-end: 0.4rem;
+  }
+
+  .map-formula {
+    margin: 0 0 0.9rem;
+    font-size: 1rem;
+  }
+
+  .mismatch-map svg {
+    display: block;
+    width: 100%;
+    border: 1px solid var(--rule);
+  }
+
+  .map-norm {
+    margin: 0.65rem 0 0;
+    font-family: var(--font-ui);
+    font-size: 0.75rem;
+    color: var(--ink-muted);
+  }
+
+  .colour-key {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    margin: 1.2rem auto 2rem;
+    font-family: var(--font-ui);
+    font-size: 0.75rem;
+  }
+
+  .colour-ramp {
+    position: relative;
+    width: min(42%, 15rem);
+    height: 0.7rem;
+    background: linear-gradient(
+      to right,
+      var(--technical),
+      var(--paper),
+      var(--accent)
+    );
+  }
+
+  .colour-ramp span {
+    position: absolute;
+    top: 0.85rem;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .bias-reading {
+    padding-block-start: 1rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  .bias-reading dl {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+
+  .bias-reading dt,
+  .bias-reading dd {
+    margin: 0;
+    font-family: var(--font-ui);
+    font-size: 0.85rem;
+  }
+
+  .bias-reading dd {
+    margin-block-start: 0.3rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .bias-reading p {
+    margin: 0;
+    color: var(--ink-muted);
+    font-family: var(--font-ui);
+    font-size: 0.8rem;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 700px) {
+    .figure-readings,
+    .mismatch-maps {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .mismatch-maps {
+      gap: 1.75rem;
+    }
+
+    .mismatch-map {
+      width: 100%;
+      max-width: 23rem;
+      margin-inline: auto;
+    }
+
+    .mismatch-map h4 {
+      min-height: 0;
+    }
+
+    .bias-reading dl {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .figure-formula,
+    .boundary-note {
+      font-size: 0.78rem;
+    }
+  }
+</style>

@@ -1,0 +1,885 @@
+---
+import { renderToString } from "katex";
+import FigurePlate from "./FigurePlate.astro";
+import "../../styles/conceptual-figures.css";
+
+interface Props {
+  id: string;
+  title: string;
+  description: string;
+}
+
+const { id, title, description } = Astro.props;
+const supported = [
+  "figure-5-1",
+  "figure-8-2",
+  "figure-9-1",
+  "figure-9-2",
+  "figure-9-4",
+  "figure-10-1",
+  "figure-10-3",
+];
+if (!supported.includes(id)) throw new Error(`Unknown schematic ${id}`);
+const math = (tex: string) =>
+  renderToString(tex, {
+    throwOnError: true,
+    strict: "error",
+    output: "htmlAndMathml",
+  });
+const histories = [
+  {
+    label: "Unscattered arrival",
+    path: "M24,88 H280",
+    points: [],
+    score: "S_p=1",
+    note: "No interaction before an accepted hit.",
+    tone: "technical",
+  },
+  {
+    label: "Scattered arrival",
+    path: "M24,88 H125 L185,47 L280,105",
+    points: [
+      [125, 88],
+      [185, 47],
+    ],
+    score: "S_p=1",
+    note: "Direction changes at each scattering event.",
+    tone: "accent",
+  },
+  {
+    label: "Absorption",
+    path: "M24,88 H157",
+    points: [],
+    score: "S_p=0",
+    note: "The history terminates inside the object.",
+    tone: "ink",
+  },
+];
+const derivativeStages = [
+  {
+    name: "Source sample",
+    formula: String.raw`(\mathbf x_0,\boldsymbol\omega_0,E_0)`,
+    marks: ["C", "P"],
+    detail:
+      "Move a continuous sample or change the probability of a discrete source choice.",
+  },
+  {
+    name: "Free flight",
+    formula: String.raw`\ell=-\log U\,/\,\mu_t`,
+    marks: ["C"],
+    detail:
+      "In a homogeneous medium, holding U fixed gives a smooth inverse-sampled distance.",
+  },
+  {
+    name: "Interaction choice",
+    formula: String.raw`q_a=\mu_a/\mu_t`,
+    marks: ["P"],
+    detail:
+      "Absorption and scattering branches have parameter-dependent probabilities.",
+  },
+  {
+    name: "Scattering sample",
+    formula: String.raw`(\boldsymbol\omega',E')`,
+    marks: ["C"],
+    detail:
+      "A smooth angular sampler changes the outgoing direction and energy.",
+  },
+  {
+    name: "Detector score",
+    formula: String.raw`S_p(H,\theta)`,
+    marks: ["C", "B"],
+    detail:
+      "Response changes smoothly, while a moving acceptance edge changes which histories count.",
+  },
+];
+const eventIds = [0, 1, 2, 3, 4, 5, 6];
+---
+
+<FigurePlate {id} {title} {description}>
+  <div class="conceptual-figure" data-conceptual-figure={id}>
+    {
+      id === "figure-5-1" && (
+        <>
+          <div class="conceptual-pair projection-dependencies">
+            <section class="conceptual-panel">
+              <h3>A ray in object coordinates</h3>
+              <svg
+                viewBox="0 0 340 218"
+                role="img"
+                aria-labelledby={`${id}-ray-title ${id}-ray-desc`}
+              >
+                <title id={`${id}-ray-title`}>
+                  Endpoints, clipped interval and sample positions
+                </title>
+                <desc id={`${id}-ray-desc`}>
+                  A straight source-to-detector ray crosses a rectangular field
+                  support. Entry and exit determine the clipped interval. Four
+                  equally spaced midpoint nodes lie within it. This is a
+                  dependency schematic, not a recorded ray trace.
+                </desc>
+                <defs>
+                  <marker
+                    id={`${id}-arrow`}
+                    viewBox="0 0 8 8"
+                    refX="7"
+                    refY="4"
+                    markerWidth="6"
+                    markerHeight="6"
+                    orient="auto"
+                  >
+                    <path d="M1,1 L7,4 L1,7" class="arrow-head" />
+                  </marker>
+                </defs>
+                <rect x="79" y="48" width="181" height="127" class="medium" />
+                <path
+                  d="M25,160 L315,61"
+                  class="ray technical-stroke"
+                  marker-end={`url(#${id}-arrow)`}
+                />
+                <path d="M79,142 L260,80" class="ray accent-stroke" />
+                {[0.125, 0.375, 0.625, 0.875].map((fraction) => (
+                  <circle
+                    cx={79 + 181 * fraction}
+                    cy={142 - 62 * fraction}
+                    r="4.5"
+                    class="sample"
+                  />
+                ))}
+                <circle cx="25" cy="160" r="4" class="source" />
+                <path d="M79,142 V188 M260,80 V188" class="guide" />
+                <path
+                  d="M79,194 H260 M79,188 V200 M260,188 V200"
+                  class="axis"
+                />
+                <text x="25" y="185" text-anchor="middle">
+                  sᴼ
+                </text>
+                <text x="315" y="46" text-anchor="middle">
+                  qᴼₚ
+                </text>
+                <text x="169" y="33" text-anchor="middle">
+                  Field support
+                </text>
+                <text x="79" y="213" text-anchor="middle">
+                  t⁻ₚ
+                </text>
+                <text x="260" y="213" text-anchor="middle">
+                  t⁺ₚ
+                </text>
+                <path d="M147,119 L135,76" class="leader" />
+                <text x="130" y="68" text-anchor="middle">
+                  node r
+                </text>
+              </svg>
+              <div
+                class="conceptual-equation"
+                set:html={math(
+                  String.raw`\mathbf x_{pr}^O=(1-t_{pr})\mathbf s^O+t_{pr}\mathbf q_p^O`,
+                )}
+              />
+              <p class="conceptual-note">
+                The coefficients stay attached to the object. Inverse pose
+                motion changes where the ray samples them.
+              </p>
+            </section>
+            <section class="conceptual-panel">
+              <h3>Geometry enters twice</h3>
+              <div class="flow-step">
+                <>
+                  <span class="flow-label">Pose increment</span>
+                  <span
+                    set:html={math(
+                      String.raw`\delta\theta\ \longrightarrow\ (\mathbf s^O,\mathbf q_p^O)`,
+                    )}
+                  />
+                </>
+              </div>
+              <div class="flow-down" aria-hidden="true">
+                ↓
+              </div>
+              <div class="flow-step">
+                <>
+                  <span class="flow-label">Clip the finite segment</span>
+                  <span set:html={math(String.raw`(t_p^-,t_p^+,d_p)`)} />
+                </>
+              </div>
+              <div class="flow-fork">
+                <div class="flow-step">
+                  <>
+                    <span class="flow-label">Node position</span>
+                    <span set:html={math(String.raw`\mathbf x_{pr}^O`)} />
+                    <span class="flow-down" aria-hidden="true">
+                      ↓
+                    </span>
+                    <span
+                      set:html={math(String.raw`\mu_A(\mathbf x_{pr}^O)`)}
+                    />
+                  </>
+                </div>
+                <div class="flow-step">
+                  <>
+                    <span class="flow-label">Physical weight</span>
+                    <span
+                      set:html={math(
+                        String.raw`w_{pr}=\frac{d_p(t_p^+-t_p^-)}{M_p}`,
+                      )}
+                    />
+                    <span class="conceptual-unit">millimetres per node</span>
+                  </>
+                </div>
+              </div>
+              <div class="flow-down" aria-hidden="true">
+                ↓
+              </div>
+              <div class="flow-step flow-result">
+                <>
+                  <span
+                    set:html={math(
+                      String.raw`\widehat L_p=\sum_r w_{pr}\mu_A(\mathbf x_{pr}^O)`,
+                    )}
+                  />
+                  <span class="flow-down" aria-hidden="true">
+                    ↓
+                  </span>
+                  <span
+                    set:html={math(
+                      String.raw`\lambda_p=n_{0,p}e^{-\widehat L_p}`,
+                    )}
+                  />
+                </>
+              </div>
+            </section>
+          </div>
+          <div class="derivative-split">
+            <div>
+              <>
+                <span class="flow-label">Changing physical weights</span>
+                <span
+                  set:html={math(
+                    String.raw`\sum_r (\partial_\theta w_{pr})\mu_A(\mathbf x_{pr}^O)`,
+                  )}
+                />
+              </>
+            </div>
+            <span class="sum-sign" aria-hidden="true">
+              +
+            </span>
+            <div>
+              <>
+                <span class="flow-label">Moving through the field</span>
+                <span
+                  set:html={math(
+                    String.raw`\sum_r w_{pr}\nabla\mu_A^{\mathsf T}\partial_\theta\mathbf x_{pr}^O`,
+                  )}
+                />
+              </>
+            </div>
+          </div>
+          <p class="conceptual-note">
+            Fixed sample count and differentiable clipping/interpolation
+            branches. Active coefficients add their basis-weight contribution
+            separately.
+          </p>
+        </>
+      )
+    }
+
+    {
+      id === "figure-8-2" && (
+        <>
+          <div class="flow-step spectral-paths">
+            <>
+              <span class="flow-label">
+                Integrate each material field once along ray p
+              </span>
+              <span
+                set:html={math(
+                  String.raw`A_{pm}=\int_{\ell_p}a_m(\mathbf x)\,\mathrm ds`,
+                )}
+              />
+              <span class="conceptual-unit">One path per material, in mm</span>
+            </>
+          </div>
+          <div class="flow-down" aria-hidden="true">
+            ↓
+          </div>
+          <p class="branch-heading">
+            Reuse the same material paths at every energy node
+          </p>
+          <div class="conceptual-pair energy-branches">
+            {[1, 2].map((k) => (
+              <section class="conceptual-panel energy-branch">
+                <h3>
+                  <span set:html={math(`E_${k}`)} />
+                </h3>
+                <div class="flow-step">
+                  <span class="flow-label">Sum attenuation over materials</span>
+                  <span
+                    set:html={math(
+                      String.raw`L_{p${k}}=\sum_m\mu_m(E_${k})A_{pm}`,
+                    )}
+                  />
+                </div>
+                <div class="flow-down" aria-hidden="true">
+                  ↓
+                </div>
+                <div class="flow-step">
+                  <span class="flow-label">Exponentiate at this energy</span>
+                  <span
+                    class="large-math"
+                    set:html={math(String.raw`e^{-L_{p${k}}}`)}
+                  />
+                </div>
+                <div class="flow-down" aria-hidden="true">
+                  ↓
+                </div>
+                <div class="flow-step">
+                  <span class="flow-label">
+                    Apply this node’s open-beam response
+                  </span>
+                  <span
+                    set:html={math(String.raw`c_{p${k}}\,e^{-L_{p${k}}}`)}
+                  />
+                  <span
+                    class="conceptual-unit"
+                    set:html={math(
+                      String.raw`c_{p${k}}=w_${k}\,n_{0,p}(E_${k})\,R_p(E_${k})`,
+                    )}
+                  />
+                </div>
+              </section>
+            ))}
+          </div>
+          <div class="flow-down" aria-hidden="true">
+            ↓
+          </div>
+          <div class="flow-step flow-result">
+            <>
+              <span class="flow-label">
+                Sum the transmitted outputs over all K nodes
+              </span>
+              <span
+                class="large-math"
+                set:html={math(
+                  String.raw`\bar y_p^{(K)}=\sum_{k=1}^{K}c_{pk}e^{-L_{pk}}`,
+                )}
+              />
+            </>
+          </div>
+          <p class="conceptual-note">
+            Two energy branches are drawn, and the same operation applies to
+            every node. For bin-integrated populations, the bin count replaces{" "}
+            <span set:html={math(String.raw`w_k n_{0,p}(E_k)`)} />.
+          </p>
+        </>
+      )
+    }
+
+    {
+      id === "figure-9-1" && (
+        <>
+          <div class="conceptual-three history-panels">
+            {histories.map((history, index) => (
+              <section class="conceptual-panel">
+                <h3>{history.label}</h3>
+                <svg
+                  viewBox="0 0 310 184"
+                  role="img"
+                  aria-labelledby={`${id}-history-${index}`}
+                >
+                  <title id={`${id}-history-${index}`}>
+                    {history.label}: {history.note}
+                  </title>
+                  <rect x="77" y="31" width="157" height="117" class="medium" />
+                  <path d="M280,31 V148" class="detector" />
+                  <path
+                    d={history.path}
+                    class:list={["ray", `${history.tone}-stroke`]}
+                  />
+                  <circle cx="24" cy="88" r="5" class="source" />
+                  {history.points.map(([x, y]) => (
+                    <circle cx={x} cy={y} r="5" class="sample" />
+                  ))}
+                  {index === 2 ? (
+                    <path
+                      d="M151,82 L163,94 M163,82 L151,94"
+                      class="absorption"
+                    />
+                  ) : (
+                    <rect
+                      x="275"
+                      y={index === 0 ? 82 : 99}
+                      width="10"
+                      height="12"
+                      class="hit"
+                    />
+                  )}
+                  <text x="24" y="171" text-anchor="middle">
+                    Source
+                  </text>
+                  <text x="155" y="20" text-anchor="middle">
+                    Object
+                  </text>
+                  <text x="280" y="171" text-anchor="middle">
+                    Detector
+                  </text>
+                </svg>
+                <div class="history-score" set:html={math(history.score)} />
+                <p class="conceptual-note">{history.note}</p>
+              </section>
+            ))}
+          </div>
+          <p class="conceptual-note">
+            Only the arrival pixel p receives a contribution. Histories escaping
+            outside the detector score zero. An energy-sensitive detector
+            weights accepted arrivals by its response.
+          </p>
+        </>
+      )
+    }
+
+    {
+      id === "figure-9-2" && (
+        <div class="conceptual-pair optical-budget">
+          <section class="conceptual-panel">
+            <h3>Consume a residual optical depth</h3>
+            <p class="conceptual-note">
+              An authored example: <span set:html={math(String.raw`\tau=1`)} />,
+              two 10 mm layers.
+            </p>
+            <svg
+              viewBox="0 0 340 300"
+              role="img"
+              aria-labelledby={`${id}-budget-title ${id}-budget-desc`}
+            >
+              <title id={`${id}-budget-title`}>
+                One optical-depth budget across two layers
+              </title>
+              <desc id={`${id}-budget-desc`}>
+                The first ten millimetres have total coefficient 0.04 per
+                millimetre and consume optical depth 0.4. The next layer has
+                coefficient 0.12 per millimetre. The remaining depth 0.6 is
+                consumed after five further millimetres, placing the collision
+                at distance 15 millimetres. The layer coefficients are
+                illustrative values.
+              </desc>
+              <rect x="53" y="28" width="129" height="48" class="layer-a" />
+              <rect x="182" y="28" width="129" height="48" class="layer-b" />
+              <text x="117" y="19" text-anchor="middle">
+                μₜ = 0.04 mm⁻¹
+              </text>
+              <text x="248" y="19" text-anchor="middle">
+                μₜ = 0.12 mm⁻¹
+              </text>
+              <path d="M53,52 H246.5" class="ray ink-stroke" />
+              <circle cx="246.5" cy="52" r="5" class="sample" />
+              <text x="117" y="95" text-anchor="middle">
+                10 mm
+              </text>
+              <text x="248" y="95" text-anchor="middle">
+                10 mm
+              </text>
+              <path d="M53,117 V251 H311" class="axis" />
+              <path d="M182,117 V251 M246.5,117 V251" class="guide" />
+              <path d="M53,171 H311" class="budget-target" />
+              <path
+                d="M53,251 L182,219 L311,123"
+                class="ray technical-stroke"
+              />
+              <circle cx="246.5" cy="171" r="5" class="sample" />
+              <text x="322" y="161" text-anchor="end">
+                τ = 1
+              </text>
+              <text x="43" y="254" text-anchor="end">
+                0
+              </text>
+              <text x="43" y="223" text-anchor="end">
+                0.4
+              </text>
+              <text x="43" y="127" text-anchor="end">
+                1.6
+              </text>
+              {[0, 10, 15, 20].map((value) => (
+                <text x={53 + 12.9 * value} y="269" text-anchor="middle">
+                  {value}
+                </text>
+              ))}
+              <text x="182" y="292" text-anchor="middle">
+                Distance along flight (mm)
+              </text>
+              <text
+                x="15"
+                y="184"
+                text-anchor="middle"
+                transform="rotate(-90 15 184)"
+              >
+                Consumed depth
+              </text>
+            </svg>
+            <div
+              class="conceptual-equation"
+              set:html={math(
+                String.raw`S=10+\frac{1-0.4}{0.12}=15\;\mathrm{mm}`,
+              )}
+            />
+          </section>
+          <section class="conceptual-panel">
+            <h3>Advance to a majorant candidate</h3>
+            <p class="conceptual-note">
+              The alternative thinning construction.
+            </p>
+            <div class="flow-step">
+              <>
+                <span class="flow-label">
+                  A valid bound throughout these layers
+                </span>
+                <span
+                  set:html={math(
+                    String.raw`\bar\mu=0.12\;\mathrm{mm}^{-1}\geq\mu_t`,
+                  )}
+                />
+              </>
+            </div>
+            <div class="flow-down" aria-hidden="true">
+              ↓
+            </div>
+            <div class="flow-step">
+              <>
+                <span class="flow-label">
+                  Candidate distance under the bound
+                </span>
+                <span set:html={math(String.raw`\ell_*=-\log U\,/\,\bar\mu`)} />
+              </>
+            </div>
+            <div class="flow-down" aria-hidden="true">
+              ↓
+            </div>
+            <div class="flow-step">
+              <>
+                <span class="flow-label">
+                  At the candidate, draw an independent V
+                </span>
+                <span
+                  set:html={math(String.raw`V\leq\mu_t(\mathbf x,E)/\bar\mu`)}
+                />
+                <span class="conceptual-unit">
+                  Acceptance: ⅓ in layer 1, and 1 in layer 2
+                </span>
+              </>
+            </div>
+            <div class="flow-fork">
+              <div class="flow-step">
+                <>
+                  <span class="branch-answer">Yes</span>
+                  <strong>Real collision</strong>
+                  <span class="conceptual-note">
+                    Sample its physical process.
+                  </span>
+                </>
+              </div>
+              <div class="flow-step">
+                <>
+                  <span class="branch-answer">No</span>
+                  <strong>Null event</strong>
+                  <span class="conceptual-note">
+                    Keep direction, energy and weight. Draw the next candidate.
+                  </span>
+                </>
+              </div>
+            </div>
+            <p class="conceptual-note">
+              Both uniforms lie in (0, 1). Check the domain boundary before
+              handling a candidate outside it.
+            </p>
+          </section>
+        </div>
+      )
+    }
+
+    {
+      id === "figure-9-4" && (
+        <>
+          <div class="conceptual-pair scheduling-pair">
+            <section class="conceptual-panel">
+              <h3>One thread owns one history</h3>
+              <div class="thread-boundary">
+                <p class="conceptual-kicker">
+                  Thread h · current state stays local
+                </p>
+                <div
+                  class="state-strip"
+                  set:html={math(
+                    String.raw`(\mathbf x,\boldsymbol\omega,E,w,\mathrm{event})`,
+                  )}
+                />
+                <div class="flow-down" aria-hidden="true">
+                  ↓
+                </div>
+                <div class="flow-step">Advance flight across cells</div>
+                <div class="flow-down" aria-hidden="true">
+                  ↓
+                </div>
+                <div class="flow-step">Select and apply interaction</div>
+                <div class="return-loop">
+                  <span aria-hidden="true">↶</span> If still active, advance the
+                  next flight
+                </div>
+              </div>
+              <div class="flow-down" aria-hidden="true">
+                ↓ terminal
+              </div>
+              <div class="flow-step">Write pixel, score and status for h</div>
+              <div class="flow-down" aria-hidden="true">
+                ↓
+              </div>
+              <div class="flow-step flow-result">
+                Reduce history scores to detector tallies
+              </div>
+            </section>
+            <section class="conceptual-panel">
+              <h3>Queues carry states between kernels</h3>
+              <div class="queue-state">
+                <>
+                  <span class="flow-label">Active-state queue</span>
+                  <span
+                    set:html={math(
+                      String.raw`(h,\mathbf x,\boldsymbol\omega,E,w,\mathrm{event})`,
+                    )}
+                  />
+                </>
+              </div>
+              <div class="flow-down" aria-hidden="true">
+                ↓ read
+              </div>
+              <div class="flow-step">Flight kernel</div>
+              <div class="flow-down" aria-hidden="true">
+                ↓ write
+              </div>
+              <div class="queue-state">
+                Compact and partition terminal / collision states
+              </div>
+              <div class="flow-down" aria-hidden="true">
+                ↓ collision states
+              </div>
+              <div class="flow-step">Interaction kernel</div>
+              <div class="flow-fork">
+                <div class="queue-state">
+                  <>
+                    <span class="flow-label">Survivors</span>
+                    <span>Compact into the next active queue</span>
+                    <span class="return-loop">↶ Flight stage</span>
+                  </>
+                </div>
+                <div class="queue-state">
+                  <>
+                    <span class="flow-label">Terminal states</span>
+                    <span>Merge flight and interaction exits</span>
+                    <span class="flow-down" aria-hidden="true">
+                      ↓
+                    </span>
+                    <span>Score and reduce detector tallies</span>
+                  </>
+                </div>
+              </div>
+            </section>
+          </div>
+          <p class="conceptual-note">
+            History and random-draw identities stay with each state as it passes
+            through the queues.
+          </p>
+        </>
+      )
+    }
+
+    {
+      id === "figure-10-1" && (
+        <>
+          <div class="derivative-key" aria-label="Derivative mechanisms">
+            <span>
+              <b class="derivative-mark mark-C">C</b> Continuous path / response
+            </span>
+            <span>
+              <b class="derivative-mark mark-P">P</b> Choice probability
+            </span>
+            <span>
+              <b class="derivative-mark mark-B">B</b> Moving score boundary
+            </span>
+          </div>
+          <ol class="transport-dependencies">
+            {derivativeStages.map((stage) => (
+              <li>
+                <div class="dependency-name">
+                  <strong>{stage.name}</strong>
+                  <span set:html={math(stage.formula)} />
+                </div>
+                <div class="dependency-marks">
+                  {stage.marks.map((mark) => (
+                    <b class:list={["derivative-mark", `mark-${mark}`]}>
+                      {mark}
+                    </b>
+                  ))}
+                </div>
+                <p>{stage.detail}</p>
+              </li>
+            ))}
+          </ol>
+          <div class="conceptual-pair estimator-pair">
+            <div class="flow-step">
+              <>
+                <span class="flow-label">
+                  A smooth calculation conditional on discrete choices D
+                </span>
+                <span
+                  set:html={math(
+                    String.raw`N_{\mathrm{src}}\,\mathbb E[\partial_\theta A_p+A_p\partial_\theta\log q_\theta(D)]`,
+                  )}
+                />
+              </>
+            </div>
+            <div class="flow-step">
+              <>
+                <span class="flow-label">Moving support or a score jump</span>
+                <span>
+                  Derive the boundary contribution for that representation.
+                </span>
+              </>
+            </div>
+          </div>
+          <p class="conceptual-note">
+            One possible division of derivative terms, with fixed source
+            amplitude. C and P cover different choices within the same
+            estimator. Complete pathwise and likelihood estimates must not be
+            added together.
+          </p>
+          <details>
+            <>
+              <summary>Estimator scope</summary>
+              <p class="conceptual-note">
+                The likelihood estimator in the accompanying source covers
+                fixed-cell densities and source amplitude. Moving geometry and
+                score boundaries require additional derivative terms.
+              </p>
+            </>
+          </details>
+        </>
+      )
+    }
+
+    {
+      id === "figure-10-3" && (
+        <>
+          <div class="replay-legend">
+            <>
+              <span>
+                <i class="saved-example" aria-hidden="true" /> Retained state
+              </span>
+              <span>
+                <i class="rebuilt-example" aria-hidden="true" /> Reconstructed
+                state
+              </span>
+              <span>
+                <i class="segment-example" aria-hidden="true" /> Re-evaluated
+                segment
+              </span>
+            </>
+          </div>
+          <div class="conceptual-three replay-panels">
+            <section class="conceptual-panel">
+              <h3>Full state storage</h3>
+              <div
+                class="event-sequence"
+                aria-label="Retain states at events zero through six"
+              >
+                {eventIds.map((event) => (
+                  <span class="event-state saved">{event}</span>
+                ))}
+              </div>
+              <p class="replay-direction">Derivative traversal ←</p>
+              <p class="conceptual-note">
+                Read each retained state when its derivative contribution is
+                needed.
+              </p>
+            </section>
+            <section class="conceptual-panel">
+              <h3>Reconstruct each prefix</h3>
+              <div
+                class="event-sequence"
+                aria-label="Retain only the initial state and reconstruct later events"
+              >
+                {eventIds.map((event) => (
+                  <span
+                    class:list={[
+                      "event-state",
+                      event === 0 ? "saved" : "rebuilt",
+                    ]}
+                  >
+                    {event}
+                  </span>
+                ))}
+              </div>
+              <div
+                class="prefix-traces"
+                aria-label="Re-evaluate from event zero to six, then zero to five, and continue to zero to one"
+              >
+                {[6, 5, 4, 3, 2, 1].map((last) => (
+                  <div class="prefix-trace" style={`--last-event:${last}`}>
+                    <span>0</span>
+                    <i aria-hidden="true" />
+                    <span>{last}</span>
+                  </div>
+                ))}
+              </div>
+              <p class="conceptual-note">
+                Start from the source state whenever an earlier state is needed.
+                Prefixes repeat.
+              </p>
+            </section>
+            <section class="conceptual-panel">
+              <h3>Checkpointed replay</h3>
+              <div
+                class="event-sequence"
+                aria-label="Retain states at events zero, three and six, then reconstruct the others"
+              >
+                {eventIds.map((event) => (
+                  <span
+                    class:list={[
+                      "event-state",
+                      event % 3 === 0 ? "saved" : "rebuilt",
+                    ]}
+                  >
+                    {event}
+                  </span>
+                ))}
+              </div>
+              <div class="checkpoint-traces">
+                <div class="checkpoint-segment">
+                  <>
+                    <span>3</span>
+                    <i aria-hidden="true" />
+                    <span>6</span>
+                  </>
+                </div>
+                <div class="checkpoint-segment">
+                  <>
+                    <span>0</span>
+                    <i aria-hidden="true" />
+                    <span>3</span>
+                  </>
+                </div>
+              </div>
+              <p class="conceptual-note">
+                Rebuild 3 → 6, use its intermediate states, then rebuild 0 → 3.
+                Discard each temporary segment after use.
+              </p>
+            </section>
+          </div>
+          <p class="conceptual-note">
+            Replay preserves the source, history ID, draw mapping, physical
+            state and model conventions. Reconstructing the same history leaves
+            the number of independent samples unchanged.
+          </p>
+        </>
+      )
+    }
+  </div>
+</FigurePlate>

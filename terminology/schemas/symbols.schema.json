@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Differentiable Photon Transport symbol registry",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "id",
+      "latex",
+      "spoken",
+      "meaning",
+      "units",
+      "domain",
+      "introduced_in",
+      "notes"
+    ],
+    "properties": {
+      "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+      "latex": { "type": "string", "minLength": 1 },
+      "spoken": { "type": "string", "minLength": 1 },
+      "meaning": { "type": "string", "minLength": 1 },
+      "units": { "type": ["string", "null"] },
+      "domain": { "type": "string", "minLength": 1 },
+      "introduced_in": { "type": ["string", "null"] },
+      "notes": { "type": ["string", "null"] },
+      "bootstrap": { "type": "boolean" }
+    }
+  }
+}

@@ -1,0 +1,440 @@
+---
+import FigurePlate from "./FigurePlate.astro";
+import RadiographPanel from "./RadiographPanel.astro";
+import { recordedText } from "../../lib/recorded-text";
+import study from "../../../public/generated/radiographs/study.json";
+import "../../styles/radiographs.css";
+interface Props {
+  kind: "cohort" | "volume" | "views" | "yaw" | "noise";
+  id: string;
+  title: string;
+  description: string;
+  embedded?: boolean;
+}
+const { kind, id, title, description, embedded = false } = Astro.props;
+const Wrapper = embedded ? RadiographPanel : FigurePlate;
+const url = (file: string) => `/generated/radiographs/${file}`;
+const pelvis = study.volumes.find((v) => v.id === "pelvis")!;
+const ap = pelvis.views.find((v) => v.id === "ap")!;
+const frames = study.animation.frames.map((f) => ({
+  id: f.id,
+  value: f.yaw_degrees,
+  image: f.image,
+}));
+const group = {
+  id: "rz",
+  label: "Rotation about the superior axis",
+  unit: "°",
+  initial: 15,
+  frames,
+};
+const directions: Record<
+  string,
+  { beam: string; left: string; right: string }
+> = {
+  ap: { beam: "Anterior → posterior", left: "L", right: "R" },
+  pa: { beam: "Posterior → anterior", left: "R", right: "L" },
+  lateral: { beam: "Right → left", left: "A", right: "P" },
+};
+const columns = kind === "noise" ? 4 : 3;
+---
+
+<Wrapper {id} {title} {description} width="full">
+  <div
+    class:list={[
+      "radiograph-figure",
+      { "radiograph-figure--embedded": embedded },
+    ]}
+  >
+    {embedded && <h3 class="radiograph-motion-heading">{title}</h3>}
+    {
+      kind === "cohort" && (
+        <div class="radiograph-grid" style={`--columns:${columns}`}>
+          {study.volumes.map((volume) => (
+            <section>
+              <h3>{volume.label}</h3>
+              <div class="radiograph-image" style="--image-aspect:1.25">
+                <img
+                  src={url(volume.views[0]!.image)}
+                  alt={`Recorded AP projection of the MAISI ${volume.id} candidate. ${recordedText(volume.coverage)}`}
+                  width="480"
+                  height="256"
+                  loading="lazy"
+                />
+              </div>
+              <p class="radiograph-scale">{recordedText(volume.coverage)}</p>
+            </section>
+          ))}
+        </div>
+      )
+    }
+    {
+      kind === "volume" && (
+        <>
+          <div class="radiograph-grid" style="--columns:3">
+            {pelvis.slices.map((slice) => (
+              <section>
+                <h3>{slice.id[0]!.toUpperCase() + slice.id.slice(1)} slice</h3>
+                <div class="radiograph-oriented">
+                  <span class="orientation-top">{slice.orientation.top}</span>
+                  <span class="orientation-left">{slice.orientation.left}</span>
+                  <div
+                    class="radiograph-image"
+                    style={`--image-aspect:${slice.width_mm / slice.height_mm}`}
+                  >
+                    <img
+                      src={url(slice.image)}
+                      alt={`Actual middle ${slice.id} slice of the synthetic pelvic CT. Top ${slice.orientation.top}, left ${slice.orientation.left}.`}
+                      width={slice.width}
+                      height={slice.height}
+                      loading="lazy"
+                    />
+                  </div>
+                  <span class="orientation-right">
+                    {slice.orientation.right}
+                  </span>
+                  <span class="orientation-bottom">
+                    {slice.orientation.bottom}
+                  </span>
+                </div>
+              </section>
+            ))}
+          </div>
+          <div class="radiograph-pair radiograph-volume-projection">
+            <>
+              <section>
+                <>
+                  <h3>AP projection through the whole field</h3>
+                  <div class="radiograph-image" style="--image-aspect:1.25">
+                    <img
+                      src={url(ap.image)}
+                      alt="Recorded AP projection of the full synthetic pelvic attenuation volume, retaining its native crop."
+                      width="480"
+                      height="256"
+                      loading="lazy"
+                    />
+                  </div>
+                </>
+              </section>
+              <div class="radiograph-volume-notes">
+                <>
+                  <p>
+                    One slice shows one plane of samples. Each projection pixel
+                    depends on attenuation along an entire source-to-detector
+                    path.
+                  </p>
+                  <dl>
+                    <>
+                      <div>
+                        <>
+                          <dt>Native grid</dt>
+                          <dd>256 × 256 × 256 samples</dd>
+                        </>
+                      </div>
+                      <div>
+                        <>
+                          <dt>Sample spacing</dt>
+                          <dd>
+                            {pelvis.spacing_mm[0]!.toFixed(7)} mm in each
+                            direction
+                          </dd>
+                        </>
+                      </div>
+                      <div>
+                        <>
+                          <dt>Displayed CT interval</dt>
+                          <dd>−1,000 to +1,000 HU-like values</dd>
+                        </>
+                      </div>
+                      <div>
+                        <>
+                          <dt>Attenuation conversion</dt>
+                          <dd>μ = 0.01837 max(0, 1 + HU/1000) mm⁻¹</dd>
+                        </>
+                      </div>
+                    </>
+                  </dl>
+                </>
+              </div>
+            </>
+          </div>
+        </>
+      )
+    }
+    {
+      kind === "views" && (
+        <div class="radiograph-view-groups">
+          {study.volumes.map((volume) => (
+            <section>
+              <h3>{volume.label}</h3>
+              <div class="radiograph-grid" style="--columns:3">
+                {volume.views.map((view) => (
+                  <section>
+                    <h3>{view.label}</h3>
+                    <p class="radiograph-beam">{directions[view.id]!.beam}</p>
+                    <div class="radiograph-oriented">
+                      <span class="orientation-top">S</span>
+                      <span class="orientation-left">
+                        {directions[view.id]!.left}
+                      </span>
+                      <div class="radiograph-image" style="--image-aspect:1.25">
+                        <img
+                          src={url(view.image)}
+                          alt={`${view.label} primary projection of the synthetic ${volume.id} candidate. The beam travels ${directions[view.id]!.beam.toLowerCase()}.`}
+                          width="480"
+                          height="256"
+                          loading="lazy"
+                        />
+                      </div>
+                      <span class="orientation-right">
+                        {directions[view.id]!.right}
+                      </span>
+                      <span class="orientation-bottom">I</span>
+                    </div>
+                  </section>
+                ))}
+              </div>
+              <p class="radiograph-note">{recordedText(volume.coverage)}</p>
+            </section>
+          ))}
+        </div>
+      )
+    }
+    {
+      kind === "yaw" && (
+        <recorded-radiograph-player
+          data-groups={JSON.stringify([group])}
+          data-base="/generated/radiographs/"
+        >
+          <div class="radiograph-pair">
+            <>
+              <section>
+                <>
+                  <h3>Recorded moving pose</h3>
+                  <div class="radiograph-image" style="--image-aspect:1.25">
+                    <img
+                      data-frame-image
+                      src={url(ap.image)}
+                      alt="Synthetic pelvic AP projection at zero rotation about the centre of the native volume."
+                      width="480"
+                      height="256"
+                      loading="lazy"
+                    />
+                  </div>
+                </>
+              </section>
+              <section>
+                <>
+                  <h3>Fixed reference</h3>
+                  <div class="radiograph-image" style="--image-aspect:1.25">
+                    <img
+                      src={url(ap.image)}
+                      alt="The same zero-rotation reference held still for comparison during playback."
+                      width="480"
+                      height="256"
+                      loading="lazy"
+                    />
+                  </div>
+                </>
+              </section>
+            </>
+          </div>
+          <div class="radiograph-controls">
+            <>
+              <label>
+                Object movement
+                <select data-axis disabled>
+                  <option value="rz">Rotation about the superior axis</option>
+                </select>
+              </label>
+              <label>
+                Recorded angle{" "}
+                <>
+                  <output data-value>0°</output>
+                  <input
+                    data-frame
+                    type="range"
+                    min="0"
+                    max="30"
+                    step="1"
+                    value="15"
+                    disabled
+                  />
+                </>
+              </label>
+              <div class="radiograph-buttons">
+                <>
+                  <button type="button" data-play disabled>
+                    Play poses
+                  </button>
+                  <button type="button" data-reset disabled>
+                    Reference pose
+                  </button>
+                </>
+              </div>
+            </>
+          </div>
+          <>
+            <p class="radiograph-reading" data-status role="status">
+              Reference pose. Thirty-one separately calculated projections span
+              −15° to +15°.
+            </p>
+            <noscript>
+              <p>
+                The reference is shown above. Enable JavaScript to play or
+                select the recorded angles.
+              </p>
+            </noscript>
+          </>
+          {!embedded && (
+            <p class="radiograph-note">
+              The object rotates about the centre of the native volume. The
+              source and detector stay fixed. This wider study uses a different
+              pivot and detector field from the sacral-pivot sensitivity figure.
+            </p>
+          )}
+        </recorded-radiograph-player>
+      )
+    }
+    {
+      kind === "noise" && (
+        <>
+          <div class="radiograph-noise-context">
+            <>
+              <section>
+                <>
+                  <h3>Region in the synthetic AP projection</h3>
+                  <div
+                    class="radiograph-image radiograph-roi"
+                    style="--image-aspect:1.25"
+                  >
+                    <>
+                      <img
+                        src={url(ap.image)}
+                        alt="Full synthetic pelvic AP projection with the sampled 32 by 32 pixel region outlined."
+                        width="480"
+                        height="256"
+                        loading="lazy"
+                      />
+                      <span
+                        style={`left:${(study.noise.roi.x / 480) * 100}%;top:${(study.noise.roi.y / 256) * 100}%;width:${(32 / 480) * 100}%;height:${(32 / 256) * 100}%`}
+                        aria-hidden="true"
+                      />
+                    </>
+                  </div>
+                </>
+              </section>
+              <section>
+                <>
+                  <h3>Expected patch</h3>
+                  <div
+                    class="radiograph-image radiograph-patch"
+                    style="--image-aspect:0.6666666667"
+                  >
+                    <img
+                      src={url(study.noise.ideal_image)}
+                      alt="Noise-free expected values in the same selected patch, using the shared display window."
+                      width="32"
+                      height="32"
+                      loading="lazy"
+                    />
+                  </div>
+                </>
+              </section>
+            </>
+          </div>
+          <div
+            class="radiograph-grid radiograph-noise-grid"
+            style="--columns:4"
+          >
+            {study.noise.levels.map((level) => (
+              <section>
+                <h3>
+                  {level.background_counts.toLocaleString("en-GB")} counts
+                </h3>
+                <div
+                  class="radiograph-image radiograph-patch"
+                  style="--image-aspect:0.6666666667"
+                >
+                  <img
+                    src={url(level.image)}
+                    alt={`Recorded Poisson observation of the same patch at ${level.background_counts} expected background counts per pixel.`}
+                    width="32"
+                    height="32"
+                    loading="lazy"
+                  />
+                </div>
+                <p class="radiograph-scale">
+                  Relative Poisson SD:{" "}
+                  {(100 / Math.sqrt(level.background_counts)).toFixed(1)}%
+                </p>
+              </section>
+            ))}
+          </div>
+          <p class="radiograph-note">
+            The same 32 × 32 pixel patch at four exposure levels. Counts are
+            actual recorded draws from the canonical Poisson sampler. Each level
+            has a distinct observation identifier. The expected background is
+            defined by the patch's four-pixel border.
+          </p>
+        </>
+      )
+    }
+    <details class="radiograph-data">
+      <summary>Image model and data</summary>
+      {
+        embedded && kind === "yaw" && (
+          <p>
+            This sweep rotates the object about the centre of the native volume.
+            The source and detector stay fixed. Its pivot and detector field
+            differ from those of the small-motion study above, which rotates
+            about the sacral pivot.
+          </p>
+        )
+      }
+      <p>
+        These are simulated primary radiographs of three generated MAISI CT
+        candidates, not patient acquisitions. The full native CT supplies
+        attenuation through the stated water-equivalent approximation at 80 keV.
+        No scatter, spectrum or material-specific calibration is included. AP
+        and PA are cone-beam views and need not be exact horizontal mirrors.
+      </p><p>
+        Radiographs use a common optical-depth display interval 0–8. The 480 ×
+        256 detector spans 600 × 480 mm: its pixels have unequal pitches, so the
+        displayed physical aspect is 5:4. No clinical left/right mirror is
+        applied. A/P/R/L/S/I mark body-relative directions.
+      </p>{
+        kind === "noise" && (
+          <p>
+            The patch spans 40 × 60 mm and is displayed at that physical aspect.
+            Every noise image uses the same inverse normalised-count window
+            0.8–1.2. Values outside it saturate only in the display. Relative
+            Poisson standard deviations are exact model values, not estimates
+            from these four images.
+          </p>
+        )
+      }<p>
+        All 39 distinct projections were checked at 4,096 and 8,192 samples per
+        ray, with three independent reference rays per view. The larger rotation
+        study retains one-degree steps without interpolating between images.
+        Playback timing is illustrative.
+      </p><p>
+        <a href={url("study.json")}
+          >Geometry, observations and numerical checks</a
+        > · <a href={url("provenance.json")}>Source and output digests</a>
+      </p>
+    </details>
+  </div>
+</Wrapper>
+<style>
+  .radiograph-figure--embedded {
+    padding: 0;
+  }
+  .radiograph-figure .radiograph-motion-heading {
+    margin-bottom: 1.4rem;
+    font-weight: 600;
+  }
+</style>
+<script>
+  import "../../lib/radiograph-player";
+</script>

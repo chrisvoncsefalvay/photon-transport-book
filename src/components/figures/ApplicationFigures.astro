@@ -1,0 +1,774 @@
+---
+import { renderToString } from "katex";
+import FigurePlate from "./FigurePlate.astro";
+import AcquisitionCArm from "./AcquisitionCArm.astro";
+import "../../styles/application-figures.css";
+
+interface Props {
+  id: string;
+}
+const { id } = Astro.props;
+const figures = {
+  "figure-11-1": {
+    title: "The registration data and coordinate frames",
+    description:
+      "The attenuation field stays fixed in O and the calibrated apparatus in W. One object-to-world transform must explain every view.",
+  },
+  "figure-12-1": {
+    title: "From calibrated projections to an unknown volume",
+    description:
+      "All four schematic rays miss the highlighted corner support, leaving its coefficient unconstrained by these projections. That coefficient has a zero column in the combined discrete projector.",
+  },
+  "figure-12-2": {
+    title: "The reconstruction forward and adjoint operations",
+    description:
+      "The forward chain maps voxel coefficients to predicted counts, while the reverse chain sends loss gradients through the same discrete weights. Contributions from all views accumulate into a shared volume gradient.",
+  },
+  "figure-13-1": {
+    title: "What an acquisition policy is allowed to know",
+    description:
+      "The policy scores candidate views from the known volume and current estimate, then acquires the chosen view. Keeping future observations and reference poses out of scoring makes the later error an independent test of the decision.",
+  },
+  "figure-13-2": {
+    title: "Useful views within the feasible acquisition set",
+    description:
+      "Coloured arcs separate C-arm detector positions by whether the corresponding source clears the disk. Admissible views must satisfy this geometric constraint before they can be compared for information.",
+  },
+};
+const metadata = figures[id as keyof typeof figures];
+if (!metadata) throw new Error(`Unknown application figure: ${id}`);
+const math = (tex: string) =>
+  renderToString(tex, {
+    throwOnError: true,
+    strict: "error",
+    output: "htmlAndMathml",
+  });
+const forward = [
+  {
+    name: "Voxel coefficients",
+    formula: String.raw`\boldsymbol\mu`,
+    note: "Unknown attenuation, with fixed grid and geometry.",
+  },
+  {
+    name: "Optical depth",
+    formula: String.raw`\mathbf L_k=A_k\boldsymbol\mu`,
+    note: "Ray quadrature and interpolation are inside Aₖ.",
+  },
+  {
+    name: "Mean counts",
+    formula: String.raw`\boldsymbol\lambda_k=\mathbf n_{0,k}\odot e^{-\mathbf L_k}`,
+    note: "The open-beam calibration is fixed.",
+  },
+  {
+    name: "View loss",
+    formula: String.raw`\ell_k(\boldsymbol\lambda_k;\mathbf y_k)`,
+    note: "Compare with that view’s observed counts.",
+  },
+];
+const reverse = [
+  {
+    name: "Seed the scalar loss",
+    formula: String.raw`\overline{\ell_k}=1`,
+    note: "One view’s contribution to the summed objective.",
+  },
+  {
+    name: "Count seed",
+    formula: String.raw`\mathbf s_k=\partial\ell_k/\partial\boldsymbol\lambda_k`,
+    note: "Differentiate the selected measurement objective.",
+  },
+  {
+    name: "Optical-depth seed",
+    formula: String.raw`\mathbf q_k=-\boldsymbol\lambda_k\odot\mathbf s_k`,
+    note: "Pull the seed through the exponential.",
+  },
+  {
+    name: "Volume contribution",
+    formula: String.raw`\mathbf g_k=A_k^{\mathsf T}\mathbf q_k`,
+    note: "Use the same discrete weights in reverse.",
+  },
+];
+// Authored geometry for the two-dimensional support schematic. The corner
+// coefficient at (5,5) has support [4,5.5]² after half-cell boundary extension.
+// The two ray pairs lie in horizontal/vertical central bands and miss it.
+const gridPoint = (x: number, y: number) => [100 + 20 * x, 220 - 20 * y];
+const supportRays = [
+  {
+    source: [-4, 2.5],
+    ends: [
+      [9, 1.5],
+      [9, 3.5],
+    ],
+    tone: "first",
+  },
+  {
+    source: [2.5, 9],
+    ends: [
+      [1.5, -4],
+      [3.5, -4],
+    ],
+    tone: "second",
+  },
+];
+---
+
+<FigurePlate {id} {...metadata}>
+  <div class="application-figure" data-application-figure={id}>
+    {
+      id === "figure-11-1" && (
+        <div class="application-pair">
+          <section>
+            <h3>One representative calibrated view</h3>
+            <svg
+              viewBox="0 0 310 285"
+              role="img"
+              aria-labelledby={`${id}-drawing-title ${id}-drawing-desc`}
+            >
+              <title id={`${id}-drawing-title`}>
+                A fixed acquisition and an object-frame attenuation field
+              </title>
+              <desc id={`${id}-drawing-desc`}>
+                A planar section shows the source S at left, the detector D at
+                right, and a volume attached to O. W is the common fixed world
+                frame. Circles with central dots denote axes pointing out of the
+                page. The detector's first axis points upwards, second out of
+                the page and third to the right, forming a right-handed triad.
+              </desc>
+              <defs>
+                <marker
+                  id={`${id}-arrow`}
+                  viewBox="0 0 8 8"
+                  refX="7"
+                  refY="4"
+                  markerWidth="5"
+                  markerHeight="5"
+                  orient="auto"
+                >
+                  <path d="M1,1 L7,4 L1,7" class="app-arrow" />
+                </marker>
+              </defs>
+              <path d="M35,130 L260,65 M35,130 L260,195" class="app-guide" />
+              <path d="M260,65 V195" class="app-detector" />
+              <polygon
+                points="105,91 174,72 198,161 129,180"
+                class="app-volume"
+              />
+              <path
+                d="M128,85 L152,173 M151,78 L175,167 M113,121 L182,102 M121,150 L190,131"
+                class="app-grid"
+              />
+              <path d="M35,130 L260,130" class="app-ray" />
+              <circle cx="35" cy="130" r="4.5" class="app-dot" />
+              {[
+                "M35,130 h24",
+                "M35,130 v-24",
+                "M147,130 l24,-7",
+                "M147,130 l-7,-24",
+                "M260,130 v-26",
+                "M260,130 h26",
+                "M45,230 h26",
+                "M45,230 v-26",
+              ].map((d) => (
+                <path {d} class="app-axis" marker-end={`url(#${id}-arrow)`} />
+              ))}
+              {[
+                [35, 130],
+                [147, 130],
+                [260, 130],
+                [45, 230],
+              ].map(([x, y]) => (
+                <g>
+                  <circle cx={x} cy={y} r="4" class="app-out-axis" />
+                  <circle cx={x} cy={y} r="1.5" class="app-dot" />
+                </g>
+              ))}
+              <>
+                <text x="66" y="115" class="app-small-label">
+                  x
+                </text>
+                <text x="30" y="100" class="app-small-label">
+                  y
+                </text>
+              </>
+              <>
+                <text x="179" y="127" class="app-small-label">
+                  x
+                </text>
+                <text x="133" y="99" class="app-small-label">
+                  y
+                </text>
+              </>
+              <>
+                <text x="270" y="101" class="app-small-label">
+                  x
+                </text>
+                <text x="290" y="145" class="app-small-label">
+                  z
+                </text>
+              </>
+              <>
+                <text x="79" y="235" class="app-small-label">
+                  x
+                </text>
+                <text x="40" y="198" class="app-small-label">
+                  y
+                </text>
+              </>
+              <>
+                <text x="35" y="163" text-anchor="middle">
+                  S
+                </text>
+                <text x="150" y="207" text-anchor="middle">
+                  O · volume
+                </text>
+              </>
+              <>
+                <text x="260" y="47" text-anchor="middle">
+                  D
+                </text>
+                <text x="43" y="260" text-anchor="middle">
+                  W
+                </text>
+              </>
+            </svg>
+            <p class="application-note">
+              The field and sampling grid move together with O.
+            </p>
+          </section>
+          <section class="application-inputs">
+            <div class="application-node">
+              <>
+                <span class="application-label">Supplied volume</span>
+                <span
+                  set:html={math(
+                    String.raw`\mu_O(\mathbf x),\ \text{grid geometry}`,
+                  )}
+                />
+                <p>Attenuation in mm⁻¹, with spacing and origin in mm.</p>
+              </>
+            </div>
+            <div class="application-node">
+              <>
+                <span class="application-label">
+                  Supplied acquisition for each view v
+                </span>
+                <span
+                  set:html={math(
+                    String.raw`\mathbf s_v^W,\ \mathbf q_{vp}^W,\ N_{0v}`,
+                  )}
+                />
+                <p>
+                  Source position, detector pixel centres and open-beam counts,
+                  with calibrated detector axes and pitches.
+                </p>
+              </>
+            </div>
+            <div class="application-node app-unknown">
+              <>
+                <span class="application-label">
+                  Estimate one shared rigid transform
+                </span>
+                <span
+                  set:html={math(
+                    String.raw`\mathbf T_{WO}:\mathbf x_O\longmapsto\mathbf x_W`,
+                  )}
+                />
+              </>
+            </div>
+            <div class="application-node">
+              <>
+                <span class="application-label">
+                  Project a transformed target into each view
+                </span>
+                <span
+                  set:html={math(
+                    String.raw`\mathbf u_v=\pi_v(\mathbf T_{WO}\mathbf x_O)`,
+                  )}
+                />
+              </>
+            </div>
+          </section>
+        </div>
+      )
+    }
+
+    {
+      id === "figure-12-1" && (
+        <div class="application-pair">
+          <section>
+            <h3>Four measured rays in a grid section</h3>
+            <svg
+              viewBox="0 0 320 333"
+              role="img"
+              aria-labelledby={`${id}-support-title ${id}-support-desc`}
+            >
+              <title id={`${id}-support-title`}>
+                Sparse rays miss a full interpolation support
+              </title>
+              <desc id={`${id}-support-desc`}>
+                A six-by-six node section has unit spacing. One source at
+                (−4,2.5) illuminates endpoints (9,1.5) and (9,3.5). The other
+                source at (2.5,9) illuminates (1.5,−4) and (3.5,−4). The
+                highlighted support of the corner coefficient at (5,5) is the
+                square [4,5.5] by [4,5.5]. No ray intersects it.
+              </desc>
+              <defs>
+                <pattern
+                  id={`${id}-hatch`}
+                  width="7"
+                  height="7"
+                  patternUnits="userSpaceOnUse"
+                >
+                  <path
+                    d="M-2,2 L2,-2 M0,7 L7,0 M5,9 L9,5"
+                    class="support-hatch"
+                  />
+                </pattern>
+              </defs>
+              <rect
+                x="90"
+                y="110"
+                width="120"
+                height="120"
+                class="app-volume"
+              />
+              {[0, 1, 2, 3, 4].map((value) => (
+                <path
+                  d={`M${110 + 20 * value},110 V230 M90,${130 + 20 * value} H210`}
+                  class="app-grid"
+                />
+              ))}
+              <rect
+                x="180"
+                y="110"
+                width="30"
+                height="30"
+                fill={`url(#${id}-hatch)`}
+                class="support-box"
+              />
+              {[0, 1, 2, 3, 4, 5].flatMap((x) =>
+                [0, 1, 2, 3, 4, 5].map((y) => (
+                  <circle
+                    cx={gridPoint(x, y)[0]}
+                    cy={gridPoint(x, y)[1]}
+                    r="1.8"
+                    class="grid-node"
+                  />
+                )),
+              )}
+              {supportRays.map((view) => (
+                <g>
+                  {view.ends.map((end) => (
+                    <path
+                      d={`M${gridPoint(view.source[0]!, view.source[1]!).join(",")} L${gridPoint(end[0]!, end[1]!).join(",")}`}
+                      class:list={["support-ray", `support-${view.tone}`]}
+                    />
+                  ))}
+                  <circle
+                    cx={gridPoint(view.source[0]!, view.source[1]!)[0]}
+                    cy={gridPoint(view.source[0]!, view.source[1]!)[1]}
+                    r="4.5"
+                    class="app-dot"
+                  />
+                </g>
+              ))}
+              <path d="M280,143 V197 M123,300 H177" class="app-detector" />
+              <circle cx="200" cy="120" r="4" class="support-coefficient" />
+              <path d="M204,117 L236,95" class="app-leader" />
+              <text x="245" y="90" text-anchor="middle">
+                Support of μⱼ
+              </text>
+              <>
+                <text x="20" y="197" text-anchor="middle">
+                  s₁
+                </text>
+                <text x="151" y="26" text-anchor="middle">
+                  s₂
+                </text>
+              </>
+              <>
+                <text x="290" y="216" text-anchor="middle">
+                  D₁
+                </text>
+                <text x="150" y="324" text-anchor="middle">
+                  D₂
+                </text>
+              </>
+            </svg>
+            <p class="application-note">
+              Unit grid spacing. Hatching includes the corner basis’s half-cell
+              boundary extension.
+            </p>
+          </section>
+          <section class="application-inputs">
+            <div class="application-node">
+              <>
+                <span class="application-label">Fixed for every view</span>
+                <span>
+                  Source, detector, volume pose and discrete sampling rule
+                </span>
+              </>
+            </div>
+            <div class="application-node app-unknown">
+              <>
+                <span class="application-label">Unknown</span>
+                <span set:html={math(String.raw`\boldsymbol\mu\geq0`)} />
+                <p>The ray operator maps coefficients to optical depth.</p>
+                <span
+                  set:html={math(String.raw`\mathbf L_k=A_k\boldsymbol\mu`)}
+                />
+              </>
+            </div>
+            <div class="application-node">
+              <>
+                <span class="application-label">
+                  For the highlighted coefficient j
+                </span>
+                <span set:html={math(String.raw`(A_k)_{pj}=0`)} />
+                <p>
+                  Its full basis support misses the rays, hence every quadrature
+                  sample on them.
+                </p>
+              </>
+            </div>
+            <div class="application-node">
+              <>
+                <span class="application-label">
+                  A change in that coefficient is unobserved
+                </span>
+                <span
+                  set:html={math(
+                    String.raw`A(\boldsymbol\mu+t\mathbf e_j)=A\boldsymbol\mu`,
+                  )}
+                />
+                <p>
+                  For changes preserving nonnegativity, these measurements give
+                  no preference. Additional rays or a prior supply different
+                  information.
+                </p>
+              </>
+            </div>
+          </section>
+        </div>
+      )
+    }
+
+    {
+      id === "figure-12-2" && (
+        <>
+          <h3>Forward · one calibrated view k</h3>
+          <ol class="application-chain">
+            {forward.map((stage) => (
+              <li>
+                <strong>{stage.name}</strong>
+                <span
+                  class="application-formula"
+                  set:html={math(stage.formula)}
+                />
+                <p>{stage.note}</p>
+              </li>
+            ))}
+          </ol>
+          <h3 class="reverse-heading">Reverse · from the loss to the volume</h3>
+          <ol class="application-chain reverse-chain">
+            {reverse.map((stage) => (
+              <li>
+                <strong>{stage.name}</strong>
+                <span
+                  class="application-formula"
+                  set:html={math(stage.formula)}
+                />
+                <p>{stage.note}</p>
+              </li>
+            ))}
+          </ol>
+          <div class="application-pair gradient-notes">
+            <div class="application-node">
+              <>
+                <span class="application-label">
+                  Sum the views, then add regularisation once
+                </span>
+                <span
+                  set:html={math(
+                    String.raw`\nabla\Phi=\sum_k A_k^{\mathsf T}\mathbf q_k+\beta\nabla R`,
+                  )}
+                />
+                <p>
+                  Ordinary Euclidean inner products on stored arrays define the
+                  transpose. No extra voxel-volume factor belongs in this data
+                  term.
+                </p>
+              </>
+            </div>
+            <div class="application-node">
+              <>
+                <span class="application-label">
+                  For the chapter’s Poisson half-deviance
+                </span>
+                <p>For positive predicted means:</p>
+                <span
+                  set:html={math(
+                    String.raw`\mathbf s_k=\mathbf1-\mathbf y_k\oslash\boldsymbol\lambda_k`,
+                  )}
+                />
+                <span
+                  set:html={math(
+                    String.raw`\mathbf q_k=\mathbf y_k-\boldsymbol\lambda_k`,
+                  )}
+                />
+                <details>
+                  <>
+                    <summary>Count-seed arithmetic</summary>
+                    <p>
+                      The algebraic form of the optical-depth seed does not
+                      remove the count-seed interface’s numerical range limits.
+                    </p>
+                  </>
+                </details>
+              </>
+            </div>
+          </div>
+        </>
+      )
+    }
+
+    {
+      id === "figure-13-1" && (
+        <section class="policy-flow" aria-label="Acquisition policy flow">
+          <div class="policy-flow__inputs">
+            <div class="policy-flow__box policy-flow__input">
+              <>
+                <strong>Known registration volume</strong>
+                <span>Attenuation and object-frame task targets</span>
+              </>
+            </div>
+            <div class="policy-flow__box policy-flow__input">
+              <>
+                <strong>Current observations</strong>
+                <span set:html={math(String.raw`\mathcal Y_0`)} />
+                <span>Images already acquired</span>
+              </>
+            </div>
+            <div class="policy-flow__box policy-flow__input">
+              <>
+                <strong>Current pose and uncertainty</strong>
+                <span
+                  set:html={math(
+                    String.raw`\widehat{\mathbf G}_{WO},\ \boldsymbol\Lambda_0`,
+                  )}
+                />
+                <span>One declared local chart</span>
+              </>
+            </div>
+            <div class="policy-flow__box policy-flow__input">
+              <>
+                <strong>Candidate acquisitions</strong>
+                <span>
+                  Calibrated geometry, exposure, budget and assessed feasibility
+                </span>
+              </>
+            </div>
+          </div>
+          <div class="policy-flow__arrow" aria-hidden="true" />
+          <div class="policy-flow__box policy-flow__stage">
+            <>
+              <strong>Compute hypothetical predictions</strong>
+              <span
+                set:html={math(
+                  String.raw`\boldsymbol\lambda_a,\ \mathbf J_{L,a},\ \mathbf I_a`,
+                )}
+              />
+              <span>Compute each against the same current state</span>
+            </>
+          </div>
+          <div class="policy-flow__arrow" aria-hidden="true" />
+          <div class="policy-flow__box policy-flow__stage policy-flow__choice">
+            <>
+              <strong>Score permitted candidates and record the choice</strong>
+              <span
+                set:html={math(
+                  String.raw`a^\star=\operatorname*{argmin}_{a\in\mathcal A}\Phi(a)`,
+                )}
+              />
+              <span>Predicted target-position variance</span>
+            </>
+          </div>
+          <div class="policy-flow__boundary">
+            <div class="policy-flow__arrow" aria-hidden="true" />
+            <span>Decision recorded</span>
+          </div>
+          <div class="policy-flow__box policy-flow__stage">
+            <>
+              <strong>Acquire the selected view</strong>
+              <span set:html={math(String.raw`\mathbf y_{a^\star}`)} />
+              <span>Its measured pixels now become available.</span>
+            </>
+          </div>
+          <div class="policy-flow__arrow" aria-hidden="true" />
+          <div class="policy-flow__box policy-flow__stage">
+            <>
+              <strong>Update registration</strong>
+              <span>Use the additional observation for the next decision.</span>
+            </>
+          </div>
+          <div class="policy-flow__arrow" aria-hidden="true" />
+          <div class="policy-flow__box policy-flow__stage policy-flow__evaluation">
+            <>
+              <strong>Evaluate against an independent reference</strong>
+              <span>
+                Use withheld reference poses to measure achieved target error.
+              </span>
+              <span class="policy-flow__qualification">
+                Evaluation only · no input to candidate scoring
+              </span>
+            </>
+          </div>
+        </section>
+      )
+    }
+
+    {id === "figure-13-2" && <AcquisitionCArm {id} />}
+  </div>
+</FigurePlate>
+
+<style>
+  .policy-flow {
+    --flow-branch: 1.4rem;
+    font: 0.82rem/1.5 var(--font-ui);
+  }
+  .policy-flow__box {
+    display: grid;
+    align-content: start;
+    gap: 0.45rem;
+    min-width: 0;
+    padding: 0.9rem 1rem;
+    border: 1px solid var(--rule-strong);
+    background: var(--paper-raised);
+  }
+  .policy-flow__box strong {
+    font-weight: 500;
+    line-height: 1.4;
+  }
+  .policy-flow__box > span {
+    color: var(--ink-muted);
+    font-size: 0.75rem;
+  }
+  .policy-flow__inputs {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+    padding-bottom: var(--flow-branch);
+  }
+  .policy-flow__inputs::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: calc((100% - 3rem) / 8);
+    right: calc((100% - 3rem) / 8);
+    border-top: 1px solid var(--technical);
+  }
+  .policy-flow__input {
+    position: relative;
+  }
+  .policy-flow__input::after {
+    content: "";
+    position: absolute;
+    bottom: calc(-1 * var(--flow-branch));
+    left: 50%;
+    height: var(--flow-branch);
+    border-left: 1px solid var(--technical);
+  }
+  .policy-flow__stage {
+    width: min(100%, 38rem);
+    margin-inline: auto;
+    box-sizing: border-box;
+  }
+  .policy-flow__choice {
+    border-color: var(--technical);
+  }
+  .policy-flow__arrow {
+    position: relative;
+    height: 2rem;
+    width: 1px;
+    margin-inline: auto;
+    background: var(--technical);
+  }
+  .policy-flow__arrow::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    border-top: 6px solid var(--technical);
+    border-inline: 4px solid transparent;
+  }
+  .policy-flow__boundary {
+    position: relative;
+    height: 3.5rem;
+  }
+  .policy-flow__boundary::before {
+    content: "";
+    position: absolute;
+    inset: 50% 0 auto;
+    border-top: 1px dashed var(--accent);
+  }
+  .policy-flow__boundary > .policy-flow__arrow {
+    height: 100%;
+  }
+  .policy-flow__boundary > span {
+    position: absolute;
+    top: 50%;
+    left: calc(50% + 1rem);
+    transform: translateY(-50%);
+    padding: 0.2rem 0.5rem;
+    background: var(--paper-inset);
+    color: var(--accent);
+    font-size: 0.72rem;
+  }
+  .policy-flow__evaluation {
+    border-style: dashed;
+  }
+  .policy-flow__qualification {
+    border-top: 1px solid var(--rule);
+    padding-top: 0.45rem;
+  }
+  @media (max-width: 900px) {
+    .policy-flow__inputs {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0.75rem;
+      padding-left: 1.25rem;
+    }
+    .policy-flow__inputs::after {
+      left: 0;
+      right: 50%;
+    }
+    .policy-flow__input::before {
+      content: "";
+      position: absolute;
+      top: -0.75rem;
+      bottom: -0.75rem;
+      left: -1.25rem;
+      border-left: 1px solid var(--technical);
+    }
+    .policy-flow__input:first-child::before {
+      top: 50%;
+    }
+    .policy-flow__input:last-child::before {
+      bottom: calc(-1 * var(--flow-branch));
+    }
+    .policy-flow__input::after {
+      top: 50%;
+      bottom: auto;
+      left: -1.25rem;
+      width: 1.25rem;
+      height: 0;
+      border: 0;
+      border-top: 1px solid var(--technical);
+    }
+  }
+  @media print {
+    .policy-flow__box {
+      break-inside: avoid;
+    }
+  }
+</style>

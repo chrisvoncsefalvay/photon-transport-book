@@ -1,0 +1,516 @@
+---
+import { renderToString } from "katex";
+import rigMetadata from "../../../public/assets/carm/c-arm-rig.json";
+import { acquisitionGeometry } from "../../lib/carm/acquisition-geometry";
+
+interface Props {
+  id: string;
+}
+const { id } = Astro.props;
+const geometry = acquisitionGeometry(rigMetadata);
+const mm = (value: number) => (value * 1000).toFixed(2);
+const math = (tex: string) =>
+  renderToString(tex, {
+    throwOnError: true,
+    strict: "error",
+    output: "htmlAndMathml",
+  });
+---
+
+<dpt-acquisition-carm
+  class="acquisition-carm"
+  data-acquisition-carm
+  data-state="static"
+  role="group"
+  aria-label="C-arm endpoint geometry and an illustrative clearance constraint"
+>
+  <div class="acquisition-viewport" data-acq="viewport">
+    <img
+      class="acquisition-poster"
+      data-acq="poster"
+      src="/generated/acquisition-carm/poster.png"
+      width="1600"
+      height="1040"
+      loading="lazy"
+      alt={`The white C-arm model at an illustrative angle of +60 degrees. The source and detector are ${mm(geometry.sourceRadius)} and ${mm(geometry.detectorRadius)} millimetres from O. Coloured arcs trace detector positions classified by source clearance. Labels locate the source, detector, isocentre, rest-source point c, angle and the source-clearance disk of radius ${mm(geometry.clearanceRadius)} millimetres.`}
+    />
+    <canvas
+      data-acq="canvas"
+      tabindex="-1"
+      aria-hidden="true"
+      aria-label="Annotated C-arm. Drag to orbit, and pinch or scroll to zoom. Arrow keys orbit, plus and minus zoom, Home resets the view. The angle slider moves the orbital assembly."
+      aria-describedby={`${id}-controls-hint`}></canvas>
+    <svg class="acquisition-overlay" data-acq="overlay" aria-hidden="true">
+      <defs>
+        <pattern
+          id={`${id}-disk-hatch`}
+          width="7"
+          height="7"
+          patternUnits="userSpaceOnUse"
+        >
+          <path d="M-2,2 L2,-2 M0,7 L7,0 M5,9 L9,5" class="disk-hatch"></path>
+        </pattern>
+      </defs>
+      <path
+        data-acq-path="disk"
+        class="clearance-disk"
+        fill={`url(#${id}-disk-hatch)`}></path>
+      <path data-acq-path="outside" class="orbit-outside"></path>
+      <path data-acq-path="allowed-positive" class="orbit-allowed"></path>
+      <path data-acq-path="allowed-negative" class="orbit-allowed"></path>
+      <path data-acq-path="excluded" class="orbit-excluded"></path>
+      <path data-acq-path="reference" class="reference-line"></path>
+      <path data-acq-path="basis" class="reference-line"></path>
+      <path data-acq-path="source-radius" class="radius-line"></path>
+      <path data-acq-path="detector-radius" class="radius-line"></path>
+      <path data-acq-path="clearance" class="clearance-line"></path>
+      <path data-acq-path="disk-radius" class="clearance-line"></path>
+      <path data-acq-path="angle" class="angle-line"></path>
+      <g data-acq="leaders" class="annotation-leaders"></g>
+      <g data-acq="markers"></g>
+      <g class="acquisition-labels" data-acq="labels"></g>
+    </svg>
+    <p class="acquisition-status" data-acq="status" role="status" hidden>
+      The annotated C-arm loads when this figure comes into view.
+    </p>
+    <span class="acquisition-view-hint" aria-hidden="true"
+      >Drag to orbit · Scroll to zoom</span
+    >
+  </div>
+  <div class="acquisition-controls" data-acq="controls" hidden>
+    <label for={`${id}-angle`}>
+      Angle <i>α</i>
+      <output for={`${id}-angle`} data-acq="angle-output">+60°</output>
+    </label>
+    <input
+      id={`${id}-angle`}
+      data-acq="angle"
+      type="range"
+      min="-90"
+      max="90"
+      step="0.1"
+      value="60"
+      aria-describedby={`${id}-angle-help`}
+    />
+    <button type="button" data-acq="reset">Reset view</button>
+  </div>
+  <div class="acquisition-key">
+    <ul aria-label="Detector endpoint orbit, classified by source clearance">
+      <li>
+        <i class="key-allowed" aria-hidden="true"></i>Allowed detector endpoint
+      </li>
+      <li>
+        <i class="key-excluded" aria-hidden="true"></i>Source-clearance
+        exclusion
+      </li>
+      <li>
+        <i class="key-outside" aria-hidden="true"></i>Outside candidate domain
+      </li>
+    </ul>
+    <p data-acq="readout" aria-live="polite" aria-atomic="true">
+      At +60°: source clearance {mm(geometry.sourceRadius)} mm, detector configuration
+      allowed.
+    </p>
+  </div>
+  <div class="acquisition-equations">
+    <p>
+      <span
+        set:html={math(
+          String.raw`\mathbf s=R_s\mathbf u,\quad\mathbf d=-R_d\mathbf u`,
+        )}
+      />
+      <span
+        >relative to <i>O</i>, with <span
+          set:html={math(
+            String.raw`\mathbf u=\cos\alpha\,\mathbf e_0+\sin\alpha\,\mathbf e_1`,
+          )}
+        />.</span
+      >
+    </p>
+    <p>
+      <span
+        set:html={math(
+          String.raw`\|\mathbf s-\mathbf c\|\geq R_s/2,\quad\mathbf c=R_s\mathbf e_0`,
+        )}
+      />
+      <span
+        >Allowed: <span
+          set:html={math(String.raw`\arccos(7/8)\leq|\alpha|\leq\pi/2`)}
+        />.</span
+      >
+    </p>
+  </div>
+  <p class="acquisition-note" id={`${id}-angle-help`}>
+    Model-world distances: <span
+      set:html={math(String.raw`R_s=${mm(geometry.sourceRadius)}\,\mathrm{mm}`)}
+    />,
+    <span
+      set:html={math(
+        String.raw`R_d=${mm(geometry.detectorRadius)}\,\mathrm{mm}`,
+      )}
+    />.{" "}
+    <span
+      set:html={math(String.raw`\mathbf e_0=(0,-1,0),\ \mathbf e_1=(1,0,0)`)}
+    />.{" "}The ±90° candidate domain and point-clearance disk are illustrative.
+    They do not specify device travel or a collision-free path.
+  </p>
+  <span class="sr-only" id={`${id}-controls-hint`}
+    >Use the angle slider to inspect the endpoint constraint. Camera orbiting
+    changes only the view.</span
+  >
+</dpt-acquisition-carm>
+
+<script>
+  const elementName = "dpt-acquisition-carm";
+  if (!customElements.get(elementName)) {
+    customElements.define(
+      elementName,
+      class extends HTMLElement {
+        #observer: IntersectionObserver | undefined;
+        #dispose: (() => void) | undefined;
+        #generation = 0;
+
+        connectedCallback(): void {
+          const generation = ++this.#generation;
+          queueMicrotask(() => {
+            if (!this.isConnected || generation !== this.#generation) return;
+            const start = (): void => {
+              this.#observer?.disconnect();
+              this.#observer = undefined;
+              void import("../../lib/carm/acquisition")
+                .then(({ mountAcquisitionCArm }) => {
+                  if (this.isConnected && generation === this.#generation)
+                    this.#dispose = mountAcquisitionCArm(this);
+                })
+                .catch((error: unknown) => {
+                  if (!this.isConnected || generation !== this.#generation)
+                    return;
+                  const status = this.querySelector<HTMLElement>(
+                    '[data-acq="status"]',
+                  );
+                  if (status) {
+                    status.hidden = false;
+                    status.textContent =
+                      "The interactive view is unavailable. The static drawing and equations remain available.";
+                  }
+                  console.error("Acquisition C-arm could not start", error);
+                });
+            };
+            if (!("IntersectionObserver" in window)) start();
+            else {
+              this.#observer = new IntersectionObserver(
+                (entries) => {
+                  if (entries.some((entry) => entry.isIntersecting)) start();
+                },
+                { rootMargin: "240px" },
+              );
+              this.#observer.observe(this);
+            }
+          });
+        }
+
+        disconnectedCallback(): void {
+          ++this.#generation;
+          this.#observer?.disconnect();
+          this.#observer = undefined;
+          this.#dispose?.();
+          this.#dispose = undefined;
+        }
+      },
+    );
+  }
+</script>
+
+<style>
+  .acquisition-carm {
+    display: block;
+    color: var(--ink);
+  }
+  .acquisition-viewport {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 20 / 13;
+    background: var(--paper, #f7f4ec);
+    overflow: hidden;
+  }
+  .acquisition-poster,
+  canvas,
+  .acquisition-overlay {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .acquisition-poster {
+    display: block;
+    object-fit: contain;
+  }
+  canvas {
+    display: block;
+    opacity: 0;
+    touch-action: none;
+    cursor: grab;
+  }
+  canvas:active {
+    cursor: grabbing;
+  }
+  canvas:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -3px;
+  }
+  .acquisition-overlay {
+    pointer-events: none;
+    overflow: visible;
+    display: none;
+  }
+  .acquisition-carm[data-state="ready"] canvas {
+    opacity: 1;
+  }
+  .acquisition-carm[data-state="ready"] .acquisition-poster {
+    visibility: hidden;
+  }
+  .acquisition-carm[data-state="ready"] .acquisition-overlay {
+    display: block;
+  }
+  .acquisition-status {
+    position: absolute;
+    inset: auto 1rem 2.2rem;
+    margin: 0;
+    padding: 0.4rem;
+    text-align: center;
+    font-size: 0.85rem;
+    background: var(--paper);
+  }
+  .acquisition-view-hint {
+    display: none;
+    position: absolute;
+    right: 0.75rem;
+    bottom: 0.6rem;
+    font-family: var(--font-ui);
+    font-size: 0.68rem;
+    color: var(--ink-muted);
+    pointer-events: none;
+  }
+  .acquisition-carm[data-state="ready"] .acquisition-view-hint {
+    display: block;
+  }
+  .acquisition-overlay path {
+    vector-effect: non-scaling-stroke;
+  }
+  .acquisition-overlay .disk-hatch {
+    fill: none;
+    stroke: #a4442d;
+    stroke-width: 0.6;
+    opacity: 0.23;
+  }
+  .clearance-disk {
+    stroke: #a4442d;
+    stroke-width: 1;
+    stroke-dasharray: 3 3;
+  }
+  .orbit-outside,
+  .orbit-allowed,
+  .orbit-excluded,
+  .radius-line,
+  .clearance-line,
+  .reference-line,
+  .angle-line {
+    fill: none;
+  }
+  .orbit-outside {
+    stroke: #827e76;
+    stroke-width: 1.25;
+    stroke-dasharray: 4 5;
+    opacity: 0.75;
+  }
+  .orbit-allowed {
+    stroke: #356f73;
+    stroke-width: 3;
+  }
+  .orbit-excluded {
+    stroke: #a4442d;
+    stroke-width: 3;
+    stroke-dasharray: 2 3;
+  }
+  .reference-line {
+    stroke: #77736b;
+    stroke-width: 1;
+    stroke-dasharray: 3 4;
+  }
+  .radius-line {
+    stroke: #355e77;
+    stroke-width: 1.4;
+  }
+  .clearance-line {
+    stroke: #a4442d;
+    stroke-width: 1.15;
+  }
+  .angle-line {
+    stroke: #355e77;
+    stroke-width: 1.5;
+  }
+  .acquisition-overlay :global(.annotation-leaders path) {
+    fill: none;
+    stroke: #716c63;
+    stroke-width: 0.7;
+    opacity: 0.65;
+  }
+  .acquisition-overlay :global(text) {
+    font-family: var(--font-prose);
+    font-size: 13px;
+    fill: #27241f;
+    paint-order: stroke;
+    stroke: var(--paper);
+    stroke-width: 4px;
+    stroke-linejoin: round;
+  }
+  .acquisition-overlay :global(text.endpoint-label) {
+    font-size: 14px;
+  }
+  .acquisition-overlay :global(text.quantity-label) {
+    font-size: 12px;
+  }
+  .acquisition-overlay :global(text.angle-label) {
+    fill: #355e77;
+  }
+  .acquisition-controls {
+    display: grid;
+    grid-template-columns: auto minmax(70px, 1fr) auto;
+    align-items: center;
+    gap: 0.8rem;
+    padding-block: 0.8rem;
+    border-block: 1px solid var(--rule);
+    font-family: var(--font-ui);
+    font-size: 0.8rem;
+  }
+  .acquisition-controls[hidden] {
+    display: none;
+  }
+  .acquisition-controls label {
+    display: flex;
+    gap: 0.4rem;
+    align-items: baseline;
+  }
+  .acquisition-controls output {
+    min-width: 3.5rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .acquisition-controls input {
+    width: 100%;
+    min-height: 44px;
+    margin: 0;
+    accent-color: var(--accent);
+  }
+  .acquisition-controls button {
+    min-height: 44px;
+    padding: 0.35rem 0.6rem;
+    border: 1px solid var(--rule);
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+  }
+  .acquisition-controls button:focus-visible,
+  .acquisition-controls input:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+  .acquisition-key {
+    padding-block: 0.8rem;
+    font-family: var(--font-ui);
+    font-size: 0.72rem;
+  }
+  .acquisition-key ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 1rem;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+  .acquisition-key li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin: 0;
+  }
+  .acquisition-key i {
+    width: 1.5rem;
+    height: 0;
+    border-top: 3px solid;
+  }
+  .acquisition-key .key-allowed {
+    border-color: #356f73;
+  }
+  .acquisition-key .key-excluded {
+    border-color: #a4442d;
+    border-top-style: dotted;
+  }
+  .acquisition-key .key-outside {
+    border-color: #827e76;
+    border-top-width: 1px;
+    border-top-style: dashed;
+  }
+  .acquisition-key p {
+    margin: 0.55rem 0 0;
+    font-variant-numeric: tabular-nums;
+  }
+  .acquisition-equations {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 2rem;
+    padding-block: 0.35rem;
+    font-size: 0.78rem;
+  }
+  .acquisition-equations p {
+    display: grid;
+    gap: 0.2rem;
+    margin: 0;
+  }
+  .acquisition-note {
+    margin: 0.6rem 0 0;
+    font-size: 0.78rem;
+    line-height: 1.55;
+    color: var(--ink-muted);
+  }
+  @media (max-width: 560px) {
+    .acquisition-viewport {
+      aspect-ratio: 5 / 6;
+    }
+    .acquisition-controls {
+      gap: 0.4rem;
+      font-size: 0.72rem;
+    }
+    .acquisition-controls label {
+      gap: 0.25rem;
+    }
+    .acquisition-controls output {
+      min-width: 3rem;
+    }
+    .acquisition-key {
+      font-size: 0.66rem;
+    }
+    .acquisition-equations {
+      font-size: 0.72rem;
+      gap: 0.7rem;
+    }
+  }
+  @media print {
+    .acquisition-viewport {
+      aspect-ratio: 20 / 13;
+    }
+    .acquisition-poster {
+      visibility: visible !important;
+    }
+    canvas,
+    .acquisition-overlay,
+    .acquisition-controls,
+    .acquisition-view-hint,
+    .acquisition-status {
+      display: none !important;
+    }
+    .acquisition-key [data-acq="readout"] {
+      display: none;
+    }
+  }
+</style>

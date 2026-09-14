@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "purpose": "Instructional CT-derived known-volume registration followed by choosing a second view. A near-parallel second view is the stated baseline; no claim of superiority over an optimally chosen fixed orthogonal view.",
+  "case": 2,
+  "known_attenuation_sha256": "473f2076730eb863eac365eb56cd40144c8b8fdbce8f8140179c0a5467d18ab6",
+  "geometry": {
+    "detector_shape_hw": [128, 128],
+    "detector_spacing_mm_uv": [8.0, 8.0],
+    "source_isocentre_mm": 800.0,
+    "source_detector_mm": 1200.0,
+    "rotation_axis_object": [0, 0, 1],
+    "coordinate_convention": "centred object frame; synthetic cone-beam geometry; no patient laterality certification"
+  },
+  "numerics": {
+    "fitting_samples_per_ray": 1024,
+    "fitting_sampling_candidates": [512, 1024],
+    "generation_samples_per_ray": 4096,
+    "generation_sampling_candidates": [1024, 2048, 4096],
+    "independent_exact_rays_per_check": 24,
+    "sampling_error_poisson_sd_p95_max": 0.05,
+    "sampling_error_poisson_sd_max": 0.2,
+    "chart_scales": [1.0, 1.0, 1.0, 0.01, 0.01, 0.01],
+    "chart_rotation_radius_radians": 1.0,
+    "policy": {
+      "max_iterations": 300,
+      "max_evaluations": 1500,
+      "memory": 10,
+      "line_search_evaluations": 32,
+      "gradient_tolerance": 0.001,
+      "relative_loss_tolerance": 0.0,
+      "step_tolerance": 0.0,
+      "armijo": 0.0001,
+      "curvature": 0.9,
+      "maximum_step": 16.0,
+      "minimum_step": 1e-14
+    },
+    "solve_soft_seconds": 180.0,
+    "sampling_gate_open_beam_per_pixel": 20000,
+    "precision": "float64",
+    "integration": "cell_gauss",
+    "generation_precision": "float64",
+    "generation_integration": "midpoint",
+    "completion_policy": "Gradient tolerance unchanged; early relative-loss and step-size exits disabled because the main example must reach stationarity."
+  },
+  "generating_local_se3_mm_rad": [1.5, -2.0, 2.5, 0.008, -0.012, 0.018],
+  "task_coordinates_mm": [-40.0, 40.0],
+  "randomness": {
+    "root_seed": 2026091401,
+    "development_root_seed": 2026091400,
+    "generator": "numpy.random.PCG64",
+    "replicates": 8,
+    "keys": ["root_seed", "role", "replicate", "angle_plus_180"],
+    "candidate_counts_generated_after_ranking": true
+  },
+  "registration": {
+    "views_degrees": [0.0, 90.0],
+    "open_beam_per_view": 10000.0
+  },
+  "acquisition": {
+    "base_view_degrees": 0.0,
+    "candidate_angles_degrees": [5.0, 30.0, 60.0, 90.0],
+    "fixed_view_degrees": 5.0,
+    "base_and_candidate_open_beam_per_pixel": 1000.0,
+    "maximum_precision_condition": 10000000000.0,
+    "rank_relative_tolerance": 1e-10
+  },
+  "held_out_views_degrees": [45.0, 135.0],
+  "acceptance": {
+    "stationary": true,
+    "gradient_tolerance": 0.001,
+    "rms_probe_error_mm_max": 1.0,
+    "maximum_probe_error_mm_max": 2.0,
+    "rotation_error_degrees_max": 0.5,
+    "held_out_expected_error_poisson_sd_rms_max": 1.0,
+    "selected_vs_fixed_mean_squared_task_error_ratio_max": 0.75,
+    "paired_error_difference_t95_upper_max": 0.0,
+    "paired_t_critical_7df": 2.364624251
+  },
+  "source_and_evaluation": "Known development anatomy is intentionally reused for teaching. New prospective simulated observations; all replicates retained. Generating transform and reserved views are not supplied to fitting or ranking."
+}

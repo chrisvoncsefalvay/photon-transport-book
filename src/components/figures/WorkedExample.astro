@@ -1,0 +1,144 @@
+---
+import { readFileSync } from "node:fs";
+import FigurePlate from "./FigurePlate.astro";
+import RecordedPlot from "./RecordedPlot.astro";
+import WorkedRaster from "./WorkedRaster.astro";
+import { workedExamplePlots } from "../../lib/worked-example-plots";
+import "../../styles/application-results.css";
+
+interface ResultFigure {
+  schema_version: number;
+  passed: boolean;
+  title: string;
+  description: string;
+  images: {
+    file: string;
+    pdf?: string;
+    alt: string;
+    width: number;
+    height: number;
+  }[];
+  measurements: { label: string; value: string; criterion: string }[];
+  reading: string;
+  reproduction: string;
+}
+
+interface Props {
+  id: string;
+  example: "registration" | "reconstruction" | "acquisition";
+}
+
+const { id, example } = Astro.props;
+const result = JSON.parse(
+  readFileSync(
+    new URL(
+      `../../../public/generated/worked-examples/${example}/study.json`,
+      import.meta.url,
+    ),
+    "utf8",
+  ),
+) as ResultFigure;
+if (
+  result.schema_version !== 1 ||
+  result.passed !== true ||
+  !result.measurements.length
+) {
+  throw new Error(
+    `Worked example ${example} requires an accepted recorded result`,
+  );
+}
+const base = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/generated/worked-examples/${example}/`;
+const plots = workedExamplePlots(example);
+---
+
+<FigurePlate
+  {id}
+  title={result.title}
+  description={result.description}
+  width="full"
+>
+  <div class="application-results worked-example">
+    {
+      example === "registration" && (
+        <WorkedRaster {example} id={`${id}-images`} />
+      )
+    }
+    <div class="application-plots worked-example__plots">
+      {
+        plots.map(({ key, ...plot }) => (
+          <RecordedPlot id={`${id}-${key}`} {...plot} />
+        ))
+      }
+    </div>
+    {
+      example === "reconstruction" && (
+        <WorkedRaster {example} id={`${id}-materials`} />
+      )
+    }
+    <p class="application-reading">{result.reading}</p>
+    <div
+      class="application-result-tables application-table-scroll worked-example__table"
+      tabindex="0"
+      role="region"
+      aria-label="Recorded result and acceptance criteria"
+    >
+      <table>
+        <caption>Recorded result and acceptance criteria</caption>
+        <thead>
+          <tr
+            ><th scope="col">Quantity</th><th scope="col">Result</th><th
+              scope="col">Criterion</th
+            ></tr
+          >
+        </thead>
+        <tbody>
+          {
+            result.measurements.map((row) => (
+              <tr>
+                <>
+                  <th scope="row">{row.label}</th>
+                  <td>{row.value}</td>
+                  <td>{row.criterion}</td>
+                </>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+    <details class="application-details worked-example__data">
+      <summary>Reproduction and recorded data</summary>
+      <div class="worked-example__links">
+        <p class="worked-example__recipe">
+          <a href={result.reproduction}>Run the complete example</a>
+        </p>
+        <a href={`${base}data.json`} download>Download the numerical record</a>
+        <a href={`${base}provenance.json`}>Source and execution provenance</a>
+      </div>
+    </details>
+  </div>
+</FigurePlate>
+
+<style>
+  .worked-example {
+    font-family: var(--font-ui);
+    line-height: 1.5;
+  }
+  .worked-example caption {
+    text-align: left;
+    font-weight: 500;
+    margin-bottom: 0.6rem;
+  }
+  .worked-example td {
+    white-space: normal;
+  }
+  .worked-example__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 1.5rem;
+    padding-block: 0.35rem 0.65rem;
+  }
+  .worked-example__recipe {
+    margin: 0;
+  }
+</style>

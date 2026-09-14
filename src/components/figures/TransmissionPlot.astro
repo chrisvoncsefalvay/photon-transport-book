@@ -1,0 +1,87 @@
+---
+import recorded from "../../../public/generated/transmission-contract/validation.json";
+import {
+  transmissionPanels,
+  type TransmissionPlotKind,
+} from "../../lib/transmission-plot-data";
+import {
+  transmissionPlotDrawing,
+  transmissionPlotSvg,
+} from "../../lib/transmission-plot-renderer";
+import "../../styles/transmission-plots.css";
+interface Props {
+  kind: TransmissionPlotKind;
+}
+const { kind } = Astro.props;
+const beamLabel = (value: number) => Number(value.toPrecision(9)).toString();
+const panels = transmissionPanels(recorded, kind).map((panel) =>
+  kind === "tail"
+    ? {
+        ...panel,
+        note: `Numerical stress test with an open-beam expectation of ${beamLabel(recorded.tail.beam)}. ${panel.note}`.trim(),
+      }
+    : panel,
+);
+const drawings = panels.map((panel) => transmissionPlotDrawing(panel));
+---
+
+<div class="transmission-plots" data-transmission-plots>
+  {
+    kind === "sweep" && (
+      <p class="transmission-plots__context">
+        Open-beam expectation: {beamLabel(recorded.sweep.beam)}
+      </p>
+    )
+  }
+  <div class="transmission-plots__grid" data-kind={kind}>
+    {
+      panels.map((panel, index) => (
+        <section
+          class="transmission-plot"
+          data-plot-panel
+          data-record={JSON.stringify(panel)}
+          aria-labelledby={`plot-${kind}-${index}`}
+        >
+          <h4 id={`plot-${kind}-${index}`}>{panel.title}</h4>
+          <div
+            class="transmission-plot__canvas"
+            set:html={transmissionPlotSvg(drawings[index]!)}
+          />
+          <ul class="transmission-plot__legend" aria-label="Plotted series">
+            {panel.series.map((series) => (
+              <li data-style={series.style}>{series.label}</li>
+            ))}
+          </ul>
+          <label class="transmission-plot__scrubber" hidden>
+            Inspect recorded sample
+            <input
+              type="range"
+              min="0"
+              max={panel.x.length - 1}
+              value="0"
+              step="1"
+            />
+          </label>
+          <output class="transmission-plot__readout" aria-live="off" />
+          <details
+            class="transmission-plot__details"
+            hidden={!drawings[index]!.note}
+          >
+            <summary>Numerical details</summary>
+            <p class="transmission-plot__note">{drawings[index]!.note}</p>
+          </details>
+        </section>
+      ))
+    }
+  </div>
+  <p class="transmission-plots__method">
+    Lines join recorded samples. <a
+      href="/generated/transmission-contract/validation.json"
+      >Download exact values</a
+    >.
+  </p>
+</div>
+<script>
+  import { mountTransmissionPlots } from "../../lib/transmission-plots";
+  mountTransmissionPlots();
+</script>

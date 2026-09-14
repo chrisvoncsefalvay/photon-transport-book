@@ -1,0 +1,763 @@
+---
+import { renderToString } from "katex";
+import FigurePlate from "./FigurePlate.astro";
+import "../../styles/geometry-illustrations.css";
+
+interface Props {
+  kind: "frames" | "landmarks" | "pivots";
+  id: string;
+  title: string;
+  description: string;
+}
+type Vec3 = [number, number, number];
+const { kind, id, title, description } = Astro.props;
+const math = (tex: string) =>
+  renderToString(tex, {
+    throwOnError: true,
+    strict: "error",
+    output: "htmlAndMathml",
+  });
+// Original diagram geometry, evaluated only at build time. These functions draw
+// prescribed coordinates; they are not an imaging or transport implementation.
+const diagram = ([x, y, z]: Vec3) => [
+  150 + 1.6 * x - y + 0.48 * z,
+  280 + 0.5 * x + 0.65 * y - 1.05 * z,
+];
+const add = (a: Vec3, b: Vec3): Vec3 => [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
+const angle = (35 * Math.PI) / 180;
+const rotate = ([x, y, z]: Vec3): Vec3 => [
+  Math.cos(angle) * x - Math.sin(angle) * y,
+  Math.sin(angle) * x + Math.cos(angle) * y,
+  z,
+];
+const frameOrigins: Record<string, Vec3> = {
+  W: [0, 0, 0],
+  O: [-40, 0, 30],
+  S: [-40, 0, -80],
+  D: [-40, 0, 140],
+};
+const directions: Vec3[] = [
+  [1, 0, 0],
+  [0, 1, 0],
+  [0, 0, 1],
+];
+const frameAxes = Object.entries(frameOrigins).map(([name, origin]) => ({
+  name,
+  origin: diagram(origin),
+  axes: directions.map((direction, axis) => {
+    const basis = name === "O" ? rotate(direction) : direction;
+    return {
+      name: ["x", "y", "z"][axis],
+      end: diagram(add(origin, basis.map((value) => value * 23) as Vec3)),
+    };
+  }),
+}));
+const detectorCorners: Vec3[] = [
+  [-80, -40, 140],
+  [0, -40, 140],
+  [0, 40, 140],
+  [-80, 40, 140],
+];
+const polygon = (vertices: Vec3[]) =>
+  vertices.map((vertex) => diagram(vertex).join(",")).join(" ");
+const wedgeLocal: Vec3[] = [
+  [-18, -15, -18],
+  [20, -15, -18],
+  [20, 14, -18],
+  [-18, 14, -18],
+  [-18, -15, 17],
+  [8, -15, 17],
+  [8, 14, 17],
+  [-18, 14, 17],
+];
+const wedge = wedgeLocal.map((vertex) => add(frameOrigins.O!, rotate(vertex)));
+const wedgeFaces = [
+  [0, 1, 5, 4],
+  [1, 2, 6, 5],
+  [4, 5, 6, 7],
+];
+const acquisition = ([x, y, z]: Vec3) => [
+  90 + 2 * x + 0.07 * z,
+  350 + 0.5 * x - 2 * y - 0.2 * z,
+];
+const landmarks = [
+  {
+    name: "A",
+    world: [10, 0, 500] as Vec3,
+    detector: [20, 0, 1000] as Vec3,
+    offset: [12, 12],
+    projectionOffset: [12, 12],
+  },
+  {
+    name: "B",
+    world: [0, 20, 500] as Vec3,
+    detector: [0, 40, 1000] as Vec3,
+    offset: [-20, 1],
+    projectionOffset: [10, 10],
+  },
+  {
+    name: "C",
+    world: [-15, 10, 750] as Vec3,
+    detector: [-20, 40 / 3, 1000] as Vec3,
+    offset: [-20, 12],
+    projectionOffset: [-20, -5],
+  },
+];
+const landmarkViews = [
+  {
+    name: "Correct projection",
+    note: "A and B magnify by 2, while C magnifies by 4/3.",
+    kind: "correct",
+  },
+  {
+    name: "Horizontal reflection",
+    note: "A and C cross the vertical axis, while B stays on it.",
+    kind: "mirror",
+  },
+  {
+    name: "C assigned the wrong depth",
+    note: "Using 500 mm for C gives (−30, 20) mm.",
+    kind: "depth",
+  },
+];
+const detectorX = (x: number) => 148 + 3 * x;
+const detectorY = (y: number) => 227 - 3 * y;
+const orbitX = (x: number) => 49 + 18 * x;
+const orbitY = (y: number) => 259 - 18 * y;
+const pivotCases = [
+  {
+    name: "About c = (10, 0, 500) mm",
+    pivot: [10, 0],
+    end: [10, 1],
+    radius: 1,
+    endText: String.raw`\mathbf a^+=(10,1,500)\;\mathrm{mm}`,
+    projection: String.raw`\mathbf q(\mathbf a^+)=(20,2,1000)\;\mathrm{mm}`,
+  },
+  {
+    name: "About the world origin",
+    pivot: [0, 0],
+    end: [0, 11],
+    radius: 11,
+    endText: String.raw`\mathbf a^+=(0,11,500)\;\mathrm{mm}`,
+    projection: String.raw`\mathbf q(\mathbf a^+)=(0,22,1000)\;\mathrm{mm}`,
+  },
+];
+---
+
+<FigurePlate {id} {title} {description}>
+  <div class="geometry-illustration" data-geometry-illustration={kind}>
+    {
+      kind === "frames" && (
+        <div class="geometry-pair frame-pair">
+          <svg
+            viewBox="0 0 330 390"
+            role="img"
+            aria-labelledby={`${id}-title ${id}-desc`}
+          >
+            <title id={`${id}-title`}>
+              Four attached right-handed coordinate frames
+            </title>
+            <desc id={`${id}-desc`}>
+              The source frame S is attached to the focal point, O to an
+              asymmetric wedge, and D to the detector centre. The world frame W
+              stays fixed. All triads are projections of orthonormal
+              right-handed three-dimensional bases. The object basis is rotated
+              35 degrees about the world z axis.
+            </desc>
+            <defs>
+              <marker
+                id={`${id}-axis-tip`}
+                viewBox="0 0 8 8"
+                refX="7"
+                refY="4"
+                markerWidth="5"
+                markerHeight="5"
+                orient="auto"
+              >
+                <path d="M1,1 L7,4 L1,7" class="geometry-arrow" />
+              </marker>
+            </defs>
+            {detectorCorners.map((corner) => (
+              <path
+                d={`M${diagram(frameOrigins.S!).join(",")} L${diagram(corner).join(",")}`}
+                class="beam-guide"
+              />
+            ))}
+            <polygon points={polygon(detectorCorners)} class="detector-plane" />
+            {[-20, -60].map((x) => (
+              <path
+                d={`M${diagram([x, -40, 140]).join(",")} L${diagram([x, 40, 140]).join(",")}`}
+                class="cell-line"
+              />
+            ))}
+            <path
+              d={`M${diagram([-80, 0, 140]).join(",")} L${diagram([0, 0, 140]).join(",")}`}
+              class="cell-line"
+            />
+            {wedgeFaces.map((indices, index) => (
+              <polygon
+                points={polygon(indices.map((i) => wedge[i]!))}
+                class:list={["wedge-face", `wedge-${index}`]}
+              />
+            ))}
+            {frameAxes.map((frame) => (
+              <g>
+                {frame.axes.map((axis) => (
+                  <g>
+                    <path
+                      d={`M${frame.origin.join(",")} L${axis.end.join(",")}`}
+                      class:list={["frame-axis", `frame-${frame.name}`]}
+                      marker-end={`url(#${id}-axis-tip)`}
+                    />
+                    <text
+                      x={axis.end[0]! + (axis.name === "y" ? -7 : 7)}
+                      y={axis.end[1]! + (axis.name === "z" ? -5 : 7)}
+                      text-anchor={axis.name === "y" ? "end" : "start"}
+                      class="axis-letter"
+                    >
+                      {axis.name}
+                    </text>
+                  </g>
+                ))}
+                <circle
+                  cx={frame.origin[0]}
+                  cy={frame.origin[1]}
+                  r="3.2"
+                  class:list={["frame-origin", `origin-${frame.name}`]}
+                />
+              </g>
+            ))}
+            <path d="M187,84 L243,57" class="label-leader" />
+            <text x="276" y="51" text-anchor="middle" class="part-name">
+              D
+            </text>
+            <text x="276" y="69" text-anchor="middle">
+              Detector
+            </text>
+            <path d="M112,206 L235,188" class="label-leader" />
+            <text x="266" y="183" text-anchor="middle" class="part-name">
+              O
+            </text>
+            <text x="266" y="201" text-anchor="middle">
+              Object
+            </text>
+            <text x="196" y="330" class="part-name">
+              W
+            </text>
+            <text x="224" y="330">
+              World
+            </text>
+            <path d="M159,287 L185,323" class="label-leader" />
+            <text x="30" y="379" class="part-name">
+              S
+            </text>
+            <text x="56" y="379">
+              Focal point
+            </text>
+            <path d="M47.6,348 L44,366" class="label-leader" />
+          </svg>
+          <div class="frame-map-notes">
+            <div class="coordinate-map">
+              <>
+                <span>Object coordinates → World coordinates</span>
+                <div
+                  set:html={math(
+                    String.raw`\mathbf x^O\ \xrightarrow{\ \mathbf G_{WO}\ }\ \mathbf x^W`,
+                  )}
+                />
+              </>
+            </div>
+            <div class="coordinate-map">
+              <>
+                <span>Detector coordinates → World coordinates</span>
+                <div
+                  set:html={math(
+                    String.raw`\mathbf x^D\ \xrightarrow{\ \mathbf G_{WD}\ }\ \mathbf x^W`,
+                  )}
+                />
+              </>
+            </div>
+            <div class="coordinate-map">
+              <>
+                <span>Every frame is right-handed</span>
+                <div
+                  set:html={math(
+                    String.raw`\mathbf e_x\times\mathbf e_y=\mathbf e_z`,
+                  )}
+                />
+              </>
+            </div>
+            <p class="geometry-note">
+              O moves with the solid. Changing the world frame changes its
+              coordinates.
+            </p>
+            <p class="geometry-note">Coordinates are in millimetres.</p>
+          </div>
+        </div>
+      )
+    }
+
+    {
+      kind === "landmarks" && (
+        <>
+          <div class="geometry-pair landmark-acquisition">
+            <svg
+              viewBox="0 0 310 393"
+              role="img"
+              aria-labelledby={`${id}-acquisition-title ${id}-acquisition-desc`}
+            >
+              <title id={`${id}-acquisition-title`}>
+                Exact source, landmark and detector coordinates
+              </title>
+              <desc id={`${id}-acquisition-desc`}>
+                The source is at the origin and the detector at z equals 1000
+                millimetres. A and B lie at depth 500 millimetres, while C lies
+                at 750. Each source ray extends through its landmark to the
+                detector. Transverse directions are enlarged to separate the
+                points visually.
+              </desc>
+              <polygon
+                points={(
+                  [
+                    [-35, -10, 1000],
+                    [35, -10, 1000],
+                    [35, 50, 1000],
+                    [-35, 50, 1000],
+                  ] as Vec3[]
+                )
+                  .map((point) => acquisition(point).join(","))
+                  .join(" ")}
+                class="detector-plane"
+              />
+              <path
+                d={`M${acquisition([0, 0, 0]).join(",")} L${acquisition([0, 0, 1000]).join(",")}`}
+                class="beam-guide"
+              />
+              {landmarks.map((landmark, index) => {
+                const world = acquisition(landmark.world);
+                const detector = acquisition(landmark.detector);
+                return (
+                  <g>
+                    <path
+                      d={`M90,350 L${detector.join(",")}`}
+                      class:list={["landmark-ray", `landmark-${index}`]}
+                    />
+                    <circle
+                      cx={world[0]}
+                      cy={world[1]}
+                      r="4.5"
+                      class:list={["landmark-point", `point-${index}`]}
+                    />
+                    <circle
+                      cx={detector[0]}
+                      cy={detector[1]}
+                      r="4.5"
+                      class:list={["landmark-point", `point-${index}`]}
+                    />
+                    <text
+                      x={world[0]! + landmark.offset[0]!}
+                      y={world[1]! + landmark.offset[1]!}
+                    >
+                      {landmark.name}
+                    </text>
+                    <text
+                      x={detector[0]! + landmark.projectionOffset[0]!}
+                      y={detector[1]! + landmark.projectionOffset[1]!}
+                    >
+                      {landmark.name}′
+                    </text>
+                  </g>
+                );
+              })}
+              <circle cx="90" cy="350" r="5" class="source-point" />
+              <text x="90" y="375" text-anchor="middle">
+                Source (0, 0, 0)
+              </text>
+              <text x="272" y="74" text-anchor="middle">
+                Detector
+              </text>
+              <text x="272" y="92" text-anchor="middle">
+                z = 1000
+              </text>
+            </svg>
+            <div class="frame-map-notes">
+              <h3>Depth controls magnification</h3>
+              <div class="coordinate-map">
+                <div
+                  set:html={math(
+                    String.raw`(q_x,q_y)=\frac{1000}{a_z}(a_x,a_y)`,
+                  )}
+                />
+              </div>
+              <dl class="landmark-readings">
+                <div>
+                  <>
+                    <dt>A · depth 500 mm</dt>
+                    <dd
+                      set:html={math(String.raw`(10,0)\ \longmapsto\ (20,0)`)}
+                    />
+                  </>
+                </div>
+                <div>
+                  <>
+                    <dt>B · depth 500 mm</dt>
+                    <dd
+                      set:html={math(String.raw`(0,20)\ \longmapsto\ (0,40)`)}
+                    />
+                  </>
+                </div>
+                <div>
+                  <>
+                    <dt>C · depth 750 mm</dt>
+                    <dd
+                      set:html={math(
+                        String.raw`(-15,10)\ \longmapsto\ (-20,40/3)`,
+                      )}
+                    />
+                  </>
+                </div>
+              </dl>
+              <p class="geometry-note">
+                Coordinates are in millimetres. The acquisition drawing enlarges
+                transverse dimensions, while the detector plots use equal x and
+                y scales.
+              </p>
+            </div>
+          </div>
+          <div class="geometry-three landmark-comparisons">
+            {landmarkViews.map((view, viewIndex) => (
+              <section>
+                <h3>{view.name}</h3>
+                <svg
+                  viewBox="0 0 300 294"
+                  role="img"
+                  aria-labelledby={`${id}-comparison-${viewIndex}`}
+                >
+                  <title id={`${id}-comparison-${viewIndex}`}>
+                    {view.name}. {view.note} Detector coordinates in
+                    millimetres. Hollow marks show the correct reference.
+                  </title>
+                  <path
+                    d={`M${detectorX(-40)},${detectorY(0)} H${detectorX(40)} M${detectorX(0)},${detectorY(-10)} V${detectorY(50)}`}
+                    class="plot-axis"
+                  />
+                  {[-40, -20, 0, 20, 40].map((value) => (
+                    <g>
+                      <path
+                        d={`M${detectorX(value)},${detectorY(0) - 3} v6`}
+                        class="plot-axis"
+                      />
+                      <text
+                        x={detectorX(value)}
+                        y={detectorY(0) + 19}
+                        text-anchor="middle"
+                        class="tick"
+                      >
+                        {value}
+                      </text>
+                    </g>
+                  ))}
+                  {[20, 40].map((value) => (
+                    <g>
+                      <path
+                        d={`M${detectorX(0) - 3},${detectorY(value)} h6`}
+                        class="plot-axis"
+                      />
+                      <text
+                        x={detectorX(0) - 8}
+                        y={detectorY(value) + 4}
+                        text-anchor="end"
+                        class="tick"
+                      >
+                        {value}
+                      </text>
+                    </g>
+                  ))}
+                  {landmarks.map((landmark, index) => {
+                    const expected = landmark.detector;
+                    const x =
+                      view.kind === "mirror"
+                        ? -expected[0]
+                        : view.kind === "depth" && landmark.name === "C"
+                          ? -30
+                          : expected[0];
+                    const y =
+                      view.kind === "depth" && landmark.name === "C"
+                        ? 20
+                        : expected[1];
+                    return (
+                      <g>
+                        {view.kind !== "correct" && (
+                          <>
+                            <path
+                              d={`M${detectorX(expected[0])},${detectorY(expected[1])} L${detectorX(x)},${detectorY(y)}`}
+                              class="comparison-shift"
+                            />
+                            <circle
+                              cx={detectorX(expected[0])}
+                              cy={detectorY(expected[1])}
+                              r="6.5"
+                              class="reference-point"
+                            />
+                          </>
+                        )}
+                        <circle
+                          cx={detectorX(x)}
+                          cy={detectorY(y)}
+                          r="4.5"
+                          class:list={["landmark-point", `point-${index}`]}
+                        />
+                        <text x={detectorX(x) + 10} y={detectorY(y) - 10}>
+                          {landmark.name}
+                        </text>
+                      </g>
+                    );
+                  })}
+                  <text x="150" y="282" text-anchor="middle">
+                    Detector x (mm)
+                  </text>
+                  <text
+                    x="18"
+                    y="127"
+                    transform="rotate(-90 18 127)"
+                    text-anchor="middle"
+                  >
+                    Detector y (mm)
+                  </text>
+                </svg>
+                <p class="geometry-note">{view.note}</p>
+              </section>
+            ))}
+          </div>
+        </>
+      )
+    }
+
+    {
+      kind === "pivots" && (
+        <>
+          <p class="geometry-kicker">
+            The same positive z rotation: π/2 radians · initial point a = (11,
+            0, 500) mm
+          </p>
+          <div class="geometry-pair pivot-pair">
+            {pivotCases.map((motion, index) => (
+              <section>
+                <h3>{motion.name}</h3>
+                <svg
+                  viewBox="0 0 300 318"
+                  role="img"
+                  aria-labelledby={`${id}-pivot-${index}`}
+                >
+                  <title id={`${id}-pivot-${index}`}>
+                    Positive quarter-turn{" "}
+                    {index === 0
+                      ? "about c, ending at (10, 1, 500) millimetres"
+                      : "about the world origin, ending at (0, 11, 500) millimetres"}
+                    . Both plots use the same scale in the z equals 500
+                    millimetre plane.
+                  </title>
+                  <defs>
+                    <marker
+                      id={`${id}-turn-${index}`}
+                      viewBox="0 0 8 8"
+                      refX="7"
+                      refY="4"
+                      markerWidth="5"
+                      markerHeight="5"
+                      orient="auto"
+                    >
+                      <path d="M1,1 L7,4 L1,7" class="turn-arrow" />
+                    </marker>
+                  </defs>
+                  <path
+                    d={`M${orbitX(-1)},${orbitY(0)} H${orbitX(12)} M${orbitX(0)},${orbitY(-1)} V${orbitY(12)}`}
+                    class="plot-axis"
+                  />
+                  {[0, 5, 10].map((value) => (
+                    <g>
+                      <text
+                        x={orbitX(value)}
+                        y={orbitY(0) + 20}
+                        text-anchor="middle"
+                        class="tick"
+                      >
+                        {value}
+                      </text>
+                      {value !== 0 && (
+                        <text
+                          x={orbitX(0) - 9}
+                          y={orbitY(value) + 4}
+                          text-anchor="end"
+                          class="tick"
+                        >
+                          {value}
+                        </text>
+                      )}
+                    </g>
+                  ))}
+                  <path
+                    d={`M${orbitX(motion.pivot[0]!)},${orbitY(motion.pivot[1]!)} L${orbitX(11)},${orbitY(0)} M${orbitX(motion.pivot[0]!)},${orbitY(motion.pivot[1]!)} L${orbitX(motion.end[0]!)},${orbitY(motion.end[1]!)}`}
+                    class="radius-guide"
+                  />
+                  <path
+                    d={`M${orbitX(11)},${orbitY(0)} A${18 * motion.radius},${18 * motion.radius} 0 0 0 ${orbitX(motion.end[0]!)},${orbitY(motion.end[1]!)}`}
+                    class="rotation-arc"
+                    marker-end={`url(#${id}-turn-${index})`}
+                  />
+                  <circle
+                    cx={orbitX(motion.pivot[0]!)}
+                    cy={orbitY(motion.pivot[1]!)}
+                    r="6"
+                    class="pivot-point"
+                  />
+                  <circle
+                    cx={orbitX(11)}
+                    cy={orbitY(0)}
+                    r="4"
+                    class="source-point"
+                  />
+                  <circle
+                    cx={orbitX(motion.end[0]!)}
+                    cy={orbitY(motion.end[1]!)}
+                    r="4.5"
+                    class="rotation-point"
+                  />
+                  <text x={orbitX(11) + 12} y={orbitY(0) - 8}>
+                    a
+                  </text>
+                  <text
+                    x={orbitX(motion.end[0]!) + (index === 0 ? -22 : 12)}
+                    y={orbitY(motion.end[1]!) - 12}
+                  >
+                    a⁺
+                  </text>
+                  {index === 0 && (
+                    <text x={orbitX(10) - 14} y={orbitY(0) - 12}>
+                      c
+                    </text>
+                  )}
+                  <text x="160" y="310" text-anchor="middle">
+                    World x (mm)
+                  </text>
+                  <text
+                    x="15"
+                    y="151"
+                    text-anchor="middle"
+                    transform="rotate(-90 15 151)"
+                  >
+                    World y (mm)
+                  </text>
+                  <text x="280" y="30" text-anchor="end">
+                    z = 500 mm
+                  </text>
+                </svg>
+                <div class="motion-reading" set:html={math(motion.endText)} />
+                <div
+                  class="motion-reading"
+                  set:html={math(motion.projection)}
+                />
+              </section>
+            ))}
+          </div>
+          <div class="geometry-pair pivot-projection">
+            <svg
+              viewBox="0 0 310 306"
+              role="img"
+              aria-labelledby={`${id}-detector-title`}
+            >
+              <title id={`${id}-detector-title`}>
+                Detector endpoints at z equals 1000 millimetres. The initial
+                projection is (22, 0), rotation about c gives (20, 2), and
+                rotation about the world origin gives (0, 22).
+              </title>
+              <path d="M35,253 H279 M53,271 V37" class="plot-axis" />
+              <path
+                d="M251,253 L233,235 M251,253 L53,55"
+                class="comparison-shift"
+              />
+              {[0, 10, 20].map((value) => (
+                <g>
+                  <text
+                    x={53 + 9 * value}
+                    y="277"
+                    text-anchor="middle"
+                    class="tick"
+                  >
+                    {value}
+                  </text>
+                  {value !== 0 && (
+                    <text
+                      x="42"
+                      y={257 - 9 * value}
+                      text-anchor="end"
+                      class="tick"
+                    >
+                      {value}
+                    </text>
+                  )}
+                </g>
+              ))}
+              <circle cx="251" cy="253" r="5" class="source-point" />
+              <circle cx="233" cy="235" r="5" class="rotation-point" />
+              <circle cx="53" cy="55" r="5" class="rotation-point" />
+              <text x="267" y="256">
+                a′
+              </text>
+              <text
+                x="221"
+                y="235"
+                text-anchor="end"
+                dominant-baseline="middle"
+              >
+                About c
+              </text>
+              <text x="67" y="47">
+                About world origin
+              </text>
+              <text x="166" y="301" text-anchor="middle">
+                Detector x (mm)
+              </text>
+              <text
+                x="16"
+                y="150"
+                transform="rotate(-90 16 150)"
+                text-anchor="middle"
+              >
+                Detector y (mm)
+              </text>
+            </svg>
+            <div class="frame-map-notes">
+              <h3>One rotation matrix, two motions</h3>
+              <div class="coordinate-map">
+                <>
+                  <span>Keep the pivot fixed</span>
+                  <div
+                    set:html={math(
+                      String.raw`\mathbf a^+=\mathbf c+\mathbf R_z(\pi/2)(\mathbf a-\mathbf c)`,
+                    )}
+                  />
+                </>
+              </div>
+              <div class="coordinate-map">
+                <>
+                  <span>Drop the translation block</span>
+                  <div
+                    set:html={math(
+                      String.raw`\mathbf a^+=\mathbf R_z(\pi/2)\mathbf a`,
+                    )}
+                  />
+                </>
+              </div>
+              <p class="geometry-note">
+                Source: (0, 0, 0). Detector: z = 1000 mm. Both points stay at z
+                = 500 mm, giving 2× magnification. Dashed lines join endpoints
+                only.
+              </p>
+            </div>
+          </div>
+        </>
+      )
+    }
+  </div>
+</FigurePlate>

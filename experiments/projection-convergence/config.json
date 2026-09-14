@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "grid_resolutions": [9, 17, 33],
+  "quadrature_samples": [16, 32, 64, 128, 256],
+  "quadrature_grid": 33,
+  "grid_quadrature": 1024
+}

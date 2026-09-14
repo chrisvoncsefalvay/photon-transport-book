@@ -1,0 +1,386 @@
+---
+import RecordedPlot from "./RecordedPlot.astro";
+import absorption from "../../../public/generated/figure-rollouts/absorption-uncertainty.json";
+import aperture from "../../../public/generated/figure-rollouts/figure-10-2.json";
+import uncertainty from "../../../public/generated/figure-rollouts/figure-10-4.json";
+import { renderToString } from "katex";
+interface Props {
+  id: string;
+}
+const { id } = Astro.props;
+const depths = [...new Set(absorption.rows.map((r) => r.optical_depth))];
+const tones = ["technical", "accent", "ink", "muted"] as const;
+const strip = aperture.series[0]!.rows[0]!;
+const width = aperture.parameters.width_mm;
+const px = (v: number) => 48 + (424 * v) / width;
+const math = (s: string) =>
+  renderToString(s, { throwOnError: true, strict: "error" });
+---
+
+{
+  id === "figure-9-3" && (
+    <div class="transport-uncertainty">
+      <RecordedPlot
+        id={`${id}-error`}
+        title="Rare transmission raises relative uncertainty"
+        xLabel="Launched histories N"
+        yLabel="Relative standard error (%)"
+        xScale="log"
+        yScale="log"
+        xDomain={[4096, 65536]}
+        xTicks={[4096, 16384, 65536]}
+        series={depths.map((depth, i) => {
+          const rows = absorption.rows.filter((r) => r.optical_depth === depth);
+          return {
+            label: `L = ${depth}`,
+            x: rows.map((r) => r.histories),
+            y: rows.map((r) => 100 * r.relative_standard_error),
+            tone: tones[i]!,
+            dash: i === 3,
+          };
+        })}
+      />
+      <div class="transport-summary">
+        <p
+          class="formula"
+          set:html={math(String.raw`\mathrm{RSE}=\sqrt{\frac{1-T}{NT}}`)}
+        />
+        <table>
+          <>
+            <thead>
+              <tr>
+                <>
+                  <th>Optical depth</th>
+                  <th>Transmission</th>
+                  <th>
+                    Expected survivors
+                    <br />N = 4,096
+                  </th>
+                </>
+              </tr>
+            </thead>
+            <tbody>
+              {depths.map((depth) => {
+                const r = absorption.rows.find(
+                  (r) => r.optical_depth === depth && r.histories === 4096,
+                )!;
+                return (
+                  <tr>
+                    <th>{depth}</th>
+                    <td>{r.transmission.toPrecision(3)}</td>
+                    <td>{(r.histories * r.transmission).toFixed(1)}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </>
+        </table>
+      </div>
+    </div>
+  )
+}
+{
+  id === "figure-10-2" && (
+    <div class="aperture-strip">
+      <p class="transport-heading">Uniform crossings over {width} mm</p>
+      <svg
+        viewBox="0 0 520 298"
+        role="img"
+        aria-label="A uniform aperture widens from 4 to 6 millimetres. The swept strip between the two edges changes from rejected to accepted. All other crossings retain their score."
+      >
+        <title>The same strip changes the accepted signal</title>
+        <defs>
+          <pattern
+            id="swept-strip-hatching"
+            width="8"
+            height="8"
+            patternUnits="userSpaceOnUse"
+          >
+            <path d="M-2 2L2-2M0 8L8 0M6 10L10 6" />
+          </pattern>
+        </defs>
+        <>
+          <text x="48" y="25">
+            Edge at a − h
+          </text>
+          <text x="472" y="25" text-anchor="end">
+            40% accepted
+          </text>
+        </>
+        <rect class="rejected" x="48" y="40" width="424" height="48" />
+        <rect
+          class="accepted"
+          x="48"
+          y="40"
+          width={px(strip.lower_edge_mm) - 48}
+          height="48"
+        />
+        <rect
+          class="swept"
+          x={px(strip.lower_edge_mm)}
+          y="40"
+          width={px(strip.upper_edge_mm) - px(strip.lower_edge_mm)}
+          height="48"
+        />
+        <>
+          <text x="48" y="132">
+            Edge at a + h
+          </text>
+          <text x="472" y="132" text-anchor="end">
+            60% accepted
+          </text>
+        </>
+        <rect class="rejected" x="48" y="147" width="424" height="48" />
+        <rect
+          class="accepted"
+          x="48"
+          y="147"
+          width={px(strip.upper_edge_mm) - 48}
+          height="48"
+        />
+        <rect
+          class="swept"
+          x={px(strip.lower_edge_mm)}
+          y="147"
+          width={px(strip.upper_edge_mm) - px(strip.lower_edge_mm)}
+          height="48"
+        />
+        {[strip.lower_edge_mm, strip.upper_edge_mm].map((v) => (
+          <path class="edge-guide" d={`M${px(v)} 37V202`} />
+        ))}
+        <path
+          class="strip-bracket"
+          d={`M${px(strip.lower_edge_mm)} 214v9H${px(strip.upper_edge_mm)}v-9`}
+        />
+        <text
+          class="strip-label"
+          x={px(aperture.parameters.edge_mm)}
+          y="245"
+          text-anchor="middle"
+        >
+          Swept strip: 2h = 2 mm
+        </text>
+        <path class="axis" d="M48 264H472" />
+        {[0, 4, 6, 10].map((v) => (
+          <g>
+            <path class="axis" d={`M${px(v)} 264v5`} />
+            <text x={px(v)} y="290" text-anchor="middle">
+              {v} mm
+            </text>
+          </g>
+        ))}
+      </svg>
+      <div class="strip-reading">
+        <>
+          <span>
+            <i class="accepted-key" />
+            Accepted
+          </span>
+          <span>
+            <i class="swept-key" />
+            Changes score
+          </span>
+          <span>
+            <i class="rejected-key" />
+            Rejected
+          </span>
+        </>
+      </div>
+      <p class="strip-result">
+        The admitted fraction rises by{" "}
+        {(
+          (100 * (strip.upper_mean - strip.lower_mean)) /
+          aperture.parameters.source_population
+        ).toFixed(0)}{" "}
+        percentage points. Its derivative is{" "}
+        <span set:html={math(String.raw`1/w = 0.1\,\mathrm{mm}^{-1}`)} />.
+      </p>
+    </div>
+  )
+}
+{
+  id === "figure-10-4" && (
+    <div>
+      <div class="recorded-panels">
+        <RecordedPlot
+          id={`${id}-relative-error`}
+          title="A narrower strip gives a noisier derivative"
+          xLabel="Half-step h (mm)"
+          yLabel="Relative standard error"
+          xScale="log"
+          yScale="log"
+          xDomain={[1e-5, 1]}
+          xTicks={[1e-5, 1e-3, 1e-1, 1]}
+          series={uncertainty.series.map((s, i) => ({
+            label: `N = ${s.histories.toLocaleString("en-GB")}`,
+            x: s.rows.map((r) => r.half_step_mm),
+            y: s.rows.map((r) => r.relative_standard_error),
+            tone: tones[i]!,
+          }))}
+        />
+        <RecordedPlot
+          id={`${id}-zero`}
+          title="Many draws miss the strip entirely"
+          xLabel="Half-step h (mm)"
+          yLabel="Probability of a zero estimate"
+          xScale="log"
+          xDomain={[1e-5, 1]}
+          yDomain={[0, 1]}
+          xTicks={[1e-5, 1e-3, 1e-1, 1]}
+          series={uncertainty.series.map((s, i) => ({
+            label: `N = ${s.histories.toLocaleString("en-GB")}`,
+            x: s.rows.map((r) => r.half_step_mm),
+            y: s.rows.map((r) => r.zero_contribution_probability),
+            tone: tones[i]!,
+          }))}
+        />
+      </div>
+      <p class="transport-context">
+        Uniform aperture: w = {width} mm, a = {uncertainty.parameters.edge_mm}{" "}
+        mm. Both curves use the exact coupled-strip moments.
+      </p>
+    </div>
+  )
+}
+<style>
+  .transport-uncertainty {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    gap: 2rem;
+    align-items: center;
+  }
+  .transport-summary {
+    font-family: var(--font-ui);
+    min-width: 0;
+    font-size: 0.8rem;
+  }
+  .formula {
+    text-align: center;
+    margin: 0 0 1.6rem;
+    font-size: 1.1rem;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 0.8rem;
+  }
+  td,
+  th {
+    text-align: right;
+    padding: 0.65rem 0.35rem;
+    border-bottom: 1px solid var(--rule);
+    font-weight: 400;
+  }
+  th:first-child {
+    text-align: left;
+  }
+  thead th {
+    color: var(--ink-muted);
+    font-size: 0.75rem;
+  }
+  .aperture-strip {
+    max-width: 44rem;
+    margin-inline: auto;
+    font-family: var(--font-ui);
+  }
+  .transport-heading {
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin: 0 0 1rem;
+  }
+  .aperture-strip svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+  .aperture-strip svg text {
+    font-size: 15px;
+    fill: var(--ink);
+    font-family: var(--font-ui);
+  }
+  .aperture-strip svg path {
+    vector-effect: non-scaling-stroke;
+  }
+  .rejected {
+    fill: var(--paper);
+    stroke: var(--rule);
+  }
+  .accepted {
+    fill: var(--technical);
+    opacity: 0.38;
+  }
+  .swept {
+    fill: url(#swept-strip-hatching);
+    stroke: var(--accent);
+  }
+  pattern path {
+    stroke: var(--accent);
+    stroke-width: 0.8;
+  }
+  .edge-guide {
+    stroke: var(--accent);
+    stroke-dasharray: 3 4;
+    opacity: 0.6;
+    fill: none;
+  }
+  .strip-bracket {
+    stroke: var(--accent);
+    fill: none;
+  }
+  .strip-label {
+    fill: var(--accent) !important;
+  }
+  .axis {
+    stroke: var(--ink-muted);
+  }
+  .strip-reading {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.2rem;
+    justify-content: center;
+    font-size: 0.8rem;
+    margin: 1rem 0;
+  }
+  .strip-reading span {
+    display: flex;
+    gap: 0.4rem;
+    align-items: center;
+  }
+  .strip-reading i {
+    display: inline-block;
+    width: 0.7rem;
+    height: 0.7rem;
+    border: 1px solid var(--rule);
+  }
+  .accepted-key {
+    background: var(--technical);
+    opacity: 0.5;
+  }
+  .swept-key {
+    background: repeating-linear-gradient(
+      135deg,
+      transparent 0 3px,
+      var(--accent) 3px 4px
+    );
+  }
+  .rejected-key {
+    background: var(--paper);
+  }
+  .strip-result,
+  .transport-context {
+    font-family: var(--font-ui);
+    font-size: 0.8rem;
+    color: var(--ink-muted);
+    line-height: 1.6;
+    margin: 1.5rem 0 0;
+  }
+  @media (max-width: 700px) {
+    .transport-uncertainty {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .aperture-strip svg text {
+      font-size: 17px;
+    }
+  }
+</style>

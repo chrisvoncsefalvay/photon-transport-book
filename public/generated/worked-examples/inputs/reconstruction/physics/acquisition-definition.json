@@ -1,0 +1,53 @@
+{
+  "generator": "SpekPy",
+  "generator_version": "2.5.4",
+  "generator_constructor": {
+    "kvp": 120.0,
+    "th": 12.0,
+    "dk": 1.0,
+    "physics": "casim",
+    "mu_data_source": "pene",
+    "x": 0.0,
+    "y": 0.0,
+    "z": 100.0,
+    "mas": 1.0,
+    "brem": true,
+    "char": true,
+    "obli": true,
+    "targ": "W",
+    "shift": 0.0,
+    "trans": false
+  },
+  "filtration": [
+    {
+      "material": "Al",
+      "thickness_mm": 2.5,
+      "density_g_cm3": 2.699,
+      "implementation": "exp(-xraylib.CS_Total(13,E)*density/10*thickness_mm)"
+    }
+  ],
+  "thresholds_kev": [
+    20.0,
+    55.0,
+    80.0,
+    120.0
+  ],
+  "channel_selection": "Fixed before generation; no optimisation.",
+  "response": "Ideal disjoint photon-count channels, unit quantum efficiency, lower-inclusive upper-exclusive boundaries.",
+  "retained_energy_interval_kev": [
+    20,
+    120
+  ],
+  "energy_bin_width_kev": 1.0,
+  "incident_photons_per_ray_per_exposure_in_retained_interval": 200000.0,
+  "channel_open_beam_expected_counts": [
+    106278.70464024905,
+    68639.04547677895,
+    25082.249882972043
+  ],
+  "excluded_below_20kev_filtered_fluence_fraction": 0.005368973657707916,
+  "detector_acceptance": "Uniform per-pixel detector-plane fluence; no second area or inverse-square factor.",
+  "exposure": 1.0,
+  "gain": 1.0,
+  "offset": 0.0
+}

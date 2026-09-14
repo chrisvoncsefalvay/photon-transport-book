@@ -1,0 +1,738 @@
+{
+  "schema_version": 1,
+  "protocol_id": "stochastic-amplitude-tutorial-20260914-v2",
+  "passed": true,
+  "scope": "Fixed mathematical isotropic-scattering cube; prescribed expected score, not acquired data or anatomy",
+  "configuration": {
+    "sampling_multiplier": 16,
+    "policy": {
+      "iterations": 100,
+      "replicates": 8,
+      "initial_batch": 65536,
+      "maximum_batch": 1048576,
+      "unique_history_budget": 256000000,
+      "initial_radius": 0.1,
+      "minimum_radius": 1e-07,
+      "maximum_radius": 1.0,
+      "acceptance_fraction": 0.1,
+      "standard_error_multiplier": 2.0,
+      "gradient_tolerance": 1e-05,
+      "relative_gradient_uncertainty": 0.5,
+      "proposal": "quadratic",
+      "numerical_gradient_allowance": 1e-12,
+      "final_validation_batch": 1048576,
+      "damping_relative": 1e-12,
+      "rank_tolerance": 1e-10,
+      "radius_growth_agreement": 0.75
+    },
+    "workspace_max_histories": 1048576,
+    "reference_batch": 1048576,
+    "reference_replicates": 256,
+    "physical_spec": {
+      "grid": {
+        "origin_mm": [
+          -0.5,
+          -0.5,
+          0.0
+        ],
+        "spacing_mm": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "shape": [
+          1,
+          1,
+          1
+        ],
+        "materials": 1
+      },
+      "detector": {
+        "lower_xy_mm": [
+          -2.0,
+          -2.0
+        ],
+        "spacing_xy_mm": [
+          4.0,
+          4.0
+        ],
+        "shape": [
+          1,
+          1
+        ],
+        "z_mm": 2.0
+      },
+      "energy_kev": 80.0,
+      "coefficient_provenance": "declared isotropic scattering cube for recovery validation",
+      "coefficient_energies_kev": [],
+      "scattering_law": "isotropic-elastic",
+      "scoring": "photon-count",
+      "max_angle_trials": 4096,
+      "max_events": 4096,
+      "max_crossings": 65536,
+      "block_dim": 128,
+      "estimator": "continuous-absorption"
+    },
+    "source": {
+      "lower_mm": [
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "extent_xy_mm": [
+        0.0,
+        0.0
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "weight": 1.0
+    },
+    "material_ids": [
+      0
+    ],
+    "absorption_mm_inverse": [
+      0.3
+    ],
+    "scattering_mm_inverse": [
+      0.1
+    ],
+    "active_parameters": [
+      "log-source-amplitude"
+    ],
+    "base_density": [
+      1.0
+    ],
+    "pixel_weights": [
+      1.0
+    ],
+    "observation": 0.08,
+    "initial_amplitude": 0.08
+  },
+  "designated": {
+    "index": 0,
+    "seed": 2026091501,
+    "amplitudes": [
+      0.08,
+      0.0884136734460518,
+      0.10798870460608026,
+      0.11703620093254055,
+      0.11670818093182213
+    ],
+    "final_gradient_estimate": 2.471399570485051e-06,
+    "final_gradient_standard_error": 5.290346161690779e-07,
+    "final_gradient_upper": 3.5294688028232067e-06,
+    "reference_gradient_interval": [
+      9.294396220639305e-07,
+      2.595711059944222e-06
+    ],
+    "unique_histories": 26214400,
+    "traced_histories_including_replay": 30408704,
+    "allocated_device_bytes": 88080492
+  },
+  "all_runs": [
+    {
+      "index": 0,
+      "seed": 2026091501,
+      "amplitude": 0.11670818093182213,
+      "final_gradient_upper": 3.5294688028232067e-06,
+      "reference_gradient_interval": [
+        9.294396220639305e-07,
+        2.595711059944222e-06
+      ],
+      "controller_passed": true,
+      "reference_passed": true,
+      "accepted_steps": 4,
+      "unique_histories": 26214400,
+      "traced_histories_including_replay": 30408704
+    },
+    {
+      "index": 1,
+      "seed": 2026196230,
+      "amplitude": 0.11664868102876179,
+      "final_gradient_upper": 3.2947638819310408e-06,
+      "reference_gradient_interval": [
+        -2.3331515566381686e-06,
+        -6.69427269632834e-07
+      ],
+      "controller_passed": true,
+      "reference_passed": true,
+      "accepted_steps": 4,
+      "unique_histories": 26214400,
+      "traced_histories_including_replay": 30408704
+    },
+    {
+      "index": 2,
+      "seed": 2026300959,
+      "amplitude": 0.11662994350251162,
+      "final_gradient_upper": 3.9775546063671e-06,
+      "reference_gradient_interval": [
+        -3.359907706346839e-06,
+        -1.6969852016760816e-06
+      ],
+      "controller_passed": true,
+      "reference_passed": true,
+      "accepted_steps": 4,
+      "unique_histories": 26214400,
+      "traced_histories_including_replay": 30408704
+    },
+    {
+      "index": 3,
+      "seed": 2026405688,
+      "amplitude": 0.11666523769577086,
+      "final_gradient_upper": 1.5522878116395648e-06,
+      "reference_gradient_interval": [
+        -1.4256248262966993e-06,
+        2.388080665909826e-07
+      ],
+      "controller_passed": true,
+      "reference_passed": true,
+      "accepted_steps": 4,
+      "unique_histories": 26214400,
+      "traced_histories_including_replay": 30408704
+    },
+    {
+      "index": 4,
+      "seed": 2026510417,
+      "amplitude": 0.11663216669095199,
+      "final_gradient_upper": 3.921485180727353e-06,
+      "reference_gradient_interval": [
+        -3.2381013890515045e-06,
+        -1.5750837627021744e-06
+      ],
+      "controller_passed": true,
+      "reference_passed": true,
+      "accepted_steps": 4,
+      "unique_histories": 26214400,
+      "traced_histories_including_replay": 30408704
+    },
+    {
+      "index": 5,
+      "seed": 2026615146,
+      "amplitude": 0.11660508748321559,
+      "final_gradient_upper": 5.58852173216082e-06,
+      "reference_gradient_interval": [
+        -4.721428307707188e-06,
+        -3.059569131821966e-06
+      ],
+      "controller_passed": true,
+      "reference_passed": true,
+      "accepted_steps": 4,
+      "unique_histories": 26214400,
+      "traced_histories_including_replay": 30408704
+    },
+    {
+      "index": 6,
+      "seed": 2026719875,
+      "amplitude": 0.11670130471671543,
+      "final_gradient_upper": 3.4842941163980687e-06,
+      "reference_gradient_interval": [
+        5.522222335344399e-07,
+        2.2181992167574295e-06
+      ],
+      "controller_passed": true,
+      "reference_passed": true,
+      "accepted_steps": 4,
+      "unique_histories": 28311552,
+      "traced_histories_including_replay": 32505856
+    },
+    {
+      "index": 7,
+      "seed": 2026824604,
+      "amplitude": 0.11665952035850369,
+      "final_gradient_upper": 8.348841978170839e-07,
+      "reference_gradient_interval": [
+        -1.739040481992756e-06,
+        -7.485229957652498e-08
+      ],
+      "controller_passed": true,
+      "reference_passed": true,
+      "accepted_steps": 4,
+      "unique_histories": 26214400,
+      "traced_histories_including_replay": 30408704
+    },
+    {
+      "index": 8,
+      "seed": 2026929333,
+      "amplitude": 0.11665774332817269,
+      "final_gradient_upper": 3.008486333386725e-06,
+      "reference_gradient_interval": [
+        -1.8364482984648966e-06,
+        -1.7233617231149846e-07
+      ],
+      "controller_passed": true,
+      "reference_passed": true,
+      "accepted_steps": 4,
+      "unique_histories": 26214400,
+      "traced_histories_including_replay": 30408704
+    },
+    {
+      "index": 9,
+      "seed": 2027034062,
+      "amplitude": 0.11668737475214717,
+      "final_gradient_upper": 1.8540482023922848e-06,
+      "reference_gradient_interval": [
+        -2.1181555273152506e-07,
+        1.4535649896570397e-06
+      ],
+      "controller_passed": true,
+      "reference_passed": true,
+      "accepted_steps": 4,
+      "unique_histories": 26214400,
+      "traced_histories_including_replay": 30408704
+    },
+    {
+      "index": 10,
+      "seed": 2027138791,
+      "amplitude": 0.11666224034394036,
+      "final_gradient_upper": 3.1914586123435155e-06,
+      "reference_gradient_interval": [
+        -1.5899388860327802e-06,
+        7.436571377955919e-08
+      ],
+      "controller_passed": true,
+      "reference_passed": true,
+      "accepted_steps": 4,
+      "unique_histories": 26214400,
+      "traced_histories_including_replay": 30408704
+    },
+    {
+      "index": 11,
+      "seed": 2027243520,
+      "amplitude": 0.11668403807165197,
+      "final_gradient_upper": 2.285140697589941e-06,
+      "reference_gradient_interval": [
+        -3.9480042413830546e-07,
+        1.270437265324371e-06
+      ],
+      "controller_passed": true,
+      "reference_passed": true,
+      "accepted_steps": 4,
+      "unique_histories": 26214400,
+      "traced_histories_including_replay": 30408704
+    },
+    {
+      "index": 12,
+      "seed": 2027348249,
+      "amplitude": 0.1166510025004278,
+      "final_gradient_upper": 2.3687150467591004e-06,
+      "reference_gradient_interval": [
+        -2.2059194011811654e-06,
+        -5.420957660010219e-07
+      ],
+      "controller_passed": true,
+      "reference_passed": true,
+      "accepted_steps": 4,
+      "unique_histories": 26214400,
+      "traced_histories_including_replay": 30408704
+    },
+    {
+      "index": 13,
+      "seed": 2027452978,
+      "amplitude": 0.11670716612549584,
+      "final_gradient_upper": 4.422933349276858e-06,
+      "reference_gradient_interval": [
+        8.737662886857726e-07,
+        2.5399942688718627e-06
+      ],
+      "controller_passed": true,
+      "reference_passed": true,
+      "accepted_steps": 4,
+      "unique_histories": 26214400,
+      "traced_histories_including_replay": 30408704
+    },
+    {
+      "index": 14,
+      "seed": 2027557707,
+      "amplitude": 0.11663592016483496,
+      "final_gradient_upper": 4.3005822681098005e-06,
+      "reference_gradient_interval": [
+        -3.032441687328384e-06,
+        -1.3692634587877667e-06
+      ],
+      "controller_passed": true,
+      "reference_passed": true,
+      "accepted_steps": 4,
+      "unique_histories": 26214400,
+      "traced_histories_including_replay": 30408704
+    },
+    {
+      "index": 15,
+      "seed": 2027662436,
+      "amplitude": 0.11669549207362943,
+      "final_gradient_upper": 2.676588150352616e-06,
+      "reference_gradient_interval": [
+        2.3338525087973014e-07,
+        1.8991133419795633e-06
+      ],
+      "controller_passed": true,
+      "reference_passed": true,
+      "accepted_steps": 4,
+      "unique_histories": 26214400,
+      "traced_histories_including_replay": 30408704
+    },
+    {
+      "index": 16,
+      "seed": 2027767165,
+      "amplitude": 0.11665651910875545,
+      "final_gradient_upper": 2.050166028210577e-06,
+      "reference_gradient_interval": [
+        -1.9035520892658057e-06,
+        -2.394923583670748e-07
+      ],
+      "controller_passed": true,
+      "reference_passed": true,
+      "accepted_steps": 4,
+      "unique_histories": 26214400,
+      "traced_histories_including_replay": 30408704
+    },
+    {
+      "index": 17,
+      "seed": 2027871894,
+      "amplitude": 0.11662060288248582,
+      "final_gradient_upper": 4.678482168730995e-06,
+      "reference_gradient_interval": [
+        -3.871620362685387e-06,
+        -2.20909748078315e-06
+      ],
+      "controller_passed": true,
+      "reference_passed": true,
+      "accepted_steps": 4,
+      "unique_histories": 58720256,
+      "traced_histories_including_replay": 95420416
+    },
+    {
+      "index": 18,
+      "seed": 2027976623,
+      "amplitude": 0.11665740097839784,
+      "final_gradient_upper": 2.5466204592252795e-06,
+      "reference_gradient_interval": [
+        -1.8552138408699605e-06,
+        -1.91116366987054e-07
+      ],
+      "controller_passed": true,
+      "reference_passed": true,
+      "accepted_steps": 4,
+      "unique_histories": 26214400,
+      "traced_histories_including_replay": 30408704
+    },
+    {
+      "index": 19,
+      "seed": 2028081352,
+      "amplitude": 0.11664710789947777,
+      "final_gradient_upper": 2.9482714145540685e-06,
+      "reference_gradient_interval": [
+        -2.4193666708091025e-06,
+        -7.557097049115267e-07
+      ],
+      "controller_passed": true,
+      "reference_passed": true,
+      "accepted_steps": 4,
+      "unique_histories": 26214400,
+      "traced_histories_including_replay": 30408704
+    },
+    {
+      "index": 20,
+      "seed": 2028186081,
+      "amplitude": 0.11665795874353539,
+      "final_gradient_upper": 2.1211058254173824e-06,
+      "reference_gradient_interval": [
+        -1.8246404757246166e-06,
+        -1.6051912995299328e-07
+      ],
+      "controller_passed": true,
+      "reference_passed": true,
+      "accepted_steps": 4,
+      "unique_histories": 26214400,
+      "traced_histories_including_replay": 30408704
+    },
+    {
+      "index": 21,
+      "seed": 2028290810,
+      "amplitude": 0.11667901566664246,
+      "final_gradient_upper": 2.2546479211470276e-06,
+      "reference_gradient_interval": [
+        -6.702113591433417e-07,
+        9.948113169287572e-07
+      ],
+      "controller_passed": true,
+      "reference_passed": true,
+      "accepted_steps": 4,
+      "unique_histories": 26214400,
+      "traced_histories_including_replay": 30408704
+    },
+    {
+      "index": 22,
+      "seed": 2028395539,
+      "amplitude": 0.11663955463857958,
+      "final_gradient_upper": 3.4157851946038903e-06,
+      "reference_gradient_interval": [
+        -2.833289600642367e-06,
+        -1.1699558550746495e-06
+      ],
+      "controller_passed": true,
+      "reference_passed": true,
+      "accepted_steps": 4,
+      "unique_histories": 26214400,
+      "traced_histories_including_replay": 30408704
+    },
+    {
+      "index": 23,
+      "seed": 2028500268,
+      "amplitude": 0.11670581900798628,
+      "final_gradient_upper": 3.0391903277837628e-06,
+      "reference_gradient_interval": [
+        7.99863512693232e-07,
+        2.4660338051910566e-06
+      ],
+      "controller_passed": true,
+      "reference_passed": true,
+      "accepted_steps": 4,
+      "unique_histories": 26214400,
+      "traced_histories_including_replay": 30408704
+    },
+    {
+      "index": 24,
+      "seed": 2028604997,
+      "amplitude": 0.1166454780284433,
+      "final_gradient_upper": 3.997590983238909e-06,
+      "reference_gradient_interval": [
+        -2.5086890544353573e-06,
+        -8.451018365972053e-07
+      ],
+      "controller_passed": true,
+      "reference_passed": true,
+      "accepted_steps": 4,
+      "unique_histories": 26214400,
+      "traced_histories_including_replay": 30408704
+    },
+    {
+      "index": 25,
+      "seed": 2028709726,
+      "amplitude": 0.11664708095688255,
+      "final_gradient_upper": 2.281272346216216e-06,
+      "reference_gradient_interval": [
+        -2.4208432354321367e-06,
+        -7.57187422515938e-07
+      ],
+      "controller_passed": true,
+      "reference_passed": true,
+      "accepted_steps": 4,
+      "unique_histories": 26214400,
+      "traced_histories_including_replay": 30408704
+    },
+    {
+      "index": 26,
+      "seed": 2028814455,
+      "amplitude": 0.11667236397812508,
+      "final_gradient_upper": 2.1156140487456294e-06,
+      "reference_gradient_interval": [
+        -1.034929944594476e-06,
+        6.298079860808226e-07
+      ],
+      "controller_passed": true,
+      "reference_passed": true,
+      "accepted_steps": 4,
+      "unique_histories": 26214400,
+      "traced_histories_including_replay": 30408704
+    },
+    {
+      "index": 27,
+      "seed": 2028919184,
+      "amplitude": 0.1167191013101299,
+      "final_gradient_upper": 4.154992090809733e-06,
+      "reference_gradient_interval": [
+        1.528604223696982e-06,
+        3.195343343735883e-06
+      ],
+      "controller_passed": true,
+      "reference_passed": true,
+      "accepted_steps": 4,
+      "unique_histories": 28311552,
+      "traced_histories_including_replay": 32505856
+    },
+    {
+      "index": 28,
+      "seed": 2029023913,
+      "amplitude": 0.11671411931282949,
+      "final_gradient_upper": 3.9630414410471025e-06,
+      "reference_gradient_interval": [
+        1.2552448039977956e-06,
+        2.921770555029628e-06
+      ],
+      "controller_passed": true,
+      "reference_passed": true,
+      "accepted_steps": 4,
+      "unique_histories": 26214400,
+      "traced_histories_including_replay": 30408704
+    },
+    {
+      "index": 29,
+      "seed": 2029128642,
+      "amplitude": 0.11662652382786504,
+      "final_gradient_upper": 4.353024260993905e-06,
+      "reference_gradient_interval": [
+        -3.547259261470431e-06,
+        -1.8844830667989974e-06
+      ],
+      "controller_passed": true,
+      "reference_passed": true,
+      "accepted_steps": 4,
+      "unique_histories": 26214400,
+      "traced_histories_including_replay": 30408704
+    },
+    {
+      "index": 30,
+      "seed": 2029233371,
+      "amplitude": 0.11671507693265437,
+      "final_gradient_upper": 2.629807726271557e-06,
+      "reference_gradient_interval": [
+        1.307787059611779e-06,
+        2.974353822647962e-06
+      ],
+      "controller_passed": true,
+      "reference_passed": true,
+      "accepted_steps": 4,
+      "unique_histories": 26214400,
+      "traced_histories_including_replay": 30408704
+    },
+    {
+      "index": 31,
+      "seed": 2029338100,
+      "amplitude": 0.11662708920912684,
+      "final_gradient_upper": 3.75022820130228e-06,
+      "reference_gradient_interval": [
+        -3.5162848338321845e-06,
+        -1.8534844498472186e-06
+      ],
+      "controller_passed": true,
+      "reference_passed": true,
+      "accepted_steps": 4,
+      "unique_histories": 26214400,
+      "traced_histories_including_replay": 30408704
+    }
+  ],
+  "reference": {
+    "mean": 0.6856590869210283,
+    "standard_error": 1.274052610931322e-05,
+    "absolute_uncertainty": 8.918368276519253e-05,
+    "uncertainty_method": "seven replicate standard errors; heuristic, not a finite-sample bound",
+    "seed": 419003,
+    "batch": 1048576,
+    "sampling_multiplier": 16,
+    "allocated_device_bytes": 88080492,
+    "histories_traced": 268435456,
+    "purpose": "independent held-out forward mean; never optimiser input"
+  },
+  "uncertainty_scope": "Two-SE controller and seven-SE reference are empirical heuristic intervals, not simultaneous or distribution-free guarantees.",
+  "amplitude_series": [
+    {
+      "label": "Accepted source amplitude",
+      "x": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "y": [
+        0.08,
+        0.0884136734460518,
+        0.10798870460608026,
+        0.11703620093254055,
+        0.11670818093182213
+      ],
+      "tone": "technical"
+    }
+  ],
+  "certification_series": [
+    {
+      "label": "Final gradient upper bound",
+      "x": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "y": [
+        3.5294688028232067e-06,
+        3.2947638819310408e-06,
+        3.9775546063671e-06,
+        1.5522878116395648e-06,
+        3.921485180727353e-06,
+        5.58852173216082e-06,
+        3.4842941163980687e-06,
+        8.348841978170839e-07,
+        3.008486333386725e-06,
+        1.8540482023922848e-06,
+        3.1914586123435155e-06,
+        2.285140697589941e-06,
+        2.3687150467591004e-06,
+        4.422933349276858e-06,
+        4.3005822681098005e-06,
+        2.676588150352616e-06,
+        2.050166028210577e-06,
+        4.678482168730995e-06,
+        2.5466204592252795e-06,
+        2.9482714145540685e-06,
+        2.1211058254173824e-06,
+        2.2546479211470276e-06,
+        3.4157851946038903e-06,
+        3.0391903277837628e-06,
+        3.997590983238909e-06,
+        2.281272346216216e-06,
+        2.1156140487456294e-06,
+        4.154992090809733e-06,
+        3.9630414410471025e-06,
+        4.353024260993905e-06,
+        2.629807726271557e-06,
+        3.75022820130228e-06
+      ],
+      "mode": "markers",
+      "tone": "technical"
+    },
+    {
+      "label": "Unchanged tolerance",
+      "x": [
+        0,
+        31
+      ],
+      "y": [
+        1e-05,
+        1e-05
+      ],
+      "dash": true,
+      "tone": "ink"
+    }
+  ]
+}

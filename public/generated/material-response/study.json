@@ -1,0 +1,1902 @@
+{
+  "schema_version": 1,
+  "kind": "recorded-material-response",
+  "review_status": "accepted",
+  "evaluation_status": "complete",
+  "source": {
+    "review_sha256": "d157d9e9612f2b72066aa1e767ed2de53b1fe72a6696eaa303b58c640a96cb8e",
+    "source_freeze_sha256": "5138e5552cf135c8bed0c9f33d4a819a4871777232414559d35a123c6662caf4",
+    "source_commit": "8753d6af511f46f363e5d38f8dc38ff56b18f082",
+    "acquisition_run_sha256": "d8b347662ee8ac8247d2d80c8584d73b4580a9bca4c243a44e38eef5d6e18024",
+    "fits_run_sha256": "e2ba570ca911ef67d15db66cd6944ab7998e9f9d6519d1cf718c002b1a640dda",
+    "evaluation_run_sha256": "d371392280702e577a1684067e60048bb98f314e166efc5feec6c816f284be1e",
+    "six_fit_freeze_sha256": "476154120a4e024db3ba4114b310b39e74af52a8f5d553619135d072aebd3f2e",
+    "producing_source_freeze_sha256": "8bf64caf74bb3dc8f16d19c782de2c42c328fb1b18feda42db0c3c5c2b1a49fc",
+    "evaluation_source_amendment_sha256": "ac39a35ffa194c3fff9035612f5beaa234b1344a8f9e5899edea1031d2419771",
+    "evaluation_source_review_sha256": "891bd2d2c22b05ee96e919abce56c75b1027500b6812ef5fbb40dc06f207e588",
+    "producing_evaluator_sha256": "aa3fa2f0dbbba6799e891b8cc6a33f376fa7efc6c0c6b5bd12893bb469f8a299",
+    "effective_evaluator_sha256": "a06fc2e08ef29db5a36562ac429a04879385fd1af858e118efbe40cb70164de7"
+  },
+  "grid": {
+    "shape": [
+      32,
+      32,
+      32
+    ],
+    "spacing_mm": [
+      4.65234375,
+      4.65234375,
+      6.0
+    ],
+    "origin_mm": [
+      -72.111328125,
+      -72.111328125,
+      -93.0
+    ],
+    "orientation": [
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  },
+  "perturbation_amplitude": 0.025,
+  "pattern_centre_mm_xyz": [
+    25.0,
+    0.0,
+    0.0
+  ],
+  "pattern_radius_mm": 15.0,
+  "dilution": 0.9,
+  "signed_window": [
+    -0.05,
+    0.05
+  ],
+  "absolute_window": [
+    0.0,
+    0.05
+  ],
+  "default_plane": "coronal",
+  "outcomes": [
+    {
+      "id": "case2_probe32_rep0_control_spectral_metric",
+      "replicate": 0,
+      "scenario": "control",
+      "fit_status": "completed",
+      "evaluation_status": "complete",
+      "hard_correctness_passed": true,
+      "accepted_steps": 76,
+      "termination": "wall_time_budget",
+      "stationarity_passed": false,
+      "final_mapping": 93180.68749999997,
+      "absolute_threshold": 10.000000000000002,
+      "solve_seconds": 120.72354347398505,
+      "fields": [
+        {
+          "role": "fields",
+          "dtype": "<f4",
+          "shape": [
+            2,
+            32,
+            32,
+            32
+          ],
+          "file": "fields/case2_probe32_rep0_control_spectral_metric/fields.npy",
+          "sha256": "ed3df4c79839d52325da7da1eeb215d1189b5b3f7af6ed4a965826c947a3f47f",
+          "bytes": 262272
+        },
+        {
+          "role": "reference",
+          "dtype": "<f4",
+          "shape": [
+            2,
+            32,
+            32,
+            32
+          ],
+          "file": "fields/case2_probe32_rep0_control_spectral_metric/reference.npy",
+          "sha256": "042ba0cd73d9af14a5b77cf67d4799424504103976e23713649ccd92eff9ef19",
+          "bytes": 262272
+        },
+        {
+          "role": "signed-error",
+          "dtype": "<f8",
+          "shape": [
+            2,
+            32,
+            32,
+            32
+          ],
+          "file": "fields/case2_probe32_rep0_control_spectral_metric/signed-error.npy",
+          "sha256": "ec0f0ee164ae76214d13d4e19caa2051e725b68dfd5138ef0dd46c67bc4f7df4",
+          "bytes": 524416
+        },
+        {
+          "role": "absolute-error",
+          "dtype": "<f8",
+          "shape": [
+            2,
+            32,
+            32,
+            32
+          ],
+          "file": "fields/case2_probe32_rep0_control_spectral_metric/absolute-error.npy",
+          "sha256": "c108f85d1c53cc48aa5f70860073373cfaa9670c9999565b4ec6c09d75fa2081",
+          "bytes": 524416
+        }
+      ],
+      "metrics": {
+        "file": "records/case2_probe32_rep0_control_spectral_metric.json",
+        "sha256": "70488334886080ee20eaf1d93163165af2d48de4a3da2244c94bdb97784cfc51",
+        "bytes": 269189
+      }
+    },
+    {
+      "id": "case2_probe32_rep0_water_spectral_metric",
+      "replicate": 0,
+      "scenario": "water",
+      "fit_status": "completed",
+      "evaluation_status": "complete",
+      "hard_correctness_passed": true,
+      "accepted_steps": 76,
+      "termination": "wall_time_budget",
+      "stationarity_passed": false,
+      "final_mapping": 93180.75000000004,
+      "absolute_threshold": 10.000000000000002,
+      "solve_seconds": 120.66786663397215,
+      "fields": [
+        {
+          "role": "fields",
+          "dtype": "<f4",
+          "shape": [
+            2,
+            32,
+            32,
+            32
+          ],
+          "file": "fields/case2_probe32_rep0_water_spectral_metric/fields.npy",
+          "sha256": "ac6f36b6aef6bb05cd6e159c511f1af7b0473d0d19f46e73586ff5fcc8c30738",
+          "bytes": 262272
+        },
+        {
+          "role": "reference",
+          "dtype": "<f4",
+          "shape": [
+            2,
+            32,
+            32,
+            32
+          ],
+          "file": "fields/case2_probe32_rep0_water_spectral_metric/reference.npy",
+          "sha256": "f7e9508b1dff36dad1babd0d337b8fdf15c202e22a5872d250793f0eccbc0d2d",
+          "bytes": 262272
+        },
+        {
+          "role": "signed-error",
+          "dtype": "<f8",
+          "shape": [
+            2,
+            32,
+            32,
+            32
+          ],
+          "file": "fields/case2_probe32_rep0_water_spectral_metric/signed-error.npy",
+          "sha256": "217f2ef6e1297fe1b6d13250a24d8acd155598984f06afe294c3d108ca7fe04d",
+          "bytes": 524416
+        },
+        {
+          "role": "absolute-error",
+          "dtype": "<f8",
+          "shape": [
+            2,
+            32,
+            32,
+            32
+          ],
+          "file": "fields/case2_probe32_rep0_water_spectral_metric/absolute-error.npy",
+          "sha256": "279ac889d9eb56d39846ce083b55a6ab9942ab8ed0f13558c861ce3a34a86a22",
+          "bytes": 524416
+        }
+      ],
+      "metrics": {
+        "file": "records/case2_probe32_rep0_water_spectral_metric.json",
+        "sha256": "456299fca49e11344d77a092d5e2729bc4dc51e410511d5591e791774502a4fa",
+        "bytes": 269172
+      }
+    },
+    {
+      "id": "case2_probe32_rep0_bone_spectral_metric",
+      "replicate": 0,
+      "scenario": "bone",
+      "fit_status": "completed",
+      "evaluation_status": "complete",
+      "hard_correctness_passed": true,
+      "accepted_steps": 76,
+      "termination": "wall_time_budget",
+      "stationarity_passed": false,
+      "final_mapping": 93180.71093750003,
+      "absolute_threshold": 10.000000000000002,
+      "solve_seconds": 120.68622867693193,
+      "fields": [
+        {
+          "role": "fields",
+          "dtype": "<f4",
+          "shape": [
+            2,
+            32,
+            32,
+            32
+          ],
+          "file": "fields/case2_probe32_rep0_bone_spectral_metric/fields.npy",
+          "sha256": "df664ec03fad75ae91048563e6a2374fc79c3b2b2d3481d4630a71e5d76c6983",
+          "bytes": 262272
+        },
+        {
+          "role": "reference",
+          "dtype": "<f4",
+          "shape": [
+            2,
+            32,
+            32,
+            32
+          ],
+          "file": "fields/case2_probe32_rep0_bone_spectral_metric/reference.npy",
+          "sha256": "a40d7012e3e30eb49c0ab7d4d8cf1aa27916880c9e42d54fea0a14b4cfd53bf0",
+          "bytes": 262272
+        },
+        {
+          "role": "signed-error",
+          "dtype": "<f8",
+          "shape": [
+            2,
+            32,
+            32,
+            32
+          ],
+          "file": "fields/case2_probe32_rep0_bone_spectral_metric/signed-error.npy",
+          "sha256": "a8d49fbd2b053f61c6dffa08ea39a082fa9b6f286188573c75ba1642019a94fc",
+          "bytes": 524416
+        },
+        {
+          "role": "absolute-error",
+          "dtype": "<f8",
+          "shape": [
+            2,
+            32,
+            32,
+            32
+          ],
+          "file": "fields/case2_probe32_rep0_bone_spectral_metric/absolute-error.npy",
+          "sha256": "23cd66063f7f44a6595d59019dc18816dec16cb8f13e9b43e81e0af9a48b9aaa",
+          "bytes": 524416
+        }
+      ],
+      "metrics": {
+        "file": "records/case2_probe32_rep0_bone_spectral_metric.json",
+        "sha256": "2c12d1a626514e2dbe12c0e71c71870c23a366e650d19ad1aa437e528d6acd7c",
+        "bytes": 269149
+      }
+    },
+    {
+      "id": "case2_probe32_rep1_control_spectral_metric",
+      "replicate": 1,
+      "scenario": "control",
+      "fit_status": "completed",
+      "evaluation_status": "complete",
+      "hard_correctness_passed": true,
+      "accepted_steps": 76,
+      "termination": "wall_time_budget",
+      "stationarity_passed": false,
+      "final_mapping": 93299.92968750001,
+      "absolute_threshold": 10.000000000000002,
+      "solve_seconds": 120.5593848391436,
+      "fields": [
+        {
+          "role": "fields",
+          "dtype": "<f4",
+          "shape": [
+            2,
+            32,
+            32,
+            32
+          ],
+          "file": "fields/case2_probe32_rep1_control_spectral_metric/fields.npy",
+          "sha256": "119c9fb157f92eb55208cc16f5626de0451a8dd059f99dc54f51d63e14b5fad6",
+          "bytes": 262272
+        },
+        {
+          "role": "reference",
+          "dtype": "<f4",
+          "shape": [
+            2,
+            32,
+            32,
+            32
+          ],
+          "file": "fields/case2_probe32_rep1_control_spectral_metric/reference.npy",
+          "sha256": "042ba0cd73d9af14a5b77cf67d4799424504103976e23713649ccd92eff9ef19",
+          "bytes": 262272
+        },
+        {
+          "role": "signed-error",
+          "dtype": "<f8",
+          "shape": [
+            2,
+            32,
+            32,
+            32
+          ],
+          "file": "fields/case2_probe32_rep1_control_spectral_metric/signed-error.npy",
+          "sha256": "4e279232d183c6839a29726b18bd9e99830056a8fdddfc19eece3ca3391b1a5c",
+          "bytes": 524416
+        },
+        {
+          "role": "absolute-error",
+          "dtype": "<f8",
+          "shape": [
+            2,
+            32,
+            32,
+            32
+          ],
+          "file": "fields/case2_probe32_rep1_control_spectral_metric/absolute-error.npy",
+          "sha256": "c82c353a38532092d7e04ef14445cb8f92dad6551b45424d3677391efbbe50d6",
+          "bytes": 524416
+        }
+      ],
+      "metrics": {
+        "file": "records/case2_probe32_rep1_control_spectral_metric.json",
+        "sha256": "0fdcbd99acd9d9b994875dfb48959fa342d33abdcdef9d1e142044fd4a340bf4",
+        "bytes": 269148
+      }
+    },
+    {
+      "id": "case2_probe32_rep1_water_spectral_metric",
+      "replicate": 1,
+      "scenario": "water",
+      "fit_status": "completed",
+      "evaluation_status": "complete",
+      "hard_correctness_passed": true,
+      "accepted_steps": 76,
+      "termination": "wall_time_budget",
+      "stationarity_passed": false,
+      "final_mapping": 93299.94531249997,
+      "absolute_threshold": 10.000000000000002,
+      "solve_seconds": 120.85360042983666,
+      "fields": [
+        {
+          "role": "fields",
+          "dtype": "<f4",
+          "shape": [
+            2,
+            32,
+            32,
+            32
+          ],
+          "file": "fields/case2_probe32_rep1_water_spectral_metric/fields.npy",
+          "sha256": "5e3f9e82d3382ccbc9e7c4274a69fb07f6ecf4a02b6389785027591430b8258c",
+          "bytes": 262272
+        },
+        {
+          "role": "reference",
+          "dtype": "<f4",
+          "shape": [
+            2,
+            32,
+            32,
+            32
+          ],
+          "file": "fields/case2_probe32_rep1_water_spectral_metric/reference.npy",
+          "sha256": "f7e9508b1dff36dad1babd0d337b8fdf15c202e22a5872d250793f0eccbc0d2d",
+          "bytes": 262272
+        },
+        {
+          "role": "signed-error",
+          "dtype": "<f8",
+          "shape": [
+            2,
+            32,
+            32,
+            32
+          ],
+          "file": "fields/case2_probe32_rep1_water_spectral_metric/signed-error.npy",
+          "sha256": "2b22f41cf239912079b8da5970d00d8bbb32b303e9687dbee96cf2af55045ae2",
+          "bytes": 524416
+        },
+        {
+          "role": "absolute-error",
+          "dtype": "<f8",
+          "shape": [
+            2,
+            32,
+            32,
+            32
+          ],
+          "file": "fields/case2_probe32_rep1_water_spectral_metric/absolute-error.npy",
+          "sha256": "ae438515e36848692298c67cecf60a19c2085d9e6f6f1c2714e72eab6a3f81f9",
+          "bytes": 524416
+        }
+      ],
+      "metrics": {
+        "file": "records/case2_probe32_rep1_water_spectral_metric.json",
+        "sha256": "afcd4ed9e1afd95fdddcf881e8f5b33ce5996fbddb4a3754ec861259492539b0",
+        "bytes": 269149
+      }
+    },
+    {
+      "id": "case2_probe32_rep1_bone_spectral_metric",
+      "replicate": 1,
+      "scenario": "bone",
+      "fit_status": "completed",
+      "evaluation_status": "complete",
+      "hard_correctness_passed": true,
+      "accepted_steps": 76,
+      "termination": "wall_time_budget",
+      "stationarity_passed": false,
+      "final_mapping": 93299.80468749999,
+      "absolute_threshold": 10.000000000000002,
+      "solve_seconds": 120.87690273183398,
+      "fields": [
+        {
+          "role": "fields",
+          "dtype": "<f4",
+          "shape": [
+            2,
+            32,
+            32,
+            32
+          ],
+          "file": "fields/case2_probe32_rep1_bone_spectral_metric/fields.npy",
+          "sha256": "ca6b4876312ff05b763df8aa6a2bdbd7166a0c9ef0de3f6d6de62281ea1afeea",
+          "bytes": 262272
+        },
+        {
+          "role": "reference",
+          "dtype": "<f4",
+          "shape": [
+            2,
+            32,
+            32,
+            32
+          ],
+          "file": "fields/case2_probe32_rep1_bone_spectral_metric/reference.npy",
+          "sha256": "a40d7012e3e30eb49c0ab7d4d8cf1aa27916880c9e42d54fea0a14b4cfd53bf0",
+          "bytes": 262272
+        },
+        {
+          "role": "signed-error",
+          "dtype": "<f8",
+          "shape": [
+            2,
+            32,
+            32,
+            32
+          ],
+          "file": "fields/case2_probe32_rep1_bone_spectral_metric/signed-error.npy",
+          "sha256": "7b98dbef1eaf27740418c85554f4c768a6c86d91249b124e382f509e8ffdad22",
+          "bytes": 524416
+        },
+        {
+          "role": "absolute-error",
+          "dtype": "<f8",
+          "shape": [
+            2,
+            32,
+            32,
+            32
+          ],
+          "file": "fields/case2_probe32_rep1_bone_spectral_metric/absolute-error.npy",
+          "sha256": "702b11175b1807f617bc1e3ea60b57ae116e60cce3f7dbe2ef733906f49fc2fb",
+          "bytes": 524416
+        }
+      ],
+      "metrics": {
+        "file": "records/case2_probe32_rep1_bone_spectral_metric.json",
+        "sha256": "98f767d4bf6dc22fec19eec3be1b5adfe8492cf253cfa48fdb4a43d203ffaaa6",
+        "bytes": 269159
+      }
+    }
+  ],
+  "replicates": [
+    {
+      "replicate": 0,
+      "status": "complete",
+      "values_available": true,
+      "matrix": [
+        [
+          0.40504101101488665,
+          -0.013853556055308865
+        ],
+        [
+          0.030619353568119206,
+          0.49846146948419084
+        ]
+      ],
+      "maps": [
+        {
+          "plane": "coronal",
+          "normal": "y",
+          "horizontal": "x",
+          "vertical": "z",
+          "extent_mm": [
+            -74.4375,
+            74.4375,
+            -96.0,
+            96.0
+          ],
+          "panels": [
+            {
+              "injected": "water",
+              "recovered": "water",
+              "width": 32,
+              "height": 32,
+              "clipping": {
+                "window": [
+                  -0.05,
+                  0.05
+                ],
+                "samples": 1024,
+                "below": 0,
+                "above": 0,
+                "negative_infinity": 0,
+                "positive_infinity": 0,
+                "values_modified": false
+              },
+              "sampling": {
+                "normal_indices": [
+                  15,
+                  16
+                ],
+                "upper_weight": 0.5,
+                "physical_coordinate_mm": 0.0,
+                "interpolation": "linear between adjacent stored centre samples, without in-plane resampling"
+              },
+              "samples": {
+                "file": "maps/rep0/coronal-water-water.npy",
+                "sha256": "e8ef16b9e61d2a3aeca2ca20ed9a416a4c9081dad92d5cbad7bb3e142020c813",
+                "bytes": 8320
+              },
+              "file": "maps/rep0/coronal-water-water.png",
+              "sha256": "fc4a034d14e9409abd1d03684301b57ffe744520485dac9e5818d6831f6144aa",
+              "bytes": 422
+            },
+            {
+              "injected": "water",
+              "recovered": "bone",
+              "width": 32,
+              "height": 32,
+              "clipping": {
+                "window": [
+                  -0.05,
+                  0.05
+                ],
+                "samples": 1024,
+                "below": 0,
+                "above": 0,
+                "negative_infinity": 0,
+                "positive_infinity": 0,
+                "values_modified": false
+              },
+              "sampling": {
+                "normal_indices": [
+                  15,
+                  16
+                ],
+                "upper_weight": 0.5,
+                "physical_coordinate_mm": 0.0,
+                "interpolation": "linear between adjacent stored centre samples, without in-plane resampling"
+              },
+              "samples": {
+                "file": "maps/rep0/coronal-water-bone.npy",
+                "sha256": "42feba2fdc9ab2a747fa50521ee0106dc445458617e56007730f1a4419e3f27b",
+                "bytes": 8320
+              },
+              "file": "maps/rep0/coronal-water-bone.png",
+              "sha256": "2de94b6664cd84dab4ea00e3e9283d234086a547e7ee5cde29d7fa95f561521c",
+              "bytes": 225
+            },
+            {
+              "injected": "bone",
+              "recovered": "water",
+              "width": 32,
+              "height": 32,
+              "clipping": {
+                "window": [
+                  -0.05,
+                  0.05
+                ],
+                "samples": 1024,
+                "below": 0,
+                "above": 0,
+                "negative_infinity": 0,
+                "positive_infinity": 0,
+                "values_modified": false
+              },
+              "sampling": {
+                "normal_indices": [
+                  15,
+                  16
+                ],
+                "upper_weight": 0.5,
+                "physical_coordinate_mm": 0.0,
+                "interpolation": "linear between adjacent stored centre samples, without in-plane resampling"
+              },
+              "samples": {
+                "file": "maps/rep0/coronal-bone-water.npy",
+                "sha256": "50773a787f9deb114cb00cf1983c9b928e8225c2812b8b98f66e877e6483690f",
+                "bytes": 8320
+              },
+              "file": "maps/rep0/coronal-bone-water.png",
+              "sha256": "11a904a17a6496584aeeb944fc60fafd1f3de1c2f1cb412203359524f0b0bb98",
+              "bytes": 618
+            },
+            {
+              "injected": "bone",
+              "recovered": "bone",
+              "width": 32,
+              "height": 32,
+              "clipping": {
+                "window": [
+                  -0.05,
+                  0.05
+                ],
+                "samples": 1024,
+                "below": 0,
+                "above": 0,
+                "negative_infinity": 0,
+                "positive_infinity": 0,
+                "values_modified": false
+              },
+              "sampling": {
+                "normal_indices": [
+                  15,
+                  16
+                ],
+                "upper_weight": 0.5,
+                "physical_coordinate_mm": 0.0,
+                "interpolation": "linear between adjacent stored centre samples, without in-plane resampling"
+              },
+              "samples": {
+                "file": "maps/rep0/coronal-bone-bone.npy",
+                "sha256": "a08ee21f827b46c60a74658fae2179ca7f2515f0615603572d9644b9186fd742",
+                "bytes": 8320
+              },
+              "file": "maps/rep0/coronal-bone-bone.png",
+              "sha256": "482f887d69c4ae3b8b79e76346e1350881afe0d523bdc61fbf038d1f5f15aff3",
+              "bytes": 372
+            }
+          ]
+        },
+        {
+          "plane": "axial",
+          "normal": "z",
+          "horizontal": "x",
+          "vertical": "y",
+          "extent_mm": [
+            -74.4375,
+            74.4375,
+            -74.4375,
+            74.4375
+          ],
+          "panels": [
+            {
+              "injected": "water",
+              "recovered": "water",
+              "width": 32,
+              "height": 32,
+              "clipping": {
+                "window": [
+                  -0.05,
+                  0.05
+                ],
+                "samples": 1024,
+                "below": 0,
+                "above": 0,
+                "negative_infinity": 0,
+                "positive_infinity": 0,
+                "values_modified": false
+              },
+              "sampling": {
+                "normal_indices": [
+                  15,
+                  16
+                ],
+                "upper_weight": 0.5,
+                "physical_coordinate_mm": 0.0,
+                "interpolation": "linear between adjacent stored centre samples, without in-plane resampling"
+              },
+              "samples": {
+                "file": "maps/rep0/axial-water-water.npy",
+                "sha256": "49c43bdfcab3ad7155c4002ea4b4a3378c81ed7019de642248aa25a9723033ba",
+                "bytes": 8320
+              },
+              "file": "maps/rep0/axial-water-water.png",
+              "sha256": "fb05a307d97a2c309f1e2a82d6d1309dcff23b26560c0d6809a608d13b046f8e",
+              "bytes": 1140
+            },
+            {
+              "injected": "water",
+              "recovered": "bone",
+              "width": 32,
+              "height": 32,
+              "clipping": {
+                "window": [
+                  -0.05,
+                  0.05
+                ],
+                "samples": 1024,
+                "below": 0,
+                "above": 0,
+                "negative_infinity": 0,
+                "positive_infinity": 0,
+                "values_modified": false
+              },
+              "sampling": {
+                "normal_indices": [
+                  15,
+                  16
+                ],
+                "upper_weight": 0.5,
+                "physical_coordinate_mm": 0.0,
+                "interpolation": "linear between adjacent stored centre samples, without in-plane resampling"
+              },
+              "samples": {
+                "file": "maps/rep0/axial-water-bone.npy",
+                "sha256": "20f16f05595dc1322f0ba776d8a614ab656feb1d2927799adc4509ebf4020025",
+                "bytes": 8320
+              },
+              "file": "maps/rep0/axial-water-bone.png",
+              "sha256": "93f4023405922ee6f666d36913f09d308731c0c328d1bec5bf34f9a2e7a3bf5a",
+              "bytes": 458
+            },
+            {
+              "injected": "bone",
+              "recovered": "water",
+              "width": 32,
+              "height": 32,
+              "clipping": {
+                "window": [
+                  -0.05,
+                  0.05
+                ],
+                "samples": 1024,
+                "below": 0,
+                "above": 0,
+                "negative_infinity": 0,
+                "positive_infinity": 0,
+                "values_modified": false
+              },
+              "sampling": {
+                "normal_indices": [
+                  15,
+                  16
+                ],
+                "upper_weight": 0.5,
+                "physical_coordinate_mm": 0.0,
+                "interpolation": "linear between adjacent stored centre samples, without in-plane resampling"
+              },
+              "samples": {
+                "file": "maps/rep0/axial-bone-water.npy",
+                "sha256": "4fe3d8d2472d1b0c8ee59471bda9e38c2c6dfda06fe6aa381d00052bb0791206",
+                "bytes": 8320
+              },
+              "file": "maps/rep0/axial-bone-water.png",
+              "sha256": "81f5b143690adbde7c34cc4d0297a29809f54bb50b6aee09a79c290aadc40244",
+              "bytes": 1553
+            },
+            {
+              "injected": "bone",
+              "recovered": "bone",
+              "width": 32,
+              "height": 32,
+              "clipping": {
+                "window": [
+                  -0.05,
+                  0.05
+                ],
+                "samples": 1024,
+                "below": 0,
+                "above": 0,
+                "negative_infinity": 0,
+                "positive_infinity": 0,
+                "values_modified": false
+              },
+              "sampling": {
+                "normal_indices": [
+                  15,
+                  16
+                ],
+                "upper_weight": 0.5,
+                "physical_coordinate_mm": 0.0,
+                "interpolation": "linear between adjacent stored centre samples, without in-plane resampling"
+              },
+              "samples": {
+                "file": "maps/rep0/axial-bone-bone.npy",
+                "sha256": "4adacd4a88fa4d344b6d7de1cdafcf8274708cde9e08215745bf6348088c961b",
+                "bytes": 8320
+              },
+              "file": "maps/rep0/axial-bone-bone.png",
+              "sha256": "e7118a4c0105c271b8cade5d5ee38671fd22a047a67326767f06af153ecdf4b3",
+              "bytes": 692
+            }
+          ]
+        },
+        {
+          "plane": "sagittal",
+          "normal": "x",
+          "horizontal": "y",
+          "vertical": "z",
+          "extent_mm": [
+            -74.4375,
+            74.4375,
+            -96.0,
+            96.0
+          ],
+          "panels": [
+            {
+              "injected": "water",
+              "recovered": "water",
+              "width": 32,
+              "height": 32,
+              "clipping": {
+                "window": [
+                  -0.05,
+                  0.05
+                ],
+                "samples": 1024,
+                "below": 0,
+                "above": 0,
+                "negative_infinity": 0,
+                "positive_infinity": 0,
+                "values_modified": false
+              },
+              "sampling": {
+                "normal_indices": [
+                  15,
+                  16
+                ],
+                "upper_weight": 0.5,
+                "physical_coordinate_mm": 0.0,
+                "interpolation": "linear between adjacent stored centre samples, without in-plane resampling"
+              },
+              "samples": {
+                "file": "maps/rep0/sagittal-water-water.npy",
+                "sha256": "ed7f15e5ba2387957fab3951390d70f800b8658db16a67f256b2522afbc3a1ee",
+                "bytes": 8320
+              },
+              "file": "maps/rep0/sagittal-water-water.png",
+              "sha256": "ecbf4f56cf7516879fea5b7b3938fc39a8158fde4f4b7029011cd3b414c19674",
+              "bytes": 350
+            },
+            {
+              "injected": "water",
+              "recovered": "bone",
+              "width": 32,
+              "height": 32,
+              "clipping": {
+                "window": [
+                  -0.05,
+                  0.05
+                ],
+                "samples": 1024,
+                "below": 0,
+                "above": 0,
+                "negative_infinity": 0,
+                "positive_infinity": 0,
+                "values_modified": false
+              },
+              "sampling": {
+                "normal_indices": [
+                  15,
+                  16
+                ],
+                "upper_weight": 0.5,
+                "physical_coordinate_mm": 0.0,
+                "interpolation": "linear between adjacent stored centre samples, without in-plane resampling"
+              },
+              "samples": {
+                "file": "maps/rep0/sagittal-water-bone.npy",
+                "sha256": "72fe731bf6b5f1db0bbe9ba49a80fbc1d9476c820b963ce286923e8890a72625",
+                "bytes": 8320
+              },
+              "file": "maps/rep0/sagittal-water-bone.png",
+              "sha256": "2fcd177f4a0a860d91e4d39225a4c41075b41a6cd5cebac95a415e65365f729b",
+              "bytes": 229
+            },
+            {
+              "injected": "bone",
+              "recovered": "water",
+              "width": 32,
+              "height": 32,
+              "clipping": {
+                "window": [
+                  -0.05,
+                  0.05
+                ],
+                "samples": 1024,
+                "below": 0,
+                "above": 0,
+                "negative_infinity": 0,
+                "positive_infinity": 0,
+                "values_modified": false
+              },
+              "sampling": {
+                "normal_indices": [
+                  15,
+                  16
+                ],
+                "upper_weight": 0.5,
+                "physical_coordinate_mm": 0.0,
+                "interpolation": "linear between adjacent stored centre samples, without in-plane resampling"
+              },
+              "samples": {
+                "file": "maps/rep0/sagittal-bone-water.npy",
+                "sha256": "c1f40f7b638ea1b580b6e9ade9a13b53f0ca02e804abb1e0489d792a74dacd99",
+                "bytes": 8320
+              },
+              "file": "maps/rep0/sagittal-bone-water.png",
+              "sha256": "1c4df96bd229e83e87c2a2ec9598a7ec7a1d92e01397296332dcb6e87bac5ae8",
+              "bytes": 507
+            },
+            {
+              "injected": "bone",
+              "recovered": "bone",
+              "width": 32,
+              "height": 32,
+              "clipping": {
+                "window": [
+                  -0.05,
+                  0.05
+                ],
+                "samples": 1024,
+                "below": 0,
+                "above": 0,
+                "negative_infinity": 0,
+                "positive_infinity": 0,
+                "values_modified": false
+              },
+              "sampling": {
+                "normal_indices": [
+                  15,
+                  16
+                ],
+                "upper_weight": 0.5,
+                "physical_coordinate_mm": 0.0,
+                "interpolation": "linear between adjacent stored centre samples, without in-plane resampling"
+              },
+              "samples": {
+                "file": "maps/rep0/sagittal-bone-bone.npy",
+                "sha256": "f1d4cb324eebbd70e1773cb2e64a8e3be1c83d0e198f5efce06e3eb3774a52f3",
+                "bytes": 8320
+              },
+              "file": "maps/rep0/sagittal-bone-bone.png",
+              "sha256": "e4d64cfcc1bb1a4040e8fc372bb3451349cfb18e05d2dd3a51eb1db955eafbf9",
+              "bytes": 301
+            }
+          ]
+        }
+      ],
+      "arrays": [
+        {
+          "role": "signed",
+          "shape": [
+            2,
+            2,
+            32,
+            32,
+            32
+          ],
+          "dtype": "<f8",
+          "clipping_jm": [
+            [
+              {
+                "window": [
+                  -0.05,
+                  0.05
+                ],
+                "samples": 32768,
+                "below": 0,
+                "above": 0,
+                "negative_infinity": 0,
+                "positive_infinity": 0,
+                "values_modified": false
+              },
+              {
+                "window": [
+                  -0.05,
+                  0.05
+                ],
+                "samples": 32768,
+                "below": 0,
+                "above": 0,
+                "negative_infinity": 0,
+                "positive_infinity": 0,
+                "values_modified": false
+              }
+            ],
+            [
+              {
+                "window": [
+                  -0.05,
+                  0.05
+                ],
+                "samples": 32768,
+                "below": 0,
+                "above": 0,
+                "negative_infinity": 0,
+                "positive_infinity": 0,
+                "values_modified": false
+              },
+              {
+                "window": [
+                  -0.05,
+                  0.05
+                ],
+                "samples": 32768,
+                "below": 0,
+                "above": 0,
+                "negative_infinity": 0,
+                "positive_infinity": 0,
+                "values_modified": false
+              }
+            ]
+          ],
+          "file": "responses/rep0/signed_component_difference_maps_jm.npy",
+          "sha256": "53c76a06d9a28cc917cb00f8b67d4f29a31596da8737a605fc9a84b8a3c5b344",
+          "bytes": 1048704
+        },
+        {
+          "role": "absolute",
+          "shape": [
+            2,
+            2,
+            32,
+            32,
+            32
+          ],
+          "dtype": "<f8",
+          "clipping_jm": [
+            [
+              {
+                "window": [
+                  0.0,
+                  0.05
+                ],
+                "samples": 32768,
+                "below": 0,
+                "above": 0,
+                "negative_infinity": 0,
+                "positive_infinity": 0,
+                "values_modified": false
+              },
+              {
+                "window": [
+                  0.0,
+                  0.05
+                ],
+                "samples": 32768,
+                "below": 0,
+                "above": 0,
+                "negative_infinity": 0,
+                "positive_infinity": 0,
+                "values_modified": false
+              }
+            ],
+            [
+              {
+                "window": [
+                  0.0,
+                  0.05
+                ],
+                "samples": 32768,
+                "below": 0,
+                "above": 0,
+                "negative_infinity": 0,
+                "positive_infinity": 0,
+                "values_modified": false
+              },
+              {
+                "window": [
+                  0.0,
+                  0.05
+                ],
+                "samples": 32768,
+                "below": 0,
+                "above": 0,
+                "negative_infinity": 0,
+                "positive_infinity": 0,
+                "values_modified": false
+              }
+            ]
+          ],
+          "file": "responses/rep0/absolute_component_difference_maps_jm.npy",
+          "sha256": "dea77169eab43fb27889602e0661fd4111b0615cdc91e2fb0abfc7e5f4246c0e",
+          "bytes": 1048704
+        }
+      ],
+      "outside": {
+        "file": "records/rep0-outside-response.json",
+        "sha256": "07500992559f3e8f5a5a8099578fbafd02806556548f8cb3b52815453980f0f2",
+        "bytes": 1243
+      },
+      "outside_metrics": {
+        "outside_whole_cells": {
+          "definition": "coarse cells with r_bar=0; partial-volume cells excluded",
+          "cell_count": 32572,
+          "volume_mm3": 4229989.300415039,
+          "signed_integral_jm_mm3": [
+            [
+              155.77880234686936,
+              -19.360704883151453
+            ],
+            [
+              232.4328512387052,
+              13.76945949202346
+            ]
+          ],
+          "absolute_integral_jm_mm3": [
+            [
+              533.7374957264341,
+              81.96837188171915
+            ],
+            [
+              1434.7868921015026,
+              268.5659112598837
+            ]
+          ],
+          "empty_region": false
+        },
+        "outside_fraction_weighted": {
+          "definition": "(1-r_bar) volume weighting of piecewise-constant coarse response, including partial-volume cells; not exact subvoxel localisation",
+          "volume_mm3": 4241304.460673427,
+          "signed_integral_jm_mm3": [
+            [
+              197.21372126736964,
+              -15.756025694552365
+            ],
+            [
+              252.55178850368182,
+              59.13994145507788
+            ]
+          ],
+          "absolute_integral_jm_mm3": [
+            [
+              591.5962366735794,
+              96.52609639074589
+            ],
+            [
+              1543.1793821738763,
+              322.5145069738479
+            ]
+          ]
+        },
+        "pattern_inner_product_mm3": 11804.684530791605,
+        "cell_volume_mm3": 129.86581420898438
+      }
+    },
+    {
+      "replicate": 1,
+      "status": "complete",
+      "values_available": true,
+      "matrix": [
+        [
+          0.4109721318482606,
+          -0.009900197621492735
+        ],
+        [
+          0.027574816169749345,
+          0.49559028076785533
+        ]
+      ],
+      "maps": [
+        {
+          "plane": "coronal",
+          "normal": "y",
+          "horizontal": "x",
+          "vertical": "z",
+          "extent_mm": [
+            -74.4375,
+            74.4375,
+            -96.0,
+            96.0
+          ],
+          "panels": [
+            {
+              "injected": "water",
+              "recovered": "water",
+              "width": 32,
+              "height": 32,
+              "clipping": {
+                "window": [
+                  -0.05,
+                  0.05
+                ],
+                "samples": 1024,
+                "below": 0,
+                "above": 0,
+                "negative_infinity": 0,
+                "positive_infinity": 0,
+                "values_modified": false
+              },
+              "sampling": {
+                "normal_indices": [
+                  15,
+                  16
+                ],
+                "upper_weight": 0.5,
+                "physical_coordinate_mm": 0.0,
+                "interpolation": "linear between adjacent stored centre samples, without in-plane resampling"
+              },
+              "samples": {
+                "file": "maps/rep1/coronal-water-water.npy",
+                "sha256": "6aa1714cc7c8f29ccc2cfab0b3aa333d84e5d35bcfad46f7b8ab7a9f03602705",
+                "bytes": 8320
+              },
+              "file": "maps/rep1/coronal-water-water.png",
+              "sha256": "c033b78dfe712c950038f0b28c1748b38ca559b4f3e8675f95da3348237adc59",
+              "bytes": 420
+            },
+            {
+              "injected": "water",
+              "recovered": "bone",
+              "width": 32,
+              "height": 32,
+              "clipping": {
+                "window": [
+                  -0.05,
+                  0.05
+                ],
+                "samples": 1024,
+                "below": 0,
+                "above": 0,
+                "negative_infinity": 0,
+                "positive_infinity": 0,
+                "values_modified": false
+              },
+              "sampling": {
+                "normal_indices": [
+                  15,
+                  16
+                ],
+                "upper_weight": 0.5,
+                "physical_coordinate_mm": 0.0,
+                "interpolation": "linear between adjacent stored centre samples, without in-plane resampling"
+              },
+              "samples": {
+                "file": "maps/rep1/coronal-water-bone.npy",
+                "sha256": "1c0c2b9a7fc8b1b356d06ea174058869677a40e0bc63ef1a1b5e455fa585b9f4",
+                "bytes": 8320
+              },
+              "file": "maps/rep1/coronal-water-bone.png",
+              "sha256": "48988b0ce0998c5c31a8f6f78cb00381095ea506e5bbf056f659ffd4c776bcb7",
+              "bytes": 227
+            },
+            {
+              "injected": "bone",
+              "recovered": "water",
+              "width": 32,
+              "height": 32,
+              "clipping": {
+                "window": [
+                  -0.05,
+                  0.05
+                ],
+                "samples": 1024,
+                "below": 0,
+                "above": 0,
+                "negative_infinity": 0,
+                "positive_infinity": 0,
+                "values_modified": false
+              },
+              "sampling": {
+                "normal_indices": [
+                  15,
+                  16
+                ],
+                "upper_weight": 0.5,
+                "physical_coordinate_mm": 0.0,
+                "interpolation": "linear between adjacent stored centre samples, without in-plane resampling"
+              },
+              "samples": {
+                "file": "maps/rep1/coronal-bone-water.npy",
+                "sha256": "34a459fc75362f2b35b59282b4f96b9bbc4f87bb2e74bb3d4faf1645008934fa",
+                "bytes": 8320
+              },
+              "file": "maps/rep1/coronal-bone-water.png",
+              "sha256": "a7bbf65120aaaa6811addf786dacd12458fe4e18cc4a86748b8730afd4c97271",
+              "bytes": 610
+            },
+            {
+              "injected": "bone",
+              "recovered": "bone",
+              "width": 32,
+              "height": 32,
+              "clipping": {
+                "window": [
+                  -0.05,
+                  0.05
+                ],
+                "samples": 1024,
+                "below": 0,
+                "above": 0,
+                "negative_infinity": 0,
+                "positive_infinity": 0,
+                "values_modified": false
+              },
+              "sampling": {
+                "normal_indices": [
+                  15,
+                  16
+                ],
+                "upper_weight": 0.5,
+                "physical_coordinate_mm": 0.0,
+                "interpolation": "linear between adjacent stored centre samples, without in-plane resampling"
+              },
+              "samples": {
+                "file": "maps/rep1/coronal-bone-bone.npy",
+                "sha256": "0afbe9f4b1b570356564d3d5c091fa05f91d79d8cb156e3dabd49d1bb0261cc5",
+                "bytes": 8320
+              },
+              "file": "maps/rep1/coronal-bone-bone.png",
+              "sha256": "5357587573b104ebbc2d63af1225d9a8d521a247ebb85af1ec3c67e354319206",
+              "bytes": 370
+            }
+          ]
+        },
+        {
+          "plane": "axial",
+          "normal": "z",
+          "horizontal": "x",
+          "vertical": "y",
+          "extent_mm": [
+            -74.4375,
+            74.4375,
+            -74.4375,
+            74.4375
+          ],
+          "panels": [
+            {
+              "injected": "water",
+              "recovered": "water",
+              "width": 32,
+              "height": 32,
+              "clipping": {
+                "window": [
+                  -0.05,
+                  0.05
+                ],
+                "samples": 1024,
+                "below": 0,
+                "above": 0,
+                "negative_infinity": 0,
+                "positive_infinity": 0,
+                "values_modified": false
+              },
+              "sampling": {
+                "normal_indices": [
+                  15,
+                  16
+                ],
+                "upper_weight": 0.5,
+                "physical_coordinate_mm": 0.0,
+                "interpolation": "linear between adjacent stored centre samples, without in-plane resampling"
+              },
+              "samples": {
+                "file": "maps/rep1/axial-water-water.npy",
+                "sha256": "b2d91ef774e42a399b873c67b6c4f844637db30a532f3f744f815a9a58bda8ea",
+                "bytes": 8320
+              },
+              "file": "maps/rep1/axial-water-water.png",
+              "sha256": "ca2f4d1d85ad3a16671424d9958790aafd315a6f8e7b7ba9c71179909a4071b0",
+              "bytes": 1139
+            },
+            {
+              "injected": "water",
+              "recovered": "bone",
+              "width": 32,
+              "height": 32,
+              "clipping": {
+                "window": [
+                  -0.05,
+                  0.05
+                ],
+                "samples": 1024,
+                "below": 0,
+                "above": 0,
+                "negative_infinity": 0,
+                "positive_infinity": 0,
+                "values_modified": false
+              },
+              "sampling": {
+                "normal_indices": [
+                  15,
+                  16
+                ],
+                "upper_weight": 0.5,
+                "physical_coordinate_mm": 0.0,
+                "interpolation": "linear between adjacent stored centre samples, without in-plane resampling"
+              },
+              "samples": {
+                "file": "maps/rep1/axial-water-bone.npy",
+                "sha256": "c75ede8e25ff2cf3adcb6686ba7ad69b2740901b55c8b26e04ae2f6f11217bd5",
+                "bytes": 8320
+              },
+              "file": "maps/rep1/axial-water-bone.png",
+              "sha256": "4fc04866b05ab5204d33f04530c6508ea3be4fc5d99c14433e3b5ab141f69d16",
+              "bytes": 444
+            },
+            {
+              "injected": "bone",
+              "recovered": "water",
+              "width": 32,
+              "height": 32,
+              "clipping": {
+                "window": [
+                  -0.05,
+                  0.05
+                ],
+                "samples": 1024,
+                "below": 0,
+                "above": 0,
+                "negative_infinity": 0,
+                "positive_infinity": 0,
+                "values_modified": false
+              },
+              "sampling": {
+                "normal_indices": [
+                  15,
+                  16
+                ],
+                "upper_weight": 0.5,
+                "physical_coordinate_mm": 0.0,
+                "interpolation": "linear between adjacent stored centre samples, without in-plane resampling"
+              },
+              "samples": {
+                "file": "maps/rep1/axial-bone-water.npy",
+                "sha256": "51ff22d3724bd56be0184d9c52a160ec1d0ef06b9e8c2b5b44c7c1bb57c4a057",
+                "bytes": 8320
+              },
+              "file": "maps/rep1/axial-bone-water.png",
+              "sha256": "fe7484b626f580df33e2de2b3e65c93e07567f94629770fe69244ee243b7b60f",
+              "bytes": 1548
+            },
+            {
+              "injected": "bone",
+              "recovered": "bone",
+              "width": 32,
+              "height": 32,
+              "clipping": {
+                "window": [
+                  -0.05,
+                  0.05
+                ],
+                "samples": 1024,
+                "below": 0,
+                "above": 0,
+                "negative_infinity": 0,
+                "positive_infinity": 0,
+                "values_modified": false
+              },
+              "sampling": {
+                "normal_indices": [
+                  15,
+                  16
+                ],
+                "upper_weight": 0.5,
+                "physical_coordinate_mm": 0.0,
+                "interpolation": "linear between adjacent stored centre samples, without in-plane resampling"
+              },
+              "samples": {
+                "file": "maps/rep1/axial-bone-bone.npy",
+                "sha256": "da59609af321e49a3d66bd94d8817938ac1af1652c981741fcaa516cb3edf2b8",
+                "bytes": 8320
+              },
+              "file": "maps/rep1/axial-bone-bone.png",
+              "sha256": "39597f583150fae528d458766207e601e6317993d6029b06f11bd680d60b6310",
+              "bytes": 662
+            }
+          ]
+        },
+        {
+          "plane": "sagittal",
+          "normal": "x",
+          "horizontal": "y",
+          "vertical": "z",
+          "extent_mm": [
+            -74.4375,
+            74.4375,
+            -96.0,
+            96.0
+          ],
+          "panels": [
+            {
+              "injected": "water",
+              "recovered": "water",
+              "width": 32,
+              "height": 32,
+              "clipping": {
+                "window": [
+                  -0.05,
+                  0.05
+                ],
+                "samples": 1024,
+                "below": 0,
+                "above": 0,
+                "negative_infinity": 0,
+                "positive_infinity": 0,
+                "values_modified": false
+              },
+              "sampling": {
+                "normal_indices": [
+                  15,
+                  16
+                ],
+                "upper_weight": 0.5,
+                "physical_coordinate_mm": 0.0,
+                "interpolation": "linear between adjacent stored centre samples, without in-plane resampling"
+              },
+              "samples": {
+                "file": "maps/rep1/sagittal-water-water.npy",
+                "sha256": "615ae6e8e5724217f6f6d55be3614065edc25998abfe62956058e4b8b0aee111",
+                "bytes": 8320
+              },
+              "file": "maps/rep1/sagittal-water-water.png",
+              "sha256": "57d06a6ec31913b1857b6ab7ce6c8b75a54269ebed101ab2299b981c284079cb",
+              "bytes": 356
+            },
+            {
+              "injected": "water",
+              "recovered": "bone",
+              "width": 32,
+              "height": 32,
+              "clipping": {
+                "window": [
+                  -0.05,
+                  0.05
+                ],
+                "samples": 1024,
+                "below": 0,
+                "above": 0,
+                "negative_infinity": 0,
+                "positive_infinity": 0,
+                "values_modified": false
+              },
+              "sampling": {
+                "normal_indices": [
+                  15,
+                  16
+                ],
+                "upper_weight": 0.5,
+                "physical_coordinate_mm": 0.0,
+                "interpolation": "linear between adjacent stored centre samples, without in-plane resampling"
+              },
+              "samples": {
+                "file": "maps/rep1/sagittal-water-bone.npy",
+                "sha256": "b0f1f98878d6261e144ab6dddaa2c375ca845df8ddcd3b500694cd928f89dfce",
+                "bytes": 8320
+              },
+              "file": "maps/rep1/sagittal-water-bone.png",
+              "sha256": "e52b600d167f15961078c4a106a61c9e59bde55282cc57e4a6535c5430db6c9e",
+              "bytes": 203
+            },
+            {
+              "injected": "bone",
+              "recovered": "water",
+              "width": 32,
+              "height": 32,
+              "clipping": {
+                "window": [
+                  -0.05,
+                  0.05
+                ],
+                "samples": 1024,
+                "below": 0,
+                "above": 0,
+                "negative_infinity": 0,
+                "positive_infinity": 0,
+                "values_modified": false
+              },
+              "sampling": {
+                "normal_indices": [
+                  15,
+                  16
+                ],
+                "upper_weight": 0.5,
+                "physical_coordinate_mm": 0.0,
+                "interpolation": "linear between adjacent stored centre samples, without in-plane resampling"
+              },
+              "samples": {
+                "file": "maps/rep1/sagittal-bone-water.npy",
+                "sha256": "59e364d82bd6f4e2244e533967034138df0098c7a9e14992e1e9584684fb37a6",
+                "bytes": 8320
+              },
+              "file": "maps/rep1/sagittal-bone-water.png",
+              "sha256": "4aaf668670bfc23888cc15e6d59462a177e1bcc9ff53c768d4b17330a4ab602e",
+              "bytes": 500
+            },
+            {
+              "injected": "bone",
+              "recovered": "bone",
+              "width": 32,
+              "height": 32,
+              "clipping": {
+                "window": [
+                  -0.05,
+                  0.05
+                ],
+                "samples": 1024,
+                "below": 0,
+                "above": 0,
+                "negative_infinity": 0,
+                "positive_infinity": 0,
+                "values_modified": false
+              },
+              "sampling": {
+                "normal_indices": [
+                  15,
+                  16
+                ],
+                "upper_weight": 0.5,
+                "physical_coordinate_mm": 0.0,
+                "interpolation": "linear between adjacent stored centre samples, without in-plane resampling"
+              },
+              "samples": {
+                "file": "maps/rep1/sagittal-bone-bone.npy",
+                "sha256": "f85f33f1b66dc424e7501dfe1e291aa397cce1704773d882f8c43eab31e31b68",
+                "bytes": 8320
+              },
+              "file": "maps/rep1/sagittal-bone-bone.png",
+              "sha256": "b7bff1dbf2105cd1a432516a6e5b3ab909b220180e635c86a357ecee77a82781",
+              "bytes": 303
+            }
+          ]
+        }
+      ],
+      "arrays": [
+        {
+          "role": "signed",
+          "shape": [
+            2,
+            2,
+            32,
+            32,
+            32
+          ],
+          "dtype": "<f8",
+          "clipping_jm": [
+            [
+              {
+                "window": [
+                  -0.05,
+                  0.05
+                ],
+                "samples": 32768,
+                "below": 0,
+                "above": 0,
+                "negative_infinity": 0,
+                "positive_infinity": 0,
+                "values_modified": false
+              },
+              {
+                "window": [
+                  -0.05,
+                  0.05
+                ],
+                "samples": 32768,
+                "below": 0,
+                "above": 0,
+                "negative_infinity": 0,
+                "positive_infinity": 0,
+                "values_modified": false
+              }
+            ],
+            [
+              {
+                "window": [
+                  -0.05,
+                  0.05
+                ],
+                "samples": 32768,
+                "below": 0,
+                "above": 0,
+                "negative_infinity": 0,
+                "positive_infinity": 0,
+                "values_modified": false
+              },
+              {
+                "window": [
+                  -0.05,
+                  0.05
+                ],
+                "samples": 32768,
+                "below": 0,
+                "above": 0,
+                "negative_infinity": 0,
+                "positive_infinity": 0,
+                "values_modified": false
+              }
+            ]
+          ],
+          "file": "responses/rep1/signed_component_difference_maps_jm.npy",
+          "sha256": "8fa1cc20db4cf9e7d46a8246d28c5ab27fb5b37f86abf445478081218af1624c",
+          "bytes": 1048704
+        },
+        {
+          "role": "absolute",
+          "shape": [
+            2,
+            2,
+            32,
+            32,
+            32
+          ],
+          "dtype": "<f8",
+          "clipping_jm": [
+            [
+              {
+                "window": [
+                  0.0,
+                  0.05
+                ],
+                "samples": 32768,
+                "below": 0,
+                "above": 0,
+                "negative_infinity": 0,
+                "positive_infinity": 0,
+                "values_modified": false
+              },
+              {
+                "window": [
+                  0.0,
+                  0.05
+                ],
+                "samples": 32768,
+                "below": 0,
+                "above": 0,
+                "negative_infinity": 0,
+                "positive_infinity": 0,
+                "values_modified": false
+              }
+            ],
+            [
+              {
+                "window": [
+                  0.0,
+                  0.05
+                ],
+                "samples": 32768,
+                "below": 0,
+                "above": 0,
+                "negative_infinity": 0,
+                "positive_infinity": 0,
+                "values_modified": false
+              },
+              {
+                "window": [
+                  0.0,
+                  0.05
+                ],
+                "samples": 32768,
+                "below": 0,
+                "above": 0,
+                "negative_infinity": 0,
+                "positive_infinity": 0,
+                "values_modified": false
+              }
+            ]
+          ],
+          "file": "responses/rep1/absolute_component_difference_maps_jm.npy",
+          "sha256": "6a4a2791b89a6d94c011f49064e56db36a49843ac7100cf87aef9334384a9cbb",
+          "bytes": 1048704
+        }
+      ],
+      "outside": {
+        "file": "records/rep1-outside-response.json",
+        "sha256": "1927f49c4a4f60e9e13131fa7ad7551f5a2716c204b20a138e1cb5a26ddd3657",
+        "bytes": 1244
+      },
+      "outside_metrics": {
+        "outside_whole_cells": {
+          "definition": "coarse cells with r_bar=0; partial-volume cells excluded",
+          "cell_count": 32572,
+          "volume_mm3": 4229989.300415039,
+          "signed_integral_jm_mm3": [
+            [
+              159.13071427358045,
+              -20.762236446832187
+            ],
+            [
+              235.40471893649558,
+              12.36222074906099
+            ]
+          ],
+          "absolute_integral_jm_mm3": [
+            [
+              532.6929972577109,
+              81.0684079714874
+            ],
+            [
+              1431.3928619421672,
+              267.91819712373496
+            ]
+          ],
+          "empty_region": false
+        },
+        "outside_fraction_weighted": {
+          "definition": "(1-r_bar) volume weighting of piecewise-constant coarse response, including partial-volume cells; not exact subvoxel localisation",
+          "volume_mm3": 4241304.460673427,
+          "signed_integral_jm_mm3": [
+            [
+              201.12023228607381,
+              -17.406314972416688
+            ],
+            [
+              255.6017463714233,
+              57.56863169910201
+            ]
+          ],
+          "absolute_integral_jm_mm3": [
+            [
+              591.1205180874849,
+              95.95318745263518
+            ],
+            [
+              1539.8077795192148,
+              321.94867710011033
+            ]
+          ]
+        },
+        "pattern_inner_product_mm3": 11804.684530791605,
+        "cell_volume_mm3": 129.86581420898438
+      }
+    }
+  ],
+  "summary": {
+    "available": true,
+    "mean": [
+      [
+        0.4080065714315736,
+        -0.0118768768384008
+      ],
+      [
+        0.029097084868934274,
+        0.4970258751260231
+      ]
+    ],
+    "minimum": [
+      [
+        0.40504101101488665,
+        -0.013853556055308865
+      ],
+      [
+        0.027574816169749345,
+        0.49559028076785533
+      ]
+    ],
+    "maximum": [
+      [
+        0.4109721318482606,
+        -0.009900197621492735
+      ],
+      [
+        0.030619353568119206,
+        0.49846146948419084
+      ]
+    ]
+  },
+  "limitations": [
+    "Finite-perturbation response of the recorded algorithm, including noise, sampling, regularisation and the actual stopping state.",
+    "These matrices are not a converged Jacobian, measured patient composition or scanner calibration.",
+    "Shared Poisson components couple the three scenarios within each replicate. The two replicate namespaces are independent.",
+    "The mean and range describe these two replicates only, without a population interval or a required-win threshold.",
+    "A response smaller than paired noise variation is unresolved, not evidence of zero cross-talk.",
+    "Display windows and centre-plane interpolation do not change the complete-array metrics or retained response fields."
+  ],
+  "source_url": "https://doi.org/10.7937/tcia.2019.tt7f4v7o",
+  "licence": "CC BY 3.0, derived from Rister et al., CT-ORG, TCIA"
+}

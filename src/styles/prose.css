@@ -1,0 +1,236 @@
+.prose {
+  position: relative;
+  max-width: var(--measure-prose);
+}
+
+.prose > * + * {
+  margin-block-start: var(--space-5);
+}
+
+.prose > h2 {
+  margin-block-start: var(--space-8);
+}
+
+.prose > h3 {
+  margin-block-start: var(--space-7);
+}
+
+.prose p,
+.prose li {
+  hanging-punctuation: first last;
+  text-wrap: pretty;
+}
+
+.prose a:not([class]) {
+  color: var(--accent);
+  text-decoration-color: color-mix(in srgb, var(--accent) 42%, transparent);
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.16em;
+}
+
+.prose :is(h4, h5, h6):has(> .heading-permalink),
+.bibliography > h2:has(> .heading-permalink) {
+  scroll-margin-top: 6rem;
+}
+
+:is(.prose, .bibliography) .heading-permalink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-inline-size: 1.5rem;
+  min-block-size: 1.5rem;
+  margin-inline-start: 0.2em;
+  border-radius: 0.15rem;
+  color: var(--ink-muted);
+  text-decoration: none;
+  vertical-align: middle;
+  opacity: 0;
+  transition: opacity var(--motion-short) var(--motion-ease);
+}
+
+:is(.prose, .bibliography) .heading-permalink svg {
+  display: block;
+  inline-size: 1rem;
+  block-size: 1rem;
+}
+
+:is(.prose, .bibliography)
+  :is(h2, h3, h4, h5, h6):is(:hover, :focus-within)
+  > .heading-permalink {
+  opacity: 1;
+}
+
+:is(.prose, .bibliography) .heading-permalink:is(:hover, :focus-visible) {
+  color: var(--accent);
+}
+
+:is(.prose, .bibliography) .heading-permalink:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (hover: none) {
+  :is(.prose, .bibliography) .heading-permalink {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :is(.prose, .bibliography) .heading-permalink {
+    transition: none;
+  }
+}
+
+.prose blockquote {
+  border-inline-start: 1px solid var(--accent);
+  color: var(--ink-muted);
+  font-size: var(--size-1);
+  font-style: italic;
+  padding-inline-start: var(--space-5);
+}
+
+.prose :is(ul, ol) {
+  padding-inline-start: 1.35em;
+}
+
+.prose :not(pre) > code {
+  overflow-wrap: anywhere;
+}
+
+.prose-table {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.prose-table table {
+  border-collapse: collapse;
+  font-family: var(--font-ui);
+  font-size: var(--size--1);
+  line-height: 1.6;
+  min-width: 32rem;
+  width: 100%;
+}
+
+.prose-table :is(th, td) {
+  border-block-end: 1px solid var(--rule);
+  padding: var(--space-4);
+  text-align: start;
+  vertical-align: top;
+}
+
+.prose-table th {
+  border-block: 1px solid var(--rule-strong);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.prose-table :is(th, td):first-child {
+  padding-inline-start: 0;
+}
+
+.prose-table :is(th, td):last-child {
+  padding-inline-end: 0;
+}
+
+.prose :is(h2, h3) {
+  scroll-margin-top: 6rem;
+}
+
+.breakout-wide,
+.breakout-full {
+  position: relative;
+  left: 50%;
+  width: min(var(--measure-wide), calc(100cqw - 2 * var(--page-gutter)));
+  max-width: none;
+  transform: translateX(-50%);
+}
+
+.breakout-full {
+  width: min(var(--measure-plate), calc(100cqw - 2 * var(--page-gutter)));
+}
+
+.katex-display {
+  margin-block: var(--space-6);
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  padding-block: var(--space-2);
+  text-align: center;
+}
+
+.equation {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: var(--space-4);
+  margin-block: var(--space-6);
+  max-width: 100%;
+  scroll-margin-top: 6rem;
+}
+
+.equation__content {
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+}
+
+.katex-display::-webkit-scrollbar,
+.equation__content::-webkit-scrollbar {
+  display: none;
+}
+
+.equation__content > .katex-display {
+  margin-block: 0;
+  min-width: 100%;
+  width: max-content;
+  max-width: none;
+  overflow: visible;
+}
+
+.equation__content:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: var(--space-2);
+}
+
+.equation__number {
+  color: var(--ink-muted);
+  font-size: var(--size-0);
+  font-variant-numeric: tabular-nums;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.equation__number:is(:hover, :focus-visible) {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 0.16em;
+}
+
+@media (width <= 40rem) {
+  .equation {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--space-2);
+  }
+
+  .equation__number {
+    justify-self: end;
+  }
+}
+
+.prose-table table {
+  scroll-margin-top: 6rem;
+}
+
+.prose-table caption {
+  caption-side: top;
+  padding-block: var(--space-4);
+  text-align: start;
+  color: var(--ink);
+}
+
+.prose-table .table-number {
+  font-weight: 600;
+  white-space: nowrap;
+}

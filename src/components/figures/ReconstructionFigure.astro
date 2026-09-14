@@ -1,0 +1,427 @@
+---
+import { readFileSync } from "node:fs";
+import FigurePlate from "./FigurePlate.astro";
+import { recordedText } from "../../lib/recorded-text";
+import {
+  validateGrid,
+  type RecordedProjection,
+  type ReconstructionCase,
+} from "../../lib/reconstruction-data";
+import "../../styles/reconstruction-figure.css";
+
+interface Props {
+  id: string;
+  caseId?: "vertebrae" | "hap";
+}
+const { id, caseId = "vertebrae" } = Astro.props;
+const study = JSON.parse(
+  readFileSync(
+    new URL(
+      "../../../public/generated/reconstruction/study.json",
+      import.meta.url,
+    ),
+    "utf8",
+  ),
+) as { cases: ReconstructionCase[] };
+const record = study.cases.find((item) => item.id === caseId);
+if (!record) throw new Error(`Missing recorded reconstruction: ${caseId}`);
+validateGrid(record.grid);
+const poster = record.images.find((item) => item.id === "poster");
+if (!poster) throw new Error(`Missing static reconstruction plate: ${caseId}`);
+const base = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/generated/reconstruction/`;
+const materials = [...new Set(record.scalars.map((item) => item.material))];
+const materialNames: Record<string, string> = {
+  bone: "Bone",
+  water: "Water",
+  pmma: "PMMA equivalent",
+  al: "Al equivalent",
+};
+const hasReference = record.scalars.some((item) => item.role === "reference");
+const radiographBase = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/generated/reconstruction-radiographs/`;
+const radiographCase = hasReference
+  ? JSON.parse(
+      readFileSync(
+        new URL(
+          "../../../public/generated/reconstruction-radiographs/study.json",
+          import.meta.url,
+        ),
+        "utf8",
+      ),
+    ).cases.find((item: { id: string }) => item.id === "vertebrae")
+  : undefined;
+const projections = radiographCase?.projection_rig?.views as
+  RecordedProjection[] | undefined;
+if (hasReference && projections?.length !== 3)
+  throw new Error("Missing recorded projection rig");
+if (projections) record.projections = projections;
+const initialMaterial = materials.includes("bone") ? "bone" : materials.at(-1)!;
+const caption = hasReference
+  ? "A spectral reconstruction from CT-derived anatomy"
+  : "An acquired spectral phantom reconstruction";
+const description = hasReference
+  ? "The assigned and recovered bone surfaces share a fraction threshold of 0.325 and the same viewing geometry. Their differences reveal boundary errors in reconstruction from the simulated spectral radiographs."
+  : "The acquired photon-counting data are decomposed into PMMA- and aluminium-equivalent fields. The two fields expose both the recovered phantom structure and the fragmentation left by the fit.";
+const labels = hasReference
+  ? ["Assigned reference", "Reconstructed"]
+  : ["PMMA equivalent", "Al equivalent"];
+---
+
+<FigurePlate {id} title={caption} {description} width="full">
+  <dpt-reconstruction
+    data-base={base}
+    data-projection-base={radiographBase}
+    data-material={initialMaterial}
+    data-auto-three={hasReference ? "true" : undefined}
+    data-quiet-status={!hasReference ? "true" : undefined}
+    data-illumination="true"
+  >
+    <script
+      is:inline
+      type="application/json"
+      data-reconstruction-record
+      set:html={JSON.stringify(record).replace(/</g, "\\u003c")}
+    />
+    <div class="reconstruction-stage">
+      <img
+        class="reconstruction-poster"
+        src={`${base}${poster.file}`}
+        width={poster.width}
+        height={poster.height}
+        alt={hasReference
+          ? "Paired unsmoothed bone surfaces: assigned CT-derived reference on the left, spectral reconstruction on the right. The vertebral column and cropped ribs are visible in both."
+          : "Recorded central-slab phantom surfaces: the PMMA-equivalent field on the left and Al-equivalent structures on the right, including retained weak fragmentation."}
+        loading="lazy"
+        decoding="async"
+      />
+      <canvas
+        data-reconstruction-three
+        hidden
+        tabindex="0"
+        aria-label="Recorded reconstruction in 3D. Drag or use arrow keys to rotate, plus and minus to zoom, Home to reset."
+        aria-describedby={`${id}-instructions`}></canvas>
+      <div
+        class="reconstruction-labels reconstruction-poster-labels"
+        aria-hidden="true"
+      >
+        {labels.map((label) => <span>{label}</span>)}
+      </div>
+      <div
+        class="reconstruction-labels reconstruction-live-labels"
+        aria-hidden="true"
+        hidden
+      >
+      </div>
+    </div>
+    {
+      hasReference && (
+        <div class="reconstruction-scene-controls" hidden>
+          <label>
+            View
+            <select
+              data-reconstruction-framing
+              aria-label="Frame the anatomy or full acquisition geometry"
+            >
+              <option value="anatomy">Anatomy</option>
+              <option value="acquisition">Full acquisition</option>
+            </select>
+          </label>
+          <label class="reconstruction-toggle">
+            <input type="checkbox" data-reconstruction-light checked /> Coloured
+            radiographs
+          </label>
+          <label class="reconstruction-toggle">
+            <input type="checkbox" data-reconstruction-rig checked /> Projection
+            frustums
+          </label>
+          <div class="reconstruction-view-buttons">
+            <button
+              type="button"
+              data-reconstruction-action="zoom-in"
+              aria-label="Zoom both views in"
+            >
+              +
+            </button>
+            <button
+              type="button"
+              data-reconstruction-action="zoom-out"
+              aria-label="Zoom both views out"
+            >
+              −
+            </button>
+            <button type="button" data-reconstruction-action="reset">
+              Reset view
+            </button>
+          </div>
+          <p>
+            Drag either pane to rotate both. Shared radiograph lights: red view
+            1, green 17, blue 33. Detector planes retain fixed acquisition poses
+            (20–55 keV, log window 0–8).
+          </p>
+        </div>
+      )
+    }
+    <div
+      class:list={[
+        "reconstruction-entry",
+        { "reconstruction-entry--quiet": !hasReference },
+      ]}
+    >
+      <div>
+        {hasReference && <span class="eyebrow">CT-derived simulation</span>}
+        <p
+          data-reconstruction-status
+          role="status"
+          class:list={{ "sr-only": !hasReference }}
+        >
+          {record.acquisition.fitting_views} fitting views · {
+            record.acquisition.heldout_views
+          } withheld views
+        </p>
+      </div>
+      <button type="button" data-reconstruction-start hidden
+        >{
+          hasReference
+            ? "Inspect slices and values"
+            : "Inspect the reconstruction"
+        }
+        <span aria-hidden="true">↗</span></button
+      >
+    </div>
+    <div class="reconstruction-inspector" hidden>
+      <div class="reconstruction-controls">
+        <label
+          >Material<select data-reconstruction-material
+            >{
+              materials.map((material) => (
+                <option
+                  value={material}
+                  selected={material === initialMaterial}
+                >
+                  {materialNames[material] ?? material}
+                </option>
+              ))
+            }</select
+          ></label
+        >
+        <label
+          >3D display<select data-reconstruction-render
+            ><option value="surface">Recorded surface</option><option
+              value="volume">Recorded volume</option
+            ></select
+          ></label
+        >
+        <label
+          >Clip along grid Z<input
+            data-reconstruction-clip
+            type="range"
+            min="0.02"
+            max="1"
+            step="0.01"
+            value="1"
+          /></label
+        >
+        <label
+          >Volume opacity<input
+            data-reconstruction-opacity
+            type="range"
+            min="0.02"
+            max="1"
+            step="0.01"
+            value="0.35"
+          /></label
+        >
+        <div class="reconstruction-view-buttons">
+          <button
+            type="button"
+            data-reconstruction-action="zoom-out"
+            aria-label="Zoom out">−</button
+          ><button
+            type="button"
+            data-reconstruction-action="zoom-in"
+            aria-label="Zoom in">+</button
+          ><button type="button" data-reconstruction-action="reset"
+            >Reset view</button
+          >
+        </div>
+      </div>
+      <p class="reconstruction-instructions" id={`${id}-instructions`}>
+        Drag to rotate · Arrow keys to turn · + / − to zoom · Home to reset.
+        {
+          hasReference
+            ? "Both volumes share a camera and material range. Radiograph colours affect surfaces only."
+            : "Choose either equivalent-basis material to inspect its recorded field."
+        }
+      </p>
+      <p class="reconstruction-display-note" data-reconstruction-display-note>
+      </p>
+      <div class="reconstruction-slice-heading">
+        <strong>Through the volume</strong>
+        <label
+          >Slice display<select data-reconstruction-comparison
+            ><option value="reconstructed">Reconstructed</option>{
+              hasReference && (
+                <>
+                  <>
+                    <option value="reference">Assigned reference</option>
+                    <option value="error">Signed error</option>
+                  </>
+                </>
+              )
+            }</select
+          ></label
+        >
+      </div>
+      <div class="reconstruction-slices">
+        {
+          ["Axial", "Coronal", "Sagittal"].map((name, index) => (
+            <div class="reconstruction-slice">
+              <>
+                <span>{name}</span>
+                <div class="reconstruction-slice-area">
+                  <>
+                    <canvas
+                      data-reconstruction-slice={index}
+                      tabindex="0"
+                      role="img"
+                      aria-label={`${name} material slice. Click to move the linked crosshair. Arrow keys move within this plane.`}
+                    />
+                    <i class="reconstruction-crosshair-x" aria-hidden="true" />
+                    <i class="reconstruction-crosshair-y" aria-hidden="true" />
+                  </>
+                </div>
+              </>
+            </div>
+          ))
+        }
+      </div>
+      <div class="reconstruction-slice-controls">
+        {
+          ["X", "Y", "Z"].map((axis, index) => (
+            <label>
+              Grid {axis}
+              <input
+                type="range"
+                data-reconstruction-coordinate={index}
+                min="0"
+                max={record.grid.shape[2 - index]! - 1}
+                step="1"
+                value={record.acquisition.display.slice_indices_xyz[index]}
+              />
+            </label>
+          ))
+        }
+      </div>
+      <div class="reconstruction-scale">
+        <span data-reconstruction-window></span><output
+          data-reconstruction-position
+          aria-live="polite"></output>
+      </div>
+      <div class="reconstruction-profile">
+        <div>
+          <strong>Profile through the crosshair</strong><label
+            >Direction<select data-reconstruction-profile-axis
+              ><option value="0">Grid X</option><option value="1">Grid Y</option
+              ><option value="2">Grid Z</option></select
+            ></label
+          >
+        </div><svg
+          viewBox="0 0 720 165"
+          role="img"
+          aria-label="Material coefficients along a line through the selected crosshair"
+          data-reconstruction-profile></svg><p>
+          Distance from the first voxel centre along the selected grid axis, in
+          millimetres. <span class="reconstruction-profile-key"
+            >{
+              hasReference
+                ? "Rust: reconstructed · Blue: assigned reference"
+                : "Rust: reconstructed"
+            }</span
+          >
+        </p>
+      </div>
+    </div>
+    <details class="reconstruction-provenance">
+      <summary>Acquisition, measurements and limitations</summary><p>
+        {recordedText(record.acquisition.incident_count_protocol)}.
+      </p><dl>
+        <div>
+          <dt>Inverse grid</dt><dd>
+            {record.grid.shape.join(" × ")} voxels (Z, Y, X)
+          </dd>
+        </div><div>
+          <dt>Voxel spacing</dt><dd>
+            {record.grid.spacing_mm.map((v) => v.toFixed(3)).join(" × ")} mm (X, Y,
+            Z)
+          </dd>
+        </div>{
+          record.metrics.bone_rmse !== undefined && (
+            <div>
+              <>
+                <dt>Bone fraction RMSE</dt>
+                <dd>{record.metrics.bone_rmse.toFixed(5)}</dd>
+              </>
+            </div>
+          )
+        }{
+          record.metrics.water_rmse !== undefined && (
+            <div>
+              <>
+                <dt>Water fraction RMSE</dt>
+                <dd>{record.metrics.water_rmse.toFixed(5)}</dd>
+              </>
+            </div>
+          )
+        }{
+          record.metrics.heldout_total_rms !== undefined && (
+            <div>
+              <>
+                <dt>
+                  Total / High normalised RMS (
+                  {record.acquisition.primary_heldout_views ??
+                    record.acquisition.heldout_views}{" "}
+                  primary withheld views)
+                </dt>
+                <dd>
+                  {record.metrics.heldout_total_rms.toFixed(5)} /{" "}
+                  {record.metrics.heldout_high_rms?.toFixed(5)}
+                </dd>
+              </>
+            </div>
+          )
+        }<div>
+          <dt>Convergence established</dt><dd>
+            {record.metrics.converged ? "Yes" : "No"}
+          </dd>
+        </div>
+      </dl><ul>
+        {record.qualification.map((line) => <li>{recordedText(line)}</li>)}
+      </ul><p>
+        {
+          record.provenance.map((source, i) => (
+            <>
+              {i > 0 && " · "}
+              <a href={source.url}>{recordedText(source.title)}</a>
+            </>
+          ))
+        }
+      </p><p>
+        Coordinates are in the recorded object frame. Anatomical laterality is
+        not asserted. Clipped surfaces stay open. The interactive camera uses
+        perspective and the static plate uses orthographic projection. Surface
+        lighting and volume opacity serve inspection. The slice and profile
+        values come from the recorded fields.
+      </p>
+    </details>
+    <noscript
+      ><p class="reconstruction-no-script">
+        The static plate and recorded measurements are available without
+        JavaScript.
+      </p></noscript
+    >
+  </dpt-reconstruction>
+</FigurePlate>
+
+<script>
+  import { mountReconstructionFigures } from "../../lib/reconstruction-figure";
+  mountReconstructionFigures();
+</script>

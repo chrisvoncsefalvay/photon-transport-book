@@ -1,0 +1,288 @@
+---
+interface Props {
+  citation: {
+    bibtex: string;
+    filename: string;
+    label: string;
+    statusText: string;
+    doi?: string;
+    formatted: {
+      authors: string;
+      year: string;
+      title: string;
+      container?: string;
+      edition: string;
+      url: string;
+      draft: boolean;
+    };
+  };
+}
+
+const { citation } = Astro.props;
+const { formatted } = citation;
+const downloadUrl = `data:text/plain;charset=utf-8,${encodeURIComponent(citation.bibtex)}`;
+---
+
+<div class="page-citation" data-page-citation>
+  <a
+    class="page-citation__trigger"
+    href={downloadUrl}
+    download={citation.filename}
+    data-citation-open
+    aria-haspopup="dialog"
+    aria-controls="page-citation-dialog">Cite this page</a
+  >
+  <dialog
+    class="page-citation__dialog"
+    id="page-citation-dialog"
+    aria-labelledby="page-citation-heading"
+    aria-describedby="page-citation-edition"
+  >
+    <div class="page-citation__heading">
+      <h2 id="page-citation-heading">{citation.label}</h2>
+      <form method="dialog">
+        <button class="page-citation__close" type="submit" autofocus>
+          Close <span aria-hidden="true">×</span>
+        </button>
+      </form>
+    </div>
+    <p id="page-citation-edition" class="page-citation__reference">
+      {formatted.authors} ({formatted.year}).{
+        formatted.container ? (
+          <>
+            {" "}
+            {formatted.title}
+            {/[.!?]$/.test(formatted.title) ? "" : "."} In{" "}
+            <em>{formatted.container}</em>
+          </>
+        ) : (
+          <>
+            {" "}
+            <em>{formatted.title}</em>
+          </>
+        )
+      } ({formatted.edition}){formatted.draft && " [Unpublished manuscript]"}.{
+        " "
+      }
+      <a href={formatted.url}>{formatted.url}</a>
+    </p>
+    <label class="page-citation__label" for="page-citation-bibtex">BibTeX</label
+    >
+    <textarea
+      class="page-citation__bibtex"
+      id="page-citation-bibtex"
+      readonly
+      spellcheck="false"
+      rows="14">{citation.bibtex}</textarea
+    >
+    <div class="page-citation__actions">
+      <button class="page-citation__copy" type="button" data-citation-copy>
+        Copy BibTeX
+      </button>
+      <a href={downloadUrl} download={citation.filename}>Download .bib</a>
+      <span class="page-citation__status" role="status" aria-live="polite"
+      ></span>
+    </div>
+  </dialog>
+</div>
+
+<script>
+  for (const container of document.querySelectorAll<HTMLElement>(
+    "[data-page-citation]",
+  )) {
+    const trigger = container.querySelector<HTMLAnchorElement>(
+      "[data-citation-open]",
+    );
+    const dialog = container.querySelector<HTMLDialogElement>("dialog");
+    const text = container.querySelector<HTMLTextAreaElement>("textarea");
+    const copy = container.querySelector<HTMLButtonElement>(
+      "[data-citation-copy]",
+    );
+    const status = container.querySelector<HTMLElement>("[role='status']");
+    if (!trigger || !dialog || !text || !copy || !status) continue;
+
+    trigger.addEventListener("click", (event) => {
+      event.preventDefault();
+      status.textContent = "";
+      dialog.showModal();
+    });
+    dialog.addEventListener("close", () =>
+      trigger.focus({ preventScroll: true }),
+    );
+    dialog.addEventListener("keydown", (event) => {
+      if (event.key !== "Tab") return;
+      const controls = dialog.querySelectorAll<HTMLElement>(
+        "button:not(:disabled), a[href], textarea",
+      );
+      const first = controls[0];
+      const last = controls[controls.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last?.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first?.focus();
+      }
+    });
+
+    // A backdrop click closes the dialog; selecting text across its edge does not.
+    let pointerStartedOutside = false;
+    const outside = (event: PointerEvent) => {
+      const bounds = dialog.getBoundingClientRect();
+      return (
+        event.clientX < bounds.left ||
+        event.clientX > bounds.right ||
+        event.clientY < bounds.top ||
+        event.clientY > bounds.bottom
+      );
+    };
+    dialog.addEventListener("pointerdown", (event) => {
+      pointerStartedOutside = event.target === dialog && outside(event);
+    });
+    dialog.addEventListener("pointerup", (event) => {
+      if (pointerStartedOutside && outside(event)) dialog.close();
+      pointerStartedOutside = false;
+    });
+
+    copy.addEventListener("click", async () => {
+      copy.disabled = true;
+      let copied = false;
+      try {
+        await navigator.clipboard.writeText(text.value);
+        copied = true;
+      } catch {
+        // The private HTTP preview has no Clipboard API; retain native copying.
+        if (dialog.open) {
+          text.focus();
+          text.select();
+          try {
+            copied = document.execCommand("copy");
+          } catch {
+            copied = false;
+          }
+        }
+      } finally {
+        copy.disabled = false;
+      }
+      if (!dialog.open) return;
+      status.textContent = copied
+        ? "Copied."
+        : "Select the citation and copy it.";
+      if (copied) copy.focus();
+    });
+  }
+</script>
+
+<style>
+  .page-citation__trigger {
+    white-space: nowrap;
+  }
+
+  :global(html:has(.page-citation__dialog[open])) {
+    overflow: hidden;
+  }
+
+  .page-citation__dialog {
+    background: var(--paper);
+    border: 1px solid var(--rule-strong);
+    box-shadow: 0 1rem 4rem rgb(36 35 31 / 0.2);
+    color: var(--ink);
+    font-family: var(--font-ui);
+    font-size: var(--size--1);
+    letter-spacing: normal;
+    line-height: 1.5;
+    margin: auto;
+    max-height: calc(100dvh - 2 * var(--space-4));
+    max-width: min(44rem, calc(100% - 2 * var(--space-4)));
+    overflow-y: auto;
+    padding: clamp(1rem, 4vw, 2rem);
+    text-align: left;
+    text-transform: none;
+    width: 100%;
+  }
+
+  .page-citation__dialog::backdrop {
+    background: rgb(36 35 31 / 0.45);
+  }
+
+  .page-citation__heading {
+    align-items: start;
+    display: flex;
+    gap: var(--space-4);
+    justify-content: space-between;
+  }
+
+  .page-citation__heading h2 {
+    font-family: var(--font-display);
+    font-size: var(--size-2);
+    font-weight: 400;
+    line-height: var(--leading-tight);
+    margin: 0;
+  }
+
+  .page-citation__close {
+    background: transparent;
+    border: 0;
+    color: var(--ink-muted);
+    cursor: pointer;
+    font: inherit;
+    min-height: 2.75rem;
+    padding: 0 var(--space-2);
+    white-space: nowrap;
+  }
+
+  .page-citation__reference {
+    font-family: var(--font-prose);
+    font-size: var(--size-0);
+    line-height: 1.6;
+    margin-block: var(--space-4) var(--space-5);
+    overflow-wrap: anywhere;
+  }
+
+  .page-citation__label {
+    display: block;
+    margin-block-end: var(--space-2);
+  }
+
+  .page-citation__bibtex {
+    background: var(--paper-raised);
+    border: 1px solid var(--rule);
+    color: var(--ink);
+    display: block;
+    font-family: var(--font-code);
+    font-size: 0.8rem;
+    line-height: 1.6;
+    min-height: 8rem;
+    max-height: 45dvh;
+    overflow-wrap: anywhere;
+    padding: var(--space-3);
+    resize: vertical;
+    width: 100%;
+  }
+
+  .page-citation__actions {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3) var(--space-5);
+    margin-block-start: var(--space-4);
+  }
+
+  .page-citation__copy {
+    background: var(--accent);
+    border: 1px solid var(--accent);
+    color: var(--paper-raised);
+    cursor: pointer;
+    font: inherit;
+    min-height: 2.75rem;
+    padding: var(--space-2) var(--space-4);
+  }
+
+  .page-citation__copy:hover {
+    background: var(--accent-hover);
+  }
+
+  .page-citation__status {
+    color: var(--ink-muted);
+  }
+</style>

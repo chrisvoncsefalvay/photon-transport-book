@@ -1,0 +1,242 @@
+.geometry-illustration {
+  padding: clamp(0.8rem, 2.5vw, 2rem);
+  font: 0.82rem/1.55 var(--font-ui);
+  color: var(--ink);
+  min-width: 0;
+}
+.geometry-illustration .geometry-pair,
+.geometry-illustration .geometry-three {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.8rem;
+  align-items: start;
+}
+.geometry-illustration .geometry-three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.geometry-illustration section,
+.geometry-illustration .frame-map-notes {
+  min-width: 0;
+}
+.geometry-illustration .frame-pair,
+.geometry-illustration .landmark-acquisition,
+.geometry-illustration .pivot-projection {
+  align-items: center;
+}
+.geometry-illustration h3 {
+  font: 500 0.88rem/1.4 var(--font-ui);
+  margin: 0 0 1rem;
+}
+.geometry-illustration svg[role="img"] {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: 28rem;
+  margin-inline: auto;
+}
+.geometry-illustration svg text {
+  font: 13px var(--font-ui);
+  fill: var(--ink);
+}
+.geometry-illustration svg .tick {
+  font-size: 11px;
+}
+.geometry-illustration svg .axis-letter {
+  font-size: 12px;
+}
+.geometry-illustration svg .part-name {
+  font-size: 18px;
+  font-weight: 600;
+}
+.geometry-illustration .beam-guide {
+  fill: none;
+  stroke: var(--rule-strong);
+  stroke-dasharray: 4 4;
+  stroke-width: 1;
+}
+.geometry-illustration .detector-plane {
+  fill: var(--paper-raised);
+  stroke: var(--technical);
+  stroke-width: 1;
+}
+.geometry-illustration .cell-line {
+  stroke: var(--rule);
+  stroke-width: 1;
+}
+.geometry-illustration .wedge-face {
+  stroke: var(--accent);
+  stroke-width: 1;
+}
+.geometry-illustration .wedge-0 {
+  fill: var(--accent-soft);
+}
+.geometry-illustration .wedge-1 {
+  fill: #d9b7a8;
+}
+.geometry-illustration .wedge-2 {
+  fill: #f0e4d9;
+}
+.geometry-illustration .frame-axis {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.4;
+}
+.geometry-illustration .frame-O {
+  stroke: var(--accent);
+}
+.geometry-illustration .frame-D {
+  stroke: var(--technical);
+}
+.geometry-illustration .geometry-arrow {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.2;
+}
+.geometry-illustration .frame-origin,
+.geometry-illustration .source-point {
+  fill: var(--ink);
+}
+.geometry-illustration .label-leader {
+  fill: none;
+  stroke: var(--ink-muted);
+  stroke-width: 1;
+}
+.geometry-illustration .coordinate-map {
+  border-top: 1px solid var(--rule);
+  padding-block: 1rem;
+}
+.geometry-illustration .coordinate-map > span {
+  display: block;
+  color: var(--ink-muted);
+  font-size: 0.74rem;
+  margin-bottom: 0.6rem;
+}
+.geometry-illustration .katex {
+  font-size: 1.08em;
+}
+.geometry-illustration .geometry-note {
+  font-size: 0.75rem;
+  color: var(--ink-muted);
+  line-height: 1.6;
+  margin: 0.9rem 0 0;
+}
+.geometry-illustration .geometry-kicker {
+  font-size: 0.75rem;
+  color: var(--ink-muted);
+  margin: 0 0 1.5rem;
+}
+.geometry-illustration .landmark-ray {
+  fill: none;
+  stroke-width: 1.5;
+}
+.geometry-illustration .landmark-0 {
+  stroke: var(--ink);
+}
+.geometry-illustration .landmark-1 {
+  stroke: var(--technical);
+  stroke-dasharray: 5 3;
+}
+.geometry-illustration .landmark-2 {
+  stroke: var(--accent);
+  stroke-dasharray: 1.5 3;
+}
+.geometry-illustration .point-0 {
+  fill: var(--ink);
+}
+.geometry-illustration .point-1 {
+  fill: var(--technical);
+}
+.geometry-illustration .point-2 {
+  fill: var(--accent);
+}
+.geometry-illustration .landmark-readings {
+  display: grid;
+  gap: 1.3rem;
+  margin: 0.5rem 0;
+}
+.geometry-illustration .landmark-readings dt {
+  color: var(--ink-muted);
+  font-size: 0.74rem;
+}
+.geometry-illustration .landmark-readings dd {
+  margin: 0.4rem 0 0;
+}
+.geometry-illustration .landmark-comparisons {
+  border-top: 1px solid var(--rule);
+  padding-top: 1.8rem;
+  margin-top: 1.8rem;
+}
+.geometry-illustration .plot-axis {
+  fill: none;
+  stroke: var(--rule-strong);
+  stroke-width: 1;
+}
+.geometry-illustration .reference-point {
+  fill: var(--paper-inset);
+  stroke: var(--ink-muted);
+  stroke-width: 1;
+}
+.geometry-illustration .comparison-shift {
+  fill: none;
+  stroke: var(--ink-muted);
+  stroke-width: 1;
+  stroke-dasharray: 3 4;
+}
+.geometry-illustration .radius-guide {
+  fill: none;
+  stroke: var(--rule-strong);
+  stroke-width: 1;
+  stroke-dasharray: 3 4;
+}
+.geometry-illustration .rotation-arc {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+}
+.geometry-illustration .turn-arrow {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.4;
+}
+.geometry-illustration .pivot-point {
+  fill: var(--paper-inset);
+  stroke: var(--technical);
+  stroke-width: 1.5;
+}
+.geometry-illustration .rotation-point {
+  fill: var(--accent);
+}
+.geometry-illustration .motion-reading {
+  text-align: center;
+  margin-top: 0.7rem;
+}
+.geometry-illustration .pivot-projection {
+  margin-top: 2rem;
+  border-top: 1px solid var(--rule);
+  padding-top: 1.5rem;
+}
+@media (max-width: 900px) {
+  .geometry-illustration .geometry-three {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .geometry-illustration .landmark-comparisons svg {
+    max-width: 24rem;
+  }
+}
+@media (max-width: 700px) {
+  .geometry-illustration .geometry-pair {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .geometry-illustration .frame-pair svg {
+    max-width: 24rem;
+  }
+}
+@media (max-width: 380px) {
+  .geometry-illustration .motion-reading .katex,
+  .geometry-illustration .pivot-projection .katex {
+    font-size: 0.93em;
+  }
+  .geometry-illustration svg .tick {
+    font-size: 12px;
+  }
+}

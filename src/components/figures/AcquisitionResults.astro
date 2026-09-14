@@ -1,0 +1,261 @@
+---
+import FigurePlate from "./FigurePlate.astro";
+import RecordedPlot from "./RecordedPlot.astro";
+import type { RecordedSeries } from "../../lib/recorded-plot";
+import study from "../../../public/generated/application-study/study.json";
+import "../../styles/application-results.css";
+interface Props {
+  id: string;
+  constrained?: boolean;
+}
+const { id, constrained = false } = Astro.props;
+const role = constrained ? "constrained" : "broad";
+const base = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/generated/application-study/`;
+const plots = [study.plots[`${role}-case0`], study.plots[`${role}-case1`]];
+const pairs = study.paired_acquisition.filter(
+  (p) => p.role === role && p.metric === "geometric_rms_mm",
+);
+const decisions = study.decisions.filter((d) => d.job === `${role}-n00`);
+const fixed = (n: number) => n.toFixed(5);
+const interval = (bounds: number[]) => {
+  const [lo, hi] = bounds;
+  if (
+    bounds.length !== 2 ||
+    lo === undefined ||
+    hi === undefined ||
+    !Number.isFinite(lo) ||
+    !Number.isFinite(hi) ||
+    lo > hi
+  )
+    throw new Error("Invalid recorded paired interval");
+  return `${fixed(lo)} to ${fixed(hi)}`;
+};
+const mean = (values: number[]) =>
+  values.reduce((a, b) => a + b, 0) / values.length;
+const means = [0, 1].map((c) => ({
+  case: c,
+  rows: ["base", "selected", "fixed", "random"].map((policy) => {
+    const rows = study.outcomes.filter(
+      (r) => r.role === role && r.case === c && r.policy === policy,
+    );
+    return {
+      policy,
+      n: rows.length,
+      mean: mean(rows.map((r) => r.errors.landmark_rms_mm)),
+      reserved: mean(rows.map((r) => r.reserved_expectation_standardised_rms)),
+    };
+  }),
+}));
+const angle = (name: string) => {
+  if (!/^a\d{3}$/.test(name))
+    throw new Error(`Unknown recorded angle identifier: ${name}`);
+  return Number(name.slice(1)) - 180;
+};
+---
+
+<FigurePlate
+  {id}
+  width="full"
+  title={constrained
+    ? "Equal photon budgets, constrained view choices"
+    : "Selecting a view, then testing the decision"}
+  description={constrained
+    ? "With candidate angles limited to −15°, +15° and +30°, four paired replicates per phantom compare selected, fixed and random views at one photon budget. In case 0, selection has higher mean pose error than the fixed policy."
+    : "The Fisher criterion selects a second view before acquisition, and eight paired replicates per phantom compare its realised pose error with fixed and random choices. Lower predicted variance does not consistently give lower achieved error."}
+>
+  <div class="application-results">
+    {
+      !constrained && (
+        <>
+          <div class="application-result-heading">
+            <>
+              <h3>Predicted local variance before acquisition</h3>
+              <p>
+                First prescribed replicate. Selection minimises predicted
+                variance at eight fixed object-frame corners, using the
+                nonstationary first-view pose. Evaluation uses 125 separate
+                mathematical probes.
+              </p>
+            </>
+          </div>
+          <div class="application-result-tables application-decision-grid">
+            {decisions.map((d) => (
+              <div
+                class="application-table-scroll"
+                tabindex="0"
+                role="region"
+                aria-label={`Candidate scores for case ${d.case}`}
+              >
+                <table>
+                  <caption>
+                    Case {d.case}: current mean target variance{" "}
+                    {fixed(d.current_mean_target_variance_mm2)} mm²
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">Additional angle</th>
+                      <th scope="col">Predicted variance / mm²</th>
+                      <th scope="col">Choice</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {d.candidates.map((c) => (
+                      <tr>
+                        <th scope="row">{angle(c.name)}°</th>
+                        <td>{fixed(c.mean_target_variance_mm2)}</td>
+                        <td>
+                          {c.name === d.selected_candidate ? "Selected" : "—"}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ))}
+          </div>
+        </>
+      )
+    }
+    <div class="application-result-heading">
+      <h3>Measured error after registration</h3><p>
+        {
+          constrained
+            ? "Selection chose +30° in both cases, while the fixed policy used +15°."
+            : "Selection chose +60° for case 0 and −60° for case 1, while the fixed policy used +90°."
+        } Plots show achieved errors, not predicted variances.
+      </p>
+    </div>
+    <div class="application-plots">
+      {
+        plots.map((p, i) => (
+          <RecordedPlot
+            id={`${id}-case${i}`}
+            {...p}
+            series={p.series as RecordedSeries[]}
+            yDomain={[0, 0.1]}
+            xDomain={constrained ? [-0.4, 3.4] : [-0.4, 7.4]}
+            xTicks={constrained ? [0, 1, 2, 3] : [0, 2, 4, 6, 7]}
+          />
+        ))
+      }
+    </div>
+    <p class="application-reading">
+      Matching angles share observations within each replicate, so markers may
+      overlap. Both plots use the same probes and scale. Lower predicted
+      variance did not consistently reduce achieved error.
+    </p>
+    <div
+      class="application-result-tables application-table-scroll"
+      tabindex="0"
+      role="region"
+      aria-label="Paired policy differences"
+    >
+      <table>
+        <caption
+          >Selected minus comparison: paired probe-RMS differences in
+          millimetres</caption
+        >
+        <thead
+          ><tr
+            ><th scope="col">Case</th><th scope="col">Comparison</th><th
+              scope="col">Pairs</th
+            ><th scope="col">Mean difference</th><th scope="col"
+              >Descriptive 95% interval</th
+            ></tr
+          ></thead
+        >
+        <tbody
+          >{
+            pairs.map((p) => (
+              <tr>
+                <>
+                  <th scope="row">{p.case}</th>
+                  <td>{p.comparison}</td>
+                  <td>
+                    {p.successful_pairs}/{p.prespecified_pairs}
+                  </td>
+                  <td>{fixed(p.mean_paired_difference)}</td>
+                  <td>{interval(p.descriptive_percentile95_interval)}</td>
+                </>
+              </tr>
+            ))
+          }</tbody
+        >
+      </table>
+    </div>
+    <p class="application-reading">
+      Negative differences favour selection. Percentile bootstrap intervals
+      describe paired noise within each phantom, not population performance
+      across CTs. {
+        constrained
+          ? "In case 0 the selected policy has a higher mean error than the fixed view."
+          : "Both selected-versus-fixed intervals include zero."
+      }
+    </p>
+    <details class="application-details">
+      <summary
+        >Before and after: all policy means and reserved-view errors</summary
+      >
+      <div
+        class="application-table-scroll"
+        tabindex="0"
+        role="region"
+        aria-label="Before and after registration results"
+      >
+        <table>
+          <thead
+            ><tr
+              ><th scope="col">Case</th><th scope="col">Policy</th><th
+                scope="col">Fits</th
+              ><th scope="col">Mean probe RMS / mm</th><th scope="col"
+                >Mean reserved-view standardised RMS</th
+              ></tr
+            ></thead
+          >
+          <tbody
+            >{
+              means.flatMap((c) =>
+                c.rows.map((r) => (
+                  <tr>
+                    <>
+                      <th scope="row">{c.case}</th>
+                      <td>
+                        {r.policy === "base"
+                          ? "Before additional view"
+                          : r.policy}
+                      </td>
+                      <td>{r.n}</td>
+                      <td>{fixed(r.mean)}</td>
+                      <td>{fixed(r.reserved)}</td>
+                    </>
+                  </tr>
+                )),
+              )
+            }</tbody
+          >
+        </table>
+      </div>
+      <p>
+        Reserved-view RMS compares prediction with the independent generating
+        mean on two excluded views, scaled pixelwise by the generating Poisson
+        SD. The table averages per-fit RMS values, not noisy-observation
+        residuals.
+      </p>
+    </details>
+    <p class="application-reading">
+      Every additional view costs 16,384,000 expected detector-incident photons.
+      Including the initial view gives 32,768,000. This is a photon-population
+      budget, not absorbed dose. All {constrained ? "32" : "64"} base and policy fits
+      passed the geometric gates and ended with line_search_failed. None met the gradient
+      threshold of 0.001.
+    </p>
+    <p class="application-source">
+      <a href={`${base}study.json`}
+        >All outcomes, paired replicates and 24 decisions</a
+      > · <a href={`${base}provenance.json`}
+        >Sources, rights and display rules</a
+      >. TCIA CT-ORG cases 0 and 1, with assigned monochromatic attenuation and
+      simulated radiographs.
+    </p>
+  </div>
+</FigurePlate>

@@ -1,0 +1,199 @@
+{
+  "acceptance": "all independent replicates within seven analytic standard errors",
+  "independent_reference_variance_of_mean": 6.036640537873615e-07,
+  "reference": 0.0024787521766663607,
+  "replicates": [
+    {
+      "absolute_error": 3.734592666636066e-05,
+      "batch": {
+        "count": 4096,
+        "first_history": 0,
+        "seed": 73129,
+        "source_namespace": "deterministic"
+      },
+      "mean": 0.00244140625,
+      "variance_of_mean": 5.947364555610405e-07,
+      "within_declared_7_sigma_band": true
+    },
+    {
+      "absolute_error": 0.0006950759483336393,
+      "batch": {
+        "count": 4096,
+        "first_history": 4096,
+        "seed": 73129,
+        "source_namespace": "deterministic"
+      },
+      "mean": 0.003173828125,
+      "variance_of_mean": 7.725897289457776e-07,
+      "within_declared_7_sigma_band": true
+    },
+    {
+      "absolute_error": 0.0009392165733336393,
+      "batch": {
+        "count": 4096,
+        "first_history": 8192,
+        "seed": 73129,
+        "source_namespace": "deterministic"
+      },
+      "mean": 0.00341796875,
+      "variance_of_mean": 8.318159315321181e-07,
+      "within_declared_7_sigma_band": true
+    },
+    {
+      "absolute_error": 0.00028148655166636066,
+      "batch": {
+        "count": 4096,
+        "first_history": 12288,
+        "seed": 73129,
+        "source_namespace": "deterministic"
+      },
+      "mean": 0.002197265625,
+      "variance_of_mean": 5.35393809224223e-07,
+      "within_declared_7_sigma_band": true
+    },
+    {
+      "absolute_error": 0.0010139084266663607,
+      "batch": {
+        "count": 4096,
+        "first_history": 16384,
+        "seed": 73129,
+        "source_namespace": "deterministic"
+      },
+      "mean": 0.00146484375,
+      "variance_of_mean": 3.571912045880552e-07,
+      "within_declared_7_sigma_band": true
+    },
+    {
+      "absolute_error": 0.00028148655166636066,
+      "batch": {
+        "count": 4096,
+        "first_history": 20480,
+        "seed": 73129,
+        "source_namespace": "deterministic"
+      },
+      "mean": 0.002197265625,
+      "variance_of_mean": 5.35393809224223e-07,
+      "within_declared_7_sigma_band": true
+    },
+    {
+      "absolute_error": 0.0016716384483336393,
+      "batch": {
+        "count": 4096,
+        "first_history": 24576,
+        "seed": 73129,
+        "source_namespace": "deterministic"
+      },
+      "mean": 0.004150390625,
+      "variance_of_mean": 1.009319873665424e-06,
+      "within_declared_7_sigma_band": true
+    },
+    {
+      "absolute_error": 0.00020679469833363934,
+      "batch": {
+        "count": 4096,
+        "first_history": 28672,
+        "seed": 73129,
+        "source_namespace": "deterministic"
+      },
+      "mean": 0.002685546875,
+      "variance_of_mean": 6.540499909602387e-07,
+      "within_declared_7_sigma_band": true
+    },
+    {
+      "absolute_error": 0.00028148655166636066,
+      "batch": {
+        "count": 4096,
+        "first_history": 32768,
+        "seed": 73129,
+        "source_namespace": "deterministic"
+      },
+      "mean": 0.002197265625,
+      "variance_of_mean": 5.35393809224223e-07,
+      "within_declared_7_sigma_band": true
+    },
+    {
+      "absolute_error": 0.00045093532333363934,
+      "batch": {
+        "count": 4096,
+        "first_history": 36864,
+        "seed": 73129,
+        "source_namespace": "deterministic"
+      },
+      "mean": 0.0029296875,
+      "variance_of_mean": 7.133344154218178e-07,
+      "within_declared_7_sigma_band": true
+    },
+    {
+      "absolute_error": 0.0015021896766663607,
+      "batch": {
+        "count": 4096,
+        "first_history": 40960,
+        "seed": 73129,
+        "source_namespace": "deterministic"
+      },
+      "mean": 0.0009765625,
+      "variance_of_mean": 2.3824391347584704e-07,
+      "within_declared_7_sigma_band": true
+    },
+    {
+      "absolute_error": 0.0006950759483336393,
+      "batch": {
+        "count": 4096,
+        "first_history": 45056,
+        "seed": 73129,
+        "source_namespace": "deterministic"
+      },
+      "mean": 0.003173828125,
+      "variance_of_mean": 7.725897289457776e-07,
+      "within_declared_7_sigma_band": true
+    },
+    {
+      "absolute_error": 0.00045093532333363934,
+      "batch": {
+        "count": 4096,
+        "first_history": 49152,
+        "seed": 73129,
+        "source_namespace": "deterministic"
+      },
+      "mean": 0.0029296875,
+      "variance_of_mean": 7.133344154218178e-07,
+      "within_declared_7_sigma_band": true
+    },
+    {
+      "absolute_error": 0.0011833571983336393,
+      "batch": {
+        "count": 4096,
+        "first_history": 53248,
+        "seed": 73129,
+        "source_namespace": "deterministic"
+      },
+      "mean": 0.003662109375,
+      "variance_of_mean": 8.910130231808392e-07,
+      "within_declared_7_sigma_band": true
+    },
+    {
+      "absolute_error": 0.00028148655166636066,
+      "batch": {
+        "count": 4096,
+        "first_history": 57344,
+        "seed": 73129,
+        "source_namespace": "deterministic"
+      },
+      "mean": 0.002197265625,
+      "variance_of_mean": 5.35393809224223e-07,
+      "within_declared_7_sigma_band": true
+    },
+    {
+      "absolute_error": 0.0006950759483336393,
+      "batch": {
+        "count": 4096,
+        "first_history": 61440,
+        "seed": 73129,
+        "source_namespace": "deterministic"
+      },
+      "mean": 0.003173828125,
+      "variance_of_mean": 7.725897289457776e-07,
+      "within_declared_7_sigma_band": true
+    }
+  ]
+}

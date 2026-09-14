@@ -1,0 +1,113 @@
+{
+  "formula": "4.9-4.11",
+  "parameters": {
+    "crossing": {
+      "endpoint_mm": [
+        2.5,
+        0.5,
+        0.5
+      ],
+      "source_mm": [
+        -1.5,
+        0.5,
+        0.5
+      ]
+    },
+    "lower_mm": [
+      -0.5,
+      -0.5,
+      -0.5
+    ],
+    "parallel_miss": {
+      "endpoint_mm": [
+        2.5,
+        2.0,
+        0.5
+      ],
+      "source_mm": [
+        -1.5,
+        2.0,
+        0.5
+      ]
+    },
+    "tangent": {
+      "endpoint_mm": [
+        0.5,
+        2.5,
+        0.5
+      ],
+      "source_mm": [
+        -1.5,
+        0.5,
+        0.5
+      ]
+    },
+    "upper_mm": [
+      1.5,
+      1.5,
+      1.5
+    ]
+  },
+  "rays": {
+    "crossing": {
+      "axis_intervals": [
+        [
+          0.25,
+          0.75
+        ],
+        null,
+        null
+      ],
+      "axis_states": [
+        "crossing",
+        "parallel-inside",
+        "parallel-inside"
+      ],
+      "chord_mm": 2.0,
+      "entry": 0.25,
+      "exit": 0.75,
+      "state": "crossing"
+    },
+    "parallel_miss": {
+      "axis_intervals": [
+        [
+          0.25,
+          0.75
+        ],
+        null,
+        null
+      ],
+      "axis_states": [
+        "crossing",
+        "parallel-miss",
+        "parallel-inside"
+      ],
+      "chord_mm": 0.0,
+      "entry": null,
+      "exit": null,
+      "state": "miss"
+    },
+    "tangent": {
+      "axis_intervals": [
+        [
+          0.5,
+          1.5
+        ],
+        [
+          -0.5,
+          0.5
+        ],
+        null
+      ],
+      "axis_states": [
+        "crossing",
+        "crossing",
+        "parallel-inside"
+      ],
+      "chord_mm": 0.0,
+      "entry": 0.5,
+      "exit": 0.5,
+      "state": "tangent"
+    }
+  }
+}

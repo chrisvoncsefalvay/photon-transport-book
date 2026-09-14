@@ -1,0 +1,99 @@
+{
+  "schema_version": 1,
+  "figure_id": "figure-13-2",
+  "title": "C-arm endpoint geometry and an illustrative clearance constraint",
+  "nature": "Actual supplied C-arm mesh rendering with projected geometry labels; no X-ray transport simulation or measured hardware calibration.",
+  "source_sha256": {
+    "public/assets/carm/c-arm-rig.glb": "e876e4b291d4a4877791a9e569a0aaabc43faae90847e1d9f1da7f7984fa5f18",
+    "public/assets/carm/c-arm-rig.json": "000b551d9ac6b4bee8d3232c70bc1539ec07e415347a4576809ab4b887bf4429",
+    "public/assets/carm/c-arm-rig.edges.bin": "3d7475fc5e6503b96632d8207bcde0db45f902c747a984f21868a0553d7dbb18",
+    "src/components/figures/AcquisitionCArm.astro": "adeac5d335272d4448c84f4767332baa166b76982db119045bb6c741fd918ac2",
+    "src/lib/carm/acquisition.ts": "170cb1d6aa98a1787f55236fca262019f5a1dda35a338d89a080db1b08ad90ed",
+    "src/lib/carm/acquisition-geometry.ts": "bbdf5046a10f40b483989d229a505dc5acc9370112bc45ce266619d8793d7b04",
+    "src/components/figures/ApplicationFigures.astro": "00aa42f356a0045b0d7ab8ac684be948dbe41aa57cb8f498900c8dd1bb27c1b5",
+    "tests/site/carm-acquisition.test.ts": "44f2a83ec7ef5ac15eeef2dac11d4bc0b56bfbcb445536594927a5a30ad40f11"
+  },
+  "licence": "Owner-confirmed rights and explicit authorisation to use and modify the supplied A23D C-arm for book figures, 9 and 12 September 2026; underlying third-party rights retained. See ATTRIBUTIONS.md.",
+  "capture": {
+    "recorded_utc": "2026-09-13T03:04:39.475Z",
+    "method": "Unedited Playwright screenshot of the rendered viewport, including projected SVG labels; interactive hint hidden for the static image.",
+    "renderer": "Chromium with SwiftShader",
+    "width": 1600,
+    "height": 1040,
+    "css_width": 800,
+    "css_height": 520,
+    "css_bounds": {
+      "x": 0,
+      "y": 0,
+      "width": 800,
+      "height": 520,
+      "top": 0,
+      "right": 800,
+      "bottom": 520,
+      "left": 0
+    },
+    "device_pixel_ratio": 2,
+    "camera_projection": "perspective",
+    "camera_vertical_fov_degrees": 32,
+    "camera_position_m": [
+      0.19020596905308423,
+      1.2221242938377443,
+      4.059393961772517
+    ],
+    "camera_target_m": [
+      -0.44036450525000964,
+      0.7717168121926775,
+      -0.444680854678154
+    ],
+    "orbital_angle_degrees": 59.99999999999999,
+    "mesh_count": 46
+  },
+  "geometry": {
+    "units": "model-world metres",
+    "isocentre": [
+      -0.79055878,
+      0.77172339,
+      -0.44608279
+    ],
+    "source": [
+      -0.48422533834724957,
+      0.594861695,
+      -0.44608279
+    ],
+    "detector": [
+      -1.0921751718039254,
+      0.9458616950000001,
+      -0.44608279
+    ],
+    "source_radius": 0.35372339,
+    "detector_radius": 0.3482766100000001,
+    "endpoint_orbit": "detector; d(alpha) = O - Rd * (cos(alpha) * e0 + sin(alpha) * e1)",
+    "e0": [
+      0,
+      -1,
+      0
+    ],
+    "e1": [
+      1,
+      0,
+      0
+    ],
+    "clearance_centre": [
+      -0.79055878,
+      0.418,
+      -0.44608279
+    ],
+    "illustrative_clearance_radius": 0.176861695,
+    "illustrative_angle_domain_degrees": [
+      -90,
+      90
+    ],
+    "condition": "Source distance from the rest-source point c is at least Rs/2. Coloured detector endpoints show the corresponding accepted or excluded configurations."
+  },
+  "outputs": {
+    "poster.png": {
+      "sha256": "984cecc4922214e067f35ce65e047931358cd876b8ab09bba4a30802d1a62a27",
+      "bytes": 85785
+    }
+  }
+}

@@ -1,0 +1,416 @@
+---
+import FigurePlate from "./FigurePlate.astro";
+
+interface Props {
+  id: string;
+}
+
+const { id } = Astro.props;
+const layouts = [
+  {
+    name: "wide",
+    width: 680,
+    height: 390,
+    source: { x: 65, y: 100 },
+    pixel: { x: 555, y: 270 },
+    slab: { x: 250, y: 62, width: 150, height: 250 },
+    slabLabel: { x: 325, y: 38 },
+    sourceLabel: { x: 65, y: 60 },
+    energyLabel: { x: 133, y: 103 },
+    entryLabel: { x: 231, y: 144 },
+    exitLabel: { x: 427, y: 203 },
+    detectorLabel: { x: 566, y: 124 },
+    normalLabel: { x: 325, y: 377 },
+  },
+  {
+    name: "narrow",
+    width: 320,
+    height: 434,
+    source: { x: 56, y: 65 },
+    pixel: { x: 234, y: 355 },
+    slab: { x: 31, y: 153, width: 254, height: 106 },
+    slabLabel: { x: 160, y: 116 },
+    sourceLabel: { x: 72, y: 31 },
+    energyLabel: { x: 104, y: 69 },
+    entryLabel: { x: 79, y: 142 },
+    exitLabel: { x: 204, y: 285 },
+    detectorLabel: { x: 130, y: 418 },
+    normalLabel: { x: 29, y: 288 },
+  },
+].map((layout) => {
+  const { source, pixel, slab, name } = layout;
+  const dx = pixel.x - source.x;
+  const dy = pixel.y - source.y;
+  const length = Math.hypot(dx, dy);
+  // Intersect the representative ray with the two parallel slab faces.
+  const atX = (x: number) => ({ x, y: source.y + ((x - source.x) * dy) / dx });
+  const atY = (y: number) => ({ x: source.x + ((y - source.y) * dx) / dy, y });
+  const entry = name === "wide" ? atX(slab.x) : atY(slab.y);
+  const exit =
+    name === "wide" ? atX(slab.x + slab.width) : atY(slab.y + slab.height);
+  const sign = name === "wide" ? 1 : -1;
+  const normal = { x: (-sign * dy) / length, y: (sign * dx) / length };
+  const offset = (point: { x: number; y: number }, amount: number) => ({
+    x: point.x + amount * normal.x,
+    y: point.y + amount * normal.y,
+  });
+  const dimensionStart = offset(entry, 24);
+  const dimensionEnd = offset(exit, 24);
+  const dimensionLabel = offset(
+    { x: (entry.x + exit.x) / 2, y: (entry.y + exit.y) / 2 },
+    name === "wide" ? 43 : 39,
+  );
+
+  return {
+    ...layout,
+    entry,
+    exit,
+    dimensionStart,
+    dimensionEnd,
+    dimensionLabel,
+    angle: (Math.atan2(dy, dx) * 180) / Math.PI,
+    ticks: [entry, exit].map((point) => ({
+      start: offset(point, 17),
+      end: offset(point, 31),
+    })),
+  };
+});
+---
+
+<FigurePlate
+  {id}
+  title="Which ray belongs to a pixel?"
+  description="The red segment measures the path to pixel p through the slab. Its oblique length, rather than the perpendicular slab thickness, determines attenuation."
+>
+  <div class="selected-ray">
+    {
+      layouts.map((layout) => (
+        <svg
+          class={`selected-ray__diagram selected-ray__diagram--${layout.name}`}
+          viewBox={`0 0 ${layout.width} ${layout.height}`}
+          role="img"
+          aria-labelledby={`selected-ray-title-${layout.name} selected-ray-desc-${layout.name}`}
+        >
+          <title id={`selected-ray-title-${layout.name}`}>
+            A point source, a homogeneous slab and selected detector pixel p
+          </title>
+          <desc id={`selected-ray-desc-${layout.name}`}>
+            A straight representative ray of photon energy E in keV connects the
+            point source to pixel p. The highlighted segment starts at the slab
+            entry and ends at its exit. Its length d in millimetres is measured
+            along the ray. A separate dimension marks the shorter slab thickness
+            perpendicular to its faces.
+          </desc>
+          <rect
+            class="selected-ray__slab"
+            x={layout.slab.x}
+            y={layout.slab.y}
+            width={layout.slab.width}
+            height={layout.slab.height}
+          />
+          <text
+            class="selected-ray__label"
+            x={layout.slabLabel.x}
+            y={layout.slabLabel.y}
+            text-anchor="middle"
+          >
+            Homogeneous slab
+          </text>
+          <line
+            class="selected-ray__ray"
+            x1={layout.source.x}
+            y1={layout.source.y}
+            x2={layout.pixel.x}
+            y2={layout.pixel.y}
+          />
+          <line
+            class="selected-ray__material-ray"
+            x1={layout.entry.x}
+            y1={layout.entry.y}
+            x2={layout.exit.x}
+            y2={layout.exit.y}
+          />
+          <circle
+            class="selected-ray__source"
+            cx={layout.source.x}
+            cy={layout.source.y}
+            r="6"
+          />
+          <text
+            class="selected-ray__label"
+            x={layout.sourceLabel.x}
+            y={layout.sourceLabel.y}
+            text-anchor="middle"
+          >
+            Point source
+          </text>
+          <text
+            class="selected-ray__math"
+            x={layout.energyLabel.x}
+            y={layout.energyLabel.y}
+          >
+            <tspan font-style="italic">E</tspan> (keV)
+          </text>
+          {[layout.entry, layout.exit].map((point) => (
+            <circle
+              class="selected-ray__intersection"
+              cx={point.x}
+              cy={point.y}
+              r="4.5"
+            />
+          ))}
+          <text
+            class="selected-ray__small"
+            x={layout.entryLabel.x}
+            y={layout.entryLabel.y}
+            text-anchor="middle"
+          >
+            Entry
+          </text>
+          <text
+            class="selected-ray__small"
+            x={layout.exitLabel.x}
+            y={layout.exitLabel.y}
+            text-anchor="middle"
+          >
+            Exit
+          </text>
+          <line
+            class="selected-ray__path-dimension"
+            x1={layout.dimensionStart.x}
+            y1={layout.dimensionStart.y}
+            x2={layout.dimensionEnd.x}
+            y2={layout.dimensionEnd.y}
+          />
+          {layout.ticks.map((tick) => (
+            <line
+              class="selected-ray__path-dimension"
+              x1={tick.start.x}
+              y1={tick.start.y}
+              x2={tick.end.x}
+              y2={tick.end.y}
+            />
+          ))}
+          <text
+            class="selected-ray__math selected-ray__path-label"
+            x={layout.dimensionLabel.x}
+            y={layout.dimensionLabel.y}
+            text-anchor="middle"
+            transform={`rotate(${layout.angle} ${layout.dimensionLabel.x} ${layout.dimensionLabel.y})`}
+          >
+            <tspan font-style="italic">d</tspan> (mm)
+          </text>
+          {layout.name === "wide" ? (
+            <>
+              <path
+                class="selected-ray__extension"
+                d="M250 317 V352 M400 317 V352"
+              />
+              <path
+                class="selected-ray__normal-dimension"
+                d="M250 345 H400 M250 339 V351 M400 339 V351"
+              />
+              {Array.from({ length: 6 }, (_, index) => (
+                <rect
+                  class:list={[
+                    "selected-ray__pixel",
+                    { "selected-ray__pixel--selected": index === 3 },
+                  ]}
+                  x="555"
+                  y={151 + 34 * index}
+                  width="22"
+                  height="34"
+                />
+              ))}
+              <line
+                class="selected-ray__pixel-leader"
+                x1="578"
+                y1="270"
+                x2="596"
+                y2="270"
+              />
+              <text class="selected-ray__math" x="607" y="277">
+                <tspan font-style="italic">p</tspan>
+              </text>
+            </>
+          ) : (
+            <>
+              <path
+                class="selected-ray__normal-dimension"
+                d="M50 153 V259 M44 153 H56 M44 259 H56 M50 164 H61 V153"
+              />
+              <path class="selected-ray__extension" d="M50 262 V274" />
+              {Array.from({ length: 7 }, (_, index) => (
+                <rect
+                  class:list={[
+                    "selected-ray__pixel",
+                    { "selected-ray__pixel--selected": index === 5 },
+                  ]}
+                  x={80 + 28 * index}
+                  y="355"
+                  width="28"
+                  height="20"
+                />
+              ))}
+              <line
+                class="selected-ray__pixel-leader"
+                x1="234"
+                y1="377"
+                x2="234"
+                y2="386"
+              />
+              <text
+                class="selected-ray__math"
+                x="234"
+                y="405"
+                text-anchor="middle"
+              >
+                <tspan font-style="italic">p</tspan>
+              </text>
+            </>
+          )}
+          <text
+            class="selected-ray__small"
+            x={layout.normalLabel.x}
+            y={layout.normalLabel.y}
+            text-anchor={layout.name === "wide" ? "middle" : "start"}
+          >
+            Normal thickness
+            {layout.name === "wide" ? (
+              " (mm)"
+            ) : (
+              <tspan x={layout.normalLabel.x} dy="19">
+                (mm)
+              </tspan>
+            )}
+          </text>
+          <text
+            class="selected-ray__label"
+            x={layout.detectorLabel.x}
+            y={layout.detectorLabel.y}
+            text-anchor="middle"
+          >
+            Detector
+          </text>
+        </svg>
+      ))
+    }
+  </div>
+</FigurePlate>
+
+<style>
+  .selected-ray {
+    padding: clamp(1rem, 3vw, 2rem);
+  }
+
+  .selected-ray__diagram {
+    display: block;
+    height: auto;
+    margin-inline: auto;
+    overflow: visible;
+    width: 100%;
+  }
+
+  .selected-ray__diagram--narrow {
+    display: none;
+    max-width: 25rem;
+  }
+
+  .selected-ray__diagram line,
+  .selected-ray__diagram path,
+  .selected-ray__diagram rect,
+  .selected-ray__diagram circle {
+    vector-effect: non-scaling-stroke;
+  }
+
+  .selected-ray__slab {
+    fill: color-mix(in srgb, var(--technical) 5%, var(--paper-inset));
+    stroke: var(--rule-strong);
+    stroke-width: 1;
+  }
+
+  .selected-ray__ray {
+    stroke: var(--technical);
+    stroke-width: 2;
+  }
+
+  .selected-ray__material-ray {
+    stroke: var(--accent);
+    stroke-width: 4;
+  }
+
+  .selected-ray__source {
+    fill: var(--technical);
+  }
+
+  .selected-ray__intersection {
+    fill: var(--paper-inset);
+    stroke: var(--accent);
+    stroke-width: 2;
+  }
+
+  .selected-ray__label,
+  .selected-ray__small {
+    fill: var(--ink-muted);
+    font-family: var(--font-ui);
+    font-size: 16px;
+  }
+
+  .selected-ray__small {
+    font-size: 14px;
+  }
+
+  .selected-ray__math {
+    fill: var(--technical);
+    font-family: var(--font-prose);
+    font-size: 22px;
+  }
+
+  .selected-ray__path-label {
+    fill: var(--accent);
+  }
+
+  .selected-ray__path-dimension {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 1;
+  }
+
+  .selected-ray__normal-dimension,
+  .selected-ray__pixel-leader {
+    fill: none;
+    stroke: var(--technical);
+    stroke-width: 1;
+  }
+
+  .selected-ray__extension {
+    fill: none;
+    stroke: var(--rule-strong);
+    stroke-width: 1;
+  }
+
+  .selected-ray__pixel {
+    fill: var(--paper-raised);
+    stroke: var(--rule-strong);
+    stroke-width: 1;
+  }
+
+  .selected-ray__pixel--selected {
+    fill: var(--technical);
+    stroke: var(--technical);
+  }
+
+  @media (max-width: 45rem) {
+    .selected-ray {
+      padding: var(--space-3);
+    }
+
+    .selected-ray__diagram--wide {
+      display: none;
+    }
+
+    .selected-ray__diagram--narrow {
+      display: block;
+    }
+  }
+</style>

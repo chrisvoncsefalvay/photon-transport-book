@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "id": "book-figures-analytic",
+  "chapter": "chapters-4-10",
+  "experiment": "archived-figure-rollouts",
+  "source_commit": "dba22055a71c9e7d59205c5019df2108fdc623dd",
+  "generator": "tools/public/import-figure-rollouts.mjs",
+  "mode": "deterministic-precomputed-sweep",
+  "stochastic": false,
+  "seeds": null,
+  "created_at": "2026-09-11T10:47:42Z",
+  "parameters": {
+    "group": "analytic",
+    "provenance": "/generated/figure-rollouts/provenance.json"
+  },
+  "notes": "source_commit identifies the curation checkout, not the archived producer. Producer source digests, configurations and actual run times are preserved in provenance.json. Input payloads are byte-identical to the verified archive.",
+  "outputs": [
+    "public/generated/figure-rollouts/figure-4-1.json",
+    "public/generated/figure-rollouts/figure-4-2.json",
+    "public/generated/figure-rollouts/figure-4-3.json",
+    "public/generated/figure-rollouts/figure-4-4.json",
+    "public/generated/figure-rollouts/figure-5-2.json",
+    "public/generated/figure-rollouts/figure-5-3.json",
+    "public/generated/figure-rollouts/figure-5-4.json",
+    "public/generated/figure-rollouts/figure-6-1.json",
+    "public/generated/figure-rollouts/figure-7-4.json",
+    "public/generated/figure-rollouts/figure-8-3.json",
+    "public/generated/figure-rollouts/figure-10-2.json",
+    "public/generated/figure-rollouts/figure-10-4.json",
+    "public/generated/figure-rollouts/provenance.json"
+  ],
+  "output_digests": {
+    "public/generated/figure-rollouts/figure-4-1.json": "9334713b8f5a14d54baed2f96b45822657ee40d8c60b24fc2edc8e753d01b33f",
+    "public/generated/figure-rollouts/figure-4-2.json": "397dafbce4c7dcccb766fd639c73669732e6c2e5c0f98fd15ba4f4b4eb5ef5be",
+    "public/generated/figure-rollouts/figure-4-3.json": "ed8c0a32709b39c8ade61d62af50627e1ce203a42b9cfd6e43505e654f8d739a",
+    "public/generated/figure-rollouts/figure-4-4.json": "4051e39253a4ae15cf1a274c5ed8d3e2aba313186975f5bafe06ec3d34706c35",
+    "public/generated/figure-rollouts/figure-5-2.json": "f39c7b021fd4bba1277932fccf1c3daa81b1ec22c9d613d5ef67f0af36ce3149",
+    "public/generated/figure-rollouts/figure-5-3.json": "2c79cb725014af35a5485f0bc5495b1b4fb48efc8617f6e1857daa06b6f7c877",
+    "public/generated/figure-rollouts/figure-5-4.json": "ef3f66fb80fc596e9cc1508a26081772416eb209ff36720023f9c858ffbc14a1",
+    "public/generated/figure-rollouts/figure-6-1.json": "eef381061556ef41ea44010033a4c3cc2400946f2e92702deae305c320cdc995",
+    "public/generated/figure-rollouts/figure-7-4.json": "f683c87e13076089adaee1762457236f2c766427decd1638cb7018db93853f56",
+    "public/generated/figure-rollouts/figure-8-3.json": "6095a93eeb9f3c666bd73d6d9b03d76b8f286f77d581a9d198eb0bc7dc25117f",
+    "public/generated/figure-rollouts/figure-10-2.json": "f136aa91c170a934155b25531d37aba12854c0f0e1ada61fbede048af63c78ae",
+    "public/generated/figure-rollouts/figure-10-4.json": "f136aa91c170a934155b25531d37aba12854c0f0e1ada61fbede048af63c78ae",
+    "public/generated/figure-rollouts/provenance.json": "42c68074794a50d3b5192e759e385838c1e19948000c1a7cf31f51673f85f66c"
+  },
+  "source_digests": {
+    "tools/public/import-figure-rollouts.mjs": "51946c2bb03f145bc0db9e15c7b6d44a1b008b445c811eb55b679896171638b9"
+  }
+}

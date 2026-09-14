@@ -1,0 +1,320 @@
+---
+import FigurePlate from "./FigurePlate.astro";
+import RecordedPlot from "./RecordedPlot.astro";
+import ApplicationRadiographRow from "./ApplicationRadiographRow.astro";
+import type { RecordedSeries } from "../../lib/recorded-plot";
+import study from "../../../public/generated/application-study/study.json";
+import "../../styles/application-results.css";
+interface Props {
+  id: string;
+  kind: "images" | "stress" | "capture";
+}
+const { id, kind } = Astro.props;
+const base = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/generated/application-study/`;
+const titles = {
+  images: "Registration against recorded radiographs",
+  stress: "When a close projection leaves the pose wrong",
+  capture: "Every prescribed registration outcome",
+};
+const descriptions = {
+  images:
+    "For CT-ORG case 0’s first replicate and start, simulated observations sit beside initial and accepted predictions. Their edge alignment and residuals show what the pose update explains.",
+  stress:
+    "A close match within eight detector columns can coexist with a wrong pose. All eight restricted, low-count fits miss the geometric criterion when coverage, view count and photon population are reduced together.",
+  capture:
+    "Across all 40 fits, the plots compare initial and final pose errors and the two full-view arrangements. All 32 full-view fits meet the geometric gates, while the eight restricted, low-count fits miss them.",
+};
+const examples = study.examples.filter((e) =>
+  kind === "stress" ? e.comparison === "stress" : e.comparison !== "stress",
+);
+const rows = study.outcomes.filter(
+  (r) => r.role === "reg" || r.role === "stress",
+);
+const label = (s: string) =>
+  ({
+    orthogonal: "Orthogonal views",
+    near_parallel: "Near-parallel views",
+    stress: "Restricted, low-count",
+  })[s] ?? s;
+const fixed = (n: number) => n.toFixed(4);
+const captureSeries: RecordedSeries[] = study.plots.capture.series.map((s) => ({
+  ...s,
+  mode: "markers",
+  label:
+    s.label === "Restricted low-dose stress"
+      ? "Restricted, low-count"
+      : s.label,
+}));
+captureSeries.push({
+  label: "RMS success threshold",
+  x: [0, 20],
+  y: [1, 1],
+  dash: true,
+  tone: "muted",
+});
+const gradientSeries: RecordedSeries[] = study.plots.gradient.series.map(
+  (s) => ({ ...s, mode: "line", label: label(s.label) }),
+);
+const trajectorySeries: RecordedSeries[] = study.plots.trajectory.series.map(
+  (s) => ({ ...s, mode: "line", label: label(s.label) }),
+);
+trajectorySeries.push({
+  label: "RMS gate (1 mm)",
+  x: [0, 23],
+  y: [1, 1],
+  dash: true,
+  tone: "muted",
+});
+---
+
+<FigurePlate
+  {id}
+  title={titles[kind]}
+  description={descriptions[kind]}
+  width="full"
+>
+  <registration-results class="application-results" data-kind={kind}>
+    {
+      kind !== "capture" ? (
+        <>
+          {kind === "images" && (
+            <label class="application-case-select" hidden>
+              Recorded view arrangement
+              <select
+                data-registration-arrangement
+                aria-label="Recorded registration view arrangement"
+              >
+                {examples.map((e) => (
+                  <option value={e.comparison}>{label(e.comparison)}</option>
+                ))}
+              </select>
+            </label>
+          )}
+          {examples.map((e) => {
+            const result = rows.find(
+              (r) => r.case === e.case && r.name === e.name,
+            )!;
+            return (
+              <section data-application-case={e.comparison}>
+                <div class="application-result-heading">
+                  <h3>{label(e.comparison)}</h3>
+                  <p>
+                    Probe RMS: {fixed(result.initial_errors.landmark_rms_mm)} →{" "}
+                    {fixed(result.errors.landmark_rms_mm)} mm ·{" "}
+                    {result.geometric_success
+                      ? "geometric criterion met"
+                      : "geometric criterion failed"}
+                  </p>
+                </div>
+                {kind === "images" && (
+                  <label class="application-view-select" hidden>
+                    <span class="sr-only">
+                      {label(e.comparison)} recorded detector view
+                    </span>
+                    <select
+                      data-registration-view-select
+                      aria-controls={`${id}-${e.comparison}-views`}
+                    >
+                      {e.views.map((view) => (
+                        <option value={view.view_id}>
+                          {view.angle_degrees}° view
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                )}
+                <div id={`${id}-${e.comparison}-views`}>
+                  {e.views.map((view) => (
+                    <div data-registration-view={view.view_id}>
+                      <ApplicationRadiographRow {view} />
+                    </div>
+                  ))}
+                </div>
+                <p class="application-reading">
+                  {kind === "stress" ? (
+                    <>
+                      <span class="application-mask-key" aria-hidden="true" />{" "}
+                      Hatching: no observations. Rust boundaries: fitted columns
+                      60–67. Predictions outside the strip are excluded from the
+                      objective.
+                    </>
+                  ) : (
+                    <>
+                      All pixels fitted. Display: −log((counts + 0.5) / open
+                      beam), 0–8. The pseudocount affects display only.
+                      Residual: observed − accepted, blue at −500 and red at
+                      +500 counts.
+                    </>
+                  )}
+                </p>
+                <p class="application-reading">
+                  128 × 128 detector samples · 8 mm pitch · 1,024 × 1,024 mm
+                  detector extent · image top is +v.{" "}
+                  {kind === "stress"
+                    ? "Display: −log((counts + 0.5) / open beam), 0–8. The pseudocount is absent from the Poisson objective."
+                    : "Open beam: 10,000 expected counts per pixel and view."}{" "}
+                  Termination: line search failed. The accepted pose is not
+                  stationary.
+                </p>
+              </section>
+            );
+          })}
+          {kind === "stress" && (
+            <>
+              <div class="application-plots">
+                <RecordedPlot
+                  id={`${id}-gradient`}
+                  {...study.plots.gradient}
+                  series={gradientSeries}
+                  yScale="log"
+                />
+                <RecordedPlot
+                  id={`${id}-trajectory`}
+                  {...study.plots.trajectory}
+                  series={trajectorySeries}
+                  xDomain={[0, 23]}
+                  yDomain={[0.01, 10]}
+                  yScale="log"
+                />
+              </div>
+              <p class="application-reading">
+                Both plots retain the same three examples. Error uses 125 fixed
+                mathematical probes at every recorded pose. Reference poses were
+                disclosed after fitting, without guiding the solver or selecting
+                an iterate.
+              </p>
+            </>
+          )}
+        </>
+      ) : (
+        <>
+          <div class="application-plots">
+            <RecordedPlot
+              id={`${id}-capture`}
+              {...study.plots.capture}
+              series={captureSeries}
+              xDomain={[0, 20]}
+              yDomain={[0.005, 5]}
+              yScale="log"
+            />
+            <RecordedPlot
+              id={`${id}-paired`}
+              {...study.plots["view-pairs"]}
+              series={study.plots["view-pairs"].series as RecordedSeries[]}
+              xDomain={[0, 0.025]}
+              yDomain={[0, 0.025]}
+            />
+          </div>
+          <p class="application-reading">
+            All 32 full-view fits passed: probe RMS ≤1 mm, maximum error ≤2 mm,
+            rotation error ≤0.5°. All eight restricted fits failed. The 125
+            probes are mathematical points, not anatomical landmarks.
+            Overlapping markers are listed separately below.
+          </p>
+          <details class="application-details">
+            <summary>All 40 fits: pose errors and stopping tests</summary>
+            <div
+              class="application-table-scroll"
+              tabindex="0"
+              role="region"
+              aria-label="All registration results"
+            >
+              <table>
+                <>
+                  <thead>
+                    <tr>
+                      <>
+                        <th scope="col">Case / arrangement / noise / start</th>
+                        <th scope="col">Initial RMS / mm</th>
+                        <th scope="col">Final RMS / mm</th>
+                        <th scope="col">Maximum / mm</th>
+                        <th scope="col">Rotation / °</th>
+                        <th scope="col">Gradient norm</th>
+                      </>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {rows.map((r) => (
+                      <tr>
+                        <th scope="row">
+                          {r.case} / {label(r.comparison!)} / {r.replicate} /{" "}
+                          {r.start}
+                        </th>
+                        <td>{fixed(r.initial_errors.landmark_rms_mm)}</td>
+                        <td>{fixed(r.errors.landmark_rms_mm)}</td>
+                        <td>{fixed(r.errors.landmark_max_mm)}</td>
+                        <td>
+                          {fixed((r.errors.rotation_radians * 180) / Math.PI)}
+                        </td>
+                        <td>{r.final_gradient_infinity_norm.toPrecision(4)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </>
+              </table>
+            </div>
+            <p>
+              Every solve stopped with line_search_failed. Every final gradient
+              norm exceeds the fixed 0.001 threshold. Reference transforms and
+              two complete reserved views per fit were assessed after the
+              accepted results were fixed.
+            </p>
+          </details>
+        </>
+      )
+    }
+    <p class="application-source">
+      <a href={`${base}study.json`}
+        >All 136 application outcomes and numerical records</a
+      > · <a href={`${base}provenance.json`}
+        >Sources, rights and display rules</a
+      >. CT anatomy is acquired. Attenuation assignments and radiographs are
+      simulated.
+    </p>
+  </registration-results>
+</FigurePlate>
+
+<script>
+  class RegistrationResults extends HTMLElement {
+    connectedCallback() {
+      const select = this.querySelector<HTMLSelectElement>(
+        "[data-registration-arrangement]",
+      );
+      if (!select) return;
+      const panels = this.querySelectorAll<HTMLElement>(
+        "[data-application-case]",
+      );
+      panels.forEach((panel) => {
+        const viewSelect = panel.querySelector<HTMLSelectElement>(
+          "[data-registration-view-select]",
+        );
+        if (!viewSelect) return;
+        const viewControls = panel.querySelector<HTMLElement>(
+          ".application-view-select",
+        );
+        if (viewControls) viewControls.hidden = false;
+        const updateView = () =>
+          panel
+            .querySelectorAll<HTMLElement>("[data-registration-view]")
+            .forEach((view) => {
+              view.hidden = view.dataset.registrationView !== viewSelect.value;
+            });
+        viewSelect.onchange = updateView;
+        updateView();
+      });
+      const controls = this.querySelector<HTMLElement>(
+        ".application-case-select",
+      );
+      if (controls) controls.hidden = false;
+      const update = () =>
+        panels.forEach((panel) => {
+          panel.hidden = panel.dataset.applicationCase !== select.value;
+        });
+      select.onchange = update;
+      update();
+      this.dataset.viewsReady = "";
+    }
+  }
+  if (!customElements.get("registration-results"))
+    customElements.define("registration-results", RegistrationResults);
+</script>

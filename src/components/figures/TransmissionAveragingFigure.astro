@@ -1,0 +1,359 @@
+---
+import FigurePlate from "./FigurePlate.astro";
+import { renderToString } from "katex";
+
+interface Props {
+  id: string;
+}
+
+const { id } = Astro.props;
+// Exact two-path example from §2.4, drawn at build time. These are not samples
+// from a transport execution; only the smooth SVG curve is discretised.
+const meanTransmission = (1 + Math.exp(-2)) / 2;
+const transmissionAtMean = Math.exp(-1);
+const gap = meanTransmission - transmissionAtMean;
+const x = (depth: number) => 57 + depth * 122;
+const y = (transmission: number) => 253 - transmission * 199;
+const curve = Array.from({ length: 111 }, (_, index) => {
+  const depth = index / 50;
+  return `${index ? "L" : "M"}${x(depth).toFixed(3)},${y(Math.exp(-depth)).toFixed(3)}`;
+}).join(" ");
+const math = (tex: string) =>
+  renderToString(tex, {
+    throwOnError: true,
+    strict: "error",
+    output: "htmlAndMathml",
+  });
+const meanFormula = math(String.raw`\frac{1}{2}\left(1+e^{-2}\right)`);
+const depthFormula = math(String.raw`e^{-\frac{1}{2}(0+2)}`);
+const curveLegend = math(String.raw`T=e^{-L}`);
+const chordLegend = math(String.raw`\overline{T}`);
+---
+
+<FigurePlate
+  {id}
+  title="Averaging and attenuation do not commute"
+  description="For two equally weighted paths, mean transmission lies above transmission at their mean optical depth (B). Averaging optical depths would therefore underestimate the detected mean signal."
+>
+  <div class="averaging-figure">
+    <div class="averaging-chart">
+      <svg
+        viewBox="0 0 360 310"
+        role="img"
+        aria-labelledby="averaging-title averaging-description"
+      >
+        <title id="averaging-title">Two paths, two different averages</title>
+        <desc id="averaging-description">
+          Transmission T equals exp(−L). The points at optical depths zero and
+          two have transmissions one and exp(−2). Their chord midpoint, A, is at
+          mean depth one and mean transmission 0.567668. The curve at depth one,
+          B, has transmission 0.367879. The vertical difference is 0.199788.
+          Optical depth and transmission are dimensionless.
+        </desc>
+
+        {
+          [0.5, 1].map((value) => (
+            <line
+              class="grid"
+              x1={x(0)}
+              y1={y(value)}
+              x2={x(2.2)}
+              y2={y(value)}
+            />
+          ))
+        }
+        <path class="axis" d={`M${x(0)},${y(1.1)} V${y(0)} H${x(2.25)}`}></path>
+        {
+          [0, 0.5, 1].map((value) => (
+            <g>
+              <line
+                class="axis"
+                x1={x(0) - 5}
+                y1={y(value)}
+                x2={x(0)}
+                y2={y(value)}
+              />
+              <text
+                class="tick"
+                x={x(0) - 11}
+                y={y(value) + 5}
+                text-anchor="end"
+              >
+                {value}
+              </text>
+            </g>
+          ))
+        }
+        {
+          [0, 1, 2].map((depth) => (
+            <g>
+              <line
+                class="axis"
+                x1={x(depth)}
+                y1={y(0)}
+                x2={x(depth)}
+                y2={y(0) + 5}
+              />
+              <text
+                class="tick"
+                x={x(depth)}
+                y={y(0) + 24}
+                text-anchor="middle"
+              >
+                {depth}
+              </text>
+            </g>
+          ))
+        }
+        <text
+          class="axis-label"
+          transform="translate(16 154) rotate(-90)"
+          text-anchor="middle">Transmission T</text
+        >
+        <text class="axis-label" x="198" y="298" text-anchor="middle"
+          >Optical depth L</text
+        >
+
+        <path class="chord" d={`M${x(0)},${y(1)} L${x(2)},${y(Math.exp(-2))}`}
+        ></path>
+        <path class="curve" d={curve}></path>
+        <line
+          class="guide"
+          x1={x(1)}
+          y1={y(meanTransmission)}
+          x2={x(1)}
+          y2={y(0)}></line>
+        <circle class="endpoint" cx={x(0)} cy={y(1)} r="4.5"></circle>
+        <circle class="endpoint" cx={x(2)} cy={y(Math.exp(-2))} r="4.5"
+        ></circle>
+        <circle class="point-a" cx={x(1)} cy={y(meanTransmission)} r="5.5"
+        ></circle>
+        <circle class="point-b" cx={x(1)} cy={y(transmissionAtMean)} r="5.5"
+        ></circle>
+        <text class="label-a" x={x(1) - 13} y={y(meanTransmission) - 10}>A</text
+        >
+        <text class="label-b" x={x(1) - 17} y={y(transmissionAtMean) + 22}
+          >B</text
+        >
+
+        <path
+          class="gap"
+          d={`M${x(1) + 13},${y(meanTransmission)} h8 M${x(1) + 17},${y(meanTransmission)} V${y(transmissionAtMean)} M${x(1) + 13},${y(transmissionAtMean)} h8`}
+        ></path>
+        <text
+          class="gap-label"
+          x={x(1) + 42}
+          y={y((meanTransmission + transmissionAtMean) / 2) + 5}
+        >
+          Δ = {gap.toFixed(6)}
+        </text>
+      </svg>
+      <div class="chart-key" aria-label="Curve styles">
+        <span class="chart-key__item"
+          ><i class="key-curve" aria-hidden="true"></i><span
+            set:html={curveLegend}
+          /></span
+        >
+        <span class="chart-key__item"
+          ><i class="key-chord" aria-hidden="true"></i><span
+            set:html={chordLegend}
+          /></span
+        >
+      </div>
+    </div>
+    <div class="averaging-reading">
+      <div class="reading" data-average="transmission">
+        <span class="reading-label"
+          ><b class="badge-a">A</b> Average the transmissions</span
+        >
+        <span class="reading-formula" set:html={meanFormula} />
+        <strong class="reading-value">{meanTransmission.toFixed(6)}</strong>
+      </div>
+      <div class="reading" data-average="depth">
+        <span class="reading-label"
+          ><b class="badge-b">B</b> Attenuate at the mean depth</span
+        >
+        <span class="reading-formula" set:html={depthFormula} />
+        <strong class="reading-value">{transmissionAtMean.toFixed(6)}</strong>
+      </div>
+    </div>
+  </div>
+</FigurePlate>
+
+<style>
+  .averaging-figure {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(14rem, 1fr);
+    align-items: center;
+    gap: clamp(1rem, 3vw, 2.5rem);
+    padding: clamp(0.65rem, 2.5vw, 2rem);
+    font-family: var(--font-ui);
+  }
+
+  .averaging-chart {
+    min-width: 0;
+  }
+  svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+  svg text {
+    font-family: var(--font-ui);
+    fill: var(--ink);
+  }
+  svg path,
+  svg line,
+  svg circle {
+    vector-effect: non-scaling-stroke;
+  }
+  .axis {
+    fill: none;
+    stroke: var(--ink-muted);
+    stroke-width: 1;
+  }
+  .grid {
+    stroke: var(--rule);
+    stroke-width: 1;
+  }
+  .tick {
+    font-size: 13px;
+    fill: var(--ink-muted);
+  }
+  .axis-label {
+    font-size: 12px;
+  }
+  .curve {
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 2.4;
+  }
+  .chord {
+    fill: none;
+    stroke: var(--technical);
+    stroke-width: 1.7;
+    stroke-dasharray: 7 5;
+  }
+  .guide {
+    stroke: var(--rule-strong);
+    stroke-dasharray: 3 4;
+  }
+  .endpoint {
+    fill: var(--paper-inset);
+    stroke: var(--ink);
+    stroke-width: 1.8;
+  }
+  .point-a {
+    fill: var(--accent);
+  }
+  .point-b {
+    fill: var(--technical);
+  }
+  .label-a,
+  .label-b {
+    font-size: 17px;
+    font-weight: 600;
+  }
+  .label-a {
+    fill: var(--accent);
+  }
+  .label-b {
+    fill: var(--technical);
+  }
+  .gap {
+    stroke: var(--ink-muted);
+    fill: none;
+  }
+  .gap-label {
+    font-size: 15px;
+  }
+  .chart-key {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.35rem 1rem;
+    font-size: 0.75rem;
+    color: var(--ink-muted);
+    margin-top: 0.8rem;
+  }
+  .chart-key__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+  .chart-key i {
+    width: 1.4rem;
+    border-top: 2px solid var(--ink);
+  }
+  .chart-key .key-chord {
+    border-top: 2px dashed var(--technical);
+  }
+  .averaging-reading {
+    min-width: 0;
+  }
+  .averaging-figure p {
+    margin: 0;
+  }
+  .reading {
+    display: grid;
+    gap: 0.3rem;
+    border-top: 1px solid var(--rule);
+    padding-block: 1rem;
+  }
+  .reading-label {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+  .badge-a {
+    color: var(--accent);
+  }
+  .badge-b {
+    color: var(--technical);
+  }
+  .reading-formula {
+    font-family: var(--font-prose);
+    font-size: 1.05rem;
+    padding-block: 0.35rem;
+  }
+  .reading-value {
+    font-family: var(--font-prose);
+    font-size: clamp(1.8rem, 3vw, 2.4rem);
+    font-weight: 400;
+    line-height: 1.15;
+    font-variant-numeric: tabular-nums;
+  }
+  [data-average="transmission"] .reading-value {
+    color: var(--accent);
+  }
+  [data-average="depth"] .reading-value {
+    color: var(--technical);
+  }
+  @media (max-width: 650px) {
+    .averaging-figure {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1.2rem;
+    }
+    .averaging-reading {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0 0.85rem;
+    }
+    .axis-label,
+    .tick {
+      font-size: 14px;
+    }
+    .reading-label {
+      font-size: 0.8rem;
+    }
+    .reading-formula {
+      font-size: 1rem;
+    }
+    .reading-value {
+      font-size: clamp(1.45rem, 6vw, 2rem);
+    }
+  }
+</style>

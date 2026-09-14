@@ -1,0 +1,218 @@
+---
+layout: ../../layouts/ChapterLayout.astro
+title: Choosing the next view and where to spend the photons
+status: Draft
+scope: Some measurements constrain the quantity we care about more than others. We use local uncertainty to compare feasible views and examine how exposure can be allocated to the task.
+chapterNumber: "13"
+---
+
+import Citation from "../../components/citations/Citation.astro";
+import Bibliography from "../../components/citations/Bibliography.astro";
+import Source from "../../components/source/Source.astro";
+import AcquisitionResults from "../../components/figures/AcquisitionResults.astro";
+import ApplicationFigures from "../../components/figures/ApplicationFigures.astro";
+import WorkedExample from "../../components/figures/WorkedExample.astro";
+
+A registration can fit its first X-ray closely while leaving the object free to move along a poorly observed direction. Another image might resolve that uncertainty. Taking almost the same view again mostly provides more photons along directions already measured. Moving the C-arm incurs its own costs, and the angle with the prettiest derivative image may be physically inaccessible. We need to predict which feasible measurement will reduce uncertainty in the task we care about.
+
+We will choose one additional view of the known attenuation volume used in Chapter 11, generate that view's observation and fit the updated pose. The worked example completes the entire sequence. Across eight prescribed Poisson noise pairs, its selected view reduces mean squared target error by 71% against a nearly repeated 5° view at the same exposure. Every base and final fit reaches the numerical stopping tolerance and passes independent geometric and reserved-view checks. The [complete recipe](https://github.com/chrisvoncsefalvay/photon-transport-book/tree/main/experiments/worked-applications) supplies the admitted CT-derived input and connects the canonical `dpt.examples.acquisition_design` selector to observation generation and registration.
+
+The forward model and pose convention come from [Chapter 11](/chapters/registration/). [Chapter 12](/chapters/reconstruction/) supplies the harder extension in which the unknown is a volume. We will keep track of the information available before each decision, because a policy that has already seen tomorrow's X-ray tends to perform suspiciously well.
+
+## 13.1 Define the task and the information available
+
+Suppose the current data are $\mathcal{Y}_0$ and the next acquisition is described by $a$: its source and detector geometry together with calibrated exposure settings. A decision rule can use the known volume, $\mathcal{Y}_0$, the current pose estimate and a declared uncertainty model. It may render hypothetical measurements at candidate acquisitions. It cannot use their future measured pixel values.
+
+For registration, the quantity of interest need not be an equally weighted combination of translation and rotation. A small rotation produces a larger displacement at a distant surgical target than near the rotation centre. We therefore supply object-frame target points and score their predicted world-coordinate variance. These points describe the task using anatomy already available to the policy. Withheld reference transformations are used later to measure error.
+
+A fixed design chooses the entire sequence before seeing any new measurements. A sequential design chooses the next acquisition, receives its observation, updates the estimate and chooses again. The executable example implements one decision in the latter sequence. Its supplied current precision must describe uncertainty at that decision, including previous measurements exactly once. Adding their information again would reward the policy for counting its homework twice.
+
+[Figure](#figure-13-1) separates these inputs from the withheld evaluation reference. The same separation belongs in the file layout: the design case contains calibrated candidate predictions and the current state, while the later evaluation record supplies the selected measured image and independent reference.
+
+<ApplicationFigures id="figure-13-1" />
+
+## 13.2 Choose a task-specific design objective
+
+Keep the pose chart fixed while comparing candidates. At the current transform $\widehat{\mathbf G}_{WO}$, use dimensionless coordinates $\mathbf z$ with positive diagonal scale matrix $\mathbf S$:
+
+$$
+\mathbf G_{WO}(\mathbf z)=\widehat{\mathbf G}_{WO}\exp\!\left((\mathbf S\mathbf z)^\wedge\right).
+$$
+
+The first three entries of $\mathbf S$ set translation scales in millimetres, and the remaining entries set rotation scales in radians. All derivatives in this section are evaluated at $\mathbf z=\mathbf 0$. Equation (13.1) is a local right update. A precision matrix expressed in another frame, at another chart centre or with different scales must be transformed before use.
+
+For candidate $a$, assume conditionally independent ideal counts $N_{a,p}\sim\operatorname{Poisson}(\lambda_{a,p}(\mathbf z))$. At positive means, the score contribution is $(N_{a,p}/\lambda_{a,p}-1)\nabla_{\mathbf z}\lambda_{a,p}$. Its expectation is zero and its variance uses $\operatorname{Var}(N_{a,p})=\lambda_{a,p}$. Independence removes cross-pixel score covariances, giving the expected Fisher information
+
+$$
+\mathbf I_a=\sum_p\frac{1}{\lambda_{a,p}}\left(\nabla_{\mathbf z}\lambda_{a,p}\right)\left(\nabla_{\mathbf z}\lambda_{a,p}\right)^{\mathsf T}.
+$$
+
+A large image derivative contributes little useful information if its noise is large or if it repeats an already well-observed parameter direction. For the primary model, let $L_{a,p}$ be the canonical optical depth and $n_{0,a,p}$ the fixed open-beam expectation. Since $\lambda_{a,p}=n_{0,a,p}\exp(-L_{a,p})$, equation (13.2) becomes
+
+$$
+\mathbf I_a=\mathbf J_{L,a}^{\mathsf T}\operatorname{diag}(\boldsymbol\lambda_a)\mathbf J_{L,a}
+=\mathbf B_a^{\mathsf T}\mathbf B_a,
+\qquad
+\mathbf B_a=\operatorname{diag}(\sqrt{\boldsymbol\lambda_a})\mathbf J_{L,a},
+$$
+
+where $\mathbf J_{L,a}$ has one row $\partial L_{a,p}/\partial\mathbf z$ per pixel. This form avoids dividing by a count prediction that may round to zero. A genuinely zero supplied beam contributes zero information: no image of the object arrives along that ray. Correlated read noise, energy integration and shared calibration errors require their own likelihood. Independent Poisson weighting does not become appropriate merely because an image came from an X-ray detector.
+
+Let the current pose distribution be approximated locally by a Gaussian with positive-definite precision $\boldsymbol\Lambda_0$ in this same chart. Adding expected information gives
+
+$$
+\mathbf C_a\approx(\boldsymbol\Lambda_0+\mathbf I_a)^{-1}.
+$$
+
+Equation (13.4) predicts local covariance using expected likelihood curvature. It is neither an exact posterior covariance for every possible future image nor a guarantee that the registration solver will find the intended pose. The current uncertainty can already include earlier acquisitions. A numerical damping matrix inserted into an optimiser is not automatically a defensible $\boldsymbol\Lambda_0$.
+
+For an object-frame target $\mathbf x_q$, differentiating its world position under equation (13.1) gives
+
+$$
+\mathbf H_q=\widehat{\mathbf R}_{WO}\begin{bmatrix}\mathbf I_3&-[\mathbf x_q]_\times\end{bmatrix}\mathbf S,
+\qquad
+\mathbf C_{q,a}\approx\mathbf H_q\mathbf C_a\mathbf H_q^{\mathsf T}.
+$$
+
+Here $[\mathbf x_q]_\times\mathbf v=\mathbf x_q\times\mathbf v$. The translation part of $\mathbf H_q$ moves every target alike, while its rotation part retains the distance and direction from the object origin. Averaging target-position variance gives the scalar criterion
+
+$$
+\Phi(a)=\frac{1}{Q}\sum_{q=1}^{Q}\operatorname{tr}(\mathbf C_{q,a}).
+$$
+
+Its units are square millimetres. This predicts spread, not squared error including unknown bias. [Listing 13.1](#listing-13-1) computes the target derivatives and scores this criterion through Cholesky solves. The scorer requires strictly positive-definite current precision and reports an error when that assumption fails. It adds no identity matrix to supply missing precision.
+
+<Source
+  file="python/dpt/examples/acquisition_design.py"
+  region="example-acquisition-targets"
+  caption="Target-position variance in the scaled pose chart"
+/>
+
+Nuisance parameters can substantially change the ranking. If $\boldsymbol\eta$ describes uncertain calibration and the joint precision is partitioned into pose and nuisance blocks, the marginal pose precision is the Schur complement $\boldsymbol\Lambda_{zz}-\boldsymbol\Lambda_{z\eta}\boldsymbol\Lambda_{\eta\eta}^{-1}\boldsymbol\Lambda_{\eta z}$, assuming the required positive definiteness. Holding nuisance parameters fixed instead uses the pose block directly and can understate uncertainty. Our example makes that restriction explicit: acquisition calibration and attenuation are fixed, and only pose is uncertain.
+
+## 13.3 Separate candidate selection from continuous optimisation
+
+For a finite eligible set $\mathcal A$, the decision is simply $a^\star=\operatorname{argmin}_{a\in\mathcal A}\Phi(a)$. Score every candidate against the same current precision, pose and targets. Do not update the current precision after scoring a hypothetical candidate, because that would make the answer depend on enumeration order. Exact score ties in the example prefer lower cost, then the candidate name.
+
+Finite enumeration needs derivatives with respect to pose at each fixed geometry. The library already exports these. Continuous optimisation of source position or detector orientation is a different implementation task: differentiating $\mathbf I_a$ with respect to $a$ generally needs derivatives of both the mean and its pose Jacobian, including mixed pose–acquisition derivatives. The current projector supplies neither acquisition-geometry adjoints nor higher derivatives. Repeated calls to an existing first-order VJP do not establish either capability.
+
+A criterion that includes a reconstruction solve adds another dependency. Differentiating a fixed number of solver iterations gives a derivative of that algorithm. Implicit differentiation instead uses an equation characterising the solution and requires appropriate local uniqueness, regularity and convergence. These quantities need not agree for an unfinished solve or at an active-set change. Holding the current estimate fixed does not differentiate its dependence on the acquisition. Record that approximation explicitly.
+
+## 13.4 Restrict choices to feasible acquisitions
+
+The candidate set should come from an imaging-system specification. Source and detector positions must respect working distance, angular travel and detector coverage. A reachable endpoint can still require a motion path that collides with equipment. Exposure settings may be discrete, and moving to a candidate may consume more time than taking its image. Geometry and movement costs therefore belong to each candidate record.
+
+The example accepts candidates already assessed for feasibility and requires a description of that assessment. It checks the supplied ray geometry and a scalar acquisition budget, but it does not perform collision detection or certify a motion path. [Figure](#figure-13-2) shows an illustrative endpoint constraint with excluded configurations marked separately. A high information score cannot disguise an unusable view.
+
+A candidate's open-beam array specifies the detector-incident expectation under that candidate's calibrated source setting. If source motion changes distance or coverage, reusing the previous array without recalibration changes the assumed experiment. The JSON case binds every supplied array to its units, source hash and redistribution rights. For a cost expressed as expected detector photons, the code checks that the stated cost equals the open-beam sum in the absence of the object. This budget differs from the transmitted count sum.
+
+<ApplicationFigures id="figure-13-2" />
+
+## 13.5 Choose a second view for registration
+
+The application case provides the known attenuation field, current pose and local precision, with targets defined in object coordinates. It supplies candidate geometries and calibrated beams, but no future radiographs. The evaluator uploads the field once, uses one CUDA stream for Warp and PyTorch, and constructs each candidate's depth Jacobian through `projection_pose_sensitivities`.
+
+The exported derivative uses physical millimetres and radians. Multiplying its columns by the supplied scales converts it to $\mathbf J_{L,a}$ in equation (13.3). On the GPU, the FP64 path forms $\log\lambda=\log n_0-L$ directly from retained optical depth; the FP32 path uses the canonical log-transmission output. FP64 exponential weighting preserves a wider range than deriving weights from stored FP32 counts. The $P\times6$ weighted Jacobian then reduces to a $6\times6$ information matrix through a CUDA matrix product. Only that matrix and a few scalar diagnostics return to the host.
+
+[Listing 13.2](#listing-13-2) shows the complete candidate calculation. One candidate needs the exported Jacobian and a weighted copy, together $96P$ bytes, plus optical-depth, beam and statistical scratch. PyTorch allocates intermediate tensors during this bounded offline calculation. `max_candidate_pixels` bounds the retained detector-sized work, and the stream completes before its temporary owners are released.
+
+<Source
+  file="python/dpt/examples/acquisition_design.py"
+  region="example-acquisition-information"
+  caption="Computing the Fisher information for one candidate view"
+/>
+
+Numerical range remains part of the method. A dark pixel with a supplied zero beam contributes exactly zero. For illuminated pixels, the example rejects means below the normal FP64 range and rejects weighted derivative products outside its declared accumulation range. It adds no count floor and omits no positive-beam tail to obtain a ranking. Such a rejection calls for a more capable numerical reduction or a better-scaled chart, followed by independent verification. The actual depth and depth Jacobian remain the discretised quantities produced by the canonical projector.
+
+[Listing 13.3](#listing-13-3) adds each candidate's information to the same current precision, computes the target criterion and records threshold-defined local Fisher rank. Rank depends on the stated tolerance and parameter scaling. A view can reduce variance along an existing direction without increasing rank, so rank alone is not the selection rule.
+
+<Source
+  file="python/dpt/examples/acquisition_design.py"
+  region="example-acquisition-rank"
+  caption="Choosing the view with the lowest target variance"
+/>
+
+The worked sequence begins with a 0° image at an open-beam expectation of 1,000 photons per pixel. Once that base fit has converged, the selector compares 5°, 30°, 60° and 90° at the same exposure. The base view's Fisher matrix at its accepted pose supplies $\boldsymbol\Lambda_0$, so the first image enters the uncertainty calculation once, before each candidate's information is added. The calculation uses the exact cell integration and FP64 arithmetic checked in Chapter 11 for both the current information and each candidate. The task points are the eight corners with object-frame coordinates ±40 mm; the later geometric evaluation uses those very same points.
+
+In the first noise replicate, the selector chooses 60°, with predicted mean target variance 0.001325 mm². Moving farther to 90° gives a larger value, 0.001946 mm². Angular separation alone therefore does not explain this ranking: the criterion measures how each view constrains these targets through the supplied anatomy at the current pose. After recording the choice, the driver draws its count image and refits the pose. [Figure](#figure-13-3) compares that prediction with the realised errors across all eight pairs.
+
+<WorkedExample id="figure-13-3" example="acquisition" />
+
+The 5° baseline deliberately spends its second exposure on almost the same view. It makes the value of measuring a different direction visible in a small complete example. This result does not establish superiority over a well-chosen fixed orthogonal view. When the first image admits distant plausible poses, a Gaussian around one estimate can also miss those alternatives. An independently specified pose ensemble or expected information gain over a multimodal posterior would address that different approximation.
+
+## 13.6 Design views for reconstruction
+
+An attenuation volume replaces the six pose coordinates with perhaps millions of unknown coefficients. The design question still needs a task: variance of a regional average, visibility of a specified feature or reconstruction error under a declared prior ensemble. Summing uncertainty equally over all voxels can spend acquisitions on parts of the field that do not matter to that task.
+
+A local approximation has a precision operator of the form
+
+$$
+\mathbf H_a\approx\mathbf H_0+\mathbf J_a^{\mathsf T}\mathbf W_a\mathbf J_a,
+$$
+
+where $\mathbf H_0$ describes current local precision and $\mathbf W_a$ follows the candidate's measurement model. A dense volume covariance would require quadratic storage. Instead, an implementation could apply precision to vectors and solve for the covariance action needed by a small set of task functionals. For a linear task $q(\boldsymbol\mu)=\mathbf c^{\mathsf T}\boldsymbol\mu$, the local variance is $\mathbf c^{\mathsf T}\mathbf H_a^{-1}\mathbf c$, and a linear solve can obtain it without constructing the inverse.
+
+Equation (13.7) describes an extension, not a capability exercised by the registration example. A matrix-free implementation needs compatible Jacobian-vector and transpose products, a declared regulariser Hessian, and independently checked solver tolerances. The available volume VJP provides the transpose action but does not by itself provide the entire design calculation. Nonnegativity constraints and changes of active set further affect a local Gaussian approximation.
+
+Burger and colleagues develop sequential Bayesian projection design with Gaussian priors and additive Gaussian noise, including criteria based on posterior covariance and information. Their numerical study concerns two-dimensional parallel-beam tomography. It gives a concrete precedent for updating projection choices as data arrive, but the three-dimensional Poisson pose calculation here has its own likelihood and geometry. <Citation keys={["burger2021design"]} />
+
+Compare reconstruction policies at the same measurement budget and include the time spent deciding which view to take. An expensive design search can be appropriate for a costly acquisition. It can also become a remarkably elaborate method of avoiding the next reconstruction. Spectral-channel choices add the calibrated response and material-identifiability conditions developed in [§12.6](/chapters/reconstruction/#126-extend-reconstruction-to-spectral-material-decomposition). They cannot be ranked from geometric coverage alone.
+
+## 13.7 Allocate exposure and state the budget correctly
+
+Under a fixed spectrum and linear independent-count model, suppose a relative exposure $e$ scales the expected counts as $\lambda_{a,p}(e)=e\lambda_{a,p}(1)$. The depth Jacobian stays fixed, so
+
+$$
+\mathbf I_a(e)=e\mathbf I_a(1).
+$$
+
+Information grows linearly in this model, but the resulting target variance generally does not, because it depends on the inverse of the sum of prior and measurement information. Detector saturation, spectral changes or exposure-dependent processing invalidate the simple scaling. Each requires a forward and noise model that follows the actual control setting.
+
+The example permits several candidate records with the same geometry and different calibrated beam/cost pairs. This evaluates discrete exposure alternatives for one next view. A multi-view allocation would instead choose exposures jointly under a total budget and per-view bounds, and would need to retain the dependence of its criterion on every allocation. Movement time can be included only when the cost is defined consistently with the current system state.
+
+Expected detector photons, tube-current–time product in mAs and acquisition time in seconds are different budgets. None is absorbed dose. A dose-constrained extension must define whose absorbed energy per unit mass is being constrained and use a separately validated deposition model that accounts for spectrum, geometry and material. The number of Monte Carlo histories used to estimate a prediction is a computational setting, not the exposure given to a subject.
+
+The worked comparison holds expected open-beam photons fixed and changes the second angle. It therefore demonstrates an angular decision at equal exposure. An exposure-allocation curve would need several controlled photon populations and must retain that axis label, even if “dose reduction” would fit rather nicely in the abstract.
+
+## 13.8 Complete and check the acquisition sequence
+
+Run the Chapter 11 recipe through to `summary.json`. After the orthogonal registration, the driver performs eight base fits and sixteen paired refits. Within each pair, selection and the 5° baseline share the same first image, so their comparison holds that image's noise fixed. The driver records the selected angle before generating its observation. If both policies request the same future view, they receive the same observation; different acquisitions use separately keyed random streams.
+
+<Source
+  file="experiments/worked-applications/run.py"
+  region="worked-application-sequence"
+  caption="Fit the first image, choose a view, generate its observation and refit the shared pose"
+/>
+
+The frozen configuration fixes the eight noise replicates, exposure, candidate set, probe locations and success criteria. The input anatomy is intentionally known for this instructional exercise. Evaluation transforms and the reserved 45° and 135° view means are kept out of fitting and ranking. After all fits have finished, the evaluator measures target error and checks predictions in both reserved views.
+
+Every one of the 25 solves, including the initial Chapter 11 registration, reaches the unchanged scaled-gradient threshold of 0.001 and passes its independent checks. The selected policy's mean squared target error is 0.001335 mm², compared with 0.004681 mm² for the near-parallel baseline: a ratio of 0.2851, below the declared 0.75 requirement. The paired mean difference is −0.003347 mm², with a descriptive 95% t-interval upper endpoint of −0.000594 mm². This interval summarises eight prescribed noise pairs on one anatomy; it is not an estimate of clinical benefit across patients.
+
+In two of the eight pairs, the selected view produces a larger target error than the 5° baseline. The Fisher criterion predicts variance averaged over possible future count images, while each refit receives one new noisy image alongside the shared base image. A view with lower predicted variance can therefore give the worse result in an individual pair. The mean improvement includes both reversals, without requiring every noisy observation to be unusually obliging.
+
+To extend the experiment, change one declared setting at a time and write a new record. Add an orthogonal fixed baseline to ask a harder comparison question, or restrict the candidate angles to study accessibility. A new anatomy, calibration error or a poor initial pose can change the ranking and its reliability. Keep those results separate from the supplied worked example, with every attempted outcome retained.
+
+<details>
+<summary>What the earlier policy comparison could not establish</summary>
+
+The earlier study below tested selected, fixed and random policies across two CT-derived phantoms. Its 96 base and policy fits used assigned attenuation and simulated observations. All pass the geometric criterion, but none meets the unchanged stationarity threshold. The registration replay in Chapter 11 identified precision loss and midpoint integration artefacts that can produce these premature stops. Until the downstream solver completes, a policy comparison mixes the view's information with the behaviour of an unfinished optimisation.
+
+[Figure](#figure-13-5) retains those original outcomes. The paired noise intervals do not establish a consistent advantage over the fixed policy. This is why the main exercise now completes every solve and uses a clearly stated near-parallel baseline. It does not relabel the historical results as successful optimisation.
+
+<AcquisitionResults id="figure-13-5" />
+
+[Figure](#figure-13-4) shows the earlier restricted-angle comparison at fixed exposure. Under the constrained candidate set, selection produces a higher mean geometric error for case 0. The recorded evidence does not separate local covariance approximation, candidate restrictions and unfinished fitting sufficiently to assign that increase to one cause. Treat it as a diagnostic example to rerun after the numerical checks pass, rather than evidence that the selector improves this restricted case.
+
+<AcquisitionResults id="figure-13-4" constrained />
+
+</details>
+
+## 13.9 A closing word
+
+Volume I ends with a calculation that can help choose its next measurement. We began with photon survival through a slab. Reaching this decision has required a working renderer and derivatives that can guide an inverse calculation. The complete examples now recover unknown parameters from simulated observations and check the returned solutions against independent references. It is quite a lot of machinery for choosing another X-ray, but we can now account for what the machinery does.
+
+That gives us a practical starting point for a problem of our own. Changing the unknown from a pose to a material field has already shown how much of the forward calculation can survive a very different inverse problem. Its physical assumptions remain visible, so we can decide what a new application actually requires us to change. A more elaborate representation can then be a deliberate modelling choice, with a calculation we understand beneath it.
+
+Volume II is planned to cover neural representations and learned methods, and Volume III to develop volume reconstruction further. Those subjects have a place to begin in the forward model we have built here. Thank you for working through the physics and code with me. I hope that, when you next encounter a difficult imaging problem, a working calculation feels within reach.
+
+<Bibliography keys={["burger2021design"]} />

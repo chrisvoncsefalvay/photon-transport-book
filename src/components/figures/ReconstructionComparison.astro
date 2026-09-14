@@ -1,0 +1,674 @@
+---
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+import FigurePlate from "./FigurePlate.astro";
+import {
+  comparisonMethod,
+  comparisonNumber,
+  comparisonStop,
+  validateComparisonStudy,
+  type ComparisonImage,
+  type ReconstructionComparisonStudy,
+} from "../../lib/reconstruction-comparison";
+import "../../styles/reconstruction-comparison.css";
+
+interface Props {
+  id: string;
+}
+const { id } = Astro.props;
+const study = JSON.parse(
+  readFileSync(
+    resolve("public/generated/reconstruction-comparison/study.json"),
+    "utf8",
+  ),
+) as ReconstructionComparisonStudy;
+validateComparisonStudy(study);
+const base = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/generated/reconstruction-comparison/`;
+const imageStyle = (item: ComparisonImage) =>
+  `aspect-ratio: ${item.physical_width_mm} / ${item.physical_height_mm}`;
+const outcome = (key: string) => {
+  const row = study.outcomes.find((item) => item.id === key);
+  if (!row) throw new Error(`Missing comparison outcome: ${key}`);
+  return row;
+};
+const unavailable = (key: string) => {
+  const row = outcome(key);
+  if (row.status === "failed") return "Recorded fit failed";
+  if (row.status === "not_started") return "Fit not started";
+  if (row.hard_correctness_passed === false) return "Numerical check failed";
+  if (row.evaluation_status === "failed") return "Evaluation failed";
+  if (row.evaluation_status === "not_started") return "Evaluation not started";
+  return "Evaluation unavailable";
+};
+const statusLabels: Record<string, string> = {
+  completed: "Completed",
+  complete: "Complete",
+  failed: "Failed",
+  not_started: "Not started",
+  unavailable_fit: "Fit unavailable",
+};
+const statusText = (status: string) => statusLabels[status] ?? status;
+const windowText = (item: ComparisonImage) =>
+  `${item.window[0]} to ${item.window[1]}`;
+const yawPosition = (angle: number) =>
+  28 + ((((angle + 180) % 360) + 360) % 360) * (264 / 360);
+---
+
+<FigurePlate
+  {id}
+  title="Sparse views and limited angular coverage"
+  description="Matched slices and a withheld view compare dense, sparse and limited-angle fits for CT-ORG case 2’s first replicate at equal expected incident photon budgets. Errors and update counts reflect both angular sampling and iteration cost within the allotted runs."
+  width="full"
+>
+  <reconstruction-comparison class="comparison-study">
+    <div class="comparison-toolbar" data-comparison-toolbar hidden>
+      <label>
+        Recorded method
+        <select
+          data-comparison-method-select
+          aria-label="Recorded reconstruction method"
+        >
+          {
+            study.displays.map((display) => (
+              <option
+                value={display.method}
+                selected={display.method === study.default_method}
+              >
+                {display.label}
+              </option>
+            ))
+          }
+        </select>
+      </label>
+    </div>
+
+    {
+      study.displays.map((display) => {
+        const quantities = [
+          ...new Map(
+            display.slices.map((slice) => [
+              slice.quantity,
+              slice.quantity_label,
+            ]),
+          ).entries(),
+        ];
+        const planes = [
+          ...new Map(
+            display.slices.map((slice) => [slice.plane, slice.plane_label]),
+          ).entries(),
+        ];
+        const defaultQuantity =
+          display.model === "spectral" ? "bone" : "attenuation";
+        return (
+          <section data-comparison-method={display.method}>
+            <header class="comparison-method-heading">
+              <h3>{display.label}</h3>
+              <p>
+                {display.model === "spectral"
+                  ? "Joint water and bone fractions from three spectral count channels."
+                  : "An attenuation field from separately simulated monochromatic 80 keV counts."}
+                {display.regimes.length === 1 &&
+                  " The Euclidean spectral baseline was prescribed for dense coverage only."}
+              </p>
+            </header>
+
+            <div
+              class="comparison-toolbar comparison-slice-toolbar"
+              data-comparison-slice-controls
+              hidden
+            >
+              <label>
+                Recorded field
+                <select
+                  data-comparison-quantity
+                  aria-label={`${display.label} field`}
+                >
+                  {quantities.map(([value, label]) => (
+                    <option value={value} selected={value === defaultQuantity}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                Centre plane
+                <select
+                  data-comparison-plane
+                  aria-label={`${display.label} centre plane`}
+                >
+                  {planes.map(([value, label]) => (
+                    <option value={value} selected={value === "coronal"}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+
+            {display.slices.map((slice) => {
+              const isDefault =
+                slice.quantity === defaultQuantity && slice.plane === "coronal";
+              return (
+                <details
+                  class="comparison-slice"
+                  data-comparison-slice
+                  data-quantity={slice.quantity}
+                  data-plane={slice.plane}
+                  data-print-default={String(isDefault)}
+                  open={isDefault}
+                >
+                  <summary>
+                    {slice.quantity_label} · {slice.plane_label}
+                  </summary>
+                  <div
+                    class="comparison-image-grid"
+                    style={`--comparison-columns: ${display.regimes.length + 1}`}
+                  >
+                    <section class="comparison-image-card">
+                      <h4>Assigned reference</h4>
+                      <img
+                        src={base + slice.reference.file}
+                        width={slice.reference.width}
+                        height={slice.reference.height}
+                        style={imageStyle(slice.reference)}
+                        alt={slice.reference.alt}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </section>
+                    {display.regimes.map((regime) => {
+                      const entry = slice.recovered.find(
+                        (item) => item.outcome_id === regime.outcome_id,
+                      )!;
+                      const row = outcome(regime.outcome_id);
+                      return (
+                        <section class="comparison-image-card">
+                          <h4>{regime.label}</h4>
+                          {entry.image ? (
+                            <img
+                              src={base + entry.image.file}
+                              width={entry.image.width}
+                              height={entry.image.height}
+                              style={imageStyle(entry.image)}
+                              alt={entry.image.alt}
+                              loading="lazy"
+                              decoding="async"
+                            />
+                          ) : (
+                            <p class="comparison-unavailable">
+                              {unavailable(regime.outcome_id)}
+                            </p>
+                          )}
+                          <p>
+                            {regime.views} views ·{" "}
+                            {row.accepted_updates === null
+                              ? "Update count unavailable"
+                              : `${row.accepted_updates} accepted updates`}
+                          </p>
+                        </section>
+                      );
+                    })}
+                  </div>
+                  <p class="comparison-window">
+                    {slice.plane_label}. Black → white:{" "}
+                    {windowText(slice.reference)} {slice.units}. Matched
+                    physical extent and display window.
+                  </p>
+                  <details class="comparison-detail">
+                    <summary>Signed errors and display clipping</summary>
+                    <div
+                      class="comparison-image-grid"
+                      style={`--comparison-columns: ${display.regimes.length}`}
+                    >
+                      {display.regimes.map((regime) => {
+                        const entry = slice.recovered.find(
+                          (item) => item.outcome_id === regime.outcome_id,
+                        )!;
+                        return (
+                          <section class="comparison-image-card">
+                            <h4>{regime.label}: recovered − reference</h4>
+                            {entry.signed_error ? (
+                              <>
+                                <img
+                                  src={base + entry.signed_error.file}
+                                  width={entry.signed_error.width}
+                                  height={entry.signed_error.height}
+                                  style={imageStyle(entry.signed_error)}
+                                  alt={entry.signed_error.alt}
+                                  loading="lazy"
+                                  decoding="async"
+                                />
+                                <p>
+                                  Blue {entry.signed_error.window[0]} · pale 0 ·
+                                  red {entry.signed_error.window[1]}{" "}
+                                  {slice.units}
+                                </p>
+                              </>
+                            ) : (
+                              <p class="comparison-unavailable">
+                                {unavailable(regime.outcome_id)}
+                              </p>
+                            )}
+                          </section>
+                        );
+                      })}
+                    </div>
+                    <p>
+                      Reference slice: {slice.reference.below_window_pixels}{" "}
+                      pixels below the window and{" "}
+                      {slice.reference.above_window_pixels} above.
+                    </p>
+                    <ul>
+                      {display.regimes.map((regime) => {
+                        const entry = slice.recovered.find(
+                          (item) => item.outcome_id === regime.outcome_id,
+                        )!;
+                        return (
+                          entry.image &&
+                          entry.signed_error && (
+                            <li>
+                              {regime.label}: recovered slice{" "}
+                              {entry.image.below_window_pixels} below and{" "}
+                              {entry.image.above_window_pixels} above. Signed
+                              error {entry.signed_error.below_window_pixels}{" "}
+                              below and {entry.signed_error.above_window_pixels}{" "}
+                              above.
+                            </li>
+                          )
+                        );
+                      })}
+                    </ul>
+                    <p>
+                      Clipping affects displayed pixels. Numerical errors use
+                      the complete recorded fields.
+                    </p>
+                  </details>
+                </details>
+              );
+            })}
+
+            <section class="comparison-radiographs">
+              <h4>
+                {display.radiograph.label} · {display.radiograph.channel_label}
+              </h4>
+              <div
+                class="comparison-image-grid"
+                style={`--comparison-columns: ${display.regimes.length + 1}`}
+              >
+                <section class="comparison-image-card">
+                  <h4>Simulated observation</h4>
+                  <img
+                    src={base + display.radiograph.observation.file}
+                    width={display.radiograph.observation.width}
+                    height={display.radiograph.observation.height}
+                    style={imageStyle(display.radiograph.observation)}
+                    alt={display.radiograph.observation.alt}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </section>
+                {display.regimes.map((regime) => {
+                  const entry = display.radiograph.recovered.find(
+                    (item) => item.outcome_id === regime.outcome_id,
+                  )!;
+                  return (
+                    <section class="comparison-image-card">
+                      <h4>{regime.label}: prediction</h4>
+                      {entry.prediction ? (
+                        <img
+                          src={base + entry.prediction.file}
+                          width={entry.prediction.width}
+                          height={entry.prediction.height}
+                          style={imageStyle(entry.prediction)}
+                          alt={entry.prediction.alt}
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      ) : (
+                        <p class="comparison-unavailable">
+                          {unavailable(regime.outcome_id)}
+                        </p>
+                      )}
+                    </section>
+                  );
+                })}
+              </div>
+              <p class="comparison-window">
+                Common negative-log window{" "}
+                {windowText(display.radiograph.observation)}. This entire view
+                was withheld from every fit.
+              </p>
+              <details class="comparison-detail">
+                <summary>Withheld-view residuals and display clipping</summary>
+                <div
+                  class="comparison-image-grid"
+                  style={`--comparison-columns: ${display.regimes.length}`}
+                >
+                  {display.regimes.map((regime) => {
+                    const entry = display.radiograph.recovered.find(
+                      (item) => item.outcome_id === regime.outcome_id,
+                    )!;
+                    return (
+                      <section class="comparison-image-card">
+                        <h4>{regime.label}: observation − prediction</h4>
+                        {entry.residual ? (
+                          <>
+                            <img
+                              src={base + entry.residual.file}
+                              width={entry.residual.width}
+                              height={entry.residual.height}
+                              style={imageStyle(entry.residual)}
+                              alt={entry.residual.alt}
+                              loading="lazy"
+                              decoding="async"
+                            />
+                            <p>
+                              Blue {entry.residual.window[0]} · pale 0 · red{" "}
+                              {entry.residual.window[1]} predicted Poisson
+                              standard deviations.
+                            </p>
+                            <p>
+                              {entry.residual.below_window_pixels} pixels below
+                              the residual window and{" "}
+                              {entry.residual.above_window_pixels} above.
+                            </p>
+                          </>
+                        ) : (
+                          <p class="comparison-unavailable">
+                            {unavailable(regime.outcome_id)}
+                          </p>
+                        )}
+                        {entry.prediction && (
+                          <p>
+                            Prediction display:{" "}
+                            {entry.prediction.below_window_pixels} below and{" "}
+                            {entry.prediction.above_window_pixels} above.
+                          </p>
+                        )}
+                      </section>
+                    );
+                  })}
+                </div>
+                <p>
+                  Observation display:{" "}
+                  {display.radiograph.observation.below_window_pixels} pixels
+                  below the window and{" "}
+                  {display.radiograph.observation.above_window_pixels} above.
+                </p>
+                <p>
+                  The residual divides observation minus prediction by the
+                  square root of the predicted count. Its scale is fixed before
+                  evaluation.
+                </p>
+              </details>
+            </section>
+
+            <details class="comparison-detail comparison-acquisition">
+              <summary>Acquisition angles and stopping conditions</summary>
+              <div
+                class="comparison-image-grid"
+                style={`--comparison-columns: ${display.regimes.length}`}
+              >
+                {display.regimes.map((regime) => {
+                  const row = outcome(regime.outcome_id);
+                  return (
+                    <section class="comparison-image-card">
+                      <h4>{regime.label}</h4>
+                      <svg
+                        viewBox="0 0 320 115"
+                        role="img"
+                        aria-label={`${regime.label}: ${regime.views} recorded yaw and tilt angle pairs`}
+                      >
+                        {[-15, 0, 15].map((tilt) => (
+                          <>
+                            <path
+                              d={`M28 ${65 - tilt * 2}H292`}
+                              class="comparison-angle-rule"
+                            />
+                            <text x="22" y={69 - tilt * 2} text-anchor="end">
+                              {tilt}°
+                            </text>
+                          </>
+                        ))}
+                        {regime.angle_pairs_yaw_tilt_degrees.map(
+                          ([yaw, tilt]) => (
+                            <circle
+                              cx={yawPosition(yaw)}
+                              cy={65 - tilt * 2}
+                              r="2.3"
+                            />
+                          ),
+                        )}
+                        <text x="28" y="113">
+                          −180°
+                        </text>
+                        <text x="160" y="113" text-anchor="middle">
+                          Yaw 0°
+                        </text>
+                        <text x="292" y="113" text-anchor="end">
+                          180°
+                        </text>
+                      </svg>
+                      <p>
+                        {regime.views} views ×{" "}
+                        {regime.incident_photons_per_view.toLocaleString(
+                          "en-GB",
+                        )}{" "}
+                        expected incident photons per detector pixel per view.
+                      </p>
+                      <p>
+                        {comparisonStop(row.termination)}. Stationarity
+                        criterion{" "}
+                        {row.stationarity_passed === null
+                          ? "unavailable"
+                          : row.stationarity_passed
+                            ? "met"
+                            : "unmet"}
+                        . Recorded solve:{" "}
+                        {comparisonNumber(row.solve_seconds, 2)} s.
+                      </p>
+                    </section>
+                  );
+                })}
+              </div>
+              <p>
+                Rows show tilt and dots show the recorded yaw angles. Equal
+                incident photon population does not imply equal patient dose or
+                equivalent scalar and spectral measurements.
+              </p>
+            </details>
+          </section>
+        );
+      })
+    }
+
+    <details class="comparison-detail comparison-all-outcomes" open>
+      <summary>All 40 prescribed outcomes</summary>
+      <div
+        class="comparison-table-scroll"
+        role="region"
+        aria-label="All recorded reconstruction outcomes"
+        tabindex="0"
+      >
+        <table>
+          <caption
+            >Both CT-derived anatomies and both noise replicates. Fraction
+            errors are dimensionless. Attenuation errors are in mm⁻¹, including
+            separately derived 80 keV attenuation for spectral fits. Withheld
+            deviance is per detector sample.</caption
+          >
+          <thead
+            ><tr>
+              <th scope="col">Case</th><th scope="col">Replicate</th><th
+                scope="col">Coverage</th
+              ><th scope="col">Method</th><th scope="col">Fit status</th><th
+                scope="col">Evaluation status</th
+              ><th scope="col">Accepted updates</th><th scope="col">Stop</th><th
+                scope="col">Solve (s)</th
+              ><th scope="col">Water RMSE</th><th scope="col">Bone RMSE</th><th
+                scope="col">80 keV RMSE (mm⁻¹)</th
+              ><th scope="col">Withheld deviance</th><th scope="col"
+                >Stationarity</th
+              ><th scope="col">Numerical check</th>
+            </tr></thead
+          >
+          <tbody
+            >{
+              study.outcomes.map((row) => (
+                <tr data-comparison-outcome={row.id}>
+                  <>
+                    <th scope="row">{row.case}</th>
+                    <td>{row.replicate + 1}</td>
+                    <td>{row.regime}</td>
+                    <td>{comparisonMethod(row.method)}</td>
+                    <td>{statusText(row.status)}</td>
+                    <td>{statusText(row.evaluation_status)}</td>
+                    <td>{row.accepted_updates ?? "Unavailable"}</td>
+                    <td>{comparisonStop(row.termination)}</td>
+                    <td>{comparisonNumber(row.solve_seconds, 2)}</td>
+                    <td>{comparisonNumber(row.water_rmse)}</td>
+                    <td>{comparisonNumber(row.bone_rmse)}</td>
+                    <td>
+                      {comparisonNumber(row.attenuation_rmse_mm_inverse, 6)}
+                    </td>
+                    <td>
+                      {comparisonNumber(row.withheld_deviance_per_sample, 3)}
+                    </td>
+                    <td>
+                      {row.stationarity_passed === null
+                        ? "Unavailable"
+                        : row.stationarity_passed
+                          ? "Met"
+                          : "Unmet"}
+                    </td>
+                    <td>
+                      {row.hard_correctness_passed === null
+                        ? "Unavailable"
+                        : row.hard_correctness_passed
+                          ? "Passed"
+                          : "Failed"}
+                    </td>
+                  </>
+                </tr>
+              ))
+            }</tbody
+          >
+        </table>
+      </div>
+    </details>
+    <p class="comparison-download">
+      <a href={base + "study.json"} download
+        >Download the complete numerical and display record</a
+      >
+    </p>
+    <details class="comparison-detail">
+      <summary>Recorded data and interpretation</summary>
+      <ul>{study.limitations.map((limit) => <li>{limit}</li>)}</ul>
+      <p>{study.rights}</p>
+    </details>
+  </reconstruction-comparison>
+</FigurePlate>
+
+<script>
+  class ReconstructionComparison extends HTMLElement {
+    private listeners: AbortController | null = null;
+    private restoreAfterPrint: (() => void) | null = null;
+
+    connectedCallback() {
+      if (this.listeners) return;
+      const methods = this.querySelectorAll<HTMLElement>(
+        "[data-comparison-method]",
+      );
+      const methodSelect = this.querySelector<HTMLSelectElement>(
+        "[data-comparison-method-select]",
+      );
+      if (!methodSelect || !methods.length) return;
+      this.listeners = new AbortController();
+      const { signal } = this.listeners;
+      const outcomes = this.querySelector<HTMLDetailsElement>(
+        ".comparison-all-outcomes",
+      );
+      if (outcomes && !this.classList.contains("is-enhanced")) {
+        outcomes.open = false;
+      }
+      const updateMethod = () => {
+        methods.forEach((method) => {
+          method.hidden =
+            method.dataset.comparisonMethod !== methodSelect.value;
+        });
+      };
+      methods.forEach((method) => {
+        const quantity = method.querySelector<HTMLSelectElement>(
+          "[data-comparison-quantity]",
+        );
+        const plane = method.querySelector<HTMLSelectElement>(
+          "[data-comparison-plane]",
+        );
+        if (!quantity || !plane) return;
+        const slices = method.querySelectorAll<HTMLDetailsElement>(
+          "[data-comparison-slice]",
+        );
+        const updateSlice = () => {
+          slices.forEach((slice) => {
+            const selected =
+              slice.dataset.quantity === quantity.value &&
+              slice.dataset.plane === plane.value;
+            slice.hidden = !selected;
+            slice.open = selected;
+          });
+        };
+        quantity.addEventListener("change", updateSlice, { signal });
+        plane.addEventListener("change", updateSlice, { signal });
+        method.querySelector<HTMLElement>(
+          "[data-comparison-slice-controls]",
+        )!.hidden = false;
+        updateSlice();
+      });
+      methodSelect.addEventListener("change", updateMethod, { signal });
+      this.querySelector<HTMLElement>("[data-comparison-toolbar]")!.hidden =
+        false;
+      this.classList.add("is-enhanced");
+      updateMethod();
+      const preparePrint = () => {
+        if (this.restoreAfterPrint) return;
+        const states = Array.from(
+          this.querySelectorAll<HTMLDetailsElement>(
+            '.comparison-slice[data-print-default="true"], .comparison-all-outcomes',
+          ),
+          (element) => ({ element, open: element.open }),
+        );
+        this.restoreAfterPrint = () => {
+          states.forEach(({ element, open }) => {
+            element.open = open;
+          });
+          this.restoreAfterPrint = null;
+        };
+        states.forEach(({ element }) => {
+          element.open = true;
+        });
+      };
+      const finishPrint = () => this.restoreAfterPrint?.();
+      window.addEventListener("beforeprint", preparePrint, { signal });
+      window.addEventListener("afterprint", finishPrint, { signal });
+      const media = window.matchMedia("print");
+      media.addEventListener(
+        "change",
+        (event) => (event.matches ? preparePrint() : finishPrint()),
+        { signal },
+      );
+      if (media.matches) preparePrint();
+    }
+
+    disconnectedCallback() {
+      this.restoreAfterPrint?.();
+      this.listeners?.abort();
+      this.listeners = null;
+    }
+  }
+  if (!customElements.get("reconstruction-comparison")) {
+    customElements.define(
+      "reconstruction-comparison",
+      ReconstructionComparison,
+    );
+  }
+</script>

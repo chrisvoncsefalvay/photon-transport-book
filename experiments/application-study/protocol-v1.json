@@ -1,0 +1,169 @@
+{
+  "schema_version": 1,
+  "status": "proposed; independent review and development pilot required before final freeze",
+  "scientific_claim": "controlled known-volume monochromatic CT-derived registration and local finite-view selection; not clinical registration validation",
+  "data": {
+    "source_doi": "10.7937/tcia.2019.tt7f4v7o",
+    "rights": "CC BY 3.0",
+    "development_case": 2,
+    "final_cases": [0, 1],
+    "source_sha256": {
+      "volume-0.nii.gz": "dcd2faf240a668bcc5834b52cdac68436bd06cd138b8d7381238aef2bb4a53d7",
+      "labels-0.nii.gz": "4102df9468ea355733e4916787cae92cec4ad128a248cf07bf23b886d1f6b6f5",
+      "volume-1.nii.gz": "6feec6f3467f6053ee7f7ddf80696b65e24c1ca0fe5dc5c6970b443796f1761e",
+      "labels-1.nii.gz": "c2a26ef4880056fd2d7ff97e5280ec1a7fb77f4a0c60e7fa127d9f32b1d843db",
+      "volume-2.nii.gz": "ca702e58f0fb736ff4bc407aac0c4b698b8689f3f7e0281da32a546a87ae8a40",
+      "labels-2.nii.gz": "c5951c1065f517c9e8e794aec0a921ae0ebaa2198d4b38f0ed492bc7aca74e8f"
+    },
+    "crop_inferior_mm": 320,
+    "known_grid_shape_zyx": [64, 128, 128],
+    "material_energy_kev": 80,
+    "mu_mm_inverse": {
+      "water": 0.018365660412653837,
+      "cortical_bone": 0.04108010415565857
+    },
+    "reference_density_g_per_cm3": {
+      "water": 1.0,
+      "cortical_bone": 1.85
+    },
+    "assignment": "README.md data and physical interpretation",
+    "xraylib_version": "4.3.0",
+    "xraylib_compounds": ["Water, Liquid", "Bone, Cortical (ICRP)"],
+    "xraylib_package_sha256": "70f4cb986f6ea0fe41bf6af9ae4c2f693c3254dfd0f33cf6f3c59578169fd1ab",
+    "xraylib_source_archive_sha256": "328bdccff6b7ea511757d6eb22ab7983de13b41e70369a0967e2c543c2bfed1e",
+    "xraylib_source_release": "https://github.com/tschoonj/xraylib/releases/tag/xraylib-4.3.0",
+    "coefficient_source": "xraylib CS_Total_CP at80keV; full compound metadata and total-cross-section calculation retained; separately fetched NIST SRD126 tables not used"
+  },
+  "geometry": {
+    "detector_shape_hw": [128, 128],
+    "detector_spacing_mm_uv": [8.0, 8.0],
+    "source_isocentre_mm": 800.0,
+    "source_detector_mm": 1200.0,
+    "rotation_axis_object": [0, 0, 1],
+    "coordinate_convention": "centred object frame; synthetic cone-beam geometry; no patient laterality certification"
+  },
+  "numerics": {
+    "fitting_samples_per_ray": 512,
+    "fitting_sampling_candidates": [512, 1024],
+    "generation_samples_per_ray": 2048,
+    "generation_sampling_candidates": [1024, 2048, 4096],
+    "independent_exact_rays_per_check": 24,
+    "sampling_error_poisson_sd_p95_max": 0.05,
+    "sampling_error_poisson_sd_max": 0.2,
+    "chart_scales": [1.0, 1.0, 1.0, 0.01, 0.01, 0.01],
+    "chart_rotation_radius_radians": 1.0,
+    "policy": {
+      "max_iterations": 150,
+      "max_evaluations": 600,
+      "memory": 10,
+      "line_search_evaluations": 32,
+      "gradient_tolerance": 0.001,
+      "relative_loss_tolerance": 1e-12,
+      "step_tolerance": 1e-10,
+      "armijo": 0.0001,
+      "curvature": 0.9,
+      "maximum_step": 16.0,
+      "minimum_step": 1e-14
+    },
+    "solve_soft_seconds": 120.0,
+    "stationarity_tolerance_status": "development proposal; freeze from development numerical evidence only"
+  },
+  "randomness": {
+    "generator": "numpy.random.PCG64",
+    "seed_namespace_version": 1,
+    "development_root_seed": 120926,
+    "final_observation_root_seed": 20260913,
+    "final_hidden_pose_root_seed": 20260914,
+    "random_policy_root_seed": 20260915,
+    "keyed_by": ["study", "case", "pose", "replicate", "view", "role"],
+    "same_view_same_replicate_reused_between_policies": true,
+    "final_generation_before_freeze": false
+  },
+  "hidden_pose_distribution": {
+    "translation_uniform_mm": [-4.0, 4.0],
+    "rotation_vector_uniform_radians": [-0.035, 0.035],
+    "access": "generate.py and evaluate.py only; excluded from supplied fit/design cases"
+  },
+  "registration": {
+    "view_sets_degrees": {
+      "orthogonal": [0.0, 90.0],
+      "near_parallel": [0.0, 5.0]
+    },
+    "summed_open_beam_per_pixel": 20000.0,
+    "noise_replicates_per_case_and_start": 2,
+    "initial_offsets_local_se3_mm_rad": [
+      [2, -2, 1, 0.02, -0.01, 0.01],
+      [5, -4, 3, 0.04, -0.03, 0.02],
+      [-5, 3, -2, -0.04, 0.02, -0.03],
+      [12, -8, 6, 0.09, -0.07, 0.04]
+    ],
+    "starts_relative_to": "fixed nominal initial pose; never hidden generating pose",
+    "final_paired_comparisons": 16,
+    "stress": {
+      "views_degrees": [0.0],
+      "mask": "central eight detector columns, all rows",
+      "open_beam_per_pixel": 200.0,
+      "noise_replicates_per_case": 1,
+      "initial_offsets": "same four prescribed starts",
+      "dose_matched": false
+    },
+    "geometric_success": {
+      "rms_probe_error_mm_max": 1.0,
+      "maximum_probe_error_mm_max": 2.0,
+      "rotation_error_degrees_max": 0.5
+    },
+    "release_gate": "at least one verified successful recovery plus an honestly demonstrated weak-information or failed case; all prescribed final outcomes retained"
+  },
+  "acquisition": {
+    "base_view_degrees": 0.0,
+    "candidate_angles_degrees": [-90.0, -60.0, -30.0, 30.0, 60.0, 90.0],
+    "base_and_candidate_open_beam_per_pixel": 1000.0,
+    "cost_unit": "expected_detector_photons",
+    "maximum_candidate_cost": 16384000,
+    "fixed_policy_angle_degrees": 90.0,
+    "random_policy": "uniform independent prespecified candidate ID per case/replicate",
+    "replicates_per_case": 8,
+    "task_points": "eight object-frame cube corners with each coordinate -40 or +40 mm",
+    "current_precision": "base-view Fisher at accepted base estimate in same local right chart; no additional ridge/prior",
+    "maximum_precision_condition": 10000000000.0,
+    "rank_relative_tolerance": 1e-10,
+    "constrained": {
+      "candidate_angles_degrees": [-15.0, 15.0, 30.0],
+      "fixed_angle_degrees": 15.0,
+      "replicates_per_case": 4,
+      "constraint_kind": "supplied angular availability; no hardware clearance claim"
+    },
+    "policy_names": ["selected", "fixed", "random"],
+    "expected_solve_count_including_base_fits": 96,
+    "downstream_claim": "paired achieved geometric and held-out projection errors; no required policy win"
+  },
+  "evaluation": {
+    "reserved_view_angles_degrees": [45.0, 135.0],
+    "geometric_probes": "125 fixed lattice points, each coordinate in [-60,-30,0,30,60] mm; mathematical object probes, not clinical landmarks",
+    "reference_access_stage": "after all compared output/source hashes fixed",
+    "selection_case_contains_future_counts": false,
+    "fit_case_contains_reference": false,
+    "bootstrap_unit": "independent paired noise replicate within each phantom",
+    "bootstrap_resamples": 10000,
+    "bootstrap_seed": 20260916,
+    "interval": ".025 and .975 percentile; descriptive small-replicate uncertainty, no population inference",
+    "report_all_failures": true
+  },
+  "pilot": {
+    "max_solve_seconds": 120.0,
+    "warmed_gradient_evaluations_per_one_two_view_case": 4,
+    "candidate_fisher_count": 6,
+    "final_batch_requires_measured_budget_review": true,
+    "gpu_coordination": "parent approval of exact protocol and resource slot before launch"
+  },
+  "outputs": [
+    "supplied-case manifests",
+    "source snapshots and array identities",
+    "target/initial/final/residual images",
+    "accepted six-vector and rigid-transform trajectory",
+    "pose/probe errors and solver reasons",
+    "candidate scores and selected-view receipt",
+    "all downstream policy errors and held-out whole-view residuals",
+    "measured workload profile"
+  ]
+}

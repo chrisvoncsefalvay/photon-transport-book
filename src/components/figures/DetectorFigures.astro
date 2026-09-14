@@ -1,0 +1,930 @@
+---
+import { renderToString } from "katex";
+import RecordedPlot from "./RecordedPlot.astro";
+import noise from "../../../public/generated/figure-rollouts/detector-noise.json";
+import spectral7 from "../../../public/generated/figure-rollouts/spectral-chapter-7.json";
+import blur from "../../../public/generated/figure-rollouts/blur-displacement.json";
+import information from "../../../public/generated/figure-rollouts/figure-7-4.json";
+import spectral8 from "../../../public/generated/figure-rollouts/spectral-chapter-8.json";
+import charge from "../../../public/generated/figure-rollouts/figure-8-3.json";
+
+interface Props {
+  id: string;
+}
+
+const { id } = Astro.props;
+if (
+  ![
+    "figure-7-1",
+    "figure-7-2",
+    "figure-7-3",
+    "figure-7-4",
+    "figure-8-1",
+    "figure-8-3",
+  ].includes(id)
+) {
+  throw new Error(`Unsupported detector figure: ${id}`);
+}
+
+const math = (tex: string) =>
+  renderToString(tex, {
+    throwOnError: true,
+    strict: "error",
+    output: "htmlAndMathml",
+  });
+const number = (value: number, digits = 3) =>
+  value.toLocaleString("en-GB", { maximumFractionDigits: digits });
+const noiseLabels = ["Reference", "Double exposure", "Double gain"];
+const noiseTones = ["ink", "technical", "accent"];
+const histX = (value: number) => 47 + (value / 100) * 282;
+const histY = (value: number) => 208 - (value / 0.1) * 167;
+// All series below use archived values. Normalisation, cropping and the straight
+// incident-mean reference are display transformations, not new transport runs.
+const visibleBlur = blur.pixel_coordinate
+  .map((pixel, index) => ({ pixel, index }))
+  .filter(({ pixel }) => pixel >= -18 && pixel <= 18);
+const blurX = visibleBlur.map(({ pixel }) => pixel);
+const cropBlur = (values: number[]) =>
+  visibleBlur.map(({ index }) => values[index]!);
+const informationRows = information.rows.toSorted(
+  (a, b) => a.cosine - b.cosine,
+);
+const informationExamples = [0, 0.9, 0.99].map((cosine) => {
+  const row = informationRows.find((entry) => entry.cosine === cosine);
+  if (!row)
+    throw new Error(`Missing information reference at cosine ${cosine}`);
+  return row;
+});
+const fractions = charge.parameters.fractions;
+const sharedCovariance = charge.moments.shared_covariance;
+const exclusiveCovariance = charge.moments.exclusive_covariance;
+const covarianceMax = Math.max(
+  ...sharedCovariance.flat(),
+  ...exclusiveCovariance.flat(),
+);
+const mechanisms = [
+  { key: "shared", label: "Shared charge", covariance: sharedCovariance },
+  {
+    key: "exclusive",
+    label: "Exclusive assignment",
+    covariance: exclusiveCovariance,
+  },
+];
+---
+
+<div class="detector-figures" data-recorded-detector={id}>
+  {
+    id === "figure-7-1" && (
+      <>
+        <div class="noise-panels">
+          {noise.conditions.map((condition, index) => (
+            <section
+              class="noise-panel"
+              data-noise-condition={condition.condition}
+            >
+              <p class="panel-heading">{noiseLabels[index]}</p>
+              <p class="condition-settings">
+                {number(condition.detected_photon_mean)} photons on average ·{" "}
+                {number(condition.signal_per_photon)} signal unit
+                {condition.signal_per_photon === 1 ? "" : "s"} per photon
+              </p>
+              <svg
+                viewBox="0 0 348 256"
+                role="img"
+                aria-labelledby={`${id}-hist-${index}-title ${id}-hist-${index}-desc`}
+              >
+                <title id={`${id}-hist-${index}-title`}>
+                  {noiseLabels[index]}: recorded signal histogram
+                </title>
+                <desc id={`${id}-hist-${index}-desc`}>
+                  {number(condition.independent_pixel_draws)} independent draws.
+                  Each bar is the observed fraction at one signal value, on
+                  common axes from zero to 100 signal units and zero to 10
+                  percent. Sample mean {number(condition.sample_mean)} and
+                  variance {number(condition.unbiased_sample_variance)}. Exact
+                  mean {condition.reference_mean} and variance{" "}
+                  {condition.reference_variance}.
+                </desc>
+                {[0, 0.05, 0.1].map((value) => (
+                  <g>
+                    <line
+                      class="hist-grid"
+                      x1="47"
+                      x2="329"
+                      y1={histY(value)}
+                      y2={histY(value)}
+                    />
+                    <text
+                      class="hist-tick"
+                      x="39"
+                      y={histY(value) + 4}
+                      text-anchor="end"
+                    >
+                      {value * 100}%
+                    </text>
+                  </g>
+                ))}
+                <path class="hist-axis" d="M47 35 V208 H329" />
+                {condition.signal_histogram_values.map((value, bin) => {
+                  const frequency =
+                    condition.signal_histogram_counts[bin]! /
+                    condition.independent_pixel_draws;
+                  return (
+                    <rect
+                      class={`hist-bar tone-${noiseTones[index]}`}
+                      x={histX(value) - 1.2}
+                      y={histY(frequency)}
+                      width="2.4"
+                      height={histY(0) - histY(frequency)}
+                    />
+                  );
+                })}
+                {[0, 25, 50, 75, 100].map((value) => (
+                  <text
+                    class="hist-tick"
+                    x={histX(value)}
+                    y="225"
+                    text-anchor="middle"
+                  >
+                    {value}
+                  </text>
+                ))}
+                <text class="hist-label" x="188" y="248" text-anchor="middle">
+                  Signal (arbitrary units)
+                </text>
+                <text class="hist-label" x="47" y="20">
+                  Fraction of draws
+                </text>
+              </svg>
+              <dl class="noise-moments">
+                <div>
+                  <dt>Mean</dt>
+                  <dd>
+                    {number(condition.sample_mean)}{" "}
+                    <small>({condition.reference_mean} exact)</small>
+                  </dd>
+                </div>
+                <div>
+                  <dt>Variance</dt>
+                  <dd>
+                    {number(condition.unbiased_sample_variance)}{" "}
+                    <small>({condition.reference_variance} exact)</small>
+                  </dd>
+                </div>
+              </dl>
+            </section>
+          ))}
+        </div>
+        <p class="figure-note">
+          {number(noise.conditions[0]!.independent_pixel_draws)} independent
+          draws per condition, with zero offset and read noise. The doubled gain
+          allows only even signal values.
+        </p>
+      </>
+    )
+  }
+
+  {
+    id === "figure-7-2" && (
+      <>
+        <p class="fixture-line">
+          <span set:html={math(String.raw`w_1=w_2=\tfrac12`)} />
+          <span set:html={math(String.raw`\mu_1=0.01\ \mathrm{mm}^{-1}`)} />
+          <span set:html={math(String.raw`\mu_2=0.03\ \mathrm{mm}^{-1}`)} />
+        </p>
+        <div class="recorded-panels">
+          <RecordedPlot
+            id={`${id}-depth`}
+            title="Effective optical depth bends below the incident-mean line"
+            xLabel="Thickness (mm)"
+            yLabel="Effective optical depth"
+            xDomain={[0, 200]}
+            yDomain={[0, 4]}
+            xTicks={[0, 50, 100, 150, 200]}
+            yTicks={[0, 1, 2, 3, 4]}
+            series={[
+              {
+                label: "−log T",
+                x: spectral7.thickness_mm,
+                y: spectral7.effective_optical_depth_from_stored_mean,
+                tone: "ink",
+              },
+              {
+                label: "Incident mean: 0.02 ℓ",
+                x: spectral7.thickness_mm,
+                y: spectral7.thickness_mm.map((thickness) => thickness * 0.02),
+                tone: "muted",
+                dash: true,
+              },
+            ]}
+          />
+          <RecordedPlot
+            id={`${id}-fractions`}
+            title="The weakly attenuated component takes over"
+            xLabel="Thickness (mm)"
+            yLabel="Fraction of transmitted signal"
+            xDomain={[0, 200]}
+            yDomain={[0, 1]}
+            xTicks={[0, 50, 100, 150, 200]}
+            yTicks={[0, 0.25, 0.5, 0.75, 1]}
+            series={[
+              {
+                label: "μ₁ = 0.01 mm⁻¹",
+                x: spectral7.thickness_mm,
+                y: spectral7
+                  .transmitted_component_fractions_from_stored_means[0]!,
+                tone: "technical",
+              },
+              {
+                label: "μ₂ = 0.03 mm⁻¹",
+                x: spectral7.thickness_mm,
+                y: spectral7
+                  .transmitted_component_fractions_from_stored_means[1]!,
+                tone: "accent",
+              },
+            ]}
+          />
+        </div>
+        <p class="figure-note">
+          The slope falls from{" "}
+          {number(spectral7.effective_slope_per_mm_from_stored_values[0]!, 5)}{" "}
+          to{" "}
+          {number(
+            spectral7.effective_slope_per_mm_from_stored_values.at(-1)!,
+            5,
+          )}{" "}
+          mm⁻¹ over this interval. Log signals and fractions are derived from
+          the recorded component means.
+        </p>
+      </>
+    )
+  }
+
+  {
+    id === "figure-7-3" && (
+      <>
+        <div class="recorded-panels">
+          <RecordedPlot
+            id={`${id}-inputs`}
+            title="Move the feature by one pixel"
+            xLabel="Position (pixels)"
+            yLabel="Input signal"
+            xDomain={[-18, 18]}
+            yDomain={[0, 1.05]}
+            xTicks={[-15, 0, 15]}
+            yTicks={[0, 0.5, 1]}
+            series={[
+              {
+                label: "Original feature",
+                x: blurX,
+                y: cropBlur(blur.input_signal),
+                tone: "muted",
+              },
+              {
+                label: "Feature displaced +1 px",
+                x: blurX,
+                y: cropBlur(blur.shifted_input_signal),
+                tone: "accent",
+              },
+            ]}
+          />
+          <RecordedPlot
+            id={`${id}-outputs`}
+            title="The two filtered profiles coincide"
+            xLabel="Position (pixels)"
+            yLabel="Filtered signal"
+            xDomain={[-18, 18]}
+            yDomain={[0, 1.05]}
+            xTicks={[-15, 0, 15]}
+            yTicks={[0, 0.5, 1]}
+            series={[
+              {
+                label: "Feature +1 px, fixed kernel",
+                x: blurX,
+                y: cropBlur(blur.shifted_feature_filtered_cuda),
+                tone: "accent",
+              },
+              {
+                label: "Fixed feature, kernel +1 px",
+                x: blurX,
+                y: cropBlur(blur.shifted_kernel_filtered_cuda),
+                tone: "technical",
+                dash: true,
+              },
+            ]}
+          />
+        </div>
+        <div class="blur-result">
+          <span class="result-number">
+            Identical at all {blur.pixel_coordinate.length} pixels
+          </span>
+          <p>
+            Fixed stencil: [{blur.base_stencil.join(", ")}]. Its array shifts by
+            −1 to displace the output by +1 pixel under the recorded indexing
+            convention. The feature stays clear of the image edges.
+          </p>
+        </div>
+      </>
+    )
+  }
+
+  {
+    id === "figure-7-4" && (
+      <>
+        <RecordedPlot
+          id={`${id}-information`}
+          title="Information remaining after fitting one nuisance direction"
+          showLegend={false}
+          xLabel="Cosine between whitened derivatives, c"
+          yLabel="Remaining information fraction"
+          xDomain={[-1, 1]}
+          yDomain={[0, 1.05]}
+          xTicks={[-1, -0.5, 0, 0.5, 1]}
+          yTicks={[0, 0.25, 0.5, 0.75, 1]}
+          series={[
+            {
+              label: "1 − c²",
+              x: informationRows.map((row) => row.cosine),
+              y: informationRows.map((row) => row.information_fraction),
+              tone: "ink",
+            },
+            {
+              label: "Examples below",
+              x: informationExamples.map((row) => row.cosine),
+              y: informationExamples.map((row) => row.information_fraction),
+              tone: "accent",
+              mode: "markers",
+            },
+          ]}
+        >
+          <span
+            slot="annotation"
+            set:html={math(
+              String.raw`\frac{I_{u\mid\eta}}{\lVert\mathbf a\rVert^2}=1-c^2`,
+            )}
+          />
+        </RecordedPlot>
+        <dl class="information-readings">
+          {informationExamples.map((row) => (
+            <div>
+              <dt>c = {row.cosine}</dt>
+              <dd>
+                {number(100 * row.information_fraction, 2)}%{" "}
+                <span>remains</span>
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </>
+    )
+  }
+
+  {
+    id === "figure-8-1" && (
+      <>
+        <p class="fixture-line">
+          <span set:html={math(String.raw`w_1=w_2=\tfrac12`)} />
+          <span set:html={math(String.raw`\mu_1=0.02\ \mathrm{mm}^{-1}`)} />
+          <span set:html={math(String.raw`\mu_2=0.04\ \mathrm{mm}^{-1}`)} />
+        </p>
+        <div class="recorded-panels">
+          <RecordedPlot
+            id={`${id}-transmission`}
+            title="Unequal contributions after the slab"
+            xLabel="Thickness (mm)"
+            yLabel="Transmission"
+            xDomain={[0, 200]}
+            yDomain={[0, 1]}
+            xTicks={[0, 50, 100, 150, 200]}
+            yTicks={[0, 0.25, 0.5, 0.75, 1]}
+            series={[
+              {
+                label: "Total transmission",
+                x: spectral8.thickness_mm,
+                y: spectral8.transmission_cuda,
+                tone: "ink",
+              },
+              {
+                label: "½ exp(−0.02 ℓ)",
+                x: spectral8.thickness_mm,
+                y: spectral8.transmitted_component_means_cuda[0]!,
+                tone: "technical",
+              },
+              {
+                label: "½ exp(−0.04 ℓ)",
+                x: spectral8.thickness_mm,
+                y: spectral8.transmitted_component_means_cuda[1]!,
+                tone: "accent",
+              },
+            ]}
+          />
+          <RecordedPlot
+            id={`${id}-depth`}
+            title="A fixed mean coefficient misses the curvature"
+            xLabel="Thickness (mm)"
+            yLabel="Apparent optical depth"
+            xDomain={[0, 200]}
+            yDomain={[0, 6]}
+            xTicks={[0, 50, 100, 150, 200]}
+            yTicks={[0, 2, 4, 6]}
+            series={[
+              {
+                label: "−log T",
+                x: spectral8.thickness_mm,
+                y: spectral8.effective_optical_depth_from_stored_mean,
+                tone: "ink",
+              },
+              {
+                label: "Incident mean: 0.03 ℓ",
+                x: spectral8.thickness_mm,
+                y: spectral8.thickness_mm.map((thickness) => thickness * 0.03),
+                tone: "muted",
+                dash: true,
+              },
+            ]}
+          />
+        </div>
+        <p class="figure-note">
+          Equal incident counting weights and author-defined attenuation
+          coefficients. Apparent depth uses the recorded, rounded transmission.
+        </p>
+      </>
+    )
+  }
+
+  {
+    id === "figure-8-3" && (
+      <>
+        <p class="fixture-line">
+          <span
+            set:html={math(
+              String.raw`N\sim\operatorname{Poisson}(${charge.parameters.arrival_mean})`,
+            )}
+          />
+          <span
+            set:html={math(
+              String.raw`\mathbb E[\mathbf Y]=(${charge.moments.mean.join(",")})`,
+            )}
+          />
+        </p>
+        <div class="recorded-panels">
+          {mechanisms.map((mechanism) => (
+            <section class="charge-panel">
+              <p class="panel-heading">{mechanism.label}</p>
+              <svg
+                class="event-diagram"
+                viewBox="0 0 360 230"
+                role="img"
+                aria-labelledby={`${id}-${mechanism.key}-title ${id}-${mechanism.key}-desc`}
+              >
+                <title id={`${id}-${mechanism.key}-title`}>
+                  {mechanism.label}: one-event scores at two pixels
+                </title>
+                <desc id={`${id}-${mechanism.key}-desc`}>
+                  {mechanism.key === "shared"
+                    ? `Every event contributes ${fractions[0]} signal units to pixel 1 and ${fractions[1]} to pixel 2 simultaneously.`
+                    : `An event contributes one unit to pixel 1 and zero to pixel 2 with probability ${fractions[0]}, or zero to pixel 1 and one to pixel 2 with probability ${fractions[1]}. These outcomes are mutually exclusive.`}
+                </desc>
+                <circle class="event" cx="180" cy="30" r="7" />
+                <text class="event-label" x="198" y="35">
+                  One event
+                </text>
+                {mechanism.key === "shared" ? (
+                  <>
+                    <path
+                      class="event-link"
+                      d="M180 40 V65 M180 65 L100 102 M180 65 L260 102"
+                    />
+                    <path
+                      class="event-link"
+                      d="M96 94 L100 102 L109 99 M251 99 L260 102 L264 94"
+                    />
+                    {[0, 1].map((pixel) => (
+                      <g>
+                        <rect
+                          class={`pixel-box pixel-${pixel}`}
+                          x={pixel === 0 ? 45 : 205}
+                          y="110"
+                          width="110"
+                          height="60"
+                        />
+                        <text
+                          class="score"
+                          x={pixel === 0 ? 100 : 260}
+                          y="148"
+                          text-anchor="middle"
+                        >
+                          {fractions[pixel]}
+                        </text>
+                        <text
+                          class="event-label"
+                          x={pixel === 0 ? 100 : 260}
+                          y="192"
+                          text-anchor="middle"
+                        >
+                          Pixel {pixel + 1}
+                        </text>
+                      </g>
+                    ))}
+                    <text
+                      class="event-label outcome-note"
+                      x="180"
+                      y="220"
+                      text-anchor="middle"
+                    >
+                      Both pixels receive charge from every event
+                    </text>
+                  </>
+                ) : (
+                  <>
+                    <path
+                      class="event-link alternative-link"
+                      d="M180 40 L85 100 M180 40 L275 100"
+                    />
+                    <path
+                      class="event-link"
+                      d="M86 91 L85 100 L95 99 M265 99 L275 100 L274 91"
+                    />
+                    <text
+                      class="event-label"
+                      x="70"
+                      y="72"
+                      text-anchor="middle"
+                    >
+                      p = {fractions[0]}
+                    </text>
+                    <text
+                      class="event-label"
+                      x="290"
+                      y="72"
+                      text-anchor="middle"
+                    >
+                      p = {fractions[1]}
+                    </text>
+                    {[0, 1].map((outcome) => (
+                      <g>
+                        {[0, 1].map((pixel) => (
+                          <g>
+                            <rect
+                              class={`pixel-box pixel-${pixel}`}
+                              x={outcome * 190 + pixel * 65 + 20}
+                              y="110"
+                              width="65"
+                              height="60"
+                            />
+                            <text
+                              class="score"
+                              x={outcome * 190 + pixel * 65 + 52.5}
+                              y="148"
+                              text-anchor="middle"
+                            >
+                              {outcome === pixel ? 1 : 0}
+                            </text>
+                            <text
+                              class="event-label"
+                              x={outcome * 190 + pixel * 65 + 52.5}
+                              y="192"
+                              text-anchor="middle"
+                            >
+                              Pixel {pixel + 1}
+                            </text>
+                          </g>
+                        ))}
+                      </g>
+                    ))}
+                    <text
+                      class="event-label outcome-or"
+                      x="180"
+                      y="148"
+                      text-anchor="middle"
+                    >
+                      or
+                    </text>
+                    <text
+                      class="event-label outcome-note"
+                      x="180"
+                      y="220"
+                      text-anchor="middle"
+                    >
+                      Exactly one of these two outcomes occurs
+                    </text>
+                  </>
+                )}
+              </svg>
+              <p
+                class="covariance-heading"
+                set:html={math(String.raw`\operatorname{Cov}(\mathbf Y)`)}
+              />
+              <div
+                class="covariance-matrix"
+                role="table"
+                aria-label={`${mechanism.label} covariance in squared signal units`}
+              >
+                <div class="matrix-head" role="row">
+                  <span role="columnheader">Pixel</span>
+                  <span role="columnheader">1</span>
+                  <span role="columnheader">2</span>
+                </div>
+                {mechanism.covariance.map((row, rowIndex) => (
+                  <div class="matrix-row" role="row">
+                    <span class="matrix-row-label" role="rowheader">
+                      {rowIndex + 1}
+                    </span>
+                    {row.map((value) => (
+                      <span
+                        class="matrix-value"
+                        role="cell"
+                        style={`--cell-strength: ${(value / covarianceMax) * 0.45};`}
+                      >
+                        {number(value)}
+                      </span>
+                    ))}
+                  </div>
+                ))}
+              </div>
+              <p class="covariance-reading">
+                Cross-pixel covariance:{" "}
+                <strong>{number(mechanism.covariance[0]![1]!)}</strong>
+              </p>
+            </section>
+          ))}
+        </div>
+        <p class="figure-note">
+          Arbitrary unit-event signal. Covariance cells share one colour scale,
+          from 0 to {number(covarianceMax)} squared signal units.
+        </p>
+      </>
+    )
+  }
+</div>
+
+<style>
+  .detector-figures {
+    font-family: var(--font-ui);
+  }
+  .detector-figures p {
+    margin: 0;
+  }
+  .fixture-line {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.65rem 1.5rem;
+    font-size: 0.9rem;
+    padding-bottom: 1.3rem;
+  }
+  .panel-heading {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .figure-note {
+    font-size: 0.76rem;
+    color: var(--ink-muted);
+    line-height: 1.65;
+    padding-top: 1rem;
+  }
+  .noise-panels {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.3rem;
+  }
+  .noise-panel {
+    min-width: 0;
+  }
+  .condition-settings {
+    font-size: 0.73rem;
+    color: var(--ink-muted);
+    line-height: 1.6;
+    min-height: 2.4rem;
+    padding-top: 0.35rem;
+  }
+  .noise-panel svg,
+  .event-diagram {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .hist-axis,
+  .hist-grid {
+    stroke: var(--rule);
+    stroke-width: 1;
+    fill: none;
+    vector-effect: non-scaling-stroke;
+  }
+  .hist-axis {
+    stroke: var(--ink-muted);
+  }
+  .hist-tick,
+  .hist-label {
+    font-family: var(--font-ui);
+    font-size: 12px;
+    fill: var(--ink-muted);
+  }
+  .hist-label {
+    fill: var(--ink);
+  }
+  .tone-ink {
+    fill: var(--ink);
+  }
+  .tone-accent {
+    fill: var(--accent);
+  }
+  .tone-technical {
+    fill: var(--technical);
+  }
+  .noise-moments {
+    display: grid;
+    gap: 0.4rem;
+    margin: 0.8rem 0 0;
+    font-size: 0.78rem;
+    border-top: 1px solid var(--rule);
+    padding-top: 0.7rem;
+  }
+  .noise-moments > div {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.25rem 0.5rem;
+  }
+  .noise-moments dt {
+    color: var(--ink-muted);
+  }
+  .noise-moments dd {
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+  }
+  .noise-moments small {
+    color: var(--ink-muted);
+    font-size: 0.73rem;
+  }
+  .blur-result {
+    display: grid;
+    grid-template-columns: minmax(12rem, 0.8fr) minmax(0, 1.7fr);
+    gap: 1rem;
+    border-top: 1px solid var(--rule);
+    margin-top: 1.3rem;
+    padding-top: 1rem;
+    align-items: baseline;
+  }
+  .result-number {
+    font-family: var(--font-prose);
+    font-size: 1.2rem;
+    color: var(--technical);
+  }
+  .blur-result p {
+    font-size: 0.76rem;
+    color: var(--ink-muted);
+    line-height: 1.65;
+  }
+  .information-readings {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+    margin: 1.2rem 0 0;
+  }
+  .information-readings > div {
+    border-top: 1px solid var(--rule);
+    padding-top: 0.75rem;
+  }
+  .information-readings dt {
+    font-size: 0.8rem;
+    color: var(--ink-muted);
+  }
+  .information-readings dd {
+    margin: 0.3rem 0 0;
+    font-family: var(--font-prose);
+    font-size: 1.5rem;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+  .information-readings dd span {
+    font-size: 0.8rem;
+    font-family: var(--font-ui);
+    color: var(--ink-muted);
+  }
+  .charge-panel {
+    min-width: 0;
+  }
+  .event-diagram {
+    margin-top: 0.75rem;
+  }
+  .event {
+    fill: var(--ink);
+  }
+  .event-link {
+    fill: none;
+    stroke: var(--ink-muted);
+    stroke-width: 1.1;
+    vector-effect: non-scaling-stroke;
+  }
+  .alternative-link {
+    stroke-dasharray: 4 4;
+  }
+  .event-label {
+    fill: var(--ink);
+    font-family: var(--font-ui);
+    font-size: 12px;
+  }
+  .outcome-note {
+    font-size: 11px;
+    fill: var(--ink-muted);
+  }
+  .outcome-or {
+    font-family: var(--font-prose);
+    font-style: italic;
+    font-size: 17px;
+  }
+  .pixel-box {
+    fill: var(--paper);
+    stroke: var(--rule-strong);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+  }
+  .score {
+    font-family: var(--font-prose);
+    font-size: 25px;
+    fill: var(--technical);
+  }
+  .covariance-heading {
+    text-align: center;
+    padding: 1rem 0 0.5rem;
+    font-size: 0.9rem;
+  }
+  .covariance-matrix {
+    max-width: 17rem;
+    margin: 0 auto;
+    font-variant-numeric: tabular-nums;
+    font-size: 0.83rem;
+  }
+  .matrix-head,
+  .matrix-row {
+    display: grid;
+    grid-template-columns: 2.8rem repeat(2, minmax(0, 1fr));
+    text-align: center;
+    gap: 2px;
+  }
+  .matrix-head,
+  .matrix-row-label {
+    color: var(--ink-muted);
+    font-size: 0.72rem;
+  }
+  .matrix-head span,
+  .matrix-row-label {
+    padding: 0.55rem 0;
+  }
+  .matrix-value {
+    position: relative;
+    padding: 0.8rem 0;
+    background: color-mix(
+      in srgb,
+      var(--technical) calc(var(--cell-strength) * 100%),
+      transparent
+    );
+    border: 1px solid var(--rule);
+    color: var(--ink);
+  }
+  .covariance-reading {
+    text-align: center;
+    padding-top: 0.8rem;
+    font-size: 0.78rem;
+    color: var(--ink-muted);
+  }
+  .covariance-reading strong {
+    color: var(--ink);
+    font-weight: 500;
+  }
+  @media (max-width: 900px) {
+    .noise-panels {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1.6rem;
+    }
+    .noise-panel {
+      max-width: 31rem;
+      width: 100%;
+      margin-inline: auto;
+    }
+    .condition-settings {
+      min-height: 0;
+    }
+  }
+  @media (max-width: 700px) {
+    .fixture-line {
+      font-size: 0.76rem;
+    }
+    .blur-result {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0.45rem;
+    }
+    .information-readings {
+      gap: 0.65rem;
+    }
+    .information-readings dd {
+      font-size: 1.2rem;
+    }
+    .information-readings dd span {
+      display: block;
+      margin-top: 0.15rem;
+    }
+  }
+</style>

@@ -1,0 +1,127 @@
+---
+import FigurePlate from "./FigurePlate.astro";
+import { renderToString } from "katex";
+import RecordedPlot from "./RecordedPlot.astro";
+import data from "../../../public/generated/radiographs/directional-checks.json";
+import "../../styles/recorded-figures.css";
+interface Props {
+  id: string;
+}
+const { id } = Astro.props;
+const series = (item: (typeof data.cases)[number]) => {
+  const x = item.rows.map((r) => r.step_mm);
+  return [
+    {
+      label: "CUDA central difference",
+      x,
+      y: item.rows.map((r) => r.central_counts_per_mm),
+      tone: "ink" as const,
+    },
+    {
+      label: "Selected CUDA VJP",
+      x,
+      y: x.map(() => item.vjp_counts_per_mm),
+      tone: "accent" as const,
+    },
+    ...(item.id === "knot"
+      ? [
+          {
+            label: "Forward one-sided difference",
+            x,
+            y: item.rows.map((r) => r.forward_counts_per_mm),
+            tone: "technical" as const,
+          },
+          {
+            label: "Backward one-sided difference",
+            x,
+            y: item.rows.map((r) => r.backward_counts_per_mm),
+            tone: "muted" as const,
+          },
+        ]
+      : [
+          {
+            label: "Step crosses the knot",
+            x: item.rows.filter((r) => r.crosses_knot).map((r) => r.step_mm),
+            y: item.rows
+              .filter((r) => r.crosses_knot)
+              .map((r) => r.central_counts_per_mm),
+            tone: "technical" as const,
+            mode: "markers" as const,
+          },
+        ]),
+  ];
+};
+---
+
+<FigurePlate
+  {id}
+  title="A derivative check needs to know where the knots are"
+  description="Inside a smooth interpolation branch, central differences approach the pose VJP before rounding dominates. At a knot they mix branches, so a symmetric difference can disagree with a valid selected-branch derivative."
+  width="full"
+>
+  <div class="recorded-figure">
+    <div class="recorded-panels">
+      {
+        data.cases.map((item) => (
+          <section>
+            <>
+              <RecordedPlot
+                id={`canonical-${item.id}`}
+                title={
+                  item.id === "smooth"
+                    ? "Away from the knot: t = 0.25 mm"
+                    : "At the knot: t = 0 mm"
+                }
+                xLabel="Step h (mm)"
+                yLabel="Count change per mm"
+                xScale="log"
+                series={series(item)}
+              />
+              <p class="directional-reading">
+                Selected VJP: {item.vjp_counts_per_mm.toFixed(5)} counts/mm.{" "}
+                {item.id === "smooth"
+                  ? "Only h < 0.25 mm stays on this smooth branch. At the smallest steps, rounded count subtraction dominates."
+                  : "The symmetric difference is zero. The two one-sided limits have opposite signs, so an ordinary derivative does not exist here."}
+              </p>
+            </>
+          </section>
+        ))
+      }
+    </div><details class="recorded-data">
+      <summary>Exact fixture and recorded checks</summary><p>
+        A single ray passes through a 3 × 3 × 3 field with 1 mm spacing and x
+        weights (1, 2, 1). The base coefficient is the stored FP32 value of 0.02
+        mm⁻¹. Boundary-sample clamping within the half-cell support gives a 3 mm
+        path and depth
+        <span
+          set:html={renderToString(
+            String.raw`L(t)=(3\,\mathrm{mm})\,\mu\left[2-\frac{|t|}{1\,\mathrm{mm}}\right]`,
+            { throwOnError: true },
+          )}
+        />
+        for |t| &lt; 1 mm. The incident mean is 1,000 photons.
+      </p><p>
+        The canonical operators use 1,024 samples per ray, FP32 fields/counts
+        and an FP64 pose VJP. Independent scalar FP64 forward checks agree
+        within 0.001 counts. The smooth derivative differs from the independent
+        analytic value by {
+          data.checks.smooth_derivative_absolute_error.toExponential(2)
+        } counts/mm. This software fixture checks numerical consistency, not physical
+        image accuracy.
+      </p><p>
+        <a href="/generated/radiographs/directional-checks.json"
+          >Recorded values and checks</a
+        > · <a href="/generated/radiographs/provenance.json"
+          >Producer source digests</a
+        >
+      </p>
+    </details>
+  </div>
+</FigurePlate>
+<style>
+  .directional-reading {
+    font: 400 0.8rem/1.6 var(--font-ui);
+    color: var(--ink-muted);
+    margin: 0.8rem 0 0;
+  }
+</style>

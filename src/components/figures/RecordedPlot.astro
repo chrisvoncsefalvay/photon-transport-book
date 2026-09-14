@@ -1,0 +1,411 @@
+---
+import {
+  extent,
+  mapValue,
+  plotPath,
+  ticks,
+  formatTick,
+  type RecordedSeries,
+  type Scale,
+} from "../../lib/recorded-plot";
+interface Props {
+  id: string;
+  title: string;
+  showTitle?: boolean;
+  showLegend?: boolean;
+  xLabel: string;
+  yLabel: string;
+  series: RecordedSeries[];
+  xDomain?: [number, number];
+  yDomain?: [number, number];
+  xScale?: Scale;
+  yScale?: Scale;
+  xTicks?: number[];
+  yTicks?: number[];
+}
+const {
+  id,
+  title,
+  showTitle = true,
+  showLegend = true,
+  xLabel,
+  yLabel,
+  series,
+  xScale = "linear",
+  yScale = "linear",
+  xDomain = extent(
+    series.flatMap((s) => s.x),
+    xScale,
+  ),
+  yDomain = extent(
+    series.flatMap((s) => s.y),
+    yScale,
+  ),
+  xTicks = ticks(xDomain, xScale),
+  yTicks = ticks(yDomain, yScale),
+} = Astro.props;
+const hasAnnotation = Astro.slots.has("annotation");
+for (const [domain, scale] of [
+  [xDomain, xScale],
+  [yDomain, yScale],
+] as const)
+  if (
+    !domain.every(Number.isFinite) ||
+    domain[0] >= domain[1] ||
+    (scale === "log" && domain[0] <= 0)
+  )
+    throw new Error(`Invalid plot domain: ${id}`);
+const x = (n: number) => mapValue(n, xDomain, [76, 400], xScale);
+const y = (n: number) => mapValue(n, yDomain, [244, 18], yScale);
+const visibleXTicks = xTicks.filter((t) => t >= xDomain[0] && t <= xDomain[1]);
+const visibleYTicks = yTicks.filter((t) => t >= yDomain[0] && t <= yDomain[1]);
+const usedPatterns = new Set<string>();
+const patterns = series.map((s) => {
+  if (s.legend === false) return "none";
+  if (s.mode === "markers" || s.mode === "bars") return "none";
+  const options = s.dash
+    ? ["6 4", "2 3", "8 3 2 3", "none"]
+    : ["none", "6 4", "2 3", "8 3 2 3"];
+  const pattern = options.find((p) => !usedPatterns.has(p)) ?? "none";
+  usedPatterns.add(pattern);
+  return pattern;
+});
+const tones = ["technical", "accent", "ink", "muted"];
+if (
+  series.some((s) => s.mode === "bars") &&
+  (yScale !== "linear" || yDomain[0] > 0 || yDomain[1] < 0)
+)
+  throw new Error(`Bars require a linear scale containing zero: ${id}`);
+---
+
+<section
+  class:list={["recorded-plot", { "has-annotation": hasAnnotation }]}
+  aria-labelledby={`${id}-title`}
+  data-recorded-plot={id}
+>
+  {showTitle && <h4 id={`${id}-title`}>{title}</h4>}
+  {
+    hasAnnotation && (
+      <div class="plot-annotation">
+        <slot name="annotation" />
+      </div>
+    )
+  }
+  <svg
+    viewBox="0 0 420 298"
+    role="img"
+    aria-labelledby={`${id}-title ${id}-desc`}
+  >
+    {!showTitle && <title id={`${id}-title`}>{title}</title>}
+    <desc id={`${id}-desc`}
+      >{yLabel} against {xLabel}. {
+        xScale === "log" ? "The horizontal scale is logarithmic. " : ""
+      }{yScale === "log" ? "The vertical scale is logarithmic. " : ""}{
+        new Intl.ListFormat("en-GB", { type: "conjunction" }).format(
+          series.filter((s) => s.legend !== false).map((s) => s.label),
+        )
+      }.</desc
+    >
+    <text
+      class="plot-axis-label"
+      transform="translate(16 131) rotate(-90)"
+      text-anchor="middle">{yLabel}</text
+    >
+    <defs
+      ><clipPath id={`${id}-clip`}
+        ><rect x="75" y="17" width="326" height="228"></rect></clipPath
+      ></defs
+    >
+    <!-- Shift the shared plot coordinates together to clear wide y-axis ticks. -->
+    <g transform="translate(16 0)">
+      {
+        visibleYTicks.map((t) => (
+          <g>
+            <>
+              <path class="plot-grid" d={`M76 ${y(t)}H400`} />
+              <text class="plot-tick" x="68" y={y(t) + 4} text-anchor="end">
+                {formatTick(t)}
+              </text>
+            </>
+          </g>
+        ))
+      }
+      {
+        visibleXTicks.map((t) => (
+          <g>
+            <>
+              <path class="plot-tick-line" d={`M${x(t)} 244v5`} />
+              <text
+                class="plot-tick"
+                x={x(t)}
+                y="266"
+                text-anchor={x(t) > 388 ? "end" : "middle"}
+              >
+                {formatTick(t)}
+              </text>
+            </>
+          </g>
+        ))
+      }
+      <path class="plot-axis" d="M76 18V244H400"></path>
+      <text class="plot-axis-label" x="238" y="292" text-anchor="middle"
+        >{xLabel}</text
+      >
+      <g clip-path={`url(#${id}-clip)`}>
+        {
+          series.map((s, i) => (
+            <g
+              class:list={[
+                "plot-series",
+                `tone-${s.tone ?? tones[i % 4]}`,
+                { "is-dashed": s.dash },
+              ]}
+              data-series={s.label}
+            >
+              {s.mode !== "markers" && s.mode !== "bars" && (
+                <path
+                  class="plot-line"
+                  stroke-dasharray={patterns[i]}
+                  d={plotPath(s, xDomain, yDomain, xScale, yScale)}
+                />
+              )}
+              {s.mode === "markers" &&
+                s.x.map((v, j) => {
+                  const w = s.y[j];
+                  return (
+                    w !== null &&
+                    w !== undefined &&
+                    Number.isFinite(w) &&
+                    Number.isFinite(v) &&
+                    (xScale !== "log" || v > 0) &&
+                    (yScale !== "log" || w > 0) &&
+                    (s.marker === "square" ? (
+                      <rect
+                        x={x(v) - 3.2}
+                        y={y(w) - 3.2}
+                        width="6.4"
+                        height="6.4"
+                      >
+                        <title>{`${s.label}: ${formatTick(v)}, ${formatTick(w)}`}</title>
+                      </rect>
+                    ) : (
+                      <circle cx={x(v)} cy={y(w)} r="3.2">
+                        <title>{`${s.label}: ${formatTick(v)}, ${formatTick(w)}`}</title>
+                      </circle>
+                    ))
+                  );
+                })}
+              {s.mode === "bars" &&
+                s.x.map((v, j) => {
+                  const w = s.y[j];
+                  return (
+                    w !== null &&
+                    w !== undefined &&
+                    Number.isFinite(w) &&
+                    Number.isFinite(v) &&
+                    (xScale !== "log" || v > 0) && (
+                      <rect
+                        x={x(v) - 12}
+                        y={Math.min(y(w), y(0))}
+                        width="24"
+                        height={Math.abs(y(w) - y(0))}
+                      >
+                        <title>{`${s.label}: ${formatTick(v)}°, ${formatTick(w)}`}</title>
+                      </rect>
+                    )
+                  );
+                })}
+            </g>
+          ))
+        }
+      </g>
+    </g>
+  </svg>
+  <slot name="before-legend" />
+  {
+    showLegend && (
+      <ul class="plot-legend" aria-label="Plotted series">
+        {series.map(
+          (s, i) =>
+            s.legend !== false && (
+              <li
+                class:list={[
+                  `tone-${s.tone ?? tones[i % 4]}`,
+                  { "is-dashed": s.dash, "is-marker": s.mode === "markers" },
+                ]}
+              >
+                <svg class="legend-mark" viewBox="0 0 28 10" aria-hidden="true">
+                  {s.mode === "markers" || s.mode === "bars" ? (
+                    s.marker === "square" || s.mode === "bars" ? (
+                      <rect
+                        x="11"
+                        y="2"
+                        width="6"
+                        height="6"
+                        fill="currentColor"
+                      />
+                    ) : (
+                      <circle
+                        cx="14"
+                        cy="5"
+                        r="3"
+                        fill="none"
+                        stroke="currentColor"
+                      />
+                    )
+                  ) : (
+                    <line
+                      x1="0"
+                      x2="28"
+                      y1="5"
+                      y2="5"
+                      stroke="currentColor"
+                      stroke-width="1.7"
+                      stroke-dasharray={patterns[i]}
+                    />
+                  )}
+                </svg>
+                {s.label}
+              </li>
+            ),
+        )}
+      </ul>
+    )
+  }
+  <style>
+    .recorded-plot {
+      width: 100%;
+      max-width: 36rem;
+      margin-inline: auto;
+      min-width: 0;
+      font-family: var(--font-ui);
+    }
+    .recorded-plot.has-annotation {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      container-type: inline-size;
+    }
+    .has-annotation > h4 {
+      grid-area: 1 / 1;
+    }
+    .has-annotation > svg {
+      grid-area: 2 / 1;
+    }
+    .plot-annotation {
+      grid-area: 2 / 1;
+      place-self: start end;
+      z-index: 1;
+      margin: 4.3% 1% 0 0;
+      padding: 0.2rem 0.35rem;
+      background: var(--paper-inset);
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+    @container (max-width: 34rem) {
+      .plot-annotation {
+        margin: 0 0 0.4rem;
+      }
+      .has-annotation > svg {
+        grid-row: 3;
+      }
+    }
+    h4 {
+      font-family: var(--font-ui);
+      font-size: 0.88rem;
+      font-weight: 500;
+      line-height: 1.45;
+      margin: 0 0 0.7rem;
+      color: var(--ink);
+    }
+    svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      overflow: visible;
+    }
+    svg text {
+      font-family: var(--font-ui);
+      fill: var(--ink);
+    }
+    .plot-tick {
+      font-size: 13px;
+      fill: var(--ink-muted);
+    }
+    .plot-axis-label {
+      font-size: 13px;
+    }
+    .plot-grid {
+      fill: none;
+      stroke: var(--rule);
+      stroke-width: 0.6;
+    }
+    .plot-axis,
+    .plot-tick-line {
+      fill: none;
+      stroke: var(--ink-muted);
+      stroke-width: 1;
+    }
+    .plot-line {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linejoin: round;
+    }
+    .plot-series circle {
+      fill: var(--paper-inset);
+      stroke: currentColor;
+      stroke-width: 1.5;
+    }
+    .plot-series rect {
+      fill: currentColor;
+      stroke: currentColor;
+    }
+    svg path,
+    svg circle {
+      vector-effect: non-scaling-stroke;
+    }
+    .tone-ink {
+      color: var(--ink);
+    }
+    .tone-accent {
+      color: var(--accent);
+    }
+    .tone-technical {
+      color: var(--technical);
+    }
+    .tone-muted {
+      color: var(--ink-muted);
+    }
+    .plot-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem 1rem;
+      list-style: none;
+      margin: 0.8rem 0 0;
+      padding: 0;
+      font-size: 0.75rem;
+      line-height: 1.45;
+    }
+    .plot-legend li {
+      display: flex;
+      align-items: baseline;
+      gap: 0.4rem;
+      margin: 0;
+      min-width: 0;
+    }
+    .plot-legend .legend-mark {
+      display: inline-block;
+      flex: none;
+      width: 1.4rem;
+      height: 0.6rem;
+    }
+    @media (max-width: 520px) {
+      .plot-tick {
+        font-size: 15px;
+      }
+      .plot-axis-label {
+        font-size: 15px;
+      }
+    }
+  </style>
+</section>

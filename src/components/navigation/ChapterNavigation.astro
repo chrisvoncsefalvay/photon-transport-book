@@ -1,0 +1,31 @@
+---
+import type { ChapterEntry } from "../../lib/chapters";
+
+interface Props {
+  previous?: ChapterEntry | undefined;
+  next?: ChapterEntry | undefined;
+}
+
+const { previous, next } = Astro.props;
+---
+
+<nav class="chapter-navigation" aria-label="Chapter navigation">
+  {
+    previous ? (
+      <a href={previous.href} rel="prev">
+        <span>Previous</span>
+        <strong>{previous.shortTitle}</strong>
+      </a>
+    ) : (
+      <span />
+    )
+  }
+  {
+    next && (
+      <a href={next.href} rel="next">
+        <span>Next</span>
+        <strong>{next.shortTitle}</strong>
+      </a>
+    )
+  }
+</nav>

@@ -1,0 +1,300 @@
+---
+import FigurePlate from "./FigurePlate.astro";
+
+interface Props {
+  id: string;
+}
+const { id } = Astro.props;
+---
+
+<FigurePlate
+  {id}
+  title="Directionally very good"
+  description="The same body is shown with anatomical directions and planes in standing, supine and prone positions. These labels remain attached to the body as its orientation changes."
+  width="full"
+>
+  <dpt-anatomy-figure data-model="/assets/anatomy/body.glb">
+    <div class="anatomy-toolbar">
+      <span class="anatomy-kicker">Anatomical coordinates</span>
+      <div role="group" aria-label="Body position" class="anatomy-poses">
+        <button
+          type="button"
+          data-anatomy-pose="standing"
+          aria-pressed="true"
+          disabled>Standing</button
+        >
+        <button
+          type="button"
+          data-anatomy-pose="supine"
+          aria-pressed="false"
+          disabled>Supine</button
+        >
+        <button
+          type="button"
+          data-anatomy-pose="prone"
+          aria-pressed="false"
+          disabled>Prone</button
+        >
+      </div>
+    </div>
+    <div
+      class="anatomy-frame"
+      role="group"
+      aria-label="Interactive body-relative anatomical directions"
+    >
+      <img
+        class="anatomy-fallback"
+        src="/assets/anatomy/directions-fallback.svg"
+        alt="Front view of the supplied body: superior towards the head, inferior towards the feet. Anatomical left is on the viewer’s right."
+        width="920"
+        height="640"
+      />
+      <canvas
+        hidden
+        tabindex="-1"
+        aria-label="Anatomical directions. Drag to rotate. Arrow keys rotate, plus and minus zoom, Home resets."
+        aria-describedby="anatomy-instructions"></canvas>
+      <div class="anatomy-labels" aria-hidden="true"></div>
+      <span class="anatomy-cube-key" aria-hidden="true">Body orientation</span>
+      <div class="anatomy-view-controls" role="group" aria-label="Figure view">
+        <button
+          type="button"
+          data-anatomy-action="planes"
+          aria-label="Show anatomical planes"
+          title="Show anatomical planes"
+          aria-pressed="false"
+          disabled
+        >
+          <svg
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.2"
+            aria-hidden="true"
+            ><path d="m3 8 9-5 9 5-9 5Z M3 12l9 5 9-5 M3 16l9 5 9-5 M12 3v18"
+            ></path></svg
+          >
+        </button>
+        <button
+          type="button"
+          data-anatomy-action="zoom-out"
+          aria-label="Zoom out"
+          title="Zoom out"
+          disabled>−</button
+        >
+        <button
+          type="button"
+          data-anatomy-action="zoom-in"
+          aria-label="Zoom in"
+          title="Zoom in"
+          disabled>+</button
+        >
+        <button
+          type="button"
+          data-anatomy-action="reset"
+          aria-label="Reset view"
+          title="Reset view"
+          disabled>↺</button
+        >
+      </div>
+      <p data-anatomy-status role="status">
+        Static anterior view. Interactive controls load as the figure comes into
+        view.
+      </p>
+    </div>
+    <div class="anatomy-footnote" id="anatomy-instructions">
+      <span
+        >Drag to rotate · Arrow keys to turn · + / − to zoom · Home to reset</span
+      >
+      <span
+        >S / I · superior / inferior &nbsp; A / P · anterior / posterior &nbsp;
+        L / R · left / right</span
+      >
+    </div>
+  </dpt-anatomy-figure>
+</FigurePlate>
+
+<script>
+  import { mountAnatomyFigureElements } from "../../lib/anatomy-figure";
+  mountAnatomyFigureElements();
+</script>
+
+<style is:global>
+  dpt-anatomy-figure {
+    display: block;
+  }
+  .anatomy-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--rule);
+    font-family: var(--font-ui);
+  }
+  .anatomy-kicker {
+    color: var(--ink-muted);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+  .anatomy-poses {
+    display: flex;
+    gap: 0.2rem;
+  }
+  dpt-anatomy-figure button {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--ink-muted);
+    min-height: 44px;
+    cursor: pointer;
+    font-family: var(--font-ui);
+    font-size: 0.75rem;
+    padding: 0.4rem 0.85rem;
+    transition:
+      color 180ms,
+      border-color 180ms,
+      background-color 180ms;
+  }
+  dpt-anatomy-figure button:disabled {
+    cursor: default;
+    opacity: 0.5;
+  }
+  dpt-anatomy-figure button[aria-pressed="true"] {
+    color: var(--accent);
+    border-color: var(--rule);
+    background: var(--paper);
+  }
+  dpt-anatomy-figure button:not(:disabled):is(:hover, :focus-visible) {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+  .anatomy-frame {
+    position: relative;
+    height: clamp(32rem, 58vw, 43rem);
+    overflow: hidden;
+    isolation: isolate;
+    background: var(--paper-inset);
+  }
+  .anatomy-frame canvas,
+  .anatomy-fallback,
+  .anatomy-labels {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .anatomy-fallback {
+    object-fit: contain;
+  }
+  .anatomy-frame canvas {
+    touch-action: pan-y;
+    cursor: grab;
+  }
+  .anatomy-frame canvas:active {
+    cursor: grabbing;
+  }
+  .anatomy-frame canvas:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -3px;
+  }
+  .anatomy-frame [hidden] {
+    display: none !important;
+  }
+  .anatomy-labels {
+    pointer-events: none;
+  }
+  .anatomy-label {
+    position: absolute;
+    color: var(--technical);
+    font-family: var(--font-ui);
+    font-size: 0.75rem;
+    line-height: 1.25;
+    white-space: nowrap;
+    padding: 0.15rem 0.3rem;
+    background: color-mix(in srgb, var(--paper-inset) 88%, transparent);
+    border-radius: 2px;
+  }
+  .anatomy-label[data-kind="limb"] {
+    color: var(--accent);
+    font-size: 0.7rem;
+  }
+  .anatomy-cube-key {
+    position: absolute;
+    right: 1rem;
+    top: 0.7rem;
+    font: 0.6rem var(--font-ui);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    pointer-events: none;
+  }
+  .anatomy-view-controls {
+    position: absolute;
+    right: 0.8rem;
+    bottom: 0.8rem;
+    display: grid;
+    grid-template-columns: repeat(3, 44px);
+    gap: 2px;
+  }
+  .anatomy-view-controls [data-anatomy-action="planes"] {
+    grid-column: 3;
+    display: grid;
+    place-items: center;
+  }
+  .anatomy-view-controls [data-anatomy-action="zoom-out"] {
+    grid-column: 1;
+  }
+  .anatomy-view-controls button {
+    min-width: 44px;
+    padding: 0;
+    border-color: var(--rule);
+    background: var(--paper);
+    font-size: 1.1rem;
+  }
+  [data-anatomy-status] {
+    position: absolute;
+    left: 1rem;
+    bottom: 1rem;
+    max-width: 60%;
+    margin: 0;
+    color: var(--ink-muted);
+    font: 0.7rem var(--font-ui);
+  }
+  dpt-anatomy-figure[data-interactive-ready="true"] [data-anatomy-status] {
+    clip-path: inset(50%);
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+  .anatomy-footnote {
+    position: absolute;
+    clip-path: inset(50%);
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+  @media (max-width: 40rem) {
+    .anatomy-toolbar {
+      padding: 0.65rem 0.8rem;
+      gap: 0.25rem;
+    }
+    .anatomy-frame {
+      height: 34rem;
+    }
+    .anatomy-label {
+      font-size: 0.65rem;
+    }
+    .anatomy-label[data-kind="limb"] {
+      font-size: 0.6rem;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    dpt-anatomy-figure button {
+      transition: none;
+    }
+  }
+</style>

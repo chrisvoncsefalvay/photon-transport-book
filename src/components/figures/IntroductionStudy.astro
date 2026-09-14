@@ -1,0 +1,126 @@
+---
+import FigurePlate from "./FigurePlate.astro";
+import { recordedText } from "../../lib/recorded-text";
+import study from "../../../public/generated/introduction-study/study.json";
+
+interface Props {
+  id: string;
+}
+const { id } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+
+<FigurePlate
+  {id}
+  title="One CT, forward and inverse"
+  description="An acquired CT supplies the anatomy for an assigned water/bone phantom, shown beside its simulated radiograph and recovered surface. Geometry stays fixed, so reconstruction estimates the material fields."
+  width="full"
+>
+  <div class="introduction-study">
+    <div class="introduction-study__panels">
+      {
+        study.panels.map((panel) => (
+          <section data-introduction-panel={panel.id}>
+            <h3>{panel.label}</h3>
+            <div
+              class="introduction-study__image"
+              style={`--panel-aspect:${panel.aspect}`}
+            >
+              <div class="introduction-study__raster">
+                <img
+                  src={`${base}/${panel.image.file}`}
+                  width={panel.image.width}
+                  height={panel.image.height}
+                  alt={panel.image.alt}
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+            </div>
+            <p>{recordedText(panel.note)}</p>
+          </section>
+        ))
+      }
+    </div>
+    <p class="introduction-study__links">
+      <a href={`${base}/chapters/reconstruction/#figure-12-4`}
+        >Rotate the reconstruction and inspect its radiographs</a
+      >. <a href={`${base}/generated/introduction-study/provenance.json`}
+        >Source data and display rules</a
+      >.
+    </p>
+  </div>
+</FigurePlate>
+
+<style>
+  .introduction-study {
+    --sequence-height: clamp(14rem, 26vw, 22rem);
+    padding: clamp(0.8rem, 2.5vw, 2rem);
+    background: var(--paper-inset);
+  }
+  .introduction-study__panels {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(0.9rem, 2vw, 2rem);
+  }
+  .introduction-study section {
+    min-width: 0;
+  }
+  .introduction-study h3 {
+    margin: 0 0 0.8rem;
+    font: 500 0.9rem/1.4 var(--font-ui);
+  }
+  .introduction-study__image {
+    height: var(--sequence-height);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .introduction-study__raster {
+    width: min(100%, calc(var(--panel-aspect) * var(--sequence-height)));
+    aspect-ratio: var(--panel-aspect);
+  }
+  .introduction-study img {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .introduction-study section p {
+    margin: 0.8rem 0 0;
+    color: var(--ink-muted);
+    font: 400 var(--size--1)/1.5 var(--font-ui);
+  }
+  .introduction-study__links {
+    margin: 1.25rem 0 0;
+    padding-top: 1rem;
+    border-top: 1px solid var(--rule);
+    color: var(--ink-muted);
+    font: 400 var(--size--1)/1.5 var(--font-ui);
+  }
+  @media (max-width: 620px) {
+    .introduction-study {
+      --sequence-height: clamp(14rem, 72vw, 22rem);
+    }
+    .introduction-study__panels {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    .introduction-study section + section {
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--rule);
+    }
+  }
+  @media print {
+    .introduction-study {
+      --sequence-height: 2.2in;
+    }
+    .introduction-study__panels {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.15in;
+    }
+    .introduction-study section + section {
+      padding-top: 0;
+      border-top: 0;
+    }
+  }
+</style>

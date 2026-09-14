@@ -1,0 +1,43 @@
+name: Public edition CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  site:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v5
+        with:
+          run_install: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run check
+      - run: pnpm run lint
+      - run: pnpm run format:check
+      - run: node --test tools/public/*.test.mjs tests/tooling/*.test.mjs
+      - run: pnpm run test:site
+      - run: node tools/public/validate-all.mjs
+      - run: pnpm run build
+
+  python-structure:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+      - run: uv sync --group check
+      - run: uv run ruff check python tests/python
+      - run: uv run ruff format --check python tests/python
+      - run: uv run pyright
+      - run: uv run pytest

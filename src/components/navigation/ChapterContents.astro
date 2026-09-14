@@ -1,0 +1,296 @@
+---
+import { chapterContinuation, chapters } from "../../lib/chapters";
+---
+
+<section class="contents" id="contents" data-chapter-contents>
+  <header>
+    <p class="eyebrow">Volume I</p>
+    <h2>Foundations</h2>
+    <p>
+      We introduce differentiable photon transport, and try to do so in the most
+      painless but educational way possible: by constructing, step by step, a
+      differentiable C-arm.
+    </p>
+  </header>
+  <ol>
+    {
+      chapters.map((chapter) => (
+        <li data-chapter-preview data-preview-state="closed">
+          <a
+            href={chapter.href}
+            aria-labelledby={`chapter-title-${chapter.number}`}
+            aria-describedby={`chapter-description-${chapter.number}`}
+          >
+            <span class="contents__number">{chapter.number}</span>
+            <span class="contents__body">
+              <strong id={`chapter-title-${chapter.number}`}>
+                {chapter.shortTitle}
+              </strong>
+              <small
+                class="contents__summary"
+                id={`chapter-scope-${chapter.number}`}
+                data-preview-viewport
+                aria-hidden="true"
+              >
+                <span class="contents__summary-content" data-preview-content>
+                  <span data-preview-prefix>{chapter.scope}</span>
+                  <span
+                    class="contents__typed"
+                    data-preview-text
+                    data-preview-continuation={
+                      chapterContinuation(chapter.scope, chapter.longScope)
+                        .suffix
+                    }
+                  />
+                </span>
+                <span class="contents__summary-measure" data-preview-measure>
+                  {chapter.scope}
+                </span>
+              </small>
+              <span
+                class="contents__description"
+                id={`chapter-description-${chapter.number}`}
+                data-preview-description
+              >
+                {chapter.longScope}
+              </span>
+            </span>
+            <span class="contents__arrow" aria-hidden="true">
+              ↗
+            </span>
+          </a>
+          <button
+            class="contents__preview-toggle"
+            data-preview-toggle
+            type="button"
+            aria-expanded="false"
+            aria-controls={`chapter-description-${chapter.number}`}
+            aria-label={`Read more about ${chapter.shortTitle}`}
+          >
+            <span data-preview-label>Read more</span>
+            <span class="contents__preview-sign" aria-hidden="true">
+              +
+            </span>
+          </button>
+        </li>
+      ))
+    }
+  </ol>
+</section>
+
+<script>
+  import { initialiseChapterPreviews } from "../../lib/chapter-preview";
+
+  document
+    .querySelectorAll<HTMLElement>("[data-chapter-contents]")
+    .forEach((root) => {
+      const cleanup = initialiseChapterPreviews(root);
+      window.addEventListener("pagehide", (event) => {
+        if (!event.persisted) cleanup();
+      });
+    });
+</script>
+
+<style>
+  .contents {
+    display: grid;
+    gap: clamp(3rem, 8vw, 9rem);
+    grid-template-columns: minmax(14rem, 0.6fr) minmax(0, 1.4fr);
+    margin-inline: auto;
+    max-width: var(--measure-page, var(--measure-plate));
+    padding: var(--space-9) var(--page-gutter);
+    scroll-margin-block-start: var(--space-7);
+  }
+
+  .contents > header {
+    align-self: start;
+    position: sticky;
+    top: var(--space-6);
+  }
+
+  .contents h2 {
+    font-size: var(--size-3);
+    margin-block: var(--space-3) var(--space-4);
+  }
+
+  .contents:focus-visible {
+    outline: none;
+  }
+
+  .contents:focus-visible h2 {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  .contents header > p:not(.eyebrow) {
+    color: var(--ink-muted);
+    max-width: 25rem;
+  }
+
+  .contents ol {
+    border-block-start: 1px solid var(--rule-strong);
+    list-style: none;
+    margin: 0;
+    min-width: 0;
+    overflow-anchor: none;
+    padding: 0;
+  }
+
+  .contents li {
+    border-block-end: 1px solid var(--rule);
+    position: relative;
+    transition: border-color var(--motion-short, 180ms) var(--motion-ease, ease);
+  }
+
+  .contents
+    li:is([data-preview-state="typing"], [data-preview-state="expanded"]) {
+    border-block-end-color: var(--accent);
+  }
+
+  .contents a {
+    align-items: baseline;
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: 2rem minmax(0, 1fr) auto;
+    padding-block: var(--space-5);
+    text-decoration: none;
+  }
+
+  .contents__number {
+    color: var(--accent);
+    font-family: var(--font-ui);
+    font-size: 0.72rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .contents__body {
+    display: grid;
+    gap: var(--space-1);
+    min-width: 0;
+  }
+
+  .contents strong {
+    font-size: var(--size-1);
+    font-weight: 500;
+    line-height: 1.2;
+    transition: color var(--motion-short, 180ms) var(--motion-ease, ease);
+  }
+
+  .contents small {
+    color: var(--ink-muted);
+    font-family: var(--font-ui);
+    font-size: var(--size--1);
+    line-height: 1.45;
+  }
+
+  .contents__arrow {
+    font-family: var(--font-ui);
+    transition:
+      color var(--motion-short, 180ms) var(--motion-ease, ease),
+      transform var(--motion-medium, 320ms) var(--motion-ease, ease);
+  }
+
+  .contents
+    li:is([data-preview-state="typing"], [data-preview-state="expanded"])
+    strong,
+  .contents a:focus-visible strong,
+  .contents a:hover strong,
+  .contents a:hover .contents__arrow {
+    color: var(--accent);
+  }
+
+  .contents a:is(:hover, :focus-visible) .contents__arrow {
+    transform: translate(0.16rem, -0.16rem);
+  }
+
+  .contents__description {
+    clip-path: inset(50%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+  }
+
+  .contents__summary {
+    display: block;
+    overflow: hidden;
+    position: relative;
+    transition: height var(--motion-medium, 320ms) var(--motion-ease, ease);
+  }
+
+  .contents__summary-content {
+    display: block;
+  }
+
+  .contents__summary-measure {
+    inset: 0 0 auto;
+    pointer-events: none;
+    position: absolute;
+    visibility: hidden;
+  }
+
+  .contents__typed {
+    opacity: 0;
+    transition: opacity var(--motion-short, 180ms) var(--motion-ease, ease);
+  }
+
+  .contents
+    li:is([data-preview-state="typing"], [data-preview-state="expanded"])
+    .contents__typed {
+    opacity: 1;
+  }
+
+  .contents__preview-toggle {
+    align-items: center;
+    background: none;
+    border: 0;
+    color: var(--accent);
+    cursor: pointer;
+    display: none;
+    font-family: var(--font-ui);
+    font-size: var(--size--1);
+    gap: var(--space-2);
+    margin-block: calc(-1 * var(--space-3)) var(--space-3);
+    margin-inline-start: 3rem;
+    min-height: 2.75rem;
+    padding: 0;
+  }
+
+  .contents__preview-sign {
+    font-size: 1.2em;
+    transition: transform var(--motion-short, 180ms) var(--motion-ease, ease);
+  }
+
+  .contents__preview-toggle[aria-expanded="true"] .contents__preview-sign {
+    transform: rotate(45deg);
+  }
+
+  @media (max-width: 58rem) {
+    .contents {
+      gap: var(--space-7);
+      grid-template-columns: minmax(0, 1fr);
+      padding-block: var(--space-7);
+    }
+
+    .contents > header {
+      position: static;
+    }
+  }
+
+  @media (hover: none), (pointer: coarse) {
+    .contents[data-preview-ready] .contents__preview-toggle {
+      display: inline-flex;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .contents__summary,
+    .contents__typed,
+    .contents strong,
+    .contents__arrow,
+    .contents__preview-sign {
+      transition: none;
+    }
+  }
+</style>

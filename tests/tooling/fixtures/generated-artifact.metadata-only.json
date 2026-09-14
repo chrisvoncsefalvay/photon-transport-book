@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "id": "bootstrap-metadata-only",
+  "chapter": "bootstrap-only",
+  "experiment": "none",
+  "source_commit": "0000000",
+  "generator": "none",
+  "mode": "deterministic-precomputed-sweep",
+  "device": null,
+  "cuda_version": null,
+  "warp_version": null,
+  "precision": null,
+  "parameters": {},
+  "outputs": [],
+  "interpolation": null,
+  "stochastic": false,
+  "seeds": null,
+  "created_at": "2026-09-07T00:00:00Z",
+  "bootstrap": true,
+  "notes": "Schema fixture only. No computation ran and no scientific values are represented."
+}

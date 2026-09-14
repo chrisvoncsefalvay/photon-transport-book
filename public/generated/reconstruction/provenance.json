@@ -1,0 +1,214 @@
+{
+  "schema_version": 1,
+  "generator": "tools/public/curate-reconstruction.py",
+  "generator_sha256": "8bcbee171edaa702f1a79b4ecbcb864a900a3b2a27b33ac5b0e2558747437557",
+  "rights_record_precedes_payloads": true,
+  "inputs": {
+    "vertebrae/completed-run": "fab471b81eb132b798ef62cd958a02e35f2a8a06d85d52d808bb2bc682f4e869",
+    "vertebrae/figure-receipt": "e86f08ce4d6e38c72842fe7845a757f15a71645c4ce6dee97f24f7812a630bc8",
+    "vertebrae/anatomy-receipt": "b604e4dc2d5dac018d69f06ca734c490dec04c9d92a9361d2560f11b83203966",
+    "vertebrae/assigned-reference": "0efcbe4ed8daeecbccb2f45466509fe90c47543d905dfc5be4cc9d0f0a666255",
+    "vertebrae/recovered-fractions": "3fc304853c35d6e352be6cc0738073518f94dc1d2078b0a41ed4c6ebed281394",
+    "vertebrae/evaluation": "b83d2ca675e8f16c0623ee444236847ea7866b2b18683e40bce3986af7e08f78",
+    "vertebrae/solver-report": "a1c4776fda1b55693435d770f9ce06dc1c658795c23090b8925c4c86946b0d7f",
+    "vertebrae/recorded-mesh/bone-reference": "dca753c336a96b9168c6ab46f80946cafb5408f319a936688b4fed6534b6e9cb",
+    "vertebrae/recorded-mesh/bone-reconstructed": "78ccd99c2fe277e4dfdbe961a27064f20144835fbab5a125a2cf4c210aca21f4",
+    "vertebrae/plate/surfaces": "643f081873adb0d93ee812919bea0f3b707b615de4c2fffb4d839ef974650d43",
+    "vertebrae/plate/sections": "1f65949defd7555540d5b87f0675197938d858cd5e6ecf7603abfeb34e352178",
+    "vertebrae/plate/radiographs": "b1ecde3d6c8db22175e6a5e9293a1052ab8167d500a8ce1ff52efa34ab4cfb8d",
+    "hap/completed-run": "f83e1c19577a22b6b8fb6a7cbcd5edf0f84878f5c852ca205dc2e74699108b64",
+    "hap/figure-receipt": "f9f491f50624057592ac0b7e460087fbe03916d8d9b721e40411ba73aac37a60",
+    "hap/reconstructed-fields": "994b7a9a8af2456a3a4001fa99f6edd06a4a0c751957068878ae73e3df1b5618",
+    "hap/solver-report": "c79fe004e69e22b6dfb5a0cbff6a2c48e59fe64abb2fd2b180036a54bf6341f2",
+    "hap/accepted-viewer-receipt": "5dcebdac36815bd2f4926c1e9ac18bac444aea1e1fdf88d610c99cccfdabd788",
+    "hap/evaluation-receipt": "dd735da9f4fdcad9e2a2ecb6586e55e70f09324c7634dc8f81bbedf3facdbec0",
+    "hap/evaluation": "2d6bf52312d37e3f71438906c3daa660c02c07f829ea5e41a36c4dd2c060f1fd",
+    "hap/recorded-mesh/pmma-reconstructed": "e81cd6e7abc12732f51bba25ac20ec4da21038dd60cc3c2d33ed03436ac81480",
+    "hap/recorded-mesh/al-reconstructed": "4a1122ee5c7aaa13ffda9e1d261cbeab1aef84e8cf4236aec81c64417e35d27c",
+    "hap/plate/sections": "97eb7ef383a2b5d13562523da970ba6b21611fa9d3048d354f0c01da0b14bf85",
+    "hap/plate/radiographs": "91f721731338d2bdb72a83ff25d30a123a6c4ce9cf21344b83c403825b23ea43",
+    "hap/plate/calibration": "1d8f7839011403c1faa3b358f97242a2aed881c57ea14dd285c2d5522da4aa29"
+  },
+  "scope": "Selected computed material arrays and exact recorded meshes/plates; no raw patient CT, labels, attenuation tables, software packages or raw run records",
+  "changes": "Header-free little-endian numeric encoding; exact HAP central crop; newly rendered mesh posters; no scalar resampling or normalisation",
+  "scalar_storage": "C-order ZYX, voxel centres from grid origin; all original FP32 values retained",
+  "mesh_storage": "Original physical XYZ in mm, float64 coordinates and uint32 triangle indices",
+  "rights": {
+    "vertebrae": {
+      "licence": "CC BY 3.0; derived from Rister et al., CT-ORG, TCIA",
+      "url": "https://creativecommons.org/licenses/by/3.0/"
+    },
+    "hap": {
+      "licence": "CC BY 4.0; derived from Zhou et al., calibration phantom release",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "nist": "Simulation input tables have no asserted redistribution clearance and are excluded. New numerical results are not labelled as source attenuation tables."
+  },
+  "rendering_versions": {
+    "matplotlib": "3.10.7",
+    "numpy": "2.5.3"
+  },
+  "allowlist": [
+    {
+      "file": "hap/al-reconstructed-indices.u32",
+      "sha256": "a976caa4b27adad40068fc9ba33fe62746a07243b1bdebf742f96af779acf2fe",
+      "bytes": 275628,
+      "origin": "hap/recorded-mesh/al-reconstructed",
+      "licence": "CC BY 4.0; derived from Zhou et al., calibration phantom release"
+    },
+    {
+      "file": "hap/al-reconstructed-positions.f64",
+      "sha256": "021c829cbd31030d0c1946a502c1cc9275478a2f4d2ca6713bf3ad557c77490a",
+      "bytes": 308760,
+      "origin": "hap/recorded-mesh/al-reconstructed",
+      "licence": "CC BY 4.0; derived from Zhou et al., calibration phantom release"
+    },
+    {
+      "file": "hap/al-reconstructed.f32",
+      "sha256": "845f96d8fc25053c1a013f88b865e3cc4e7526976faff17ae57658464e8e6b0b",
+      "bytes": 1048576,
+      "origin": "Exact central crop of hap/reconstructed-fields",
+      "licence": "CC BY 4.0; derived from Zhou et al., calibration phantom release"
+    },
+    {
+      "file": "hap/calibration.png",
+      "sha256": "1d8f7839011403c1faa3b358f97242a2aed881c57ea14dd285c2d5522da4aa29",
+      "bytes": 229843,
+      "origin": "Exact recorded calibration.png; display mappings preserved",
+      "licence": "CC BY 4.0; derived from Zhou et al., calibration phantom release"
+    },
+    {
+      "file": "hap/pmma-reconstructed-indices.u32",
+      "sha256": "86e16804b2ee1ee032dc9939e5b224def132d5218449b2f36478c41ddd8677e4",
+      "bytes": 219000,
+      "origin": "hap/recorded-mesh/pmma-reconstructed",
+      "licence": "CC BY 4.0; derived from Zhou et al., calibration phantom release"
+    },
+    {
+      "file": "hap/pmma-reconstructed-positions.f64",
+      "sha256": "142fc128d2bfaeb16b3187fe00eb5da264bcb17081068a13e35724fa8d00bbcc",
+      "bytes": 242280,
+      "origin": "hap/recorded-mesh/pmma-reconstructed",
+      "licence": "CC BY 4.0; derived from Zhou et al., calibration phantom release"
+    },
+    {
+      "file": "hap/pmma-reconstructed.f32",
+      "sha256": "59e35daaac8de150727137ce57edf04ed713830a40ff2b7d2e57843663f1b89e",
+      "bytes": 1048576,
+      "origin": "Exact central crop of hap/reconstructed-fields",
+      "licence": "CC BY 4.0; derived from Zhou et al., calibration phantom release"
+    },
+    {
+      "file": "hap/poster.png",
+      "sha256": "d7a4486840b81c15aa09d3add95f295406d7c340887e7d54940d92c3761a53f2",
+      "bytes": 98708,
+      "origin": "New raster rendering of the case's exact exported mesh arrays",
+      "licence": "CC BY 4.0; derived from Zhou et al., calibration phantom release"
+    },
+    {
+      "file": "hap/radiographs.png",
+      "sha256": "91f721731338d2bdb72a83ff25d30a123a6c4ce9cf21344b83c403825b23ea43",
+      "bytes": 344583,
+      "origin": "Exact recorded acquired-radiographs.png; display mappings preserved",
+      "licence": "CC BY 4.0; derived from Zhou et al., calibration phantom release"
+    },
+    {
+      "file": "hap/sections.png",
+      "sha256": "97eb7ef383a2b5d13562523da970ba6b21611fa9d3048d354f0c01da0b14bf85",
+      "bytes": 219313,
+      "origin": "Exact recorded material-slices.png; display mappings preserved",
+      "licence": "CC BY 4.0; derived from Zhou et al., calibration phantom release"
+    },
+    {
+      "file": "study.json",
+      "sha256": "9e45151567fa0dea8cdbed589c33ee41170c09db54c4b9da376471bed8ff093d",
+      "bytes": 19714,
+      "origin": "Positive allowlist of verified scientific and display metadata",
+      "licence": "Project metadata; underlying cases retain CC BY 3.0 and CC BY 4.0 attribution"
+    },
+    {
+      "file": "vertebrae/bone-reconstructed-indices.u32",
+      "sha256": "bd0e98521d2441543618d2b9eb6a6f12801b82c9dc40e506e4129f7f8917c1c8",
+      "bytes": 381456,
+      "origin": "vertebrae/recorded-mesh/bone-reconstructed",
+      "licence": "CC BY 3.0; derived from Rister et al., CT-ORG, TCIA"
+    },
+    {
+      "file": "vertebrae/bone-reconstructed-positions.f64",
+      "sha256": "de8ed0bfe64855366a411c6f698c696d0a97d45560be4bf320af5817ef4a90be",
+      "bytes": 386616,
+      "origin": "vertebrae/recorded-mesh/bone-reconstructed",
+      "licence": "CC BY 3.0; derived from Rister et al., CT-ORG, TCIA"
+    },
+    {
+      "file": "vertebrae/bone-reconstructed.f32",
+      "sha256": "37c919d97484f3672743be0c82132183f394e88a6910019b283b7aba4e7a2ad6",
+      "bytes": 1048576,
+      "origin": "vertebrae/reconstructed material array",
+      "licence": "CC BY 3.0; derived from Rister et al., CT-ORG, TCIA"
+    },
+    {
+      "file": "vertebrae/bone-reference-indices.u32",
+      "sha256": "5a38e92a7fa820567cae2af1328368d088cd783b4e125f9b977bdd513f1255cb",
+      "bytes": 387168,
+      "origin": "vertebrae/recorded-mesh/bone-reference",
+      "licence": "CC BY 3.0; derived from Rister et al., CT-ORG, TCIA"
+    },
+    {
+      "file": "vertebrae/bone-reference-positions.f64",
+      "sha256": "210e587405dbed03e39a6321f41736d3b1db34617684a78eab289618e2ab6f57",
+      "bytes": 392232,
+      "origin": "vertebrae/recorded-mesh/bone-reference",
+      "licence": "CC BY 3.0; derived from Rister et al., CT-ORG, TCIA"
+    },
+    {
+      "file": "vertebrae/bone-reference.f32",
+      "sha256": "9ca8b06e1f07b4286a6cd75d6fe49e317070bd66e61651f6fd10d606815415dd",
+      "bytes": 1048576,
+      "origin": "vertebrae/reference material array",
+      "licence": "CC BY 3.0; derived from Rister et al., CT-ORG, TCIA"
+    },
+    {
+      "file": "vertebrae/poster.png",
+      "sha256": "07998ed8fb6cee52f405d60c7a5b88bcbfad17bf1365c01d4df8a430aec0ffe5",
+      "bytes": 142313,
+      "origin": "New raster rendering of the case's exact exported mesh arrays",
+      "licence": "CC BY 3.0; derived from Rister et al., CT-ORG, TCIA"
+    },
+    {
+      "file": "vertebrae/radiographs.png",
+      "sha256": "b1ecde3d6c8db22175e6a5e9293a1052ab8167d500a8ce1ff52efa34ab4cfb8d",
+      "bytes": 698708,
+      "origin": "Exact recorded heldout-radiographs.png; display mappings preserved",
+      "licence": "CC BY 3.0; derived from Rister et al., CT-ORG, TCIA"
+    },
+    {
+      "file": "vertebrae/sections.png",
+      "sha256": "1f65949defd7555540d5b87f0675197938d858cd5e6ecf7603abfeb34e352178",
+      "bytes": 502505,
+      "origin": "Exact recorded bone-sections.png; display mappings preserved",
+      "licence": "CC BY 3.0; derived from Rister et al., CT-ORG, TCIA"
+    },
+    {
+      "file": "vertebrae/surfaces.png",
+      "sha256": "643f081873adb0d93ee812919bea0f3b707b615de4c2fffb4d839ef974650d43",
+      "bytes": 1207297,
+      "origin": "Exact recorded bone-volumes.png; display mappings preserved",
+      "licence": "CC BY 3.0; derived from Rister et al., CT-ORG, TCIA"
+    },
+    {
+      "file": "vertebrae/water-reconstructed.f32",
+      "sha256": "8c8722294ac8be6b763914425752b16a4df276cd91493b078e6ba3e15950ca38",
+      "bytes": 1048576,
+      "origin": "vertebrae/reconstructed material array",
+      "licence": "CC BY 3.0; derived from Rister et al., CT-ORG, TCIA"
+    },
+    {
+      "file": "vertebrae/water-reference.f32",
+      "sha256": "595d5f97641bb8414ee7a7c2fa96a85075aa0c006d50d3d352e45026c5798a8a",
+      "bytes": 1048576,
+      "origin": "vertebrae/reference material array",
+      "licence": "CC BY 3.0; derived from Rister et al., CT-ORG, TCIA"
+    }
+  ]
+}

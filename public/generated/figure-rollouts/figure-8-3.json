@@ -1,0 +1,42 @@
+{
+  "claim_scope": "stipulated equal-mean event laws; arbitrary unit-event signal, not calibrated detector",
+  "formula": "8.12",
+  "moments": {
+    "exclusive_covariance": [
+      [
+        250.0,
+        0.0
+      ],
+      [
+        0.0,
+        750.0
+      ]
+    ],
+    "fractions": [
+      0.25,
+      0.75
+    ],
+    "mean": [
+      250.0,
+      750.0
+    ],
+    "shared_covariance": [
+      [
+        62.5,
+        187.5
+      ],
+      [
+        187.5,
+        562.5
+      ]
+    ]
+  },
+  "parameters": {
+    "arrival_mean": 1000.0,
+    "fractions": [
+      0.25,
+      0.75
+    ],
+    "score_unit": "arbitrary unit-event signal"
+  }
+}

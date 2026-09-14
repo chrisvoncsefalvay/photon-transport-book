@@ -1,0 +1,28 @@
+---
+import FigurePlate from "./FigurePlate.astro";
+
+interface Props {
+  id: string;
+  title: string;
+  description: string;
+}
+
+const { id, title, description } = Astro.props;
+---
+
+<FigurePlate {id} {title} {description}>
+  <div class="figure-placeholder">to be added</div>
+</FigurePlate>
+
+<style>
+  .figure-placeholder {
+    color: var(--ink-muted);
+    display: grid;
+    font-family: var(--font-ui);
+    font-size: var(--size-0);
+    min-height: 14rem;
+    padding: var(--space-5);
+    place-items: center;
+    text-align: center;
+  }
+</style>

@@ -1,0 +1,745 @@
+---
+layout: ../../layouts/ChapterLayout.astro
+title: Coordinate frames and the geometry of motion
+status: Draft
+scope: Moving an object changes where source-to-detector rays pass through it. To calculate that change, we need coordinate frames, physical pixel locations and an unambiguous account of where the object rotates.
+chapterNumber: "03"
+---
+
+import Citation from "../../components/citations/Citation.astro";
+import Bibliography from "../../components/citations/Bibliography.astro";
+import RadiographFigure from "../../components/figures/RadiographFigure.astro";
+import GeometryIllustrations from "../../components/figures/GeometryIllustrations.astro";
+import PixelCentresFigure from "../../components/figures/PixelCentresFigure.astro";
+
+import Source from "../../components/source/Source.astro";
+import EquationNote from "../../components/marginalia/EquationNote.astro";
+import MarginNote from "../../components/marginalia/MarginNote.astro";
+
+Now let's ask our renderer to rotate a vertebra about its centre. That centre should stay at the same detector location while the surrounding bone changes its projected shape. Rotate about the X-ray source instead, and the centre moves across the image. Both calculations can use a perfectly valid rotation matrix. The difference is where the rotation acts.
+
+[Chapter 2](/chapters/transmission/#23-the-homogeneous-path) gives the change in transmission caused by a change in the material along a path. A pose derivative also needs to know which path a movement produces. If a translation is expressed in the wrong frame, the derivative can be numerically impeccable and point in the wrong physical direction. Automatic differentiation is quite willing to help with this.
+
+We need to connect a detector array entry to a finite line segment through the object, then describe how that segment changes with pose. The attenuation field lives in physical object coordinates. Pixel indices, source locations and optimisation parameters must reach those coordinates through a chain whose directions and units we can inspect.
+
+This gives the next part of the [library introduced in Chapter 1](/chapters/introduction/#17-from-transmission-to-transport): `dpt.geometry`. Its small host objects describe the acquisition and pose. The projector will copy their fixed metadata into its prepared CUDA workspace, then construct rays on the device. We are establishing the inputs from which [Chapter 4](/chapters/volumes-line-integrals/#46-a-gpu-projection-operator) will compute the optical depths that `transmit()` already knows how to consume.
+
+## 3.1 Naming and framing
+
+A frame specifies an origin and three orthonormal axes. A point exists independently of the frame, but its three coordinates depend on that choice. We write $\mathbf{x}^A$ for the column vector containing a point's coordinates in frame $A$. The superscript names the frame. It is not a power.
+
+We use the four frames defined in [Table 3.1](#table-3-1). All are right-handed, with positive third axis given by the cross product of the first two. Physical coordinates and translations are in millimetres, and angles are in radians.
+
+<div className="prose-table" role="region" aria-label="Coordinate frames and physical conventions" tabIndex={0}>
+
+| Frame         | What it is attached to                  | Origin and axes                                                                                                                          |
+| ------------- | --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| $W$, world    | The fixed reference for the acquisition | A declared physical origin and basis, shared by the source, detector and object poses.                                                   |
+| $O$, object   | The rigid anatomy or volume             | A fixed origin and basis in which the attenuation field is defined. Coordinates are physical distances, not voxel indices.               |
+| $S$, source   | The ideal point source                  | Origin at the focal point. Calibrated axes describe source orientation when the emission model needs it.                                 |
+| $D$, detector | The detector plane                      | Origin at the geometric centre of the active rectangle. First axis follows increasing column index, second follows increasing row index. |
+
+</div>
+
+The detector's third axis follows from handedness. Its sign relative to the source is a calibration choice, not a consequence of calling the frame right-handed. In our centred examples the source lies on the negative side of that axis. A tilted or offset acquisition will be represented by its actual source position.
+
+A rigid transform $\mathbf{G}_{AB}$ maps coordinates from frame $B$ into frame $A$:
+
+$$
+\mathbf{G}_{AB}:\mathbf{x}^B\longmapsto\mathbf{x}^A.
+$$
+
+<EquationNote term="\mathbf{G}_{AB}">
+  Rigid coordinate map from frame B to frame A.
+</EquationNote>
+
+<EquationNote term="\mathbf{x}^B">
+  Point coordinates in the input frame B (mm).
+</EquationNote>
+
+<EquationNote term="\mathbf{x}^A">
+  The same point expressed in destination frame A (mm).
+</EquationNote>
+
+<MarginNote label="Reading transform subscripts">
+  Read the subscripts as destination, then source. Thus $\mathbf{G}_{WO}$ places
+  the object in the world, while $\mathbf{G}_{OW}$ takes a world-space point
+  into the object. We reserve $T_p$ for transmission, as in Chapter 2.
+</MarginNote>
+
+<GeometryIllustrations
+  kind="frames"
+  id="figure-attached-frames"
+  title="The four frames and their attached objects"
+  description="The world, object, source and detector each have an attached coordinate frame. Naming the destination before the source in every transform keeps a change of coordinates distinct from moving the object."
+/>
+
+Choosing a world frame does not move the apparatus. For patient coordinates we can use the left, posterior and superior (LPS) axes described in [Appendix A.2](/appendix/x-ray-theory/#a2-anatomical-directions-and-projection-names). A detector-centred acquisition frame is also possible. The conversion between these choices must be explicit: a label such as “world” supplies no anatomical orientation on its own.
+
+## 3.2 Rigid transforms and their inverses
+
+Let $\mathbf{R}_{AB}$ contain the three axes of frame $B$, expressed as columns in frame $A$, and let $\mathbf{t}_{AB}$ be the position of the $B$ origin in $A$. A point transforms as
+
+$$
+\mathbf{x}^A=\mathbf{R}_{AB}\mathbf{x}^B+\mathbf{t}_{AB},
+\qquad
+\mathbf{R}_{AB}^{\mathsf T}\mathbf{R}_{AB}=\mathbf{I},
+\qquad
+\det\mathbf{R}_{AB}=1.
+$$
+
+<EquationNote term="\mathbf{R}_{AB}">
+  Rotation taking B-coordinate vectors into frame A.
+</EquationNote>
+
+<EquationNote term="\mathbf{t}_{AB}">
+  Position of the B-frame origin in frame A (mm).
+</EquationNote>
+
+The orthogonality condition preserves lengths and angles. The determinant condition excludes a reflection, which would otherwise satisfy the same orthogonality test. Translation changes the coordinates of the origin but leaves displacements between points unchanged.
+
+We can put rotation and translation into one matrix by appending a homogeneous coordinate of one to a point:
+
+$$
+\mathbf{G}_{AB}=
+\begin{bmatrix}
+\mathbf{R}_{AB}&\mathbf{t}_{AB}\\
+\mathbf{0}^{\mathsf T}&1
+\end{bmatrix},
+\qquad
+\begin{bmatrix}\mathbf{x}^A\\1\end{bmatrix}
+=\mathbf{G}_{AB}
+\begin{bmatrix}\mathbf{x}^B\\1\end{bmatrix}.
+$$
+
+These rigid-transform matrices form $\mathrm{SE}(3)$, the special Euclidean group. Their products and inverses remain rigid transforms.
+
+For a displacement or ray direction $\mathbf{v}$, translation cancels when we subtract its two endpoints. Its homogeneous coordinate is zero:
+
+$$
+\mathbf{v}^A=\mathbf{R}_{AB}\mathbf{v}^B,
+\qquad
+\mathbf{G}_{AB}
+\begin{bmatrix}\mathbf{v}^B\\0\end{bmatrix}
+=
+\begin{bmatrix}\mathbf{v}^A\\0\end{bmatrix}.
+$$
+
+<EquationNote term="\mathbf{v}^B">
+  Displacement or direction expressed in frame B.
+</EquationNote>
+
+Adding the translation to a direction makes that direction depend on the chosen origin.
+
+<MarginNote label="Points and directions in memory">
+  This is particularly easy to miss when points and directions share the same
+  three-component storage type.
+</MarginNote>
+
+To invert the point transform, subtract $\mathbf{t}_{AB}$ and multiply by $\mathbf{R}_{AB}^{\mathsf T}$. The inverse is therefore
+
+$$
+\mathbf{G}_{BA}=\mathbf{G}_{AB}^{-1}
+=
+\begin{bmatrix}
+\mathbf{R}_{AB}^{\mathsf T}&-\mathbf{R}_{AB}^{\mathsf T}\mathbf{t}_{AB}\\
+\mathbf{0}^{\mathsf T}&1
+\end{bmatrix}.
+$$
+
+<EquationNote term="\mathbf{G}_{BA}">
+  Inverse coordinate map, from frame A to frame B.
+</EquationNote>
+
+The inverse translation is expressed in frame $B$. Simply negating the original translation leaves it in the wrong basis whenever the frames are rotated relative to each other.
+
+For a chain from $C$ through $B$ to $A$, substitution gives
+
+$$
+\begin{aligned}
+\mathbf{G}_{AC}&=\mathbf{G}_{AB}\mathbf{G}_{BC},\\
+\mathbf{R}_{AC}&=\mathbf{R}_{AB}\mathbf{R}_{BC},\\
+\mathbf{t}_{AC}&=\mathbf{R}_{AB}\mathbf{t}_{BC}+\mathbf{t}_{AB}.
+\end{aligned}
+$$
+
+The rightmost transform acts first on a column vector. Matching adjacent frame labels make the intended chain readable: $C$ enters, $B$ is intermediate, and $A$ leaves. Reversing the multiplication changes the motion and usually makes the labels incompatible as well.
+
+Changing a point's coordinate description is a passive use of a transform, while physically moving the object while holding the world fixed is an active use of the same matrix algebra. To specify the latter, we change $\mathbf{G}_{WO}$ while keeping the source and detector poses fixed.
+
+`RigidTransform` makes these distinctions visible at the call site. `point()` includes translation, while `direction()` cannot accidentally inherit it. The same class describes any declared rigid map, but the projector takes its object-to-world instance. The code calls that map `T_WO`: it is exactly the transform denoted by $\mathbf{G}_{WO}$ in the prose. The code's letter `T` in this name carries no transmission meaning.
+
+<Source
+  file="python/dpt/geometry.py"
+  region="geometry-rigid-transform"
+  caption="Rigid transforms of points and directions"
+/>
+
+The immutable object checks the rotation's handedness and orthonormality when it is constructed. That check protects the transpose-as-inverse calculation on which every subsequent ray depends. `packed()` stores nine row-major rotation entries followed by three translation entries in binary64. Row-major storage says how to address the coefficients, and they still act on column vectors. The constant fourth row of the homogeneous matrix need not travel to the GPU at every trial pose.
+
+These Python methods handle calibration and a handful of pose coordinates. They do not perform the per-pixel ray calculations. The CUDA projector applies the same inverse map inside each ray's execution, using the prepared geometry and the current twelve-value pose buffer.
+
+## 3.3 Detector coordinates and pixel centres
+
+Let the detector have $N_c$ columns and $N_r$ rows. We follow [Appendix A.12](/appendix/x-ray-theory/#a12-image-geometry-and-display-processing): $i$ is the zero-based column index, $j$ the zero-based row index, and an array stores the sample at $[j,i]$. Let $\Delta_c$ and $\Delta_r$ be the positive detector pitches along those two directions, in millimetres.
+
+For our detector-centred frame, the physical position of pixel centre $(i,j)$ is
+
+$$
+\mathbf{q}_{ij}^D=
+\begin{bmatrix}
+\left(i-\dfrac{N_c-1}{2}\right)\Delta_c\\
+\left(j-\dfrac{N_r-1}{2}\right)\Delta_r\\
+0
+\end{bmatrix},
+\qquad
+\begin{aligned}
+0&\leq i<N_c,\\
+0&\leq j<N_r.
+\end{aligned}
+$$
+
+<EquationNote term="\mathbf{q}_{ij}^D">
+  Pixel-centre position in detector coordinates (mm).
+</EquationNote>
+
+<EquationNote term="N_c">Number of detector columns.</EquationNote>
+
+<EquationNote term="N_r">Number of detector rows.</EquationNote>
+
+<EquationNote term="\Delta_c">
+  Distance between adjacent column centres (mm).
+</EquationNote>
+
+<EquationNote term="\Delta_r">
+  Distance between adjacent row centres (mm).
+</EquationNote>
+
+The half-index offsets follow by placing the first and last centres symmetrically about zero. We model contiguous rectangular pixel cells extending half a pitch on either side of each centre. Their footprint has width $N_c\Delta_c$ and height $N_r\Delta_r$. For an odd number of columns, the central column lies at zero. For an even number, zero lies halfway between the two middle columns. Adding a further half pixel would shift every ray.
+
+<PixelCentresFigure id="figure-pixel-centres" />
+
+For example, a detector with four columns, three rows and pitches $\Delta_c=0.4\,\mathrm{mm}$ and $\Delta_r=0.6\,\mathrm{mm}$ has the pixel centres listed in [Table 3.2](#table-3-2).
+
+<div className="prose-table" role="region" aria-label="Pixel centres for unequal detector pitches" tabIndex={0}>
+
+| Pixel $(i,j)$ | Horizontal position in $D$ (mm) | Vertical position in $D$ (mm) |
+| ------------- | ------------------------------: | ----------------------------: |
+| $(0,0)$       |                          $-0.6$ |                        $-0.6$ |
+| $(3,0)$       |                           $0.6$ |                        $-0.6$ |
+| $(0,2)$       |                          $-0.6$ |                         $0.6$ |
+| $(3,2)$       |                           $0.6$ |                         $0.6$ |
+| $(1,1)$       |                          $-0.2$ |                           $0$ |
+| $(2,1)$       |                           $0.2$ |                           $0$ |
+
+</div>
+
+The unequal pitches are a neat trick to make an accidental row/column exchange visible, in a way a square array with equal spacing would not. The detector pose then places each centre in the world:
+
+$$
+\mathbf{q}_{ij}^W
+=\mathbf{R}_{WD}\mathbf{q}_{ij}^D+\mathbf{t}_{WD}.
+$$
+
+<EquationNote term="\mathbf{R}_{WD}">
+  Detector-axis orientation in world coordinates.
+</EquationNote>
+
+<EquationNote term="\mathbf{t}_{WD}">
+  World position of the detector origin (mm).
+</EquationNote>
+
+Equivalently, if calibration supplies the first pixel centre $\mathbf{q}_{00}^W$ and unit directions $\mathbf{e}_c^W$ and $\mathbf{e}_r^W$, we can write
+
+$$
+\mathbf{q}_{ij}^W
+=\mathbf{q}_{00}^W
++i\Delta_c\mathbf{e}_c^W
++j\Delta_r\mathbf{e}_r^W.
+$$
+
+<EquationNote term="\mathbf{q}_{00}^W">
+  World position of the first pixel centre (mm).
+</EquationNote>
+
+<EquationNote term="\mathbf{e}_c^W">
+  Unit direction of increasing column index in the world frame.
+</EquationNote>
+
+<EquationNote term="\mathbf{e}_r^W">
+  Unit direction of increasing row index in the world frame.
+</EquationNote>
+
+These are the same geometry with different origins. With the centred convention, the basis vectors are the first two columns of $\mathbf{R}_{WD}$, and the first pixel centre follows by evaluating the centred formula at $(0,0)$.
+
+`DetectorGeometry` stores the second form. Its `origin_mm` is $\mathbf{q}_{00}^W$, **the first pixel centre**, while the origin of frame $D$ in [Table 3.1](#table-3-1) is the rectangle's geometric centre. Starting from a centred calibration, obtain `origin_mm` by subtracting half the first-to-last column span along the column basis and half the first-to-last row span along the row basis from the centre's world position. Apply that conversion once. The ray kernel then only adds integer multiples of the two calibrated pitch vectors.
+
+The descriptor's `u` and `v` are the world-space column and row unit vectors. `spacing_mm` orders column pitch before row pitch, whereas `shape` orders rows before columns, like the stored image. The deliberately different orders follow physical coordinates and array indexing respectively. Construction rejects nonpositive pitches, nonorthogonal detector axes and a source in the detector plane, where our perspective ray construction would be degenerate. A flattened pixel uses `row * width + column`, so the image returned by transmission retains this same ordering.
+
+<MarginNote label="DICOM image-plane conventions">
+  DICOM's image-plane mapping uses the centre of the first pixel as its position
+  anchor. Its first orientation triplet points along increasing column index,
+  despite being described as the row direction, while the second points along
+  increasing row index. Spacing values arrive in the opposite order to our
+  $(i,j)$ pair: row spacing first, then column spacing.{" "}
+  <Citation keys={["dicomPS33"]} />
+</MarginNote>
+
+For ray construction, the pitches belong to the calibrated detector plane. DICOM's Imager Pixel Spacing measures image-pixel separation at the front plane of the detector housing. Pixel Spacing can instead encode a patient-depth magnification correction or a fiducial calibration. Select the spacing and plane together: substituting the patient-calibrated value into a detector-plane model changes the projection geometry. <Citation keys={["dicomPS33"]} />
+
+The geometric centre of the rectangle need not be the principal point. Here the principal point means the perpendicular projection of the source onto the detector plane. If the source in detector coordinates is $\mathbf{s}^D=(s_x^D,s_y^D,s_z^D)^{\mathsf T}$, with $s_z^D<0$, that point is $(s_x^D,s_y^D,0)^{\mathsf T}$. Its continuous pixel coordinates are
+
+$$
+i_\star=\frac{N_c-1}{2}+\frac{s_x^D}{\Delta_c},
+\qquad
+j_\star=\frac{N_r-1}{2}+\frac{s_y^D}{\Delta_r}.
+$$
+
+<EquationNote term="i_\star">
+  Continuous column coordinate of the principal point.
+</EquationNote>
+
+<EquationNote term="j_\star">
+  Continuous row coordinate of the principal point.
+</EquationNote>
+
+An offset principal point belongs in the calibrated geometry. It does not require redefining the detector's array centre. Likewise, the normal separation $-s_z^D$ and the distance from the source to the detector's geometric centre coincide only for a centred source.
+
+## 3.4 Constructing source-to-detector rays
+
+The source-frame origin is the focal point, so its world position is $\mathbf{s}^W=\mathbf{t}_{WS}$. For one pixel, abbreviate $p=(i,j)$ and use its centre $\mathbf{q}_p^W$ as the detector sample. Their difference gives a direction and a finite source-to-pixel distance:
+
+$$
+\mathbf{v}_p^W=\mathbf{q}_p^W-\mathbf{s}^W,
+\qquad
+d_p=\lVert\mathbf{v}_p^W\rVert,
+\qquad
+\widehat{\mathbf{v}}_p^W=\frac{\mathbf{v}_p^W}{d_p},
+\qquad d_p>0.
+$$
+
+<EquationNote term="\mathbf{v}_p^W">
+  Source-to-pixel displacement in world coordinates (mm).
+</EquationNote>
+
+<EquationNote term="d_p">
+  Physical distance from the source to pixel centre p (mm).
+</EquationNote>
+
+<EquationNote term="\widehat{\mathbf{v}}_p^W">
+  Unit ray direction from source towards the pixel, in the world frame.
+</EquationNote>
+
+The hat marks a unit vector. With physical distance $s$ measured from the source, the ray segment is
+
+$$
+\mathbf{x}_p^W(s)=\mathbf{s}^W+s\widehat{\mathbf{v}}_p^W,
+\qquad 0\leq s\leq d_p.
+$$
+
+<EquationNote term="s">
+  Physical distance travelled from the source along the ray (mm).
+</EquationNote>
+
+At $s=0$ we recover the source, and at $s=d_p$ we recover the detector sample. Material behind the source or beyond the detector does not belong to this segment. The part inside the object will be selected by intersection with its physical support.
+
+We can also interpolate directly between the endpoints with a dimensionless parameter $t$:
+
+$$
+\mathbf{x}_p^W(t)=(1-t)\mathbf{s}^W+t\mathbf{q}_p^W,
+\qquad 0\leq t\leq1,
+\qquad \mathrm ds=d_p\,\mathrm dt.
+$$
+
+<EquationNote term="t">
+  Dimensionless ray parameter: zero at the source, one at the detector.
+</EquationNote>
+
+The factor $d_p$ converts a step in $t$ into a physical distance. A normalised ray direction alone does not supply this factor when the integration parameter still runs from zero to one.
+
+To evaluate an attenuation field stored in object coordinates, transform both endpoints with $\mathbf{G}_{OW}$:
+
+$$
+\begin{aligned}
+\mathbf{s}^O&=\mathbf{R}_{OW}\mathbf{s}^W+\mathbf{t}_{OW},\\
+\mathbf{q}_p^O&=\mathbf{R}_{OW}\mathbf{q}_p^W+\mathbf{t}_{OW},\\
+\mathbf{x}_p^O(t)&=(1-t)\mathbf{s}^O+t\mathbf{q}_p^O.
+\end{aligned}
+$$
+
+<EquationNote term="\mathbf{s}^O">
+  Source position expressed in object coordinates (mm).
+</EquationNote>
+
+<EquationNote term="\mathbf{q}_p^O">
+  Pixel-centre position expressed in object coordinates (mm).
+</EquationNote>
+
+Subtracting the endpoints cancels translation. Orthogonality then gives
+
+$$
+\mathbf{q}_p^O-\mathbf{s}^O
+=\mathbf{R}_{OW}(\mathbf{q}_p^W-\mathbf{s}^W),
+\qquad
+\lVert\mathbf{q}_p^O-\mathbf{s}^O\rVert=d_p.
+$$
+
+A rigid change of frame preserves the distance element. If $\mu_O(\mathbf{x},E)$ is the attenuation field in object coordinates, extended by zero outside the modelled object, the optical depth is
+
+$$
+L_p(E)=d_p\int_0^1
+\mu_O\!\left((1-t)\mathbf{s}^O+t\mathbf{q}_p^O,E\right)\,\mathrm dt.
+$$
+
+<EquationNote term="\mu_O">
+  Linear attenuation field in object coordinates (mm⁻¹).
+</EquationNote>
+
+<EquationNote term="L_p">Dimensionless optical depth along ray p.</EquationNote>
+
+Here $\mu_O$ has units $\mathrm{mm}^{-1}$, so $L_p$ is dimensionless. Any additional attenuating structure, such as a table, needs its own contribution if it is part of the forward model. The open-beam count $n_{0,p}$ remains the detector-defined quantity from Chapter 2, and ray construction adds no second inverse-square factor.
+
+One ray through each pixel centre retains [Chapter 2's spatial approximation](/chapters/transmission/#24-heterogeneous-paths-and-optical-depth). To average over a finite pixel or source spot, construct more source-to-detector samples with the same coordinate rules and average their transmitted contributions. The averaging weights combine the detector contributions, while physical distance determines the attenuation accumulated along each ray.
+
+## 3.5 Move the object or move the acquisition
+
+Suppose the source and detector stay fixed while the object moves. The object-frame field $\mu_O$ stays attached to the anatomy. For a pose $\mathbf{G}_{WO}$ with rotation $\mathbf{R}$ and translation $\mathbf{t}$, its value at a world point is
+
+$$
+\mu_W(\mathbf{x}^W,E;\mathbf{G}_{WO})
+=\mu_O\!\left(\mathbf{R}^{\mathsf T}(\mathbf{x}^W-\mathbf{t}),E\right).
+$$
+
+The inverse pose finds which object point occupies the queried world position. Moving the ray endpoints into $O$ therefore lets us sample the original field. Repeatedly rotating and resampling the voxel array would introduce an interpolation operation at every pose change, with a different numerical effect from querying the same field along new paths.
+
+The transforms that the ray calculation needs are the source and detector poses relative to the object:
+
+$$
+\mathbf{G}_{OS}=\mathbf{G}_{WO}^{-1}\mathbf{G}_{WS},
+\qquad
+\mathbf{G}_{OD}=\mathbf{G}_{WO}^{-1}\mathbf{G}_{WD}.
+$$
+
+<EquationNote term="\mathbf{G}_{OS}">
+  Source pose expressed relative to the object.
+</EquationNote>
+
+<EquationNote term="\mathbf{G}_{OD}">
+  Detector pose expressed relative to the object.
+</EquationNote>
+
+This also explains why a common rigid change of world coordinates leaves the geometry unchanged. Premultiply every world pose by the same rigid transform $\mathbf{H}$. Then
+
+$$
+(\mathbf{H}\mathbf{G}_{WO})^{-1}
+(\mathbf{H}\mathbf{G}_{WS})
+=\mathbf{G}_{WO}^{-1}\mathbf{G}_{WS},
+$$
+
+and the same cancellation holds for the detector. The unchanged ray in object coordinates produces the same optical depth and transmission.
+
+<EquationNote term="\mathbf{H}">
+  Common rigid change applied to every world pose.
+</EquationNote>
+
+Let the object's old and new world poses be $\mathbf{G}_0$ and $\mathbf{G}_1$, and define the world-space displacement $\mathbf{H}=\mathbf{G}_1\mathbf{G}_0^{-1}$. Instead of moving the object to $\mathbf{G}_1$, keep it at $\mathbf{G}_0$ and transform the acquisition by the inverse displacement:
+
+$$
+\mathbf{G}_{WS}'=\mathbf{H}^{-1}\mathbf{G}_{WS},
+\qquad
+\mathbf{G}_{WD}'=\mathbf{H}^{-1}\mathbf{G}_{WD},
+\qquad
+\mathbf{G}_0^{-1}\mathbf{H}^{-1}=\mathbf{G}_1^{-1}.
+$$
+
+The final identity proves equality of both relative poses. For a pure object translation to the right, the equivalent acquisition translation is to the left. A rotation requires transforming the source and detector together about the prescribed centre. Rotating the detector alone changes the acquisition.
+
+The two constructions predict the same primary signal when the relative geometry, object field and open-beam measurement model are the same. Moving a real C-arm, however, need not preserve those conditions. Automatic exposure control may adjust the X-ray output, requiring an updated open-beam count $n_{0,p}$ and, if the spectrum changes, an updated spectral model. The new rays may also pass through different lengths of a stationary table, changing the table's contribution to optical depth. Matching the source and detector poses relative to the anatomy does not by itself account for either effect.
+
+When both the object and acquisition poses are unknown, these measurements cannot distinguish a shared rigid motion from no motion at all: only their relative geometry matters. We therefore hold one reference pose fixed while fitting the others. Without that constraint, different pose combinations define identical rays, leaving the optimiser free to move through parameter space without changing the predicted image.
+
+## 3.6 Pose parameters and local updates
+
+A rigid pose has three translational and three rotational degrees of freedom. Its matrix representation stores more entries, with constraints on the rotation. We need a way to update a valid pose while retaining a valid rotation. [Table 3.3](#table-3-3) compares the constraints imposed by common rotation representations.
+
+<div className="prose-table" role="region" aria-label="Rotation representations and update constraints" tabIndex={0}>
+
+| Rotation representation | Stored values    | What an update must respect                                                                                | Active clockwise quarter-turn about $z$, viewed from $+z$ towards the origin                                                                                     |
+| ----------------------- | ---------------- | ---------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Rotation matrix         | Nine entries     | Orthogonality and determinant $+1$. Adding arbitrary entries breaks these constraints.                     | $\mathbf{R}=\begin{bmatrix}0&1&0\\-1&0&0\\0&0&1\end{bmatrix}$, acting on column vectors.                                                                         |
+| Euler angles            | Three angles     | A declared axis order and fixed- or moving-axis convention. Singular configurations depend on that choice. | $(\alpha,\beta,\gamma)=(0,0,-\pi/2)$ for fixed-axis $x$, then $y$, then $z$ rotations: $\mathbf{R}=\mathbf{R}_z(\gamma)\mathbf{R}_y(\beta)\mathbf{R}_x(\alpha)$. |
+| Unit quaternion         | Four components  | Unit norm, declared component order, and the fact that $q$ and $-q$ describe the same rotation.            | $q=(1/\sqrt{2},0,0,-1/\sqrt{2})$ in $(w,x,y,z)$ order, using the Hamilton convention with $q(0,\mathbf{v})q^{-1}$.                                               |
+| Local rotation vector   | Three components | Axis given by direction, angle by length, and a fresh increment is composed with the current rotation.     | $\boldsymbol{\phi}=(0,0,-\pi/2)^{\mathsf T}$, giving $\Delta\mathbf{R}=\exp([\boldsymbol{\phi}]_\times)$ about the update frame's $z$ axis.                      |
+
+</div>
+
+Local rotation vectors let us keep the pose as a matrix and optimise a small increment around it. We use the six-vector $\boldsymbol{\xi}$, with translation coordinates first and rotation coordinates second:
+
+$$
+\boldsymbol{\xi}=
+\begin{bmatrix}\boldsymbol{\rho}\\\boldsymbol{\phi}\end{bmatrix},
+\qquad
+\boldsymbol{\xi}^{\wedge}=
+\begin{bmatrix}
+[\boldsymbol{\phi}]_\times&\boldsymbol{\rho}\\
+\mathbf{0}^{\mathsf T}&0
+\end{bmatrix}.
+$$
+
+<EquationNote term="\boldsymbol{\xi}">
+  Six pose-increment coordinates, translation first.
+</EquationNote>
+
+<EquationNote term="\boldsymbol{\rho}">
+  Translational coordinates of the rigid exponential (mm).
+</EquationNote>
+
+<EquationNote term="\boldsymbol{\phi}">
+  Rotation vector: axis direction and rotation angle in radians.
+</EquationNote>
+
+The components of $\boldsymbol{\rho}$ have units of millimetres, while those of $\boldsymbol{\phi}$ are rotation angles in radians. The wedge builds a matrix from these six coordinates. The cross-product matrix is defined so that $[\boldsymbol{\phi}]_\times\mathbf{x}=\boldsymbol{\phi}\times\mathbf{x}$:
+
+$$
+[\boldsymbol{\phi}]_\times=
+\begin{bmatrix}
+0&-\phi_z&\phi_y\\
+\phi_z&0&-\phi_x\\
+-\phi_y&\phi_x&0
+\end{bmatrix}.
+$$
+
+We choose the rigid exponential to turn these six local coordinates into a finite update that stays in $\mathrm{SE}(3)$. It is the limit of composing many small copies of the same infinitesimal rigid motion. In that composition, the translational contributions are acted on by the accumulated rotation, so the final translation depends on both $\boldsymbol{\rho}$ and $\boldsymbol{\phi}$. Writing $\theta=\lVert\boldsymbol{\phi}\rVert$, the exponential's blocks are
+
+$$
+\Delta\mathbf{G}(\boldsymbol{\xi})
+=\exp(\boldsymbol{\xi}^{\wedge})
+=
+\begin{bmatrix}
+\exp([\boldsymbol{\phi}]_\times)&\mathbf{J}(\boldsymbol{\phi})\boldsymbol{\rho}\\
+\mathbf{0}^{\mathsf T}&1
+\end{bmatrix}.
+$$
+
+<EquationNote term="\mathbf{J}(\boldsymbol{\phi})">
+  Matrix converting translational exponential coordinates into finite
+  translation.
+</EquationNote>
+
+For nonzero $\theta$, the rotation and translation factor are
+
+$$
+\begin{aligned}
+\exp([\boldsymbol{\phi}]_\times)
+&=\mathbf{I}
++\frac{\sin\theta}{\theta}[\boldsymbol{\phi}]_\times
++\frac{1-\cos\theta}{\theta^2}[\boldsymbol{\phi}]_\times^2,\\
+\mathbf{J}(\boldsymbol{\phi})
+&=\mathbf{I}
++\frac{1-\cos\theta}{\theta^2}[\boldsymbol{\phi}]_\times
++\frac{\theta-\sin\theta}{\theta^3}[\boldsymbol{\phi}]_\times^2.
+\end{aligned}
+$$
+
+<EquationNote term="\theta">
+  Rotation angle, equal to the length of the rotation vector (radians).
+</EquationNote>
+
+These expressions follow from the exponential series. The cross-product matrix obeys $[\boldsymbol{\phi}]_\times^3=-\theta^2[\boldsymbol{\phi}]_\times$, so all higher powers reduce to the identity and the first two powers. The upper-right block of the wedge exponential collects the series $\sum_{k=0}^{\infty}[\boldsymbol{\phi}]_\times^k\boldsymbol{\rho}/(k+1)!$, producing $\mathbf{J}(\boldsymbol{\phi})\boldsymbol{\rho}$.
+
+Thus $\boldsymbol{\rho}$ is the translational coordinate of the exponential, while the finite translation is $\mathbf{J}(\boldsymbol{\phi})\boldsymbol{\rho}$. They agree for pure translation. At zero rotation, the three scalar coefficients above have limits $1$, $1/2$ and $1/6$, respectively, and both matrix functions become the identity. Near zero, evaluating their Taylor series avoids cancellation in $1-\cos\theta$ and $\theta-\sin\theta$.
+
+We now choose where the increment acts. For the object pose, a left update is
+
+$$
+\mathbf{G}_{WO}^{+}
+=\Delta\mathbf{G}(\boldsymbol{\xi}_W)\mathbf{G}_{WO}.
+$$
+
+<EquationNote term="\boldsymbol{\xi}_W">
+  Pose increment expressed along the world-frame axes.
+</EquationNote>
+
+Its increment is expressed in world coordinates. With zero translational coordinate, it rotates the whole posed object about the world origin. A right update is
+
+$$
+\mathbf{G}_{WO}^{+}
+=\mathbf{G}_{WO}\Delta\mathbf{G}(\boldsymbol{\xi}_O).
+$$
+
+<EquationNote term="\boldsymbol{\xi}_O">
+  Pose increment expressed along the current object-frame axes.
+</EquationNote>
+
+This increment is expressed in the object's current coordinates. A pure right rotation turns the object about its own origin and keeps that origin's world position fixed. The same six numerical values generally produce different motions in these two equations.
+
+The library selects this **right update**. `compose_pose()` takes an anchor and the translation-first increment and returns their product in the order just derived. This choice lets us measure rotational lever arms from the declared object origin. It also fixes the meaning of the six pose derivatives returned by the projector, so a caller cannot substitute a world-frame increment without transforming the derivative too.
+
+<Source
+  file="python/dpt/geometry.py"
+  region="geometry-right-se3-update"
+  caption="A right-composed SE(3) update"
+/>
+
+The temporary `velocity` matrix is the translation factor $\mathbf{J}(\boldsymbol{\phi})$, not a physical velocity. Multiplying it by the translational coordinates preserves the coupling between finite translation and rotation. The scalar helper `_coefficients()` uses Taylor expansions near zero, where subtracting nearly equal trigonometric values would damage the increment and its derivative. Both code paths describe the same exponential to the stated floating-point approximation.
+
+In [Chapter 6's solver](/chapters/recovering-pose/#66-the-canonical-optimisation-loop), the anchor stays fixed while the optimiser retains curvature information. Successive trial coordinates therefore describe poses in one bounded chart. Rebasing the anchor starts a new solve with empty curvature history: otherwise differences between gradients would mix coordinate systems. The projector supplies a local right derivative at the current pose. The solver must convert that derivative into the fixed chart coordinates in which it stores its curvature history.
+
+In robotics these are called space-frame and body-frame updates. Lynch and Park use this distinction to describe a moving body relative to a fixed base in _Modern Robotics_. It gives us the same choice for anatomical motion: perturb along the world-frame axes or along axes attached to the anatomy. Their six-vector convention lists rotation before translation, while ours lists translation first. <Citation keys={["lynch2017"]} />
+
+To rotate about a chosen world point $\mathbf{c}$, translate that point to the origin, rotate, then translate back. With rotation $\mathbf{R}_\delta$, the update applied to world points is
+
+$$
+\mathbf{x}^{W,+}=\mathbf{c}+\mathbf{R}_\delta(\mathbf{x}^W-\mathbf{c}),
+\qquad
+\Delta\mathbf{G}_{\mathbf{c}}=
+\begin{bmatrix}
+\mathbf{R}_\delta&(\mathbf{I}-\mathbf{R}_\delta)\mathbf{c}\\
+\mathbf{0}^{\mathsf T}&1
+\end{bmatrix}.
+$$
+
+<EquationNote term="\mathbf{c}">
+  Chosen centre of rotation in world coordinates (mm).
+</EquationNote>
+
+<EquationNote term="\mathbf{R}_\delta">
+  Rotation applied to displacements from the chosen centre.
+</EquationNote>
+
+Substituting $\mathbf{x}^W=\mathbf{c}$ shows that the centre stays fixed. The translation block is part of the rotation-about-a-centre operation. Dropping it returns us to a rotation about the world origin.
+
+<GeometryIllustrations
+  kind="pivots"
+  id="figure-rotation-pivots"
+  title="The pivot determines the translation block"
+  description="Applying the same quarter-turn about two different pivots puts the point at different positions and changes its detector projection. A rotation matrix alone does not specify the motion: the pivot also determines the translation."
+/>
+
+The first-order point motions make the difference between left and right updates explicit. Put $\mathbf{x}^W=\mathbf{R}\mathbf{x}^O+\mathbf{t}$ and retain terms linear in the increment:
+
+$$
+\begin{aligned}
+\delta\mathbf{x}^W_{\mathrm{left}}
+&=\boldsymbol{\rho}_W+\boldsymbol{\phi}_W\times\mathbf{x}^W,\\
+\delta\mathbf{x}^W_{\mathrm{right}}
+&=\mathbf{R}\boldsymbol{\rho}_O
++\mathbf{R}(\boldsymbol{\phi}_O\times\mathbf{x}^O).
+\end{aligned}
+$$
+
+A left rotational derivative has a lever arm measured from the world origin. The right derivative measures it from the object origin. These are different parameter derivatives of the same pose, and a finite-difference check must use the same composition rule as the derivative it checks.
+
+Radians and millimetres also give the six parameters different physical scales. For a point a perpendicular distance $r$ from the rotation axis, a small rotation through $\theta$ radians moves it by approximately $r\theta$. At $r=100\,\mathrm{mm}$, a $0.01$-radian rotation gives about $1\,\mathrm{mm}$ of motion. A useful initial scaling therefore pairs a translational step with a rotational step that produces a comparable displacement at a declared characteristic radius. The radius is a modelling choice, and image sensitivity still depends on the paths and anatomy.
+
+Local increments avoid requiring one global angle chart throughout the optimisation. The exponential remains defined for large angles, but its inverse is not unique: the principal rotation-vector choice becomes ambiguous at angle $\pi$. Composing successive small increments keeps each update near zero. It does not justify adding rotation vectors as though finite rotations commuted.
+
+<RadiographFigure
+  kind="local-pose"
+  id="figure-radiograph-pose"
+  rotationStudyId="figure-pelvic-rotation"
+  title="Moving the pelvis changes the radiograph"
+  description="Small pose changes are shown with their absolute count differences, followed by a −15° to +15° rotation sweep beside a fixed reference. Moving the same synthetic pelvis changes ray paths and anatomical overlap, so pose alone can alter the radiograph."
+/>
+
+## 3.7 Geometry checks that catch plausible mistakes
+
+A symmetric object can conceal a reflection and two incorrect functions can undo each other's mistakes (which famously does not make them right). Geometry checks need prescribed coordinates and expected answers that do not come from the same transform chain being checked.
+
+Start with a simple acquisition in millimetres: source at $(0,0,0)$, detector plane at $z=f$ with $f>0$, and detector axes parallel to world $x$ and $y$. A landmark $\mathbf{a}=(a_x,a_y,a_z)^{\mathsf T}$ between the source and detector has $0<a_z<f$. Its projected detector coordinates follow by intersecting the line through the source and landmark with the plane:
+
+$$
+\mathbf{q}(\mathbf{a})=
+\begin{bmatrix}
+f\,a_x/a_z\\
+f\,a_y/a_z\\
+f
+\end{bmatrix}.
+$$
+
+<EquationNote term="f">
+  Source-to-detector-plane distance in this centred geometry (mm).
+</EquationNote>
+
+<EquationNote term="a_z">
+  Landmark depth measured from the source (mm).
+</EquationNote>
+
+For $f=1000\,\mathrm{mm}$, the three labelled landmarks in [Table 3.4](#table-3-4) give unequal offsets and two magnifications.
+
+<div className="prose-table" role="region" aria-label="Analytic landmark projections" tabIndex={0}>
+
+| Landmark | World position (mm) | Detector position (mm) |
+| -------- | ------------------- | ---------------------- |
+| $A$      | $(10,0,500)$        | $(20,0,1000)$          |
+| $B$      | $(0,20,500)$        | $(0,40,1000)$          |
+| $C$      | $(-15,10,750)$      | $(-20,40/3,1000)$      |
+
+</div>
+
+Their labels and asymmetry distinguish a horizontal flip from a vertical flip or an axis exchange. The last point also prevents every landmark from sharing one magnification. Convert these physical detector positions back to continuous pixel coordinates using the same centre and pitch definitions as section 3.3. Rounding to integer pixels would discard part of the check.
+
+<GeometryIllustrations
+  kind="landmarks"
+  id="figure-asymmetric-landmarks"
+  title="Asymmetric landmarks expose projection errors"
+  description="Three labelled landmarks at two depths separate a horizontal reflection from an incorrect magnification. A symmetric object could conceal these projection errors, while the unequal depths and positions expose them."
+/>
+
+For a separate rotation-centre check, take $\mathbf{c}=(10,0,500)^{\mathsf T}\,\mathrm{mm}$ and a point $\mathbf{a}=(11,0,500)^{\mathsf T}\,\mathrm{mm}$. A positive quarter-turn about the world $z$ direction through $\mathbf{c}$ must give
+
+$$
+\mathbf{R}_z(\pi/2)=
+\begin{bmatrix}
+0&-1&0\\
+1&0&0\\
+0&0&1
+\end{bmatrix},
+\qquad
+\mathbf{a}^{+}=
+\begin{bmatrix}10\\1\\500\end{bmatrix}\,\mathrm{mm}.
+$$
+
+Rotating about the world origin instead gives $(0,11,500)^{\mathsf T}\,\mathrm{mm}$, a different point with a different projection. A transpose error changes the sign of the one-millimetre offset around the correct centre. [Table 3.5](#table-3-5) extends this check to the other frame and detector conventions.
+
+<div className="prose-table" role="region" aria-label="Geometry validation cases" tabIndex={0}>
+
+| Check                      | Required result                                                        | Mistake it exposes                                 |
+| -------------------------- | ---------------------------------------------------------------------- | -------------------------------------------------- |
+| Identity pose              | Points and directions retain their coordinates.                        | Unexpected offsets or component order.             |
+| Pure translation           | Points shift, while directions remain unchanged.                       | Translating a direction.                           |
+| Rotation validity          | $\mathbf{R}^{\mathsf T}\mathbf{R}=\mathbf{I}$ and $\det\mathbf{R}=1$.  | Scale, shear, drift or reflection.                 |
+| Transform then inverse     | Recover several asymmetric input points.                               | Inverse rotation or translation error.             |
+| Two-step composition       | Match independently applying the two transforms in order.              | Reversed multiplication.                           |
+| Detector centres           | Recover the odd/even centre locations and unequal-pitch example above. | Half-pixel shifts and swapped row/column spacings. |
+| Ray endpoints              | Recover source and pixel centre at the two parameter bounds.           | Wrong origin, direction or segment length.         |
+| Common rigid frame change  | Preserve object-space endpoints and physical lengths.                  | Inconsistent frame conversion.                     |
+| Prescribed centre rotation | Recover the quarter-turn result above.                                 | Wrong pivot or rotation sign.                      |
+| Local pose derivative      | Agree with finite differences using the declared update side.          | Wrong frame, sign or lever arm.                    |
+
+</div>
+
+For the final row, choose a six-dimensional direction $\boldsymbol{\eta}$ with translational components in millimetres and rotational components in radians. Use a dimensionless scalar step $h$ and, for a left-update check, evaluate the point transform at
+
+$$
+\mathbf{G}_{\pm}
+=\exp(\pm h\boldsymbol{\eta}^{\wedge})\mathbf{G}_{WO},
+\qquad
+\frac{\mathbf{x}_{+}^W-\mathbf{x}_{-}^W}{2h}.
+$$
+
+<EquationNote term="\boldsymbol{\eta}">
+  Chosen six-dimensional direction for the pose-derivative check.
+</EquationNote>
+
+<EquationNote term="h">
+  Dimensionless finite-difference step along the chosen direction.
+</EquationNote>
+
+As $h$ decreases, this approaches the left point-motion expression in section 3.6 with $\boldsymbol{\xi}=\boldsymbol{\eta}$. Check a range of steps through the region where truncation error decreases and before round-off dominates. All three components of the point-displacement comparison are in millimetres, while rotation-matrix residuals are dimensionless. Set their tolerances separately for the chosen arithmetic and coordinate scale.
+
+In our `dpt` package, these conventions are checked by executable tests in `tests/python/test_geometry_contracts.py`. The tests exercise the storage and update conventions with explicit points before the projection tests introduce a volume. In particular, a mixed translation-and-rotation increment must exercise the exponential's translation factor: pure translation and pure rotation can each pass while that coupling is wrong. The package's later directional checks use the same right composition as [Listing 3.2](#listing-3-2).
+
+The endpoints of the ray we get from this exercise are in the same physical frame as the attenuation field. The next operation is to locate their segment within the volume, map its points to voxel coordinates and integrate along it. That is the task of [Chapter 4](/chapters/volumes-line-integrals/).
+
+<Bibliography keys={["dicomPS33", "lynch2017"]} />

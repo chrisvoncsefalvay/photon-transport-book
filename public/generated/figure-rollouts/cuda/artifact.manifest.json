@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "id": "book-figures-cuda",
+  "chapter": "chapters-4-10",
+  "experiment": "archived-figure-rollouts",
+  "source_commit": "dba22055a71c9e7d59205c5019df2108fdc623dd",
+  "generator": "tools/public/import-figure-rollouts.mjs",
+  "mode": "deterministic-precomputed-sweep",
+  "stochastic": false,
+  "seeds": null,
+  "created_at": "2026-09-11T10:47:42Z",
+  "parameters": {
+    "group": "cuda",
+    "provenance": "/generated/figure-rollouts/provenance.json"
+  },
+  "notes": "source_commit identifies the curation checkout, not the archived producer. Producer source digests, configurations and actual run times are preserved in provenance.json. Input payloads are byte-identical to the verified archive.",
+  "outputs": [
+    "public/generated/figure-rollouts/geometry.json",
+    "public/generated/figure-rollouts/projection-sensitivity.json",
+    "public/generated/figure-rollouts/spectral-chapter-7.json",
+    "public/generated/figure-rollouts/spectral-chapter-8.json",
+    "public/generated/figure-rollouts/blur-displacement.json"
+  ],
+  "output_digests": {
+    "public/generated/figure-rollouts/geometry.json": "f9379bbf0b234b080aeb30f946e123397a0360d1b9dc52b56e00f1ebdaa5a9d3",
+    "public/generated/figure-rollouts/projection-sensitivity.json": "a85d77a0109012e4cf59930bed6f0f03d32a7e49571299806646284226a3f489",
+    "public/generated/figure-rollouts/spectral-chapter-7.json": "38fe0c4cc37b1fe92e56518a5084125a170045c0fc8b87c4c5709f9f40b5b81f",
+    "public/generated/figure-rollouts/spectral-chapter-8.json": "dc7e09ea7ec5c65f4f37e09a05ef62895eb7db2e294e7b24ae00d77eacaeb6e6",
+    "public/generated/figure-rollouts/blur-displacement.json": "940184ca6c8ad83aa2baf61ad282f6c507a77430a31d7d25db64f36919dc6e15"
+  },
+  "source_digests": {
+    "tools/public/import-figure-rollouts.mjs": "51946c2bb03f145bc0db9e15c7b6d44a1b008b445c811eb55b679896171638b9"
+  }
+}

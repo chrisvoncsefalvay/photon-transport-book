@@ -1,0 +1,181 @@
+{
+  "schema_version": 1,
+  "id": "vertebrae-fixed-pose-introduction",
+  "panels": [
+    {
+      "id": "ct",
+      "label": "Acquired CT",
+      "image": {
+        "file": "generated/introduction-study/ct.png",
+        "sha256": "4401196ff4a883a62fd29f213f6d722bf056001afc079df14e6fdbe09de99312",
+        "bytes": 31918,
+        "width": 192,
+        "height": 192,
+        "alt": "Native acquired coronal CT crop at y=5.81543 mm; x increases right and z increases up."
+      },
+      "aspect": 0.775390625,
+      "note": "Coronal plane, y=5.81543 mm \u00b7 \u2212300 to 1,300 HU. x increases right; z increases up."
+    },
+    {
+      "id": "radiograph",
+      "label": "Simulated radiograph",
+      "image": {
+        "sha256": "091cdabf198f0808bed919b8d55cad8562b9f2819c085d34a4f2dfe3d2e474f4",
+        "bytes": 5181,
+        "width": 96,
+        "height": 96,
+        "file": "generated/reconstruction-radiographs/vertebrae/input-view-0.png",
+        "alt": "Simulated fitting radiograph 1 of the assigned phantom, 20\u201355 keV channel."
+      },
+      "aspect": 1,
+      "note": "Fitting view 1 \u00b7 20\u201355 keV \u00b7 negative-log display 0\u20138."
+    },
+    {
+      "id": "reconstruction",
+      "label": "Recovered bone",
+      "image": {
+        "file": "generated/introduction-study/reconstruction.png",
+        "sha256": "b1ff21d0612a81a56df7425e93f97e788864bb305c0a8983c1963c141fe4208d",
+        "bytes": 72364,
+        "width": 700,
+        "height": 550,
+        "alt": "Recovered vertebral-region bone surface, including cropped ribs and open boundaries."
+      },
+      "aspect": 1.2727272727272727,
+      "note": "Recorded surface at fraction 0.325 \u00b7 1,000 accepted updates."
+    }
+  ],
+  "ct_display": {
+    "plane": "coronal",
+    "native_axis_zyx": 1,
+    "native_index": 103,
+    "coordinate_y_mm": 5.8154296875,
+    "window_hu": [
+      -300,
+      1300
+    ],
+    "extent_xz_mm": [
+      -74.4375,
+      74.4375,
+      -96.0,
+      96.0
+    ],
+    "sample_spacing_xz_mm": [
+      0.775390625,
+      1.0
+    ],
+    "array_shape_zx": [
+      192,
+      192
+    ],
+    "origin": "lower",
+    "png_rows": "PNG top row is native z=191; columns retain native increasing x",
+    "orientation": "Centred object XYZ; lossless LAS-to-RAS X reversal from the source header",
+    "laterality": "Header-derived; patient laterality not independently established",
+    "css": "Render at the declared physical aspect, filling both dimensions; native sample array is square",
+    "resampling": "none; native samples mapped once through the fixed grayscale display window"
+  },
+  "radiograph_display": {
+    "view_zero_based": 0,
+    "role": "fitting",
+    "channel_kev": [
+      20,
+      55
+    ],
+    "formula": "-log((counts+0.5)/open_beam)",
+    "window": [
+      0,
+      8
+    ],
+    "pseudocount": "0.5 for display only",
+    "detector_extent_uv_mm": [
+      -192,
+      192,
+      -192,
+      192
+    ],
+    "origin": "lower; already encoded in the reused PNG",
+    "copied": false
+  },
+  "surface_display": {
+    "projection": "orthographic",
+    "elevation_degrees": 12.0,
+    "azimuth_degrees": -75.0,
+    "roll_degrees": 0,
+    "bounds_xyz_mm": [
+      [
+        -74.4375,
+        -74.4375,
+        -96.0
+      ],
+      [
+        74.4375,
+        74.4375,
+        96.0
+      ]
+    ],
+    "background": "#eeebe3",
+    "light_azimuth_elevation_degrees": [
+      315,
+      45
+    ],
+    "rendering": "Recorded triangles with flat face lighting; no raster triangle seams",
+    "raster_antialiasing": false,
+    "geometry_smoothing": false,
+    "decimation": false,
+    "capping": false,
+    "material_colour": "#ffffff",
+    "box_zoom": 1.1,
+    "threshold_fraction": 0.325,
+    "vertices": 16109,
+    "triangles": 31788,
+    "mesh_sha256": "78ccd99c2fe277e4dfdbe961a27064f20144835fbab5a125a2cf4c210aca21f4"
+  },
+  "scientific_scope": {
+    "source_case": "CT-ORG case 2",
+    "material_assignment": "Bone=0.65 on source label 5; water=1-bone throughout the finite box",
+    "geometry": "Fixed recorded source/detector poses; no fitted registration supplies this reconstruction",
+    "physics": "Historical NIST SRD126 water and ICRU-44 cortical bone; SpekPy 2.5.4; ideal three-channel counts",
+    "physics_npz_sha256": "1a3d15d693f840856ebc29364d280e0570de56374b6dc7b91c0e804eb47a5fcb",
+    "physics_metadata_sha256": "c996508dd6fa1c75988f9a117185ecd4ce113e85f53891ab4ece720971c58483",
+    "accepted_steps": 1000,
+    "termination": "iteration_budget",
+    "converged": false,
+    "completed_run_sha256": "fab471b81eb132b798ef62cd958a02e35f2a8a06d85d52d808bb2bc682f4e869"
+  },
+  "qualification": [
+    "The CT is acquired; the radiograph is simulated from an assigned bone-in-water phantom derived from its labels.",
+    "Assigned and recovered fractions are not measured patient composition; the CT HU values are display context only.",
+    "Fixed poses were supplied. This sequence does not contain a recorded registration-to-reconstruction step.",
+    "The historical 1,000-update run reached its iteration budget; convergence and noise-limited recovery are not established.",
+    "The vertebral region includes cropped ribs. Recorded surfaces remain unsmoothed and open at cropped boundaries.",
+    "NIST source and derived attenuation tables are excluded; this display is not a reproduction using the later xraylib model."
+  ],
+  "provenance": [
+    {
+      "title": "Rister et al., CT-ORG (2019), case 2 acquired CT and bone labels",
+      "url": "https://doi.org/10.7937/tcia.2019.tt7f4v7o",
+      "licence": "CC BY 3.0; derived from Rister et al., CT-ORG, TCIA",
+      "source_sha256": "ca702e58f0fb736ff4bc407aac0c4b698b8689f3f7e0281da32a546a87ae8a40",
+      "label_source_sha256": "c5951c1065f517c9e8e794aec0a921ae0ebaa2198d4b38f0ed492bc7aca74e8f"
+    },
+    {
+      "title": "SpekPy 2.5.4 spectrum generator",
+      "url": "https://pypi.org/project/spekpy/2.5.4/",
+      "licence": "MIT; software not bundled in this data package",
+      "source_sha256": "2f01e805721281b5a3e332500db577cedaf71bde0f0d3838745b915e6f1c258a"
+    },
+    {
+      "title": "Hubbell and Seltzer, NIST SRD126; water coefficient source used for simulation",
+      "url": "https://doi.org/10.18434/T4D01F",
+      "licence": "SRD copyright reserved; source and derived attenuation tables excluded",
+      "source_sha256": "19a80f2609b6aa4a3ff057d57ad1e17001eeaa5932553c15c66522e673c3f76f"
+    },
+    {
+      "title": "NIST SRD126 ICRU-44 cortical bone coefficient source used for simulation",
+      "url": "https://physics.nist.gov/PhysRefData/XrayMassCoef/ComTab/bone.html",
+      "licence": "SRD copyright reserved; source and derived attenuation tables excluded",
+      "source_sha256": "1df054fa5e8eef770a2fbcd8fd6a28f68b6c1f426d65cfa41d55ebf68041144a"
+    }
+  ]
+}

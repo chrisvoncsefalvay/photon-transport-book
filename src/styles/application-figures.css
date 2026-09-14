@@ -1,0 +1,360 @@
+.application-figure {
+  padding: clamp(0.8rem, 2.5vw, 2rem);
+  min-width: 0;
+  font: 0.82rem/1.55 var(--font-ui);
+  color: var(--ink);
+}
+.application-figure .application-pair,
+.application-figure .application-three {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.8rem;
+  align-items: start;
+}
+.application-figure .application-three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.application-figure section {
+  min-width: 0;
+}
+.application-figure h3 {
+  font: 500 0.9rem/1.4 var(--font-ui);
+  margin: 0 0 1rem;
+}
+.application-figure p {
+  margin: 0;
+}
+.application-figure svg[role="img"] {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: 29rem;
+  margin-inline: auto;
+}
+.application-figure svg[role="img"] text {
+  font: 13px var(--font-ui);
+  fill: var(--ink);
+}
+.application-figure svg[role="img"] .app-small-label {
+  font-size: 11px;
+}
+.application-figure .app-volume {
+  fill: var(--paper-raised);
+  stroke: var(--rule-strong);
+}
+.application-figure .app-grid {
+  fill: none;
+  stroke: var(--rule);
+  stroke-width: 1;
+}
+.application-figure .app-guide {
+  fill: none;
+  stroke: var(--rule-strong);
+  stroke-width: 1;
+  stroke-dasharray: 3 4;
+}
+.application-figure .app-detector {
+  fill: none;
+  stroke: var(--technical);
+  stroke-width: 4;
+}
+.application-figure .app-ray {
+  fill: none;
+  stroke: var(--technical);
+  stroke-width: 1.5;
+}
+.application-figure .app-axis,
+.application-figure .app-arrow {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.2;
+}
+.application-figure .app-out-axis {
+  fill: var(--paper-inset);
+  stroke: var(--ink);
+  stroke-width: 1;
+}
+.application-figure .app-dot {
+  fill: var(--ink);
+}
+.application-figure .app-leader {
+  fill: none;
+  stroke: var(--ink-muted);
+  stroke-width: 1;
+}
+.application-figure .application-note {
+  color: var(--ink-muted);
+  font-size: 0.75rem;
+  line-height: 1.6;
+  margin-top: 1rem;
+}
+.application-figure .application-kicker {
+  color: var(--ink-muted);
+  font-size: 0.75rem;
+  margin-bottom: 1rem;
+}
+.application-figure .application-label {
+  display: block;
+  font-size: 0.73rem;
+  color: var(--ink-muted);
+}
+.application-figure .application-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.application-figure .application-node {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  padding: 0.85rem 0.4rem;
+  border-top: 1px solid var(--rule);
+  min-width: 0;
+}
+.application-figure .application-node strong {
+  font-weight: 500;
+}
+.application-figure .application-node p {
+  font-size: 0.75rem;
+  color: var(--ink-muted);
+  line-height: 1.6;
+}
+.application-figure .app-unknown {
+  border-top: 2px solid var(--accent);
+}
+.application-figure .katex {
+  font-size: 1.08em;
+}
+.application-figure .support-box {
+  stroke: var(--accent);
+  stroke-width: 1;
+}
+.application-figure .support-hatch {
+  stroke: var(--accent);
+  stroke-opacity: 0.3;
+  stroke-width: 1;
+}
+.application-figure .support-coefficient {
+  fill: var(--accent);
+}
+.application-figure .grid-node {
+  fill: var(--ink-muted);
+}
+.application-figure .support-ray {
+  fill: none;
+  stroke-width: 1.5;
+}
+.application-figure .support-first {
+  stroke: var(--technical);
+}
+.application-figure .support-second {
+  stroke: var(--accent);
+  stroke-dasharray: 5 3;
+}
+.application-figure ol.application-chain {
+  --chain-gap: 2.25rem;
+  --chain-colour: var(--technical);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--chain-gap);
+}
+.application-figure .application-chain li {
+  position: relative;
+  min-width: 0;
+  margin: 0;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--rule-strong);
+  border-top: 2px solid var(--chain-colour);
+  background: var(--paper-raised);
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+.application-figure .application-chain strong {
+  font-size: 0.79rem;
+  font-weight: 500;
+}
+.application-figure .application-chain p {
+  font-size: 0.75rem;
+  color: var(--ink-muted);
+  line-height: 1.6;
+}
+.application-figure .application-chain li:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  width: calc(var(--chain-gap) + 2px);
+  border-top: 1px solid var(--chain-colour);
+}
+.application-figure .application-chain li:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  top: calc(50% - 0.22rem);
+  left: calc(100% + var(--chain-gap) - 0.4rem + 1px);
+  border-block: 0.22rem solid transparent;
+  border-left: 0.4rem solid var(--chain-colour);
+}
+.application-figure .application-formula {
+  font-size: 0.75rem;
+  min-height: 2.1rem;
+}
+.application-figure .reverse-heading {
+  margin-top: 1.8rem;
+}
+.application-figure ol.reverse-chain {
+  --chain-colour: var(--accent);
+}
+.application-figure .gradient-notes {
+  margin-top: 1.4rem;
+}
+.application-figure .application-down {
+  display: block;
+  text-align: center;
+  color: var(--technical);
+  margin: 0.5rem;
+}
+.application-figure .policy-inputs,
+.application-figure .policy-candidates {
+  text-align: center;
+}
+.application-figure .policy-choice {
+  max-width: 33rem;
+  margin-inline: auto;
+  text-align: center;
+  border-block: 1px solid var(--rule-strong);
+  background: var(--paper-raised);
+}
+.application-figure .decision-boundary {
+  margin-top: 1.5rem;
+  padding-top: 0.7rem;
+  border-top: 2px dashed var(--accent);
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  color: var(--accent);
+  font-size: 0.75rem;
+}
+.application-figure .policy-after {
+  margin-top: 1rem;
+}
+.application-figure .evaluation-node {
+  border: 1px dashed var(--rule-strong);
+  padding: 0.9rem;
+}
+.application-figure .clearance-disk {
+  stroke: var(--accent);
+  stroke-width: 1;
+}
+.application-figure .orbit-reference {
+  fill: none;
+  stroke: var(--rule-strong);
+  stroke-width: 2;
+  stroke-dasharray: 3 4;
+}
+.application-figure .permitted-arc {
+  fill: none;
+  stroke: var(--technical);
+  stroke-width: 4;
+}
+.application-figure .excluded-arc {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2.5;
+  stroke-dasharray: 5 4;
+}
+.application-figure .permitted-point {
+  fill: var(--technical);
+}
+.application-figure .permitted-set {
+  border-block: 1px solid var(--technical);
+}
+.application-figure .application-legend {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.2rem;
+  font-size: 0.72rem;
+  color: var(--ink-muted);
+}
+.application-figure .application-legend li {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.application-figure .application-legend i {
+  display: inline-block;
+  width: 1.5rem;
+}
+.application-figure .legend-permitted {
+  border-top: 3px solid var(--technical);
+}
+.application-figure .legend-excluded {
+  border-top: 2px dashed var(--accent);
+}
+.application-figure .legend-outside {
+  border-top: 2px dotted var(--rule-strong);
+}
+@media (max-width: 1100px) {
+  .application-figure ol.application-chain {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .application-figure .application-chain li {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 0.75rem;
+  }
+  .application-figure .application-chain strong,
+  .application-figure .application-chain .application-formula {
+    grid-column: 1;
+  }
+  .application-figure .application-chain p {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+  .application-figure .application-formula {
+    min-height: 0;
+  }
+  .application-figure .application-chain li:not(:last-child)::after {
+    top: 100%;
+    left: 50%;
+    width: 0;
+    height: calc(var(--chain-gap) + 2px);
+    border: 0;
+    border-left: 1px solid var(--chain-colour);
+  }
+  .application-figure .application-chain li:not(:last-child)::before {
+    top: calc(100% + var(--chain-gap) - 0.4rem + 1px);
+    left: calc(50% - 0.22rem);
+    border: 0;
+    border-inline: 0.22rem solid transparent;
+    border-top: 0.4rem solid var(--chain-colour);
+  }
+}
+@media (max-width: 700px) {
+  .application-figure .application-pair,
+  .application-figure .application-three {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.4rem;
+  }
+}
+@media (max-width: 480px) {
+  .application-figure .application-chain li {
+    display: flex;
+    gap: 0.7rem;
+  }
+  .application-figure .application-formula {
+    font-size: 0.82rem;
+  }
+}
+@media (max-width: 380px) {
+  .application-figure .application-node .katex {
+    font-size: 0.94em;
+  }
+}

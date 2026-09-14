@@ -1,0 +1,95 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  height?: "compact" | "standard" | "tall";
+  id?: string;
+}
+
+const { title, description, height = "standard", id } = Astro.props;
+
+function stableIdentifier(value: string): string {
+  let hash = 2166136261;
+  for (const character of value) {
+    hash ^= character.codePointAt(0) ?? 0;
+    hash = Math.imul(hash, 16777619);
+  }
+  return `interactive-${(hash >>> 0).toString(36)}`;
+}
+
+const titleId = id ?? stableIdentifier(`${title}\0${description}`);
+---
+
+<dpt-technical-figure
+  class:list={["interactive-figure", `interactive-figure--${height}`]}
+>
+  <div
+    class="interactive-figure__frame"
+    id={titleId}
+    role="group"
+    aria-label={`${title}. ${description}`}
+  >
+    <canvas
+      aria-label={`${description} Drag to rotate. Arrow keys rotate, plus and minus zoom, Home resets.`}
+      aria-describedby={`${titleId}-instructions`}
+      tabindex="-1"
+      hidden></canvas>
+    <svg
+      class="interactive-figure__fallback"
+      viewBox="0 0 920 480"
+      role="img"
+      aria-label={`${description} Static fallback.`}
+    >
+      <line x1="168" y1="240" x2="728" y2="240"></line>
+      <circle cx="168" cy="240" r="11"></circle>
+      <path d="M 728 104 L 728 376 M 728 104 L 778 132 M 728 376 L 778 348"
+      ></path>
+      <text x="142" y="282">source</text>
+      <text x="697" y="410">detector</text>
+    </svg>
+    <p class="interactive-figure__status" data-figure-status aria-live="polite">
+      Static technical-diagram fallback
+    </p>
+    <div class="interactive-figure__controls" data-figure-controls hidden>
+      <p
+        class="interactive-figure__instructions"
+        id={`${titleId}-instructions`}
+      >
+        Drag to rotate · Arrow keys to turn · + / − to zoom · Home to reset
+      </p>
+      <div
+        class="interactive-figure__buttons"
+        role="group"
+        aria-label="Diagram view"
+      >
+        <button
+          type="button"
+          data-figure-action="zoom-out"
+          aria-label="Zoom out"
+          title="Zoom out"
+          disabled>−</button
+        >
+        <button
+          type="button"
+          data-figure-action="zoom-in"
+          aria-label="Zoom in"
+          title="Zoom in"
+          disabled>+</button
+        >
+        <button
+          type="button"
+          data-figure-action="reset"
+          aria-label="Reset view"
+          title="Reset view"
+          disabled>↺</button
+        >
+      </div>
+    </div>
+  </div>
+</dpt-technical-figure>
+
+<script>
+  import { mountTechnicalFigureElements } from "../../lib/technical-figure";
+
+  mountTechnicalFigureElements();
+</script>

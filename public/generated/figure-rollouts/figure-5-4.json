@@ -1,0 +1,816 @@
+{
+  "formula": "5.21",
+  "parameters": {
+    "attenuation_mm_inverse": 0.02,
+    "impact_mm": [
+      0.0,
+      0.1,
+      0.2,
+      0.3,
+      0.4,
+      0.5,
+      0.6,
+      0.7,
+      0.8,
+      0.9,
+      1.0,
+      1.1,
+      1.2,
+      1.3,
+      1.4,
+      1.5,
+      1.6,
+      1.7,
+      1.8,
+      1.9,
+      2.0,
+      2.1,
+      2.2,
+      2.3,
+      2.4,
+      2.5,
+      2.6,
+      2.7,
+      2.8,
+      2.9,
+      3.0,
+      3.1,
+      3.2,
+      3.3,
+      3.4,
+      3.5,
+      3.6,
+      3.7,
+      3.8,
+      3.9,
+      4.0,
+      4.1,
+      4.2,
+      4.3,
+      4.4,
+      4.5,
+      4.6,
+      4.7,
+      4.8,
+      4.9,
+      5.0,
+      5.1,
+      5.2,
+      5.3,
+      5.4,
+      5.5,
+      5.6,
+      5.7,
+      5.8,
+      5.9,
+      6.0,
+      6.1,
+      6.2,
+      6.3,
+      6.4,
+      6.5,
+      6.6,
+      6.7,
+      6.8,
+      6.9,
+      7.0,
+      7.1,
+      7.2,
+      7.3,
+      7.4,
+      7.5,
+      7.6,
+      7.7,
+      7.8,
+      7.9,
+      8.0,
+      8.1,
+      8.2,
+      8.3,
+      8.4,
+      8.5,
+      8.6,
+      8.7,
+      8.8,
+      8.9,
+      9.0,
+      9.1,
+      9.2,
+      9.3,
+      9.4,
+      9.5,
+      9.6,
+      9.7,
+      9.8,
+      9.9,
+      9.99,
+      9.999,
+      9.9999,
+      9.99999,
+      9.999999,
+      9.999999899999999,
+      9.999999990000001,
+      9.999999999,
+      9.9999999999,
+      9.99999999999,
+      9.999999999999,
+      9.9999999999999,
+      9.99999999999999,
+      10.0,
+      10.1
+    ],
+    "radius_mm": 10.0
+  },
+  "rows": [
+    {
+      "derivative_per_mm": -0.0,
+      "derivative_state": "interior",
+      "impact_mm": 0.0,
+      "optical_depth": 0.4
+    },
+    {
+      "derivative_per_mm": -0.00040002000150012507,
+      "derivative_state": "interior",
+      "impact_mm": 0.1,
+      "optical_depth": 0.399979999499975
+    },
+    {
+      "derivative_per_mm": -0.0008001600480160056,
+      "derivative_state": "interior",
+      "impact_mm": 0.2,
+      "optical_depth": 0.39991999199839967
+    },
+    {
+      "derivative_per_mm": -0.0012005403647735902,
+      "derivative_state": "interior",
+      "impact_mm": 0.3,
+      "optical_depth": 0.3998199594817648
+    },
+    {
+      "derivative_per_mm": -0.0016012815380508714,
+      "derivative_state": "interior",
+      "impact_mm": 0.4,
+      "optical_depth": 0.3996798718974975
+    },
+    {
+      "derivative_per_mm": -0.0020025046972870354,
+      "derivative_state": "interior",
+      "impact_mm": 0.5,
+      "optical_depth": 0.3994996871087636
+    },
+    {
+      "derivative_per_mm": -0.002404331699102583,
+      "derivative_state": "interior",
+      "impact_mm": 0.6,
+      "optical_depth": 0.399279350830969
+    },
+    {
+      "derivative_per_mm": -0.0028068853138861977,
+      "derivative_state": "interior",
+      "impact_mm": 0.7,
+      "optical_depth": 0.39901879654973654
+    },
+    {
+      "derivative_per_mm": -0.003210289415620512,
+      "derivative_state": "interior",
+      "impact_mm": 0.8,
+      "optical_depth": 0.3987179454200676
+    },
+    {
+      "derivative_per_mm": -0.0036146691756396587,
+      "derivative_state": "interior",
+      "impact_mm": 0.9,
+      "optical_depth": 0.3983767061463308
+    },
+    {
+      "derivative_per_mm": -0.004020151261036849,
+      "derivative_state": "interior",
+      "impact_mm": 1.0,
+      "optical_depth": 0.397994974842648
+    },
+    {
+      "derivative_per_mm": -0.0044268640384704325,
+      "derivative_state": "interior",
+      "impact_mm": 1.1,
+      "optical_depth": 0.39757263487317634
+    },
+    {
+      "derivative_per_mm": -0.004834937784152281,
+      "derivative_state": "interior",
+      "impact_mm": 1.2,
+      "optical_depth": 0.3971095566717075
+    },
+    {
+      "derivative_per_mm": -0.005244504900843262,
+      "derivative_state": "interior",
+      "impact_mm": 1.3,
+      "optical_depth": 0.39660559753992375
+    },
+    {
+      "derivative_per_mm": -0.005655700142727438,
+      "derivative_state": "interior",
+      "impact_mm": 1.4,
+      "optical_depth": 0.39606060142357
+    },
+    {
+      "derivative_per_mm": -0.006068660849090083,
+      "derivative_state": "interior",
+      "impact_mm": 1.5,
+      "optical_depth": 0.39547439866570383
+    },
+    {
+      "derivative_per_mm": -0.006483527187784862,
+      "derivative_state": "interior",
+      "impact_mm": 1.6,
+      "optical_depth": 0.39484680573609815
+    },
+    {
+      "derivative_per_mm": -0.006900442409543808,
+      "derivative_state": "interior",
+      "impact_mm": 1.7,
+      "optical_depth": 0.3941776249357642
+    },
+    {
+      "derivative_per_mm": -0.007319553114260204,
+      "derivative_state": "interior",
+      "impact_mm": 1.8,
+      "optical_depth": 0.39346664407545395
+    },
+    {
+      "derivative_per_mm": -0.007741009530460451,
+      "derivative_state": "interior",
+      "impact_mm": 1.9,
+      "optical_depth": 0.39271363612688576
+    },
+    {
+      "derivative_per_mm": -0.008164965809277261,
+      "derivative_state": "interior",
+      "impact_mm": 2.0,
+      "optical_depth": 0.3919183588453085
+    },
+    {
+      "derivative_per_mm": -0.008591580334344182,
+      "derivative_state": "interior",
+      "impact_mm": 2.1,
+      "optical_depth": 0.391080554361886
+    },
+    {
+      "derivative_per_mm": -0.009021016049152026,
+      "derivative_state": "interior",
+      "impact_mm": 2.2,
+      "optical_depth": 0.39019994874423036
+    },
+    {
+      "derivative_per_mm": -0.009453440803542358,
+      "derivative_state": "interior",
+      "impact_mm": 2.3,
+      "optical_depth": 0.3892762515232595
+    },
+    {
+      "derivative_per_mm": -0.009889027721163948,
+      "derivative_state": "interior",
+      "impact_mm": 2.4,
+      "optical_depth": 0.38830915518437115
+    },
+    {
+      "derivative_per_mm": -0.010327955589886443,
+      "derivative_state": "interior",
+      "impact_mm": 2.5,
+      "optical_depth": 0.3872983346207417
+    },
+    {
+      "derivative_per_mm": -0.010770409277354136,
+      "derivative_state": "interior",
+      "impact_mm": 2.6,
+      "optical_depth": 0.38624344654634596
+    },
+    {
+      "derivative_per_mm": -0.011216580174073728,
+      "derivative_state": "interior",
+      "impact_mm": 2.7,
+      "optical_depth": 0.38514412886606486
+    },
+    {
+      "derivative_per_mm": -0.011666666666666667,
+      "derivative_state": "interior",
+      "impact_mm": 2.8,
+      "optical_depth": 0.384
+    },
+    {
+      "derivative_per_mm": -0.012120874644181899,
+      "derivative_state": "interior",
+      "impact_mm": 2.9,
+      "optical_depth": 0.3828106581588344
+    },
+    {
+      "derivative_per_mm": -0.012579418040663018,
+      "derivative_state": "interior",
+      "impact_mm": 3.0,
+      "optical_depth": 0.3815756805667783
+    },
+    {
+      "derivative_per_mm": -0.013042519417498897,
+      "derivative_state": "interior",
+      "impact_mm": 3.1,
+      "optical_depth": 0.3802946226282986
+    },
+    {
+      "derivative_per_mm": -0.013510410589463973,
+      "derivative_state": "interior",
+      "impact_mm": 3.2,
+      "optical_depth": 0.37896701703446434
+    },
+    {
+      "derivative_per_mm": -0.01398333329877983,
+      "derivative_state": "interior",
+      "impact_mm": 3.3,
+      "optical_depth": 0.3775923728043246
+    },
+    {
+      "derivative_per_mm": -0.014461539942009856,
+      "derivative_state": "interior",
+      "impact_mm": 3.4,
+      "optical_depth": 0.3761701742562799
+    },
+    {
+      "derivative_per_mm": -0.014945294355141461,
+      "derivative_state": "interior",
+      "impact_mm": 3.5,
+      "optical_depth": 0.37469987990390397
+    },
+    {
+      "derivative_per_mm": -0.015434872662825795,
+      "derivative_state": "interior",
+      "impact_mm": 3.6,
+      "optical_depth": 0.3731809212700992
+    },
+    {
+      "derivative_per_mm": -0.015930564198442125,
+      "derivative_state": "interior",
+      "impact_mm": 3.7,
+      "optical_depth": 0.37161270161284854
+    },
+    {
+      "derivative_per_mm": -0.0164326725024476,
+      "derivative_state": "interior",
+      "impact_mm": 3.8,
+      "optical_depth": 0.36999459455510975
+    },
+    {
+      "derivative_per_mm": -0.016941516407375973,
+      "derivative_state": "interior",
+      "impact_mm": 3.9,
+      "optical_depth": 0.3683259426106177
+    },
+    {
+      "derivative_per_mm": -0.01745743121887939,
+      "derivative_state": "interior",
+      "impact_mm": 4.0,
+      "optical_depth": 0.3666060555964672
+    },
+    {
+      "derivative_per_mm": -0.01798077000338565,
+      "derivative_state": "interior",
+      "impact_mm": 4.1,
+      "optical_depth": 0.36483420892235424
+    },
+    {
+      "derivative_per_mm": -0.018511904994292925,
+      "derivative_state": "interior",
+      "impact_mm": 4.2,
+      "optical_depth": 0.36300964174522965
+    },
+    {
+      "derivative_per_mm": -0.019051229130173833,
+      "derivative_state": "interior",
+      "impact_mm": 4.3,
+      "optical_depth": 0.36113155497685334
+    },
+    {
+      "derivative_per_mm": -0.019599157740244455,
+      "derivative_state": "interior",
+      "impact_mm": 4.4,
+      "optical_depth": 0.3591991091302984
+    },
+    {
+      "derivative_per_mm": -0.020156130394410755,
+      "derivative_state": "interior",
+      "impact_mm": 4.5,
+      "optical_depth": 0.3572114219898351
+    },
+    {
+      "derivative_per_mm": -0.020722612937584234,
+      "derivative_state": "interior",
+      "impact_mm": 4.6,
+      "optical_depth": 0.35516756608676986
+    },
+    {
+      "derivative_per_mm": -0.021299099730715868,
+      "derivative_state": "interior",
+      "impact_mm": 4.7,
+      "optical_depth": 0.3530665659617178
+    },
+    {
+      "derivative_per_mm": -0.02188611612420255,
+      "derivative_state": "interior",
+      "impact_mm": 4.8,
+      "optical_depth": 0.350907395191381
+    },
+    {
+      "derivative_per_mm": -0.022484221193055466,
+      "derivative_state": "interior",
+      "impact_mm": 4.9,
+      "optical_depth": 0.3486889731551602
+    },
+    {
+      "derivative_per_mm": -0.023094010767585035,
+      "derivative_state": "interior",
+      "impact_mm": 5.0,
+      "optical_depth": 0.34641016151377546
+    },
+    {
+      "derivative_per_mm": -0.02371612079847379,
+      "derivative_state": "interior",
+      "impact_mm": 5.1,
+      "optical_depth": 0.3440697603684463
+    },
+    {
+      "derivative_per_mm": -0.024351231101124044,
+      "derivative_state": "interior",
+      "impact_mm": 5.2,
+      "optical_depth": 0.341666504065002
+    },
+    {
+      "derivative_per_mm": -0.025000069531261947,
+      "derivative_state": "interior",
+      "impact_mm": 5.3,
+      "optical_depth": 0.33919905660246175
+    },
+    {
+      "derivative_per_mm": -0.025663416652174906,
+      "derivative_state": "interior",
+      "impact_mm": 5.4,
+      "optical_depth": 0.33666600660001306
+    },
+    {
+      "derivative_per_mm": -0.026342110963926985,
+      "derivative_state": "interior",
+      "impact_mm": 5.5,
+      "optical_depth": 0.33406586176980135
+    },
+    {
+      "derivative_per_mm": -0.02703705477677498,
+      "derivative_state": "interior",
+      "impact_mm": 5.6,
+      "optical_depth": 0.3313970428353277
+    },
+    {
+      "derivative_per_mm": -0.027749220825213427,
+      "derivative_state": "interior",
+      "impact_mm": 5.7,
+      "optical_depth": 0.3286578768263435
+    },
+    {
+      "derivative_per_mm": -0.028479659736133704,
+      "derivative_state": "interior",
+      "impact_mm": 5.8,
+      "optical_depth": 0.3258465896706609
+    },
+    {
+      "derivative_per_mm": -0.02922950848514515,
+      "derivative_state": "interior",
+      "impact_mm": 5.9,
+      "optical_depth": 0.3229612979909513
+    },
+    {
+      "derivative_per_mm": -0.03,
+      "derivative_state": "interior",
+      "impact_mm": 6.0,
+      "optical_depth": 0.32000000000000006
+    },
+    {
+      "derivative_per_mm": -0.03079247410033724,
+      "derivative_state": "interior",
+      "impact_mm": 6.1,
+      "optical_depth": 0.31696056537052053
+    },
+    {
+      "derivative_per_mm": -0.031608389999944066,
+      "derivative_state": "interior",
+      "impact_mm": 6.2,
+      "optical_depth": 0.3138407239349285
+    },
+    {
+      "derivative_per_mm": -0.03244934064313838,
+      "derivative_state": "interior",
+      "impact_mm": 6.3,
+      "optical_depth": 0.3106380530456627
+    },
+    {
+      "derivative_per_mm": -0.03331706920290263,
+      "derivative_state": "interior",
+      "impact_mm": 6.4,
+      "optical_depth": 0.3073499633967768
+    },
+    {
+      "derivative_per_mm": -0.03421348813790799,
+      "derivative_state": "interior",
+      "impact_mm": 6.5,
+      "optical_depth": 0.30397368307141326
+    },
+    {
+      "derivative_per_mm": -0.03514070129229013,
+      "derivative_state": "interior",
+      "impact_mm": 6.6,
+      "optical_depth": 0.30050623953588723
+    },
+    {
+      "derivative_per_mm": -0.036101029630885725,
+      "derivative_state": "interior",
+      "impact_mm": 6.7,
+      "optical_depth": 0.29694443924747943
+    },
+    {
+      "derivative_per_mm": -0.0370970413401187,
+      "derivative_state": "interior",
+      "impact_mm": 6.8,
+      "optical_depth": 0.2932848444771738
+    },
+    {
+      "derivative_per_mm": -0.03813158719953068,
+      "derivative_state": "interior",
+      "impact_mm": 6.9,
+      "optical_depth": 0.28952374686716115
+    },
+    {
+      "derivative_per_mm": -0.039207842352784274,
+      "derivative_state": "interior",
+      "impact_mm": 7.0,
+      "optical_depth": 0.285657137141714
+    },
+    {
+      "derivative_per_mm": -0.040329355895738196,
+      "derivative_state": "interior",
+      "impact_mm": 7.1,
+      "optical_depth": 0.2816806702633321
+    },
+    {
+      "derivative_per_mm": -0.04150011007470492,
+      "derivative_state": "interior",
+      "impact_mm": 7.2,
+      "optical_depth": 0.27758962516635954
+    },
+    {
+      "derivative_per_mm": -0.04272459138046498,
+      "derivative_state": "interior",
+      "impact_mm": 7.3,
+      "optical_depth": 0.27337885799746847
+    },
+    {
+      "derivative_per_mm": -0.044007876475303895,
+      "derivative_state": "interior",
+      "impact_mm": 7.4,
+      "optical_depth": 0.26904274753280377
+    },
+    {
+      "derivative_per_mm": -0.04535573676110726,
+      "derivative_state": "interior",
+      "impact_mm": 7.5,
+      "optical_depth": 0.2645751311064591
+    },
+    {
+      "derivative_per_mm": -0.04677476657214643,
+      "derivative_state": "interior",
+      "impact_mm": 7.6,
+      "optical_depth": 0.2599692289483508
+    },
+    {
+      "derivative_per_mm": -0.048272541581059945,
+      "derivative_state": "interior",
+      "impact_mm": 7.7,
+      "optical_depth": 0.25521755425518833
+    },
+    {
+      "derivative_per_mm": -0.04985781622384627,
+      "derivative_state": "interior",
+      "impact_mm": 7.8,
+      "optical_depth": 0.25031180555459226
+    },
+    {
+      "derivative_per_mm": -0.05154077205305997,
+      "derivative_state": "interior",
+      "impact_mm": 7.9,
+      "optical_depth": 0.24524273689550924
+    },
+    {
+      "derivative_per_mm": -0.05333333333333334,
+      "derivative_state": "interior",
+      "impact_mm": 8.0,
+      "optical_depth": 0.24
+    },
+    {
+      "derivative_per_mm": -0.05524957254192756,
+      "derivative_state": "interior",
+      "impact_mm": 8.1,
+      "optical_depth": 0.23457195058233202
+    },
+    {
+      "derivative_per_mm": -0.05730623774079818,
+      "derivative_state": "interior",
+      "impact_mm": 8.2,
+      "optical_depth": 0.22894540834006702
+    },
+    {
+      "derivative_per_mm": -0.05952344767305178,
+      "derivative_state": "interior",
+      "impact_mm": 8.3,
+      "optical_depth": 0.22310535627814942
+    },
+    {
+      "derivative_per_mm": -0.06192562158505681,
+      "derivative_state": "interior",
+      "impact_mm": 8.4,
+      "optical_depth": 0.2170345594600086
+    },
+    {
+      "derivative_per_mm": -0.06454274371116994,
+      "derivative_state": "interior",
+      "impact_mm": 8.5,
+      "optical_depth": 0.21071307505705478
+    },
+    {
+      "derivative_per_mm": -0.06741211494358736,
+      "derivative_state": "interior",
+      "impact_mm": 8.6,
+      "optical_depth": 0.2041176131547692
+    },
+    {
+      "derivative_per_mm": -0.07058083054539077,
+      "derivative_state": "interior",
+      "impact_mm": 8.7,
+      "optical_depth": 0.19722068856993685
+    },
+    {
+      "derivative_per_mm": -0.0741093690538537,
+      "derivative_state": "interior",
+      "impact_mm": 8.8,
+      "optical_depth": 0.18998947339260663
+    },
+    {
+      "derivative_per_mm": -0.07807693446855928,
+      "derivative_state": "interior",
+      "impact_mm": 8.9,
+      "optical_depth": 0.18238420984284795
+    },
+    {
+      "derivative_per_mm": -0.08258966419340226,
+      "derivative_state": "interior",
+      "impact_mm": 9.0,
+      "optical_depth": 0.17435595774162693
+    },
+    {
+      "derivative_per_mm": -0.08779371877548048,
+      "derivative_state": "interior",
+      "impact_mm": 9.1,
+      "optical_depth": 0.16584329953302307
+    },
+    {
+      "derivative_per_mm": -0.09389710680668847,
+      "derivative_state": "interior",
+      "impact_mm": 9.2,
+      "optical_depth": 0.15676734353812347
+    },
+    {
+      "derivative_per_mm": -0.10120809849311549,
+      "derivative_state": "interior",
+      "impact_mm": 9.3,
+      "optical_depth": 0.1470238075959128
+    },
+    {
+      "derivative_per_mm": -0.11020755177098329,
+      "derivative_state": "interior",
+      "impact_mm": 9.4,
+      "optical_depth": 0.1364697768738558
+    },
+    {
+      "derivative_per_mm": -0.12169739689186622,
+      "derivative_state": "interior",
+      "impact_mm": 9.5,
+      "optical_depth": 0.12489995996796797
+    },
+    {
+      "derivative_per_mm": -0.13714285714285707,
+      "derivative_state": "interior",
+      "impact_mm": 9.6,
+      "optical_depth": 0.11200000000000006
+    },
+    {
+      "derivative_per_mm": -0.1596018735392069,
+      "derivative_state": "interior",
+      "impact_mm": 9.7,
+      "optical_depth": 0.09724196624914586
+    },
+    {
+      "derivative_per_mm": -0.19698741179080595,
+      "derivative_state": "interior",
+      "impact_mm": 9.8,
+      "optical_depth": 0.07959899496852946
+    },
+    {
+      "derivative_per_mm": -0.28071695718330153,
+      "derivative_state": "interior",
+      "impact_mm": 9.9,
+      "optical_depth": 0.056426943918663444
+    },
+    {
+      "derivative_per_mm": -0.8937562308034932,
+      "derivative_state": "interior",
+      "impact_mm": 9.99,
+      "optical_depth": 0.017884071124886335
+    },
+    {
+      "derivative_per_mm": -2.828214988293046,
+      "derivative_state": "interior",
+      "impact_mm": 9.999,
+      "optical_depth": 0.0056567128263667645
+    },
+    {
+      "derivative_per_mm": -8.944204827830502,
+      "derivative_state": "interior",
+      "impact_mm": 9.9999,
+      "optical_depth": 0.0017888499098562022
+    },
+    {
+      "derivative_per_mm": -28.28425003478943,
+      "derivative_state": "interior",
+      "impact_mm": 9.99999,
+      "optical_depth": 0.0005656852835171565
+    },
+    {
+      "derivative_per_mm": -89.442712425257,
+      "derivative_state": "interior",
+      "impact_mm": 9.999999,
+      "optical_depth": 0.0001788854336609082
+    },
+    {
+      "derivative_per_mm": -282.84270870063494,
+      "derivative_state": "interior",
+      "impact_mm": 9.999999899999999,
+      "optical_depth": 5.656854268403519e-05
+    },
+    {
+      "derivative_per_mm": -894.4272327675725,
+      "derivative_state": "interior",
+      "impact_mm": 9.999999990000001,
+      "optical_depth": 1.7888542966756682e-05
+    },
+    {
+      "derivative_per_mm": -2828.427007521511,
+      "derivative_state": "interior",
+      "impact_mm": 9.999999999,
+      "optical_depth": 5.656854483376063e-06
+    },
+    {
+      "derivative_per_mm": -8944.271539905913,
+      "derivative_state": "interior",
+      "impact_mm": 9.9999999999,
+      "optical_depth": 1.7888544560005958e-06
+    },
+    {
+      "derivative_per_mm": -28285.52623480378,
+      "derivative_state": "interior",
+      "impact_mm": 9.99999999999,
+      "optical_depth": 5.656603263154738e-07
+    },
+    {
+      "derivative_per_mm": -89438.74361014337,
+      "derivative_state": "interior",
+      "impact_mm": 9.999999999999,
+      "optical_depth": 1.7889338953307724e-07
+    },
+    {
+      "derivative_per_mm": -283586.70969798474,
+      "derivative_state": "interior",
+      "impact_mm": 9.9999999999999,
+      "optical_depth": 5.6420133429523483e-08
+    },
+    {
+      "derivative_per_mm": -866371.7088496609,
+      "derivative_state": "interior",
+      "impact_mm": 9.99999999999999,
+      "optical_depth": 1.846782372573574e-08
+    },
+    {
+      "derivative_per_mm": null,
+      "derivative_state": "inward-divergence",
+      "impact_mm": 10.0,
+      "optical_depth": 0.0
+    },
+    {
+      "derivative_per_mm": 0.0,
+      "derivative_state": "outside",
+      "impact_mm": 10.1,
+      "optical_depth": 0.0
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "layer_optical_depths": [0.3, 0.7],
+  "histories": 65536,
+  "replicates": 8,
+  "seed": 23971,
+  "target_density": 1.25,
+  "recovery_maximum_batch": 262144,
+  "recovery_history_budget": 100000000
+}

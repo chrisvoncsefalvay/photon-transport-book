@@ -1,0 +1,231 @@
+.projection-sandbox {
+  display: block;
+  padding: clamp(0.8rem, 2.5vw, 2rem);
+  font-family: var(--font-ui);
+  min-width: 0;
+}
+.projection-sandbox [hidden] {
+  display: none !important;
+}
+.projection-sandbox p {
+  margin: 0;
+}
+.projection-sandbox h4 {
+  margin: 0 0 0.7rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  font-weight: 500;
+}
+.sandbox-intro {
+  font-size: 0.81rem;
+  line-height: 1.65;
+  color: var(--ink-muted);
+  padding-bottom: 1.4rem;
+  max-width: 50rem;
+}
+.sandbox-panels {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
+  align-items: start;
+}
+.sandbox-panels > section {
+  min-width: 0;
+}
+.sandbox-scene-frame {
+  position: relative;
+  aspect-ratio: 1;
+  background: var(--paper-inset);
+  border: 1px solid var(--rule);
+}
+.sandbox-static-scene {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.sandbox-live-scene {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+.sandbox-static-label {
+  font: 14px var(--font-ui);
+  fill: var(--ink);
+}
+.sandbox-ray {
+  stroke: var(--rule-strong);
+  stroke-width: 1;
+}
+.sandbox-source {
+  fill: var(--accent);
+}
+.sandbox-detector-plane {
+  fill: color-mix(in srgb, var(--technical) 12%, var(--paper-inset));
+  stroke: var(--technical);
+  stroke-width: 1.2;
+}
+.sandbox-ellipsoid polyline {
+  fill: none;
+  stroke: var(--technical);
+  stroke-width: 1;
+}
+.sandbox-ellipsoid.is-outer polyline {
+  stroke: var(--ink-muted);
+}
+.sandbox-ellipsoid.is-air polyline {
+  stroke-dasharray: 3 2;
+}
+.sandbox-image-frame {
+  aspect-ratio: 1;
+  background: #000;
+  border: 1px solid var(--rule-strong);
+}
+.sandbox-image-frame img,
+.sandbox-image-frame canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+}
+.sandbox-help {
+  padding-top: 0.7rem;
+  font-size: 0.75rem;
+  line-height: 1.65;
+  color: var(--ink-muted);
+}
+.sandbox-view-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.7rem;
+}
+.projection-sandbox button {
+  border: 1px solid var(--rule-strong);
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.76rem;
+  padding: 0.45rem 0.7rem;
+  cursor: pointer;
+  min-height: 2.2rem;
+}
+.projection-sandbox button:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+.projection-sandbox button:focus-visible,
+.projection-sandbox input:focus-visible,
+.sandbox-live-scene:focus-visible,
+.sandbox-assumptions summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+.sandbox-mode {
+  margin: 0.9rem 0 0;
+  border: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.2rem;
+  font-size: 0.8rem;
+}
+.sandbox-mode legend {
+  font-size: 0.74rem;
+  margin-bottom: 0.4rem;
+  color: var(--ink-muted);
+}
+.sandbox-mode label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  min-height: 2rem;
+}
+.projection-sandbox input {
+  accent-color: var(--accent);
+}
+.sandbox-geometry-controls {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.7rem;
+  border-top: 1px solid var(--rule);
+  padding-top: 1.1rem;
+}
+.sandbox-geometry-controls > div {
+  min-width: 0;
+}
+.sandbox-geometry-controls label {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.3rem 0.8rem;
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+.sandbox-geometry-controls output {
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+.sandbox-geometry-controls input {
+  width: 100%;
+  min-height: 2rem;
+}
+.sandbox-range-limits {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.69rem;
+  color: var(--ink-muted);
+}
+.sandbox-readout {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1.2rem;
+}
+.sandbox-readout p {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.1rem;
+  align-items: baseline;
+  font-size: 0.8rem;
+}
+.sandbox-readout strong {
+  font: 1.6rem var(--font-prose);
+  color: var(--accent);
+}
+.sandbox-readout p > span {
+  color: var(--ink-muted);
+  font-size: 0.75rem;
+}
+.sandbox-assumptions {
+  margin-top: 1.3rem;
+  color: var(--ink-muted);
+  font-size: 0.75rem;
+  line-height: 1.7;
+}
+.sandbox-assumptions summary {
+  cursor: pointer;
+  width: fit-content;
+  padding-block: 0.35rem;
+}
+.sandbox-assumptions p {
+  padding-top: 0.8rem;
+}
+@media (max-width: 900px) {
+  .sandbox-geometry-controls {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.1rem;
+  }
+}
+@media (max-width: 700px) {
+  .sandbox-panels {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+  }
+}

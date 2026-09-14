@@ -1,0 +1,71 @@
+{
+  "created_utc": "2026-09-13T02:45:12.873370+00:00",
+  "model_id": "xraylib-icrp-spekpy120-al25-v1",
+  "packages": [
+    {
+      "name": "xraylib",
+      "version": "4.3.0",
+      "filename": "xraylib-4.3.0.tar.gz",
+      "bytes": 13206051,
+      "sha256": "328bdccff6b7ea511757d6eb22ab7983de13b41e70369a0967e2c543c2bfed1e",
+      "download_url": "https://files.pythonhosted.org/packages/06/22/437d6051b1557615bdbe2b6a52e8659248eff7f42abff888c3b51c00439e/xraylib-4.3.0.tar.gz",
+      "metadata_url": "https://pypi.org/pypi/xraylib/4.3.0/json",
+      "licence": "BSD-3-Clause; retain original notices in license_all.txt and compound-data headers",
+      "citation": "https://doi.org/10.1016/j.sab.2011.09.011"
+    },
+    {
+      "name": "spekpy",
+      "version": "2.5.4",
+      "filename": "spekpy-2.5.4-py3-none-any.whl",
+      "bytes": 164180893,
+      "sha256": "2f01e805721281b5a3e332500db577cedaf71bde0f0d3838745b915e6f1c258a",
+      "download_url": "https://files.pythonhosted.org/packages/b6/ea/cbac7c7bbcec2438c3b4641cfbd11f2452d226812fdd49b404b4977367d5/spekpy-2.5.4-py3-none-any.whl",
+      "metadata_url": "https://pypi.org/pypi/spekpy/2.5.4/json",
+      "licence": "MIT; copyright 2019 Robert Bujila and Gavin Poludniowski",
+      "citation": "https://doi.org/10.1002/mp.14945"
+    }
+  ],
+  "rights_scope": "Pinned xraylib software, tabulated compounds and total cross sections under the retained BSD notices; SpekPy package under its MIT notice. No separately downloaded NIST SRD tables are used or redistributed.",
+  "generation_plan": {
+    "materials": [
+      [
+        "water",
+        "Water, Liquid",
+        1.0
+      ],
+      [
+        "cortical_bone",
+        "Bone, Cortical (ICRP)",
+        1.85
+      ]
+    ],
+    "spectrum": {
+      "kvp": 120.0,
+      "th": 12.0,
+      "dk": 1.0,
+      "physics": "casim",
+      "mu_data_source": "pene",
+      "x": 0.0,
+      "y": 0.0,
+      "z": 100.0,
+      "mas": 1.0,
+      "brem": true,
+      "char": true,
+      "obli": true,
+      "targ": "W",
+      "shift": 0.0,
+      "trans": false
+    },
+    "external_aluminium_filtration": {
+      "thickness_mm": 2.5,
+      "density_g_cm3": 2.699
+    },
+    "thresholds_kev": [
+      20.0,
+      55.0,
+      80.0,
+      120.0
+    ],
+    "incident_photons": 200000.0
+  }
+}

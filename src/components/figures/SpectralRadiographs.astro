@@ -1,0 +1,80 @@
+---
+import FigurePlate from "./FigurePlate.astro";
+import study from "../../../public/generated/reconstruction-radiographs/study.json";
+import "../../styles/reconstruction-radiographs.css";
+interface Props {
+  id: string;
+}
+const { id } = Astro.props;
+const record = study.cases.find((item) => item.id === "vertebrae")!;
+const base = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/generated/reconstruction-radiographs/`;
+const panels = record.channels.map((channel) => {
+  const image = channel.panels.find((item) => item.id.endsWith("-expected"));
+  if (!image) throw new Error(`Missing spectral expectation: ${channel.id}`);
+  return { channel: channel.label, image };
+});
+---
+
+<FigurePlate
+  {id}
+  title="One anatomy, three energy channels"
+  description="The three simulated counting channels weight water and bone differently, giving complementary measurements for material separation. Each image uses its own display window."
+  width="full"
+>
+  <div class="spectral-radiograph-plate">
+    <div class="reconstruction-radiograph-panels">
+      {
+        panels.map(({ channel, image }) => (
+          <div class="reconstruction-radiograph-panel">
+            <h4>{channel}</h4>
+            <div style={`aspect-ratio:${record.aspect}`}>
+              <img
+                src={`${base}${image.file}`}
+                width={image.width}
+                height={image.height}
+                alt={`Recorded simulated expectation in the ${channel} channel, showing the vertebral column and adjacent cropped ribs through the assigned water container.`}
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <p class="reconstruction-radiograph-window">
+              Negative log display: {image.limits[0]}–{image.limits[1]}
+            </p>
+          </div>
+        ))
+      }
+    </div>
+    <p>
+      120 kVp tungsten source · nominal 2.5 mm Al filtration · common view and
+      detector samples. The recorded model omits scatter, blur, pileup and
+      charge sharing. <a href="/chapters/reconstruction/#figure-12-5"
+        >Chapter 12 compares the observations with a reconstructed prediction</a
+      >. <a href={`${base}provenance.json`}
+        >Recorded sources and display rules</a
+      >.
+    </p>
+  </div>
+</FigurePlate>
+
+<style>
+  .spectral-radiograph-plate .reconstruction-radiograph-panels {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .spectral-radiograph-plate .reconstruction-radiograph-panel h4 {
+    min-height: 0;
+  }
+  .spectral-radiograph-plate > p {
+    margin: 1rem 1.5rem;
+    color: var(--ink-muted);
+    font-size: var(--size--1);
+  }
+  @media (max-width: 520px) {
+    .spectral-radiograph-plate .reconstruction-radiograph-panels {
+      gap: 0.5rem;
+      padding: 0.7rem;
+    }
+    .spectral-radiograph-plate .reconstruction-radiograph-window {
+      font-size: 0.65rem;
+    }
+  }
+</style>

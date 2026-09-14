@@ -1,0 +1,292 @@
+---
+import equation from "../../assets/hero/transport-equation.svg?raw";
+---
+
+<dpt-transport-hero class="transport-hero" data-state="still">
+  <script is:inline>
+    {
+      const hero = document.currentScript.parentElement;
+      if (!matchMedia("(prefers-reduced-motion: reduce)").matches)
+        hero.dataset.state = "loading";
+      window.addEventListener(
+        "load",
+        () => {
+          if (!customElements.get("dpt-transport-hero"))
+            hero.dataset.state = "still";
+        },
+        { once: true },
+      );
+    }
+  </script>
+  <div
+    class="transport-hero__art"
+    role="img"
+    aria-labelledby="rte-title rte-description"
+  >
+    <span id="rte-title" class="sr-only"
+      >The time-dependent Boltzmann radiative transfer equation.</span
+    >
+    <span id="rte-description" class="sr-only">
+      One over c times the time derivative of radiance, plus its directional
+      spatial derivative, equals extinction loss plus a source and incoming
+      scattering. This monoenergetic form assumes elastic scattering and a phase
+      function normalised over solid angle. A cone beam passes through the
+      simplified pelvic conditioning-mask geometry from the synthetic CT
+      example. Recorded Poisson photon counts build an unframed phosphor image
+      of a separate isolated-pelvis phantom. Individual impacts fade with
+      display persistence. Visible flights select recorded impacts. The view
+      moves around the fixed acquisition. This primary-only illustration is not
+      a calibrated clinical fluoroscopy model.
+    </span>
+    <img
+      class="transport-hero__fallback"
+      src="/generated/transport-hero/fluoro-still.png"
+      width="1040"
+      height="940"
+      alt=""
+      aria-hidden="true"
+    />
+    <canvas class="transport-hero__field" aria-hidden="true" hidden></canvas>
+    <div class="transport-hero__equation" aria-hidden="true">
+      <div class="transport-hero__glyphs" set:html={equation} />
+    </div>
+  </div>
+  <button
+    class="transport-hero__control"
+    type="button"
+    hidden
+    aria-label="Play transport animation"
+  >
+    <span data-motion-icon aria-hidden="true">▶</span>
+  </button>
+</dpt-transport-hero>
+
+<script>
+  class TransportHero extends HTMLElement {
+    private cleanup?: () => void;
+    connectedCallback() {
+      this.cleanup?.();
+      const button = this.querySelector<HTMLButtonElement>("button")!;
+      const canvas = this.querySelector<HTMLCanvasElement>("canvas")!;
+      const fallback = this.querySelector<HTMLElement>(
+        ".transport-hero__fallback",
+      )!;
+      const preference = matchMedia("(prefers-reduced-motion: reduce)");
+      const events = new AbortController();
+      let enabled = !preference.matches,
+        ready = false,
+        visible = false,
+        loading = false;
+      let started = enabled;
+      let failed = false;
+      let disposeField: (() => void) | undefined;
+      canvas.hidden = true;
+      fallback.style.display = "";
+      button.hidden = true;
+      const update = () => {
+        this.dataset.state = ready
+          ? started
+            ? "animated"
+            : "still"
+          : enabled && !failed
+            ? "loading"
+            : "still";
+        this.dataset.paused = String(
+          !ready || !enabled || !visible || document.hidden,
+        );
+        const label = enabled ? "Pause animation" : "Play animation";
+        button.setAttribute("aria-label", label);
+        button.title = label;
+        button.querySelector("[data-motion-icon]")!.textContent = enabled
+          ? "Ⅱ"
+          : "▶";
+      };
+      const start = async () => {
+        if (loading || ready || !visible) return;
+        loading = true;
+        try {
+          const { mountTransportHeroField } =
+            await import("../../lib/transport-hero-field");
+          if (events.signal.aborted) return;
+          const dispose = await mountTransportHeroField(
+            canvas,
+            this,
+            events.signal,
+          );
+          if (events.signal.aborted) {
+            dispose();
+            return;
+          }
+          disposeField = dispose;
+          ready = true;
+          canvas.hidden = false;
+          fallback.style.display = "none";
+          button.hidden = false;
+          update();
+        } catch {
+          if (!events.signal.aborted) {
+            failed = true;
+            update();
+          }
+        }
+      };
+      button.addEventListener(
+        "click",
+        () => {
+          enabled = !enabled;
+          started ||= enabled;
+          update();
+        },
+        { signal: events.signal },
+      );
+      preference.addEventListener(
+        "change",
+        () => {
+          enabled = !preference.matches;
+          started = enabled;
+          update();
+        },
+        { signal: events.signal },
+      );
+      document.addEventListener("visibilitychange", update, {
+        signal: events.signal,
+      });
+      const observer = new IntersectionObserver(([entry]) => {
+        visible = entry?.isIntersecting ?? false;
+        update();
+        void start();
+      });
+      observer.observe(this);
+      update();
+      this.cleanup = () => {
+        events.abort();
+        observer.disconnect();
+        disposeField?.();
+      };
+    }
+    disconnectedCallback() {
+      this.cleanup?.();
+    }
+  }
+  if (!customElements.get("dpt-transport-hero"))
+    customElements.define("dpt-transport-hero", TransportHero);
+</script>
+
+<style>
+  .transport-hero {
+    align-self: center;
+    color: var(--technical);
+    display: block;
+    min-width: 0;
+    position: relative;
+    width: 100%;
+  }
+  .transport-hero__art {
+    aspect-ratio: 520 / 470;
+    isolation: isolate;
+    position: relative;
+  }
+  .transport-hero__field,
+  .transport-hero__fallback {
+    display: block;
+    height: 100%;
+    inset: 0;
+    position: absolute;
+    width: 100%;
+  }
+  .transport-hero[data-state="loading"] .transport-hero__glyphs {
+    opacity: 0;
+  }
+  .transport-hero__field[hidden] {
+    display: none;
+  }
+  .transport-hero__equation {
+    inset: -3% 8% auto 4%;
+    padding: 1rem 0.25rem;
+    position: absolute;
+  }
+  .transport-hero__glyphs {
+    color: var(--technical);
+  }
+  .transport-hero__glyphs :global(svg) {
+    display: block;
+    overflow: visible;
+    width: 100%;
+  }
+  .transport-hero__glyphs :global(.rte-glyph) {
+    fill: currentColor;
+    stroke: currentColor;
+    stroke-width: 0.16;
+    stroke-linejoin: round;
+  }
+  .transport-hero__control {
+    align-items: center;
+    background: none;
+    border: 0;
+    color: var(--accent);
+    cursor: pointer;
+    display: inline-flex;
+    font: inherit;
+    justify-content: center;
+    min-height: 44px;
+    min-width: 44px;
+    opacity: 0;
+    padding: 0;
+    position: absolute;
+    bottom: 2rem;
+    right: 0;
+    transition: opacity var(--motion-medium) var(--motion-ease);
+  }
+  .transport-hero:is(:hover, :focus-within) .transport-hero__control {
+    opacity: 0.7;
+  }
+  .transport-hero__control[hidden] {
+    display: none;
+  }
+  .transport-hero[data-state="animated"]
+    .transport-hero__glyphs
+    :global(.rte-glyph) {
+    animation:
+      outline-letter 2.8s cubic-bezier(0.4, 0, 0.2, 1)
+        calc(var(--glyph-delay) + 1.8s) both,
+      fill-letter 1.8s ease calc(var(--glyph-delay) + 4s) both;
+  }
+  .transport-hero[data-paused="true"] :global(*) {
+    animation-play-state: paused !important;
+  }
+  @keyframes outline-letter {
+    from {
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+    }
+    to {
+      stroke-dasharray: 1;
+      stroke-dashoffset: 0;
+    }
+  }
+  @keyframes fill-letter {
+    from {
+      fill-opacity: 0;
+    }
+    to {
+      fill-opacity: 1;
+    }
+  }
+  @media (max-width: 58rem) {
+    .transport-hero {
+      margin-top: 3.5rem;
+      max-width: 34rem;
+      justify-self: center;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .transport-hero__control {
+      transition: none;
+    }
+  }
+  @media (hover: none), (pointer: coarse) {
+    .transport-hero__control {
+      opacity: 0.7;
+    }
+  }
+</style>

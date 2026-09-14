@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "passed": true,
+  "title": "Choose a view, acquire its counts, check the recovery",
+  "description": "Equal-exposure comparison on the same eight object-frame targets. The future count image is generated only after each decision is recorded.",
+  "images": [
+    {
+      "file": "decision-and-recovery.png",
+      "pdf": "decision-and-recovery.pdf",
+      "alt": "The decision favours 60 degrees. All eight paired outcomes compare the selected view with the near-parallel 5-degree baseline at equal exposure.",
+      "width": 3150,
+      "height": 1200
+    }
+  ],
+  "measurements": [
+    {
+      "label": "Completed solves",
+      "value": "25 / 25 stationary, geometrically accurate and reserved-view checks passed",
+      "criterion": "Every prescribed solve passes"
+    },
+    {
+      "label": "Selected mean squared target error",
+      "value": "0.0013347 mm\u00b2",
+      "criterion": "\u2264 75% of near-parallel baseline"
+    },
+    {
+      "label": "Near-parallel mean squared target error",
+      "value": "0.0046812 mm\u00b2",
+      "criterion": "Same exposure and solver"
+    },
+    {
+      "label": "Selected / baseline",
+      "value": "0.2851",
+      "criterion": "\u2264 0.75"
+    },
+    {
+      "label": "Paired descriptive 95% upper bound",
+      "value": "-0.0005937 mm\u00b2",
+      "criterion": "Below zero"
+    }
+  ],
+  "reading": "The selected view reduces mean squared target error by 71% relative to the near-parallel view. 2 of the 8 pairs have higher error after selection: the criterion predicts an average over possible count images, while each pair receives one noise realisation. This controlled example demonstrates the average benefit; it does not promise to beat every well-chosen fixed view.",
+  "reproduction": "https://github.com/chrisvoncsefalvay/photon-transport-book/tree/main/experiments/worked-applications"
+}

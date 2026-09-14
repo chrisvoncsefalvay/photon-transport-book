@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<style xmlns="http://purl.org/net/xbiblio/csl" version="1.0.2" class="in-text" default-locale="en-US">
+  <info>
+    <title>Differentiable Photon Transport default</title>
+    <id>https://github.com/chrisvoncsefalvay/photon-transport-book/references/styles/default</id>
+    <link href="https://github.com/chrisvoncsefalvay/photon-transport-book/references/styles/default" rel="self"/>
+    <updated>2026-09-07T00:00:00+00:00</updated>
+    <rights license="http://creativecommons.org/publicdomain/zero/1.0/">Released under CC0.</rights>
+    <category citation-format="numeric"/>
+  </info>
+  <citation collapse="citation-number">
+    <layout prefix="[" suffix="]" delimiter=", ">
+      <text variable="citation-number"/>
+    </layout>
+  </citation>
+  <bibliography et-al-min="7" et-al-use-first="6">
+    <layout suffix=".">
+      <text variable="citation-number" suffix=". "/>
+      <names variable="author" suffix=". ">
+        <name initialize-with=". " and="text"/>
+      </names>
+      <text variable="title" suffix=". "/>
+      <text variable="container-title" font-style="italic" suffix=". "/>
+      <group delimiter=";">
+        <date variable="issued"><date-part name="year"/></date>
+        <group delimiter="">
+          <text variable="volume"/>
+          <text variable="issue" prefix="(" suffix=")"/>
+        </group>
+        <text variable="page"/>
+      </group>
+      <text variable="DOI" prefix=". https://doi.org/"/>
+    </layout>
+  </bibliography>
+</style>

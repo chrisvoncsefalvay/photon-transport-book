@@ -1,0 +1,115 @@
+{
+  "schema_version": 1,
+  "role": "Primary 64-cubed open-model illustration and development; separate from the 40-fit comparison",
+  "physics_model_id": "xraylib-icrp-spekpy120-al25-v1",
+  "case": 2,
+  "source_sha256": {
+    "volume-2.nii.gz": "ca702e58f0fb736ff4bc407aac0c4b698b8689f3f7e0281da32a546a87ae8a40",
+    "labels-2.nii.gz": "c5951c1065f517c9e8e794aec0a921ae0ebaa2198d4b38f0ed492bc7aca74e8f"
+  },
+  "native_crop_xyz": [
+    [160, 352],
+    [48, 240],
+    [256, 448]
+  ],
+  "native_shape_zyx": [192, 192, 192],
+  "native_spacing_mm_xyz": [0.775390625, 0.775390625, 1.0],
+  "pilot_inverse_shape_zyx": [64, 64, 64],
+  "detector_shape_hw": [96, 96],
+  "detector_pitch_mm": 4.0,
+  "source_isocentre_mm": 1000.0,
+  "source_detector_mm": 1500.0,
+  "tilts_degrees": [-15.0, 0.0, 15.0],
+  "dense_views_per_ring": 48,
+  "probe_views": [
+    {
+      "tilt_degrees": 0.0,
+      "yaw_degrees": 0.0
+    },
+    {
+      "tilt_degrees": -15.0,
+      "yaw_degrees": 90.0
+    },
+    {
+      "tilt_degrees": 15.0,
+      "yaw_degrees": 180.0
+    }
+  ],
+  "probe_samples": [1024, 2048],
+  "independent_probe_rows": [0, 32, 63, 95],
+  "independent_probe_columns": [0, 19, 38, 57, 76, 95],
+  "incident_photons_per_ray": 200000.0,
+  "sampling_gate_photons_per_ray": 800000.0,
+  "sampling_p95_poisson_sd_max": 0.05,
+  "sampling_max_poisson_sd_max": 0.2,
+  "scalar_coefficients_80kev_mm_inverse": [
+    0.018365660412653837, 0.04108010415565857
+  ],
+  "pilot_inverse_samples": 512,
+  "pilot_steps": 1000,
+  "pilot_soft_seconds_per_fit": 7200.0,
+  "scalar_initial_and_mapping_step_mm_inverse_squared": 1e-8,
+  "spectral_initial_step": 1e-6,
+  "spectral_maximum_step": 1.0,
+  "spectral_mapping_step": 1e-6,
+  "fraction_regularisation_mm_inverse": 0.1,
+  "relative_mapping_tolerance": 0.0001,
+  "maximum_mapped_fraction_displacement": 1e-5,
+  "maximum_mapped_scalar_displacement_water_ratio": 1e-5,
+  "metric": "new physical Fisher at water200mm/bone10mm, determinant normalised to1",
+  "noise_root_seed": 2026091264,
+  "noise_roles": {
+    "fitting": 1,
+    "withheld": 2
+  },
+  "checkpoint_steps": [
+    0, 1, 5, 10, 20, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000
+  ],
+  "final_or_larger_study_authorised": false,
+  "scalar_initial_trial_step_mm_inverse_squared": 3.125e-10,
+  "stage_soft_seconds": 7560.0,
+  "samples_native": [1024, 2048],
+  "samples_inverse": [512, 1024],
+  "sampling_failure_policy": "fail and retain; no automatic candidate increase",
+  "noise_namespace_version": 1,
+  "noise_replicate": 0,
+  "withheld_views_per_ring": 8,
+  "withheld_offset_degrees": 3.75,
+  "withheld_increment_degrees": 45.0,
+  "primary_method": "spectral_metric",
+  "run_scope": "Primary 64-cubed open-model illustration/development; one finite-budget joint material reconstruction, separate from the final comparison matrix",
+  "non_solve_reservation_seconds": 360.0,
+  "checkpoint_overhead_allowance_in_solve_seconds": 60.0,
+  "expected_forward_fractions_sha256": "554055c69f10c5b0e22924f04776100d824429cd9cde6cc6e41c9f966365f14d",
+  "physics_array_pins": {
+    "energies_kev": {
+      "shape": [100],
+      "dtype": "<f4",
+      "sha256_c_order_bytes": "0f073a183eed996382306ba2bb408b49ffb8c941447f54d367765e29cc037644"
+    },
+    "mu_mm_inv": {
+      "shape": [2, 100],
+      "dtype": "<f4",
+      "sha256_c_order_bytes": "5b55300a685979d00310e5c6c09a8b5114b81b27683c7870497a98e0e64d3636"
+    },
+    "incident_weights": {
+      "shape": [100],
+      "dtype": "<f4",
+      "sha256_c_order_bytes": "13f2fff465f8e8b5f44891449444ddcc93baebf4feb6a79640aa60ce4b6127ca"
+    },
+    "weights": {
+      "shape": [3, 100],
+      "dtype": "<f4",
+      "sha256_c_order_bytes": "538ec9aaedd0acd1fcfdf9d40d89cf3250cc98e8a35b832172c9917b22693b5b"
+    },
+    "response": {
+      "shape": [3, 100],
+      "dtype": "<f4",
+      "sha256_c_order_bytes": "71841bae9e771e3d1025a38222335b3c31d35f5671efda14c1329b910dcc3d07"
+    }
+  },
+  "material_metric_matrix": [
+    [1.7721715211518145, 4.768781505135082],
+    [4.768781505135082, 13.396715137532446]
+  ]
+}

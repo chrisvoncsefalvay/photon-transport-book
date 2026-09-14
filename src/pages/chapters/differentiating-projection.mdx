@@ -1,0 +1,636 @@
+---
+layout: ../../layouts/ChapterLayout.astro
+title: Derivatives of the projection, from voxels to pose
+status: Draft
+scope: A useful projection derivative tells us how the predicted image responds to changes in attenuation or geometry. We follow those changes through interpolation and ray integration, then check the result independently.
+chapterNumber: "05"
+---
+
+import EquationNote from "../../components/marginalia/EquationNote.astro";
+import MarginNote from "../../components/marginalia/MarginNote.astro";
+
+import ConceptualFigures from "../../components/figures/ConceptualFigures.astro";
+import RecordedFigure from "../../components/figures/RecordedFigure.astro";
+import PoseSensitivityFigure from "../../components/figures/PoseSensitivityFigure.astro";
+
+import Citation from "../../components/citations/Citation.astro";
+import Bibliography from "../../components/citations/Bibliography.astro";
+
+import Source from "../../components/source/Source.astro";
+
+Now we move the estimated vertebra a fraction of a millimetre. Some rays acquire more bone, some lose it, and some barely change. A registration method needs to know how each input changes its mismatch with the measured image (this is the heart of differentiability). Rendering both poses gives a finite difference, and a derivative computes that local response without requiring a second render for every parameter (this is the heart of differentiability without going bankrupt from GPU bills).
+
+The exponential is the easy part. [Chapter 2](/chapters/transmission/#26-evaluating-transmission-numerically) already gave its derivative. Most of the work lies upstream: the pose changes sample locations, the interpolant changes beneath them, and clipping can move the integration interval. A plausible gradient image can omit one of those dependencies just as a plausible projection can contain a half-voxel error. The forward model is still the primary, fixed-energy measurement from the preceding chapters.
+
+The recorded pelvic example below shows the projection and its six local count sensitivities. The anatomy is synthetic, the beam is fixed, and each displayed pose selects a separately recorded calculation. Translation and rotation retain their different derivative units. The image alone is not a derivative check.
+
+<PoseSensitivityFigure id="pose-sensitivity" />
+
+We now extend the existing projector with `dpt.projection.projection_vjp`. It receives the optical-depth cotangent produced by `transmission_vjp` and returns derivatives for the selected inputs. [Chapter 6's pose evaluator](/chapters/recovering-pose/#66-the-canonical-optimisation-loop) uses this operation to reduce the image's contribution to six pose derivatives, without retaining a full image Jacobian.
+
+## 5.1 Which projection derivative do we need?
+
+Let $\boldsymbol{\theta}$ collect the active inputs: perhaps the six local pose coordinates, perhaps volume coefficients, perhaps both. Hold the other inputs fixed. The renderer produces a vector of expected primary counts, and a scalar objective compares that prediction with observed data $\mathbf{y}$:
+
+$$
+\begin{gathered}
+\boldsymbol{\lambda}=\mathcal{F}(\boldsymbol{\theta}),\\
+\Phi(\boldsymbol{\theta}) =\mathcal{D}\!\left(\mathcal{F}(\boldsymbol{\theta}),\mathbf{y}\right).
+\end{gathered}
+$$
+
+<EquationNote term="\boldsymbol{\lambda}">
+  Vector of expected primary detector counts.
+</EquationNote>
+
+<EquationNote term="\boldsymbol{\theta}">
+  Active physical or material parameters of the renderer.
+</EquationNote>
+
+<EquationNote term="\mathbf{y}">Vector of observed detector data.</EquationNote>
+
+<EquationNote term="\mathcal D">
+  Scalar discrepancy between predicted and observed data.
+</EquationNote>
+
+[Equation (5.1)](#equation-5-1) separates the renderer's output from the comparison applied to it. Differentiating an expected count does not require sampling photons. A noise model matters when we choose $\mathcal D$ and interpret the observations.
+
+If there are $P$ detector samples and $K$ active scalar parameters, the full Jacobian has $P K$ entries. Two products are usually more useful:
+
+$$
+\begin{gathered}
+\mathbf{J}_{\mathcal F} =\frac{\partial\boldsymbol{\lambda}}{\partial\boldsymbol{\theta}},\\
+\mathbf{v}=\mathbf{J}_{\mathcal F}\boldsymbol{\eta},\\
+\mathbf{g}=\mathbf{J}_{\mathcal F}^{\mathsf T}\overline{\boldsymbol{\lambda}}.
+\end{gathered}
+$$
+
+<EquationNote term="\mathbf{J}_{\mathcal F}">
+  Jacobian of expected counts with respect to the active parameters.
+</EquationNote>
+
+<EquationNote term="\boldsymbol{\eta}">
+  Direction in the active parameter coordinates.
+</EquationNote>
+
+<EquationNote term="\overline{\boldsymbol{\lambda}}">
+  Detector-space cotangent supplied to the reverse calculation.
+</EquationNote>
+
+In [equation (5.2)](#equation-5-2), a Jacobian-vector product, or JVP, predicts the image change along the parameter direction $\boldsymbol{\eta}$. A vector-Jacobian product, or VJP, carries the detector weights $\overline{\boldsymbol{\lambda}}$ back to the inputs. In this chapter's reverse rules, an overbar denotes a cotangent: the sensitivity of a downstream scalar to that variable.
+
+For the objective above, choose $\overline{\boldsymbol{\lambda}}=\nabla_{\boldsymbol{\lambda}}\mathcal D$. Then $\mathbf g$ is the parameter gradient. Reverse mode is attractive when one scalar depends on many inputs. With only six pose parameters, a small set of directional derivatives can also be practical. The mathematical requirement is the same product, regardless of the differentiation strategy.
+
+The implemented API computes the VJP. `adj_L` is a caller-owned detector array whose precision matches the prepared optical-depth output: binary32 by default, or binary64 when explicitly requested. The requested destinations identify the derivative coordinates: `out_pose` holds six binary64 cotangents for a local right increment, while `out_mu` holds the flat binary32 coefficient cotangents. A separate `out_pose_matrix` destination contains twelve unconstrained storage partials for a tape chain rule. The six-coordinate result describes changes along valid local rigid motions. A tape differentiating the construction of the stored transform instead needs partials with respect to its entries, which it can pass through that construction to the upstream parameters. Those twelve entries are not six pose parameters with spare capacity. Requesting both pose representations in one call is rejected, and grid or acquisition calibration is fixed in this projector.
+
+A derivative with respect to translation has count per millimetre units, while one with respect to rotation has count per radian units. To compare or optimise scaled coordinates, write a local increment as
+
+$$
+\begin{gathered}
+\delta\boldsymbol{\theta}=\mathbf{D}\,\delta\mathbf{z},\\
+\mathbf{J}_{\mathbf z}=\mathbf{J}_{\mathcal F}\mathbf{D},\\
+\nabla_{\mathbf z}\Phi=\mathbf{D}^{\mathsf T}\nabla_{\boldsymbol{\theta}}\Phi.
+\end{gathered}
+$$
+
+<EquationNote term="\mathbf D">
+  Diagonal matrix converting dimensionless increments to physical parameter
+  increments.
+</EquationNote>
+
+<EquationNote term="\mathbf z">
+  Dimensionless local parameter coordinates.
+</EquationNote>
+
+Here $\mathbf z$ is dimensionless and the diagonal matrix $\mathbf D$ supplies declared physical step scales. [Equation (5.3)](#equation-5-3) changes the coordinates of the derivative, but it does not add information to the image. Pose increments still compose with the current transform on the side chosen in Chapter 3.
+
+## 5.2 Attenuation and transmission derivatives
+
+For one detector sample, the expected primary count is $\lambda_p=n_{0,p}\exp(-\widehat L_p)$. Let both optical depth and open-beam expectation be active. Their differential is
+
+$$
+\begin{gathered}
+\mathrm d\lambda_p =T_p\,\mathrm dn_{0,p} -\lambda_p\,\mathrm d\widehat L_p,\\
+\mathrm dT_p=-T_p\,\mathrm d\widehat L_p.
+\end{gathered}
+$$
+
+<EquationNote term="T_p">
+  Probability of primary survival along detector ray $p$.
+</EquationNote>
+
+<EquationNote term="n_{0,p}">
+  Expected detector photons in the absence of the object.
+</EquationNote>
+
+<EquationNote term="\lambda_p">
+  Expected primary detector count after attenuation.
+</EquationNote>
+
+[Equation (5.4)](#equation-5-4) supplies two distinct paths for an image change. Increasing illumination raises expected counts, while increasing attenuation lowers them. Holding the open beam fixed removes the first term. If it is itself calibrated by active acquisition parameters, that dependency remains part of the derivative.
+
+For a fixed ray and sample pattern, [Chapter 4's linear optical-depth operator](/chapters/volumes-line-integrals/#equation-4-17) gives
+
+$$
+\begin{gathered}
+\widehat L_p=\sum_v W_{pv}a_v,\\
+\frac{\partial\widehat L_p}{\partial a_v}=W_{pv},\\
+\frac{\partial\lambda_p}{\partial a_v}=-\lambda_p W_{pv}.
+\end{gathered}
+$$
+
+<EquationNote term="W_{pv}">
+  Fixed-geometry path and interpolation weight, in mm.
+</EquationNote>
+
+<EquationNote term="a_v">
+  Stored attenuation coefficient, in $\mathrm{mm}^{-1}$.
+</EquationNote>
+
+The coefficient $W_{pv}$ in [equation (5.5)](#equation-5-5) has units of millimetres and includes both interpolation weights and physical path weights. It is zero when the ray's sampled basis support never reaches coefficient $v$. Increasing a nonnegative coefficient cannot increase the expected primary count for this field model.
+
+The corresponding reverse rules are
+
+$$
+\begin{gathered}
+\overline L_p=-\lambda_p\overline\lambda_p,\\
+\overline n_{0,p}=T_p\overline\lambda_p,\\
+\overline a_v=\sum_p W_{pv}\overline L_p.
+\end{gathered}
+$$
+
+<EquationNote term="\overline L_p">
+  Cotangent of the dimensionless optical depth.
+</EquationNote>
+
+<EquationNote term="\overline n_{0,p}">
+  Cotangent of the expected open-beam count.
+</EquationNote>
+
+<EquationNote term="\overline a_v">
+  Cotangent accumulated for volume coefficient $v$.
+</EquationNote>
+
+[Equation (5.6)](#equation-5-6) turns an image-space cotangent into an attenuation-field gradient. If one open-beam scalar is shared across pixels, its cotangent is the sum of the per-pixel contributions. A per-pixel illumination array has a different derivative shape, even if all its values happen to be equal.
+
+Strong attenuation makes $\lambda_p$ small. For a fixed, bounded count-space seed, its contribution to $\overline L_p$ then becomes small too. The objective can alter that seed substantially. With known positive $n_{0,p}$, the Poisson negative log-likelihood, after dropping terms independent of $L_p$, has
+
+$$
+\begin{gathered}
+\Phi_p(L_p)=n_{0,p}e^{-L_p}+y_pL_p,\\
+\frac{\mathrm d\Phi_p}{\mathrm dL_p}=y_p-\lambda_p.
+\end{gathered}
+$$
+
+<EquationNote term="y_p">
+  Observed photon count at detector sample $p$.
+</EquationNote>
+
+<EquationNote term="\Phi_p">
+  Per-pixel Poisson objective with terms independent of optical depth omitted.
+</EquationNote>
+
+[Equation (5.7)](#equation-5-7) can be evaluated without forming $1-y_p/\lambda_p$, which becomes numerically troublesome when the predicted count is tiny. Its shortened objective assumes fixed illumination. Fitting $n_{0,p}$ requires restoring the terms that depend on it. This is the same statistical distinction used in Chapter 2.
+
+Derivatives must also retain the forward numerical policy. Computing a weighted derivative from an already-underflowed stored transmission can lose a representable result when the cotangent is large. Recompute the required exponential product with the declared precision and range, as for expected counts. The derivative of the intended smooth formula is the target, with floating-point error measured against it.
+
+This is why the composition calls the existing transmission VJP with the original optical depths and illumination. Its optical-depth destination becomes `adj_L` for the projector. In a pose-only fit, the volume remains fixed and the open beam is a declared scalar, so the only shared reduction still needed is the six-coordinate pose gradient. If a later problem activates coefficients, the same projection traversal can request their gradient too.
+
+For a Poisson fit, `dpt`’s recovery adapter currently composes these operators through a stored count-space seed. It rejects a positive observed count when the stored predicted mean is zero, and rejects an unrepresentable seed. Equation (5.7) permits a separately composed log-domain Poisson path for more extreme ranges, but the current adapter does not evaluate that path. Its intermediate count and seed arrays limit its numerical domain.
+
+## 5.3 Geometry through the sampled field
+
+A pose update moves the ray in object coordinates while the volume coefficients stay attached to the anatomy. For a fixed world point $\mathbf{x}^W$, let $\mathbf{x}^O=\mathbf{R}^{\mathsf T}(\mathbf{x}^W-\mathbf{t})$. Inverting the [left and right updates from Chapter 3](/chapters/frames-geometry-motion/#36-pose-parameters-and-local-updates) gives the first-order motions
+
+$$
+\begin{gathered}
+\delta\mathbf{x}^O_{\mathrm{left}} =-\mathbf{R}^{\mathsf T}\boldsymbol{\rho}_W {}-\mathbf{R}^{\mathsf T}(\boldsymbol{\phi}_W\times\mathbf{x}^W),\\
+\delta\mathbf{x}^O_{\mathrm{right}} =-\boldsymbol{\rho}_O-\boldsymbol{\phi}_O\times\mathbf{x}^O.
+\end{gathered}
+$$
+
+<EquationNote term="\boldsymbol{\rho}_W">
+  Translational coordinate of a left pose increment, expressed in world mm.
+</EquationNote>
+
+<EquationNote term="\boldsymbol{\phi}_W">
+  Rotation-vector coordinate of a left pose increment, in world axes and
+  radians.
+</EquationNote>
+
+<EquationNote term="\boldsymbol{\rho}_O">
+  Translational coordinate of a right pose increment, in object mm.
+</EquationNote>
+
+<EquationNote term="\boldsymbol{\phi}_O">
+  Rotation-vector coordinate of a right pose increment, in object axes and
+  radians.
+</EquationNote>
+
+The minus signs in [equation (5.8)](#equation-5-8) arise because we query the inverse pose. Translating the object to the right makes a fixed world ray visit object points farther to the left. These expressions differ from the active point motions in Chapter 3 because the point being held fixed is different.
+
+Within an open trilinear interpolation cell, coefficient differences give the gradient with respect to grid coordinates. For example,
+
+$$
+\frac{\partial\mu_A}{\partial u_x} =\sum_{b,c\in\{0,1\}} \left[ A[m_z+c,m_y+b,m_x+1] {}-A[m_z+c,m_y+b,m_x] \right] {}\times w_b(\alpha_y)w_c(\alpha_z).
+$$
+
+<EquationNote term="u_x">
+  Continuous grid coordinate along the first volume axis.
+</EquationNote>
+
+<EquationNote term="\alpha_y">
+  Fractional position along the second interpolation axis.
+</EquationNote>
+
+<EquationNote term="\alpha_z">
+  Fractional position along the third interpolation axis.
+</EquationNote>
+
+[Equation (5.9)](#equation-5-9) differentiates the interpolation weights while the selected cell stays fixed. The other components follow by exchanging directions. The zero-extended reference uses zero outside coefficients. The implemented [half-cell sampler](/chapters/volumes-line-integrals/#listing-4-2) instead suppresses the slope along a clamped edge axis, and the interior formula is unchanged. Multiplying by $\mathbf{Q}\mathbf{S}^{-1}$ converts this grid gradient into $\nabla_{\mathbf{x}^O}\mu_A$ with units $\mathrm{mm}^{-2}$.
+
+Now let one scalar parameter be $\theta$. For a fixed sample count in a region where the clipping and interpolation branches are differentiable, the discrete optical-depth derivative is
+
+$$
+\frac{\partial\widehat L_p}{\partial\theta} =\sum_r \left[ \frac{\partial w_{pr}}{\partial\theta}\mu_A(\mathbf{x}_{pr}^O) {}+w_{pr}\nabla\mu_A(\mathbf{x}_{pr}^O)^{\mathsf T} \frac{\partial\mathbf{x}_{pr}^O}{\partial\theta} \right].
+$$
+
+<EquationNote term="\theta">One active scalar parameter.</EquationNote>
+
+<EquationNote term="w_{pr}">
+  Physical quadrature weight of sample $r$ on ray $p$, in mm.
+</EquationNote>
+
+<EquationNote term="\mathbf{x}_{pr}^O">
+  Physical sample position in object coordinates, in mm.
+</EquationNote>
+
+[Equation (5.10)](#equation-5-10) displays both ways geometry changes a quadrature: it changes where we sample and how much physical distance each sample represents. This expression holds coefficients fixed. Active coefficient changes add the linear contribution from equation (5.5).
+
+For samples interpolated between object-space endpoints, their derivative is
+
+$$
+\frac{\partial\mathbf{x}_{pr}^O}{\partial\theta} =(1-t_{pr})\frac{\partial\mathbf{s}^O}{\partial\theta} {}+t_{pr}\frac{\partial\mathbf{q}_p^O}{\partial\theta} {}+(\mathbf{q}_p^O-\mathbf{s}^O) \frac{\partial t_{pr}}{\partial\theta}.
+$$
+
+<EquationNote term="t_{pr}">
+  Dimensionless interpolation parameter locating sample $r$ between the ray
+  endpoints.
+</EquationNote>
+
+The last term in [equation (5.11)](#equation-5-11) vanishes for a sample parameter fixed on the full source-to-detector segment. It generally remains when sample positions are redistributed over a pose-dependent clipped interval. Detaching the clipping result from automatic differentiation discards that motion.
+
+In the `dpt` library, `finite_interval()` from [Listing 4.3](/chapters/volumes-line-integrals/#listing-4-3) returns the derivatives of whichever box faces currently determine entry and exit. A bound still fixed at the source or detector has zero derivative with respect to object motion. The VJP can therefore distinguish a sample moving because the inverse pose changed from a sample moving because its fraction of the clipped interval changed. It needs both effects even when every sampled coefficient happens to have the same value.
+
+For equal midpoint quadrature with fixed $M_p$, write $c_r=(r+1/2)/M_p$. Differentiating the actual node and weight definitions gives
+
+$$
+\begin{gathered}
+\partial_\theta t_{pr} =(1-c_r)\partial_\theta t_p^- {}+c_r\partial_\theta t_p^+,\\
+\partial_\theta w_{pr} =\frac{t_p^+-t_p^-}{M_p}\partial_\theta d_p {}+\frac{d_p}{M_p}(\partial_\theta t_p^+-\partial_\theta t_p^-).
+\end{gathered}
+$$
+
+<EquationNote term="c_r">
+  Fixed midpoint fraction within the clipped interval.
+</EquationNote>
+
+<EquationNote term="t_p^-">Ray parameter at the clipped entry.</EquationNote>
+
+<EquationNote term="t_p^+">Ray parameter at the clipped exit.</EquationNote>
+
+[Equation (5.12)](#equation-5-12) makes the clipping dependency explicit ([Figure](#figure-5-1)). Rigid object motion preserves the source-to-detector distance, so $\partial_\theta d_p=0$ for those parameters. Moving source or detector parameters can change it. The active box face determines the derivative of each clipped endpoint away from ties.
+
+<ConceptualFigures
+  id="figure-5-1"
+  title="The geometric paths of a projection derivative"
+  description="Object motion changes the object-space ray endpoints, clipped interval and sampling locations before it changes the detector counts. A pose derivative must follow each of these dependencies, including the motion of the entry and exit points."
+/>
+
+## 5.4 Discretise and differentiate
+
+We have differentiated a finite weighted sum. The derivative of a continuous line integral provides another useful comparison, but it has its own hypotheses. Suppose $f(t,\theta)$ is differentiable on the changing interval, with enough regularity to differentiate under the integral. Then
+
+$$
+\frac{\mathrm d}{\mathrm d\theta} \int_{a(\theta)}^{b(\theta)}f(t,\theta)\,\mathrm dt ={}\int_a^b\partial_\theta f(t,\theta)\,\mathrm dt {}+f(b,\theta)b'(\theta) {}-f(a,\theta)a'(\theta).
+$$
+
+<EquationNote term="f">
+  Parameter-dependent integrand on the moving interval.
+</EquationNote>
+
+<EquationNote term="a">
+  Lower integration bound as a function of the active parameter.
+</EquationNote>
+
+<EquationNote term="b">
+  Upper integration bound as a function of the active parameter.
+</EquationNote>
+
+For our ray, $f=d_p\mu_A(\mathbf{x}_p^O(t))$. The endpoint terms in [equation (5.13)](#equation-5-13) account for changing integration bounds. At an exterior support face of the continuous zero-extended hat field, the field value is zero, so that face's continuous endpoint term vanishes. Differentiating a finite midpoint sum still requires its moving weights and sample positions: those terms combine to approximate the continuous derivative.
+
+The implemented clamped field can have a nonzero trace at its outer half-cell face. Its continuous endpoint term then remains, as does the corresponding contribution from the changing finite quadrature. This is one reason to keep the zero-extended reference and the executable field distinct: importing the reference's vanishing endpoint term would remove a real sensitivity from the code's declared model.
+
+A sharp boundary shows why the distinction matters. Consider a one-dimensional material of coefficient $\mu_0>0$ occupying $[a,b]$ inside a fixed ray segment, with $b$ fixed and $a$ moving. Its integral is
+
+$$
+\begin{gathered}
+L(a)=\mu_0(b-a),\\
+\frac{\mathrm dL}{\mathrm da}=-\mu_0.
+\end{gathered}
+$$
+
+<EquationNote term="\mu_0">
+  Uniform material attenuation in the interval, in $\mathrm{mm}^{-1}$.
+</EquationNote>
+
+<EquationNote term="a">Moving physical entry position, in mm.</EquationNote>
+
+The boundary derivative in [equation (5.14)](#equation-5-14) is nonzero even though the coefficient is constant everywhere inside the material. Sampling its hard indicator at a fixed finite set of points produces a staircase as $a$ moves: automatic differentiation of each selected branch returns zero between sample crossings. That is a derivative of the sampled staircase, and it does not approximate the moving-boundary derivative pointwise by merely increasing the number of samples.
+
+[Figure](#figure-5-2) separates the derivative of the continuous interval from that of the sampled staircase.
+
+<RecordedFigure
+  id="figure-5-2"
+  title="A moving boundary and a sampled staircase"
+  description="Moving the interval boundary changes the exact optical depth smoothly, while fixed quadrature samples produce a staircase. Differentiating its flat branches gives zero and misses the boundary contribution, even as the sampled integral approaches the exact one."
+/>
+
+Exact cell traversal represents boundary motion through changing segment lengths. A continuous interpolant represents a softened boundary through spatial gradients over a finite width. Each can support a useful derivative, but they differentiate different finite-resolution fields. The boundary convention changes the gradient seen by the inverse problem.
+
+DiffDRR expresses ray-plane intersections, sorting and length-weighted sums as tensor operations, allowing PyTorch automatic differentiation to propagate geometric sensitivities through its projection. It provides a useful comparison with our sampled trilinear operator: one exposes lengths through intersected cells, the other exposes basis weights at quadrature nodes. <Citation keys={["gopalakrishnan2023diffdrr"]} />
+
+The sample-count rule adds another discrete decision. If $M_p=\lceil\ell_p/h\rceil$, changing pose can change both the number and positions of samples. At the transition, two different midpoint rules need not produce the same value. Within a fixed-count branch, equation (5.10) differentiates the selected quadrature. It does not describe a derivative across that transition.
+
+One option is to keep sample counts fixed during each local optimisation stage and refine the discretisation between stages. Another is to use fixed sample parameters on the complete finite ray, accepting extra samples in zero-valued regions. Either choice has computational consequences. What matters for gradient verification is that the perturbed forward evaluations and the derivative use the same declared discretisation.
+
+## 5.5 Reverse-mode differentiation in Warp
+
+First obtain the cotangent of each optical depth from the detector objective. Then revisit the contributing samples. Each sample sends a contribution to the volume coefficients it read and, when geometry is active, a contribution through its position and weight to the pose parameters.
+
+For one trilinear sample, with basis value $B_v(\mathbf{x}_{pr}^O)$ for coefficient $v$, the local reverse contributions are
+
+$$
+\begin{gathered}
+\overline a_v\mathrel{+}=\overline L_p w_{pr}B_v(\mathbf{x}_{pr}^O),\\
+\overline{\mathbf{x}}_{pr}^O =\overline L_p w_{pr}\nabla\mu_A(\mathbf{x}_{pr}^O),\\
+\overline w_{pr}=\overline L_p\mu_A(\mathbf{x}_{pr}^O).
+\end{gathered}
+$$
+
+<EquationNote term="B_v">
+  Dimensionless interpolation basis associated with coefficient $v$.
+</EquationNote>
+
+<EquationNote term="\overline{\mathbf{x}}_{pr}^O">
+  Cotangent of the physical sample position.
+</EquationNote>
+
+<EquationNote term="\overline w_{pr}">
+  Cotangent of the sample integration weight.
+</EquationNote>
+
+[Equation (5.15)](#equation-5-15) is an execution guide for a VJP. Many rays can contribute to one volume coefficient, so those writes require a correct accumulation strategy. Pose-only differentiation avoids the volume-gradient scatter, but still needs to reduce per-ray contributions into a small shared parameter vector.
+
+With $P=1024^2$ rays and $M=512$ samples per ray, storing only three binary32 position coordinates per sample uses 6 GiB. Coefficient indices, interpolation weights and their adjoints add to that total. Reconstructing positions from the endpoints and sample index can replace that retained tensor with arithmetic in the backward pass.
+
+A recomputed backward must reproduce the forward's clipping, interpolation, sampling and arithmetic policies. If its branch selection differs because inputs were mutated or precision changed, it can scatter cotangents into different coefficients. Retain the original inputs and any branch decisions needed for exact replay, or prove that recomputation obtains them under the recorded configuration.
+
+Warp 1.17 documents that dynamic loops are not automatically replayed or unrolled in the backward pass. A generated adjoint of a ray loop therefore needs an explicit account of its intermediate values. The loop counter, selected interpolation cell and any intermediate consumed after the loop must have the values required by the backward. Trace each of those reads to retained storage or a recomputation. A small differentiable sample function can expose the local calculation, and a custom VJP using equation (5.15) can organise the replay traversal explicitly.
+
+The custom kernel reconstructs the same clipped midpoint sequence as the forward operator. Its accumulators separate changes to the ray origin and direction from changes to the two interval bounds. `lower_seed` and `upper_seed` combine the field sum with motion of the sample positions. Their opposite signs include the loss or gain of physical interval length. The transpose of `object_to_grid` then converts these grid-coordinate cotangents back to physical object coordinates before the final right-pose contraction.
+
+<Source
+  file="python/dpt/kernels/projection.py"
+  region="projection-discrete-vjp"
+  caption="Backpropagation through sampled attenuation and clipping"
+/>
+
+The flags passed to `get_vjp()` specialise the kernel when it is prepared. A field-only VJP needs basis weights but no field-value reads or pose reduction. A pose-only VJP needs values and spatial slopes but no scatter into a volume gradient. `wp.static` removes the unrequested work from each specialisation, so the flags do not branch separately for every ray at runtime.
+
+For pose, each 128-lane block forms binary64 partial sums and subsequent kernels reduce those partials to the requested six or twelve entries. Padded lanes contribute zero and still participate in the block reduction. This avoids a numerical global atomic update for every ray and pose component. The active-volume path does use binary32 scatter atomics, because rays share coefficients. Their addition order is not deterministic, and a post-scatter check detects overflow after individually finite contributions. A fixed volume avoids that storage and contention altogether.
+
+Warp records launches with `wp.Tape`, and arrays participating in differentiation use `requires_grad=True`. A supplied output-cotangent array seeds the VJP through `Tape.backward(grads=...)`. The `FirstOrderPass` boundary checks that the seed has the output's exact shape and dtype, contiguous storage and the same CUDA device before Warp copies it into the cotangent buffer. The [pinned differentiation guide](https://raw.githubusercontent.com/NVIDIA/warp/v1.17.0/docs/user_guide/differentiability.rst) documents these calls and the buffer-overwrite rules. The forward inputs needed by the reverse calculation must remain available. Allocate the output and cotangent buffers before the repeated calls, keep them on the same CUDA device and use a declared stream order.
+
+[Table 5.1](#table-5-1) identifies the reverse work and shared writes for each choice of active inputs.
+
+<div className="prose-table" role="region" aria-label="Projection reverse-mode execution decisions" tabIndex={0}>
+
+| Active inputs              | Main reverse work                                                  | Shared writes                                |
+| -------------------------- | ------------------------------------------------------------------ | -------------------------------------------- |
+| Volume coefficients only   | Recompute basis weights and scatter weighted optical-depth seeds   | Many rays can update one coefficient         |
+| Pose only                  | Recompute spatial gradients and contract with endpoint derivatives | Reduce contributions to six pose coordinates |
+| Volume and pose            | Reuse sample values and gradients for both products                | Volume scatter plus pose reduction           |
+| Per-pixel illumination     | Pointwise multiplication by transmission                           | Independent output locations                 |
+| Shared illumination scalar | Sum per-pixel illumination contributions                           | One reduction                                |
+
+</div>
+
+Measure both forward and backward traffic and occupancy, including contention where many rays update the same volume coefficients and memory retained between passes.
+
+Clear or initialise gradient buffers according to the call's accumulation contract. An isolated VJP can overwrite its output, while a node inside a larger reverse graph usually adds to an input's existing cotangent. Repeated backward calls need explicit seed and reset rules.
+
+<MarginNote label="Gradient reuse">
+  A correct derivative formula does not repair a gradient left over from the
+  previous registration step.
+</MarginNote>
+
+`FirstOrderPass` makes a recorded evaluation's lifetime explicit when the projector and transmission are used with Warp's tape. Enter its context to record the forward work, pass its `.tape` to each participating operator, then call `backward()` after leaving the recording context. The caller supplies the detector output and its seed, and the workspaces perform their numerical checks before the pass is considered complete.
+
+<Source
+  file="python/dpt/autodiff.py"
+  region="autodiff-first-order-lifetime"
+  caption="Seeding and releasing a first-order reverse pass"
+/>
+
+The original pose and field must remain unchanged through the reverse calculation. `close()` clears accumulated cotangents and resets the recording before releasing the workspaces. It also handles an abandoned forward pass, whose scratch cannot be reused while a later backward might still depend on it. These checks catch an ownership mistake before it turns into a gradient for a different pose. They do not add higher-order differentiation: the custom projection rule promises first-order products only. The recovery adapter uses explicit VJP calls and prepares its buffers once, which is sufficient for its single forward/reverse chain.
+
+## 5.6 Independent directional checks
+
+Choose a base pose and a direction in dimensionless scaled coordinates $\mathbf z$. Build perturbed poses using the same left or right composition rule as the analytic derivative. For a vector output, a central difference estimates the JVP:
+
+$$
+\mathbf{v}_h =\frac{\mathcal F(\mathbf z+h\boldsymbol{\eta}) -\mathcal F(\mathbf z-h\boldsymbol{\eta})}{2h}.
+$$
+
+<EquationNote term="\mathbf v_h">
+  Central-difference estimate of the image JVP at step $h$.
+</EquationNote>
+
+<EquationNote term="h">
+  Dimensionless perturbation step in scaled parameter coordinates.
+</EquationNote>
+
+[Equation (5.16)](#equation-5-16) uses a dimensionless step $h$, and the physical perturbations come from the scaling matrix in equation (5.3). For pose parameters, the notation means composing the scaled increment with the base pose, not adding entries to a rotation matrix.
+
+For the implemented VJP, hold a detector seed fixed and take its dot product with each perturbed forward output before forming the central difference. Compare that scalar difference with the dot product of the VJP cotangent, expressed in the same scaled parameter coordinates, and the chosen direction. Both calculations then predict the change in the same seeded scalar, so this check needs neither a stored image Jacobian nor a separately implemented JVP. The seed must correspond to the output being checked: optical depth for the projector alone, or expected counts for the composed rendering chain.
+
+Check a range of steps. In a smooth region, central-difference truncation error decreases quadratically as $h$ shrinks, until subtraction and floating-point errors dominate. One favourable step size can conceal a wrong derivative. A useful discrepancy measure is
+
+$$
+\epsilon_h =\frac{\lVert\mathbf v_h-\mathbf v\rVert_2} {\max(s_0,\lVert\mathbf v_h\rVert_2,\lVert\mathbf v\rVert_2)}.
+$$
+
+<EquationNote term="\epsilon_h">
+  Relative JVP discrepancy with a declared absolute scale.
+</EquationNote>
+
+<EquationNote term="s_0">
+  Positive reference scale in the same units as the image derivative.
+</EquationNote>
+
+The scale $s_0$ in [equation (5.17)](#equation-5-17) has the same units as the image derivative. It prevents an almost-zero reference from turning a harmless absolute error into a large relative ratio. Report the absolute error too. The normalisation must not conceal a materially wrong signal change.
+
+A scalar Taylor test avoids dividing two nearly equal output values by a very small step. For a differentiable scalar objective and direction, form
+
+$$
+R(h)=\left| \Phi(\mathbf z+h\boldsymbol{\eta})-\Phi(\mathbf z) {}-h\nabla\Phi(\mathbf z)^{\mathsf T}\boldsymbol{\eta} \right|.
+$$
+
+<EquationNote term="R(h)">
+  Absolute remainder after subtracting the predicted first-order objective
+  change.
+</EquationNote>
+
+With sufficient local smoothness, [equation (5.18)](#equation-5-18) has a quadratic remainder. Leaving the linear term out gives a first-order change when the directional derivative is nonzero. Seeing those two slopes separates a meaningful derivative correction from an objective that is simply insensitive to the chosen direction.
+
+[Figure](#figure-5-3) compares the error patterns used by the central-difference and Taylor checks.
+
+<RecordedFigure
+  id="figure-5-3"
+  title="Directional checks across perturbation sizes"
+  description="Central-difference errors and first-order Taylor remainders are plotted across perturbation sizes for an analytic transmission function. Their decrease over a range of steps, followed by rounding effects at small steps, is more informative than agreement at a single step size."
+/>
+
+Analytic fields provide references that share no interpolation code with the implementation. For $\mu(\mathbf{x}^O)=\mu_0+\mathbf{b}^{\mathsf T}\mathbf{x}^O$ along a finite segment entirely inside an affine interpolation region,
+
+$$
+\begin{gathered}
+L_p=d_p\left[\mu_0+ \mathbf b^{\mathsf T}\frac{\mathbf s^O+\mathbf q_p^O}{2}\right],\\
+\nabla_{\mathbf t}L_p=-d_p\mathbf R\mathbf b.
+\end{gathered}
+$$
+
+<EquationNote term="\mathbf b">
+  Constant spatial attenuation gradient of the analytic affine field, in
+  $\mathrm{mm}^{-2}$.
+</EquationNote>
+
+<EquationNote term="\mathbf t">
+  Object translation expressed in world coordinates, in mm.
+</EquationNote>
+
+The translation derivative in [equation (5.19)](#equation-5-19) holds the world ray and object rotation fixed and differentiates with respect to world translation. The vector $\mathbf b$ has units $\mathrm{mm}^{-2}$. Choose $\mu_0$ so attenuation remains nonnegative on the tested neighbourhood. This case checks inverse-pose signs, the physical spacing conversion and distance weights without a moving support boundary.
+
+Test the volume derivative separately using coefficient directions and the fixed-geometry linear operator. Then test pure translations, pure rotations and mixed directions. Mixed directions matter: separate component checks can miss an error in the way shared intermediate contributions are accumulated.
+
+`experiments/projection-gradients/run.py` carries out the six right-pose directional sweeps with a prescribed signed detector seed and an asymmetric quadratic field. Its `gradients.json` keeps two comparisons: differences of actual CUDA forward outputs, and differences of an independent binary64 implementation of the same fixed-count quadrature over the uploaded coefficients. The former includes rounding each optical depth to binary32, while the latter exposes the derivative of the unrounded discrete formula. Their small-step error floors should differ. Requiring both to reach the lower floor would confuse the stored interface with the arithmetic used to evaluate its derivative.
+
+The GPU regression suite also includes exact small-slope cases beside a large orthogonal field background. These exercise the corner-difference arrangement in the sampler: an ordinary smooth phantom can pass while a representable transverse derivative disappears through cancellation. The acceptance target remains the independent derivative, not whichever answer looks most plausible after plotting it.
+
+## 5.7 Boundaries, conditioning and failure cases
+
+Between its exterior support faces, a trilinear field is continuous but not generally differentiable at its knot planes. The implemented field can additionally jump at a nonzero half-cell boundary. In one dimension, let adjacent slopes on either side of a sample centre be $g_-$ and $g_+$. At the knot,
+
+$$
+\begin{gathered}
+\lim_{h\downarrow0}\frac{f(0+h)-f(0)}{h}=g_+,\\
+\lim_{h\downarrow0}\frac{f(0)-f(0-h)}{h}=g_-.
+\end{gathered}
+$$
+
+<EquationNote term="g_-">
+  Slope approaching the interpolation knot from below.
+</EquationNote>
+
+<EquationNote term="g_+">
+  Slope leaving the knot in the positive direction.
+</EquationNote>
+
+If the two values in [equation (5.20)](#equation-5-20) differ, no ordinary derivative exists there. A symmetric finite difference tends to their average, while an executed interpolation branch may report either one-sided slope. Agreement with that average is therefore not the acceptance criterion for a branch derivative. Move the base point into a regular cell for a smooth test, and test the knot with its stated one-sided behaviour.
+
+A physical tangency can also create a large derivative. For a homogeneous sphere of radius $R$ and a line whose perpendicular distance from the centre is $b<R$, assume the finite source-detector segment contains the whole chord. Then
+
+$$
+\begin{gathered}
+L(b)=2\mu\sqrt{R^2-b^2},\\
+\frac{\mathrm dL}{\mathrm db} =-\frac{2\mu b}{\sqrt{R^2-b^2}}.
+\end{gathered}
+$$
+
+<EquationNote term="R">Radius of the homogeneous sphere, in mm.</EquationNote>
+
+<EquationNote term="b">
+  Perpendicular distance of the ray line from the sphere centre, in mm.
+</EquationNote>
+
+[Equation (5.21)](#equation-5-21) diverges as the line approaches tangency from inside. This is a property of the sharp sphere model. A sampled smooth boundary can regularise it at the cost of changing that model. A large gradient near a boundary and a missing gradient caused by a detached clipping operation require different repairs.
+
+[Figure](#figure-5-4) shows why a small signal can coexist with a steep boundary derivative.
+
+<RecordedFigure
+  id="figure-5-4"
+  title="Sensitivity at the edge of a sphere"
+  description="As a ray approaches tangency to a sharp sphere, its optical depth falls to zero while the magnitude of its positional derivative grows without bound. A weak grazing-ray signal can therefore be extremely sensitive to motion."
+/>
+
+A uniform region may barely change when translated along directions that preserve the traversed material. Symmetry can make several poses indistinguishable. Strong attenuation can suppress count-space sensitivity. The derivative can be correct and small in all these cases. Adding a numerical floor to force a gradient invents a response that the forward model does not have.
+
+Use spatially asymmetric fields, unequal spacings and off-centre rotation pivots to expose coordinate errors. Also include deliberately insensitive cases, where the expected derivative is zero. Tests consisting only of large nonzero gradients will miss accidental offsets and spurious boundary responses.
+
+During debugging, inspect the first layer at which agreement is lost: point motion, interpolated field value, optical depth, detector expectation or scalar objective. A forward finite difference of the final loss combines all of them. Layered analytic cases make the sign or scale error much easier to locate without lowering the final acceptance standard.
+
+## 5.8 Gradient validation as an executable contract
+
+A derivative result is identified by more than its output array. Record the active parameters, their frame and units, the update side and centre, the field extension, interpolation, sampling policy and precision. Those choices define which mathematical function the derivative claims to approximate.
+
+For any consistent JVP and VJP under Euclidean inner products, parameter direction $\boldsymbol\eta$ and detector seed $\overline{\boldsymbol{\lambda}}$ satisfy
+
+$$
+\overline{\boldsymbol{\lambda}}^{\mathsf T}(\mathbf J_{\mathcal F}\boldsymbol\eta) =\boldsymbol\eta^{\mathsf T}(\mathbf J_{\mathcal F}^{\mathsf T}\overline{\boldsymbol{\lambda}}).
+$$
+
+<EquationNote term="\overline{\boldsymbol{\lambda}}">
+  Detector-space seed used in the adjoint consistency test.
+</EquationNote>
+
+[Equation (5.22)](#equation-5-22) checks adjoint consistency without storing the Jacobian. Use several independent, asymmetric directions and seeds. This check catches missing accumulation terms and mismatched interpolation weights, but two mutually consistent implementations of the wrong operator can still pass. The analytic forward and directional checks remain necessary.
+
+If the desired inner products include quadrature or voxel-volume weights, the corresponding adjoint changes. With positive definite weighting matrices $\mathbf M_\theta$ and $\mathbf M_y$,
+
+$$
+\mathbf J_{\mathcal F}^{*} =\mathbf M_\theta^{-1}\mathbf J_{\mathcal F}^{\mathsf T}\mathbf M_y.
+$$
+
+<EquationNote term="\mathbf M_\theta^{-1}">
+  Inverse of the positive definite matrix defining the parameter-space inner
+  product.
+</EquationNote>
+
+<EquationNote term="\mathbf M_y">
+  Positive definite matrix defining the detector-space inner product.
+</EquationNote>
+
+[Equation (5.23)](#equation-5-23) distinguishes that weighted adjoint from the ordinary array transpose computed by a Euclidean VJP. Introduce such weights through the objective and parameter convention deliberately. Multiplying by a voxel volume in one direction only breaks the identity being tested. Record the conventions and evidence in [Table 5.2](#table-5-2) alongside each gradient check.
+
+<div className="prose-table" role="region" aria-label="Gradient validation record" tabIndex={0}>
+
+| Record                | Required content                                                                          |
+| --------------------- | ----------------------------------------------------------------------------------------- |
+| Forward definition    | Field coefficients, grid map, finite rays, interpolation and boundary rule                |
+| Active inputs         | Parameter names, units, shape, pose update side and pivot                                 |
+| Reference             | Independent formula, exact arithmetic case or separately derived directional construction |
+| Perturbations         | Base values, scaled directions and complete step-size sweep                               |
+| Error criteria        | Absolute and relative tolerances, derivative scale and expected convergence regime        |
+| Reverse execution     | Seed values, overwrite or accumulation rules, replay inputs and buffer lifetimes          |
+| Arithmetic and device | Dtypes, compiler options, Warp version and device on which results were obtained          |
+| Boundary cases        | Knots, clipping ties, zero-length intersections, misses and sample-count transitions      |
+| Evidence              | Forward/JVP/VJP discrepancies, adjoint residuals and reproducible configuration           |
+
+</div>
+
+Run fresh-buffer and reused-buffer cases, repeat the backward pass under its documented reset rule, and test shared-input accumulation inside a larger computation. For a CUDA operator, include real device execution, memory checks and both ordinary and exceptional numerical regimes in that record.
+
+Choosing a data term, controlling step size and deciding whether a fitted pose explains the acquisition are the next tasks. [Chapter 6](/chapters/recovering-pose/) uses these derivatives to recover pose.
+
+<Bibliography keys={["gopalakrishnan2023diffdrr"]} />

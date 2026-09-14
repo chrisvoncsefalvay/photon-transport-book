@@ -1,0 +1,168 @@
+{
+  "status": "complete",
+  "case": 2,
+  "protocol_sha256": "d37166ca1889c3c64917e86d957f06e5516cd11373d83cbc71bb88c13ef01020",
+  "source_description": "CT-ORG assigned monochromatic phantom; 10.7937/tcia.2019.tt7f4v7o",
+  "rights": "CC BY 3.0",
+  "source_sha256": {
+    "volume-2.nii.gz": "ca702e58f0fb736ff4bc407aac0c4b698b8689f3f7e0281da32a546a87ae8a40",
+    "labels-2.nii.gz": "c5951c1065f517c9e8e794aec0a921ae0ebaa2198d4b38f0ed492bc7aca74e8f"
+  },
+  "source_affine": [
+    [
+      -0.775390625,
+      0.0,
+      0.0,
+      199.1123046875
+    ],
+    [
+      0.0,
+      0.775390625,
+      0.0,
+      -27.1123046875
+    ],
+    [
+      0.0,
+      0.0,
+      1.0,
+      -1114.0999755859375
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "native_crop_xyz": [
+    [
+      0,
+      512
+    ],
+    [
+      0,
+      512
+    ],
+    [
+      0,
+      320
+    ]
+  ],
+  "source_spacing_mm": [
+    0.775390625,
+    0.775390625,
+    1.0
+  ],
+  "grid": {
+    "shape": [
+      64,
+      128,
+      128
+    ],
+    "spacing_mm": [
+      3.1015625,
+      3.1015625,
+      5.0
+    ],
+    "origin_mm": [
+      -196.94921875,
+      -196.94921875,
+      -157.5
+    ],
+    "orientation": [
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  },
+  "attenuation": {
+    "file": "known-attenuation.npy",
+    "sha256": "473f2076730eb863eac365eb56cd40144c8b8fdbce8f8140179c0a5467d18ab6",
+    "dtype": "float32",
+    "shape": [
+      64,
+      128,
+      128
+    ],
+    "units": "mm^-1",
+    "role": "known CT-derived assigned attenuation; admissible fitting/design input"
+  },
+  "xraylib_version": "4.3.0",
+  "xraylib_package_sha256": "70f4cb986f6ea0fe41bf6af9ae4c2f693c3254dfd0f33cf6f3c59578169fd1ab",
+  "xraylib_loaded_runtime_sha256": {
+    "xraylib.py": "f5b7bb7016e6e2600693da9d30f83e3a501a5963c714bb85466819c76d4270e2",
+    "_xraylib.cpython-312-aarch64-linux-gnu.so": "f012d995a90a54fcfd801509d05f3f492ea329814077c581c255f1d0bda3df92"
+  },
+  "coefficients": [
+    {
+      "compound": {
+        "name": "Water, Liquid",
+        "nElements": 2,
+        "density": 1.0,
+        "Elements": [
+          1,
+          8
+        ],
+        "massFractions": [
+          0.111894,
+          0.888106
+        ]
+      },
+      "mass_attenuation_cm2_g": 0.18365660412653836,
+      "mu_mm_inverse": 0.018365660412653837,
+      "elemental_sum_cm2_g": 0.18365660412653836
+    },
+    {
+      "compound": {
+        "name": "Bone, Cortical (ICRP)",
+        "nElements": 9,
+        "density": 1.85,
+        "Elements": [
+          1,
+          6,
+          7,
+          8,
+          12,
+          15,
+          16,
+          20,
+          30
+        ],
+        "massFractions": [
+          0.047234,
+          0.14433,
+          0.04199,
+          0.446096,
+          0.0022,
+          0.10497,
+          0.00315,
+          0.20993,
+          0.0001
+        ]
+      },
+      "mass_attenuation_cm2_g": 0.2220546170576139,
+      "mu_mm_inverse": 0.04108010415565857,
+      "elemental_sum_cm2_g": 0.2220546170576139
+    }
+  ],
+  "energy_kev": 80,
+  "assignment": "README.md data and physical interpretation",
+  "resampling": "aligned native-cell volume means",
+  "source_bone_voxels": 3535036,
+  "retained_bone_voxels": 3535036,
+  "body_voxels": 42933743,
+  "source_laterality": "header only; not independently certified",
+  "patient_composition_truth": false,
+  "preparation_sha256": "93c59173be9dc2d25d54fb466ce0dba4d91313dc44ccd07e8a64a0692278b89a",
+  "versions": {
+    "numpy": "2.5.3",
+    "nibabel": "5.4.2",
+    "scipy": "1.18.1"
+  }
+}

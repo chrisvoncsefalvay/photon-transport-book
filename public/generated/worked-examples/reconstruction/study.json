@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "passed": true,
+  "title": "From spectral counts to two recovered material fields",
+  "description": "CT-ORG case 2 supplies assigned water/bone anatomy in a declared matched 16\u00b3 trilinear basis. Both independent prescribed noise replicates are retained.",
+  "images": [
+    {
+      "file": "convergence.png",
+      "pdf": "convergence.pdf",
+      "alt": "Both prescribed final reconstructions reduce the fitting objective and reach the unchanged Euclidean stationarity threshold.",
+      "width": 3184,
+      "height": 1084
+    },
+    {
+      "file": "materials-rep0.png",
+      "pdf": "materials-rep0.pdf",
+      "alt": "Fixed physical zero-plane fields for replicate 0: assigned water and bone, uniform start, available update-100 checkpoint, stationary recovery and signed error. Coarse matched-model assigned fractions, not patient composition.",
+      "width": 3185,
+      "height": 1356
+    },
+    {
+      "file": "materials-rep1.png",
+      "pdf": "materials-rep1.pdf",
+      "alt": "Fixed physical zero-plane fields for replicate 1: assigned water and bone, uniform start, available update-100 checkpoint, stationary recovery and signed error. Coarse matched-model assigned fractions, not patient composition.",
+      "width": 3185,
+      "height": 1356
+    }
+  ],
+  "measurements": [
+    {
+      "label": "Replicate 0: accepted updates",
+      "value": "475",
+      "criterion": "Stop by projected-gradient tolerance"
+    },
+    {
+      "label": "Replicate 0: final mapping",
+      "value": "7.1181",
+      "criterion": "\u2264 10"
+    },
+    {
+      "label": "Replicate 0: water / bone RMSE",
+      "value": "0.00801 / 0.00656",
+      "criterion": "Each \u2264 0.05; whole coarse box"
+    },
+    {
+      "label": "Replicate 0: withheld mean error",
+      "value": "0.10126 Poisson SD RMS",
+      "criterion": "\u2264 1 across all 12 withheld views"
+    },
+    {
+      "label": "Replicate 1: accepted updates",
+      "value": "426",
+      "criterion": "Stop by projected-gradient tolerance"
+    },
+    {
+      "label": "Replicate 1: final mapping",
+      "value": "5.2557",
+      "criterion": "\u2264 10"
+    },
+    {
+      "label": "Replicate 1: water / bone RMSE",
+      "value": "0.00828 / 0.00633",
+      "criterion": "Each \u2264 0.05; whole coarse box"
+    },
+    {
+      "label": "Replicate 1: withheld mean error",
+      "value": "0.09422 Poisson SD RMS",
+      "criterion": "\u2264 1 across all 12 withheld views"
+    }
+  ],
+  "reading": "The starting field is uniform water. Only the 48 fitting views enter either solve. Both fields and their stopping diagnostics are fixed before the evaluator opens assigned references and 12 disjoint withheld views. The mapping tests constrained stationarity; material and withheld errors test recovery under the declared matched model. All must pass.",
+  "reproduction": "https://github.com/chrisvoncsefalvay/photon-transport-book/tree/main/experiments/worked-reconstruction"
+}

@@ -1,0 +1,910 @@
+---
+import FigurePlate from "./FigurePlate.astro";
+import RecordedPlot from "./RecordedPlot.astro";
+import { renderToString } from "katex";
+import { scatterPath, scatterState } from "../../lib/exact-illustrations";
+import "../../styles/exact-illustrations.css";
+
+interface Props {
+  kind:
+    "water-slopes" | "water-hvl" | "layers" | "scatter" | "chain" | "mismatch";
+  id: string;
+  title: string;
+  description: string;
+}
+const { kind, id, title, description } = Astro.props;
+const math = (tex: string) =>
+  renderToString(tex, {
+    output: "htmlAndMathml",
+    strict: "error",
+    throwOnError: true,
+  });
+const format = (value: number, digits = 6) =>
+  value.toLocaleString("en-GB", { maximumFractionDigits: digits });
+// These are declared exact examples from the manuscript, evaluated at build
+// time. They are not acquired images or recorded transport executions.
+const muMm = 0.02059;
+const muCm = muMm * 10;
+const hvlCm = Math.log(2) / muCm;
+const thicknessMm = Array.from({ length: 421 }, (_, i) => i / 2);
+const waterTransmission = thicknessMm.map((d) => Math.exp(-muMm * d));
+const tangent = (d: number) => {
+  const transmission = Math.exp(-muMm * d);
+  const xs = [d - 20, d + 20];
+  return {
+    x: xs,
+    y: xs.map((x) => transmission - muMm * transmission * (x - d)),
+  };
+};
+const halfLayers = Array.from({ length: 321 }, (_, i) => i / 40);
+const halfTransmission = halfLayers.map((layers) => 2 ** -layers);
+const water20 = Math.exp(-muCm * 20);
+const layerDistance = Array.from({ length: 251 }, (_, i) => i / 5);
+const layerOrders = [
+  {
+    label: "A then B",
+    first: "A",
+    second: "B",
+    boundary: 40,
+    firstMu: 0.02,
+    secondMu: 0.05,
+  },
+  {
+    label: "B then A",
+    first: "B",
+    second: "A",
+    boundary: 10,
+    firstMu: 0.05,
+    secondMu: 0.02,
+  },
+];
+const layerX = (s: number) => 76 + (s / 50) * 324;
+const layerY = (value: number, top: number, maximum: number) =>
+  top + 80 - (value / maximum) * 80;
+const layerLine = (values: number[], top: number, maximum: number) =>
+  values
+    .map(
+      (value, index) =>
+        `${index ? "L" : "M"}${layerX(layerDistance[index]!).toFixed(3)} ${layerY(value, top, maximum).toFixed(3)}`,
+    )
+    .join(" ");
+const initialScatter = scatterState(1);
+const stages = [
+  {
+    name: "Object",
+    formula: String.raw`\mu(\mathbf x,E)`,
+    unit: String.raw`\mathrm{mm}^{-1}`,
+    statistics: "An attenuation field, before detector noise",
+    change: "Material composition or density",
+  },
+  {
+    name: "Transport",
+    formula: String.raw`L_p(E)\;\longrightarrow\;T_p(E)`,
+    unit: "dimensionless",
+    statistics: "Primary survival probability",
+    change: "Geometry or material paths",
+  },
+  {
+    name: "Detector",
+    formula: String.raw`\bar y_p\;\longrightarrow\;y_p`,
+    unit: "counts or charge",
+    statistics: "Poisson or compound Poisson under the declared event law",
+    change: "Source spectrum, exposure or detector response",
+  },
+  {
+    name: "Processing",
+    formula: String.raw`\mathbf z=\mathcal Q(\mathbf y)`,
+    unit: "depends on the transform",
+    statistics: "Noise is transformed, and filtering can correlate pixels",
+    change: "Offset, gain, logarithm or filters",
+  },
+  {
+    name: "Display",
+    formula: String.raw`\mathbf d=\mathcal V(\mathbf z)`,
+    unit: "display values",
+    statistics: "A display mapping adds no photon observations",
+    change: "Window, polarity or lookup table",
+  },
+];
+const mismatchCases = [
+  { name: "Mixed mismatch", bx: 1, by: 1 },
+  { name: "Parallel mismatch", bx: 1, by: 0 },
+  { name: "Weighted-orthogonal mismatch", bx: 0, by: 1 },
+];
+const mismatchX = (x: number) => 80 + 82 * x;
+const mismatchY = (y: number) => 145 - 65 * y;
+---
+
+<FigurePlate {id} {title} {description}>
+  <div class={`exact-illustrations exact-${kind}`}>
+    {
+      kind === "water-slopes" && (
+        <>
+          <div class="exact-panels exact-chart-readings">
+            <RecordedPlot
+              id={`${id}-curve`}
+              title="Water transmission and thickness tangents"
+              showTitle={false}
+              xLabel="Water path length (mm)"
+              yLabel="Transmission T"
+              xDomain={[0, 210]}
+              yDomain={[0, 1.02]}
+              xTicks={[0, 50, 100, 150, 200]}
+              yTicks={[0, 0.25, 0.5, 0.75, 1]}
+              series={[
+                {
+                  label: "Transmission",
+                  x: thicknessMm,
+                  y: waterTransmission,
+                  tone: "ink",
+                },
+                {
+                  label: "Tangent at 50 mm",
+                  ...tangent(50),
+                  tone: "technical",
+                  dash: true,
+                },
+                {
+                  label: "Tangent at 100 mm",
+                  ...tangent(100),
+                  tone: "accent",
+                  dash: true,
+                },
+                {
+                  label: "Tabulated thicknesses",
+                  x: [0, 50, 100, 200],
+                  y: [0, 50, 100, 200].map((d) => Math.exp(-muMm * d)),
+                  tone: "ink",
+                  mode: "markers",
+                },
+              ]}
+            />
+            <div class="exact-readings">
+              {[50, 100].map((d) => (
+                <section>
+                  <p class="exact-reading-title">At {d} mm</p>
+                  <p class="exact-value">T = {format(Math.exp(-muMm * d))}</p>
+                  <dl class="exact-facts">
+                    <div>
+                      <dt>Expected primary count</dt>
+                      <dd>{format(10000 * Math.exp(-muMm * d), 2)}</dd>
+                    </div>
+                    <div>
+                      <dt>Thickness slope</dt>
+                      <dd>{format(-muMm * Math.exp(-muMm * d), 7)} mm⁻¹</dd>
+                    </div>
+                    <div>
+                      <dt>Count slope</dt>
+                      <dd>
+                        {format(-10000 * muMm * Math.exp(-muMm * d), 2)} photons
+                        per mm
+                      </dd>
+                    </div>
+                  </dl>
+                </section>
+              ))}
+            </div>
+          </div>
+          <p class="exact-equation exact-equation-wrap">
+            <span
+              set:html={math(
+                String.raw`\frac{T(d+1\,\mathrm{mm})}{T(d)}=e^{-0.02059}`,
+              )}
+            />
+            <span
+              set:html={math(String.raw`\approx ${Math.exp(-muMm).toFixed(6)}`)}
+            />
+          </p>
+          <p class="exact-note">
+            Each extra millimetre removes about 2.04% of remaining primary
+            photons. Tangents show the local derivative.
+          </p>
+        </>
+      )
+    }
+
+    {
+      kind === "water-hvl" && (
+        <>
+          <p class="exact-premise">
+            <span>Water at 60 keV, density 1.0 g cm⁻³</span>
+            <span set:html={math(String.raw`\mu=${muCm}\ \mathrm{cm}^{-1}`)} />
+            <span
+              set:html={math(
+                String.raw`d_{1/2}=\frac{\log 2}{\mu}=${hvlCm.toFixed(4)}\ \mathrm{cm}`,
+              )}
+            />
+          </p>
+          <div class="exact-panels">
+            {(["linear", "log"] as const).map((scale) => (
+              <RecordedPlot
+                id={`${id}-${scale}`}
+                title={
+                  scale === "linear"
+                    ? "The same fractional loss looks smaller"
+                    : "Equal thicknesses give equal drops on a log scale"
+                }
+                xLabel="Water thickness (half-value layers)"
+                yLabel="Transmission T"
+                xDomain={[0, 8]}
+                yDomain={scale === "linear" ? [0, 1.02] : [1 / 256, 1]}
+                yScale={scale}
+                xTicks={[0, 1, 2, 3, 4, 5, 6, 7, 8]}
+                yTicks={
+                  scale === "linear" ? [0, 0.25, 0.5, 0.75, 1] : [0.01, 0.1, 1]
+                }
+                series={[
+                  {
+                    label: "Monoenergetic transmission",
+                    x: halfLayers,
+                    y: halfTransmission,
+                    tone: "ink",
+                  },
+                  {
+                    label: "20 cm of water",
+                    x: [20 / hvlCm],
+                    y: [water20],
+                    tone: "accent",
+                    mode: "markers",
+                  },
+                ]}
+              />
+            ))}
+          </div>
+          <div class="exact-summary">
+            <p>
+              <>
+                <span class="exact-summary-label">20 cm of water</span>
+                <strong>{(100 * water20).toFixed(3)}%</strong>
+                <span>of the incident primary photons remain</span>
+              </>
+            </p>
+            <p>
+              <>
+                <span class="exact-summary-label">Equivalent thickness</span>
+                <strong>{(20 / hvlCm).toFixed(3)} HVLs</strong>
+                <span>each tick adds {hvlCm.toFixed(4)} cm of water</span>
+              </>
+            </p>
+          </div>
+          <p class="exact-note">
+            Exact monoenergetic primary transmission through a homogeneous slab.
+            A changing spectrum need not have a constant half-value thickness.
+          </p>
+        </>
+      )
+    }
+
+    {
+      kind === "layers" && (
+        <>
+          <p class="exact-premise">
+            <>
+              <span>A: 40 mm at 0.02 mm⁻¹</span>
+              <span>B: 10 mm at 0.05 mm⁻¹</span>
+            </>
+          </p>
+          <div class="exact-panels">
+            {layerOrders.map((order, index) => {
+              const depth = layerDistance.map(
+                (s) =>
+                  order.firstMu * Math.min(s, order.boundary) +
+                  order.secondMu * Math.max(s - order.boundary, 0),
+              );
+              return (
+                <section class="exact-layer-panel">
+                  <h4>{order.label}</h4>
+                  <svg
+                    class="exact-svg"
+                    viewBox="0 0 420 490"
+                    role="img"
+                    aria-labelledby={`${id}-${index}-title ${id}-${index}-desc`}
+                  >
+                    <title id={`${id}-${index}-title`}>
+                      {order.label}: coefficient, optical depth and transmission
+                    </title>
+                    <desc id={`${id}-${index}-desc`}>
+                      Material {order.first} ends at {order.boundary} mm. The
+                      coefficient jumps there, while accumulated depth and
+                      transmission remain continuous. At 50 mm, optical depth is
+                      1.3 and transmission is 0.272532.
+                    </desc>
+                    <rect
+                      class={`exact-material material-${order.first.toLowerCase()}`}
+                      x="76"
+                      y="20"
+                      width={layerX(order.boundary) - 76}
+                      height="36"
+                    />
+                    <rect
+                      class={`exact-material material-${order.second.toLowerCase()}`}
+                      x={layerX(order.boundary)}
+                      y="20"
+                      width={400 - layerX(order.boundary)}
+                      height="36"
+                    />
+                    <text
+                      class="exact-material-label"
+                      x={(76 + layerX(order.boundary)) / 2}
+                      y="43"
+                      text-anchor="middle"
+                    >
+                      {order.first}
+                    </text>
+                    <text
+                      class="exact-material-label"
+                      x={(400 + layerX(order.boundary)) / 2}
+                      y="43"
+                      text-anchor="middle"
+                    >
+                      {order.second}
+                    </text>
+                    <path
+                      class="exact-boundary"
+                      d={`M${layerX(order.boundary)} 61 V440`}
+                    />
+                    {[
+                      {
+                        top: 110,
+                        max: 0.06,
+                        label: "μ (mm⁻¹)",
+                        ticks: [0, 0.03, 0.06],
+                      },
+                      {
+                        top: 235,
+                        max: 1.3,
+                        label: "Optical depth L",
+                        ticks: [0, 0.65, 1.3],
+                      },
+                      {
+                        top: 360,
+                        max: 1,
+                        label: "Transmission T",
+                        ticks: [0, 0.5, 1],
+                      },
+                    ].map((axis) => (
+                      <g>
+                        {axis.ticks.map((tick) => (
+                          <g>
+                            <path
+                              class="exact-grid"
+                              d={`M76 ${layerY(tick, axis.top, axis.max)} H400`}
+                            />
+                            <text
+                              class="exact-tick"
+                              x="67"
+                              y={layerY(tick, axis.top, axis.max) + 4}
+                              text-anchor="end"
+                            >
+                              {tick}
+                            </text>
+                          </g>
+                        ))}
+                        <path
+                          class="exact-axis"
+                          d={`M76 ${axis.top} V${axis.top + 80} H400`}
+                        />
+                        <text
+                          class="exact-axis-label"
+                          transform={`translate(18 ${axis.top + 40}) rotate(-90)`}
+                          text-anchor="middle"
+                        >
+                          {axis.label}
+                        </text>
+                      </g>
+                    ))}
+                    <path
+                      class={`exact-line ${index ? "exact-accent exact-dashed" : "exact-technical"}`}
+                      d={`M76 ${layerY(order.firstMu, 110, 0.06)} H${layerX(order.boundary)} V${layerY(order.secondMu, 110, 0.06)} H400`}
+                    />
+                    <path
+                      class={`exact-line ${index ? "exact-accent exact-dashed" : "exact-technical"}`}
+                      d={layerLine(depth, 235, 1.3)}
+                    />
+                    <path
+                      class={`exact-line ${index ? "exact-accent exact-dashed" : "exact-technical"}`}
+                      d={layerLine(
+                        depth.map((value) => Math.exp(-value)),
+                        360,
+                        1,
+                      )}
+                    />
+                    {[0, 10, 20, 30, 40, 50].map((s) => (
+                      <text
+                        class="exact-tick"
+                        x={layerX(s)}
+                        y="462"
+                        text-anchor={
+                          s === 0 ? "start" : s === 50 ? "end" : "middle"
+                        }
+                      >
+                        {s}
+                      </text>
+                    ))}
+                    <text
+                      class="exact-axis-label"
+                      x="238"
+                      y="485"
+                      text-anchor="middle"
+                    >
+                      Distance along the path (mm)
+                    </text>
+                  </svg>
+                </section>
+              );
+            })}
+          </div>
+          <p class="exact-equation exact-equation-wrap">
+            <span set:html={math(String.raw`L(50\,\mathrm{mm})`)} />
+            <span set:html={math(String.raw`=0.02\times40+0.05\times10`)} />
+            <span set:html={math(String.raw`=1.3`)} />
+          </p>
+          <p class="exact-note">
+            Both orders finish at{" "}
+            <span set:html={math(String.raw`T=e^{-1.3}\approx0.272532`)} />.
+            Their intermediate transmissions differ because the material
+            encountered first differs.
+          </p>
+        </>
+      )
+    }
+
+    {
+      kind === "scatter" && (
+        <exact-scatter-figure class="exact-scatter-control">
+          <div class="exact-control-row">
+            <label for={`${id}-spr`}>
+              Scatter-to-primary ratio <strong data-spr-readout>1.0</strong>
+            </label>
+            <input
+              id={`${id}-spr`}
+              type="range"
+              min="0"
+              max="6"
+              step="0.1"
+              value="1"
+              disabled
+              data-spr-input
+            />
+            <span class="exact-control-limits">
+              <>
+                <span>0</span>
+                <span>6</span>
+              </>
+            </span>
+          </div>
+          <div class="exact-panels exact-chart-readings">
+            <section>
+              <h4>A uniform scatter floor fills in the feature</h4>
+              <svg
+                class="exact-svg"
+                viewBox="0 0 420 300"
+                role="img"
+                aria-labelledby={`${id}-profile-title ${id}-profile-desc`}
+              >
+                <title id={`${id}-profile-title`}>
+                  Contrast dilution across one detector row
+                </title>
+                <desc id={`${id}-profile-desc`} data-profile-desc>
+                  The primary profile has 20 percent contrast. With
+                  scatter-to-primary ratio 1, the observed contrast is 10
+                  percent. Each profile is divided by its own background signal.
+                </desc>
+                {[0.75, 0.8, 0.9, 1].map((t) => (
+                  <g>
+                    <path
+                      class="exact-grid"
+                      d={`M76 ${244 - ((t - 0.75) / 0.28) * 226} H400`}
+                    />
+                    <text
+                      class="exact-tick"
+                      x="67"
+                      y={248 - ((t - 0.75) / 0.28) * 226}
+                      text-anchor="end"
+                    >
+                      {t}
+                    </text>
+                  </g>
+                ))}
+                <path class="exact-axis" d="M76 18 V244 H400" />
+                {[-3, 0, 3].map((t) => (
+                  <text
+                    class="exact-tick"
+                    x={76 + ((t + 3) / 6) * 324}
+                    y="266"
+                    text-anchor={
+                      t === -3 ? "start" : t === 3 ? "end" : "middle"
+                    }
+                  >
+                    {t}
+                  </text>
+                ))}
+                <text
+                  class="exact-axis-label"
+                  x="238"
+                  y="294"
+                  text-anchor="middle"
+                >
+                  Position across the feature (arbitrary units)
+                </text>
+                <text
+                  class="exact-axis-label"
+                  transform="translate(18 131) rotate(-90)"
+                  text-anchor="middle"
+                >
+                  Signal / background
+                </text>
+                <path
+                  class="exact-line exact-dashed exact-technical"
+                  d={scatterPath(0)}
+                />
+                <path
+                  class="exact-line exact-accent"
+                  d={scatterPath(1)}
+                  data-scatter-profile
+                />
+              </svg>
+              <ul class="exact-key">
+                <>
+                  <li>
+                    <i class="technical dashed" />
+                    Primary alone
+                  </li>
+                  <li>
+                    <i class="accent" />
+                    Primary + scatter
+                  </li>
+                </>
+              </ul>
+              <p class="exact-note">
+                Each curve is normalised by its own background. The primary
+                feature has 20% contrast.
+              </p>
+            </section>
+            <div
+              class="exact-scatter-readings"
+              aria-live="polite"
+              aria-atomic="true"
+            >
+              <p class="exact-reading-title">Observed contrast</p>
+              <p class="exact-value" data-contrast-readout>
+                {initialScatter.contrastPercent.toFixed(2)}%
+              </p>
+              <p
+                class="exact-equation"
+                set:html={math(
+                  String.raw`C_{\mathrm{observed}}=\frac{C_{\mathrm{primary}}}{1+\mathrm{SPR}}`,
+                )}
+              />
+              <dl class="exact-facts">
+                <>
+                  <div>
+                    <>
+                      <dt>Primary background P₀</dt>
+                      <dd>1</dd>
+                    </>
+                  </div>
+                  <div>
+                    <>
+                      <dt>Added scatter S</dt>
+                      <dd data-floor-readout>1.0</dd>
+                    </>
+                  </div>
+                  <div>
+                    <>
+                      <dt>Total background P₀ + S</dt>
+                      <dd data-total-readout>2.0</dd>
+                    </>
+                  </div>
+                </>
+              </dl>
+              <div class="exact-signal-bar" aria-hidden="true">
+                <>
+                  <span
+                    class="primary-part"
+                    data-primary-part
+                    style="flex-grow: 1;"
+                  />
+                  <span
+                    class="scatter-part"
+                    data-scatter-part
+                    style="flex-grow: 1;"
+                  />
+                </>
+              </div>
+              <p class="exact-note">Background: primary signal + scatter.</p>
+              <ul class="exact-key">
+                <>
+                  <li>
+                    <i class="technical" />
+                    Primary
+                  </li>
+                  <li>
+                    <i class="accent" />
+                    Scatter
+                  </li>
+                </>
+              </ul>
+            </div>
+          </div>
+          <noscript>
+            <p class="exact-note">
+              Shown at SPR = 1. The slider becomes available with JavaScript.
+            </p>
+          </noscript>
+          <p class="exact-note">
+            The scatter contribution is constant across the feature. The primary
+            signal stays fixed and the detector response is linear.
+          </p>
+        </exact-scatter-figure>
+      )
+    }
+
+    {
+      kind === "chain" && (
+        <>
+          <ol class="exact-chain">
+            {stages.map((stage, index) => (
+              <li
+                class:list={["exact-stage", { "is-comparison": index === 2 }]}
+              >
+                <p class="exact-stage-heading">
+                  <span>{index + 1}</span>
+                  <strong>{stage.name}</strong>
+                </p>
+                <p class="exact-stage-formula" set:html={math(stage.formula)} />
+                <p class="exact-stage-units">
+                  {index === 0 ? (
+                    <span set:html={math(stage.unit)} />
+                  ) : (
+                    stage.unit
+                  )}
+                </p>
+                <p class="exact-stage-statistics">{stage.statistics}</p>
+                <p class="exact-stage-change">
+                  <span>Can differ at the same pose</span>
+                  {stage.change}
+                </p>
+                {index === 2 && (
+                  <p class="exact-comparison-badge">
+                    Comparison domain in the example below
+                  </p>
+                )}
+              </li>
+            ))}
+          </ol>
+          <div class="exact-comparison">
+            <p>
+              <>
+                <span class="exact-summary-label">Renderer</span>
+                <strong>Expected detector counts</strong>
+                <span set:html={math(String.raw`\widehat{\mathbf y}`)} />
+              </>
+            </p>
+            <svg
+              class="exact-comparison-arrow"
+              viewBox="0 0 40 40"
+              aria-hidden="true"
+            >
+              <path d="M5 20H35m-6-6 6 6-6 6" />
+            </svg>
+            <p class="exact-discrepancy">
+              <>
+                <span>Compare in the same domain</span>
+                <span
+                  set:html={math(
+                    String.raw`D(\widehat{\mathbf y},\mathbf y^{\mathrm{obs}})`,
+                  )}
+                />
+              </>
+            </p>
+            <svg
+              class="exact-comparison-arrow is-reverse"
+              viewBox="0 0 40 40"
+              aria-hidden="true"
+            >
+              <path d="M5 20H35m-6-6 6 6-6 6" />
+            </svg>
+            <p>
+              <>
+                <span class="exact-summary-label">Observation</span>
+                <strong>Observed detector counts</strong>
+                <span set:html={math(String.raw`\mathbf y^{\mathrm{obs}}`)} />
+              </>
+            </p>
+          </div>
+          <p class="exact-note">
+            Counts are compared here. Comparing processed signals requires
+            modelling their processing and transformed noise. Stored pixels and
+            brightness need not represent counts.
+          </p>
+        </>
+      )
+    }
+
+    {
+      kind === "mismatch" && (
+        <>
+          <p class="exact-premise">
+            <span
+              set:html={math(String.raw`\mathbf W=\operatorname{diag}(4,1)`)}
+            />
+            <span set:html={math(String.raw`\mathbf J=(1,0)^{\mathsf T}`)} />
+            <span>
+              Drawn in whitened coordinates for one illustrative pose coordinate
+            </span>
+          </p>
+          <div class="exact-mismatch-cases">
+            {mismatchCases.map((example, index) => {
+              const whitenedX = 2 * example.bx;
+              return (
+                <section>
+                  <h4>{example.name}</h4>
+                  <p
+                    class="exact-case-equation"
+                    set:html={math(
+                      String.raw`\mathbf b=(${example.bx},${example.by})^{\mathsf T}`,
+                    )}
+                  />
+                  <svg
+                    class="exact-svg"
+                    viewBox="0 0 320 260"
+                    role="img"
+                    aria-labelledby={`${id}-case-${index}-title ${id}-case-${index}-desc`}
+                  >
+                    <title id={`${id}-case-${index}-title`}>
+                      {example.name} in whitened residual coordinates
+                    </title>
+                    <desc id={`${id}-case-${index}-desc`}>
+                      The horizontal line is the pose-sensitivity subspace.
+                      Whitened mismatch is ({whitenedX}, {example.by}). Fitting
+                      changes the pose coordinate by {example.bx}, leaving
+                      residual (0, {-example.by}). Squared weighted residual
+                      changes from {whitenedX ** 2 + example.by ** 2} to{" "}
+                      {example.by ** 2}.
+                    </desc>
+                    <defs>
+                      {["ink", "technical", "accent"].map((tone) => (
+                        <marker
+                          id={`${id}-${index}-arrow-${tone}`}
+                          viewBox="0 0 8 8"
+                          refX="7"
+                          refY="4"
+                          markerWidth="7"
+                          markerHeight="7"
+                          markerUnits="userSpaceOnUse"
+                          orient="auto-start-reverse"
+                        >
+                          <path
+                            class={`exact-arrow-${tone}`}
+                            d="M0 0 L8 4 L0 8 Z"
+                          />
+                        </marker>
+                      ))}
+                    </defs>
+                    <path class="exact-subspace" d="M25 145 H298" />
+                    <text class="exact-tick" x="299" y="166" text-anchor="end">
+                      Pose-sensitivity subspace
+                    </text>
+                    {example.bx !== 0 && (
+                      <path
+                        class="exact-line exact-technical exact-fit-component"
+                        d={`M80 145 H${mismatchX(whitenedX)}`}
+                        marker-end={`url(#${id}-${index}-arrow-technical)`}
+                      />
+                    )}
+                    {example.by !== 0 && example.bx !== 0 && (
+                      <path
+                        class="exact-line exact-perpendicular"
+                        d={`M${mismatchX(whitenedX)} 145 V${mismatchY(example.by)}`}
+                      />
+                    )}
+                    <path
+                      class="exact-line exact-ink"
+                      d={`M80 145 L${mismatchX(whitenedX)} ${mismatchY(example.by)}`}
+                      marker-end={`url(#${id}-${index}-arrow-ink)`}
+                    />
+                    <text
+                      class="exact-vector-label"
+                      x={mismatchX(whitenedX) + (example.bx ? 0 : 12)}
+                      y={mismatchY(example.by) - 12}
+                      text-anchor={example.bx ? "middle" : "start"}
+                    >
+                      W
+                      <tspan baseline-shift="super" font-size="9">
+                        1/2
+                      </tspan>
+                      b
+                    </text>
+                    {example.by !== 0 ? (
+                      <>
+                        <path
+                          class="exact-line exact-accent"
+                          d={`M80 145 V${mismatchY(-example.by)}`}
+                          marker-end={`url(#${id}-${index}-arrow-accent)`}
+                        />
+                        <text
+                          class="exact-vector-label exact-residual-label"
+                          x="96"
+                          y={mismatchY(-example.by) + 3}
+                        >
+                          −W
+                          <tspan baseline-shift="super" font-size="9">
+                            1/2
+                          </tspan>
+                          b⊥
+                        </text>
+                      </>
+                    ) : (
+                      <text
+                        class="exact-vector-label exact-residual-label"
+                        x="80"
+                        y="208"
+                      >
+                        Residual = 0
+                      </text>
+                    )}
+                    {example.by !== 0 && example.bx !== 0 && (
+                      <path
+                        class="exact-right-angle"
+                        d={`M${mismatchX(whitenedX) - 10} 145 V135 H${mismatchX(whitenedX)}`}
+                      />
+                    )}
+                    <circle class="exact-origin" cx="80" cy="145" r="3" />
+                    <text class="exact-tick" x="70" y="163" text-anchor="end">
+                      0
+                    </text>
+                  </svg>
+                  <dl class="exact-facts">
+                    <div>
+                      <dt>Fitted pose change δξ</dt>
+                      <dd>{example.bx}</dd>
+                    </div>
+                    <div>
+                      <dt>Squared weighted residual</dt>
+                      <dd>
+                        {whitenedX ** 2 + example.by ** 2} → {example.by ** 2}
+                      </dd>
+                    </div>
+                  </dl>
+                </section>
+              );
+            })}
+          </div>
+          <ul class="exact-key">
+            <>
+              <li>
+                <i />
+                Mismatch
+              </li>
+              <li>
+                <i class="technical" />
+                Fitted parallel component
+              </li>
+              <li>
+                <i class="accent" />
+                Residual after fitting
+              </li>
+            </>
+          </ul>
+          <p
+            class="exact-equation"
+            set:html={math(
+              String.raw`\mathbf r_{\mathrm{fit}}=\mathbf J\,\delta\xi-\mathbf b=-\mathbf b_\perp`,
+            )}
+          />
+          <p class="exact-note">
+            Exact constructed example, with true pose at zero. Parallel mismatch
+            admits a perfect fit at the wrong pose. Weighted-orthogonal mismatch
+            remains in the residual.
+          </p>
+        </>
+      )
+    }
+  </div>
+</FigurePlate>
+
+<script>
+  import { registerExactScatterFigure } from "../../lib/exact-illustrations";
+  registerExactScatterFigure();
+</script>

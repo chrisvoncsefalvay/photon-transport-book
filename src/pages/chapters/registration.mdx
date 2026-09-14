@@ -1,0 +1,264 @@
+---
+layout: ../../layouts/ChapterLayout.astro
+title: Registering a CT volume to calibrated radiographs
+status: Draft
+scope: A known CT volume and calibrated X-rays give us a concrete registration problem. We put pose recovery to work across views and assess the recovered geometry independently of the image fit.
+chapterNumber: "11"
+---
+
+import Citation from "../../components/citations/Citation.astro";
+import Bibliography from "../../components/citations/Bibliography.astro";
+import Source from "../../components/source/Source.astro";
+import RegistrationResults from "../../components/figures/RegistrationResults.astro";
+import ApplicationFigures from "../../components/figures/ApplicationFigures.astro";
+import WorkedExample from "../../components/figures/WorkedExample.astro";
+
+The CT tells us where a structure was when the volume was acquired. The radiograph tells us where its projected attenuation appears now. Registration estimates the rigid transform connecting those two descriptions. Once that transform is known, a point selected in the volume can be located in the imaging system and projected into each calibrated view. A convincing overlay is useful, but it will have to earn its keep as evidence of geometric recovery.
+
+[Chapter 6](/chapters/recovering-pose/) established the pose chart, image derivatives and optimiser. Here we assemble an application around them: supplied data with documented units, several views that must agree on one pose, and evaluation information withheld from the fit. The executable example is `python/dpt/examples/registration.py`. It fits calibrated primary photon counts with a fixed volume and fixed acquisition geometry. More general image comparisons and mismatch models have a place in the study, but require the corresponding measurement operators.
+
+Our worked example starts with the supplied CT-ORG case 2 volume and generates two calibrated, orthogonal radiographs. From the identity transform, it recovers the shared pose in 16 accepted updates and reduces RMS target error from 3.77 mm to 0.010 mm. It also reaches the numerical stopping tolerance and predicts two reserved views accurately. The [complete recipe](https://github.com/chrisvoncsefalvay/photon-transport-book/tree/main/experiments/worked-applications) includes the prepared input, its provenance and one driver connecting generation, fitting and independent evaluation. The anatomy comes from acquired CT; its 80 keV attenuation assignment and the photon-count radiographs are simulated.
+
+## 11.1 Define the registration case
+
+The case begins with an attenuation field $\mu_O(\mathbf{x})$, expressed in object coordinates, and a set of radiographs acquired with known source and detector geometry in a shared world frame. Let $\mathbf{T}_{WO}$ map object points into world coordinates. For a physical target point $\mathbf{x}_O$ and calibrated projection map $\pi_v$ of view $v$,
+
+$$
+\mathbf{x}_W=\mathbf{T}_{WO}\mathbf{x}_O,
+\qquad
+\mathbf{u}_v=\pi_v(\mathbf{x}_W).
+$$
+
+Homogeneous coordinates are implicit in the transform product. This convention fixes what the reported transform means: its translation is expressed in world millimetres, and its rotation acts on object-frame column vectors. A camera-pose estimate from another package may encode the inverse map. Compare the action on physical points before comparing twelve numbers printed by two libraries.
+
+The volume array has shape $(n_z,n_y,n_x)$, with x varying fastest. `GridSpec` supplies spacing in $(x,y,z)$ order, the first sample-centre position, and a right-handed orientation matrix. Attenuation is in inverse millimetres. CT numbers are not that attenuation field without a declared conversion, and a polychromatic CT reconstruction does not automatically provide a monochromatic material map. Preserve the conversion recipe and its calibration source alongside the original volume. [Chapter 4](/chapters/volumes-line-integrals/) describes the interpolation and finite-support assumptions that the projector will actually use.
+
+Each detector specifies shape $(H,W)$, its first pixel centre, column and row basis vectors, and their physical pitches. Distortion correction, cropping or resampling changes how image indices map to rays. The geometry must describe the array passed to the objective, including any updated origin and spacing. Image orientation guesses are expensive when the optimiser takes them seriously.
+
+A registration case also needs a physical claim about rigidity. A single bone can often be treated as one rigid object for a specified acquisition interval, but neighbouring anatomy may violate that assumption. Removing a neighbouring structure from the volume does not remove its attenuation from the radiograph. Define the region whose agreement will be tested and explain how unmodelled material along those same rays is handled. [Figure](#figure-11-1) shows the coordinate frames and the shared unknown pose.
+
+<ApplicationFigures id="figure-11-1" />
+
+## 11.2 Compare compatible image quantities
+
+The example assumes independent photon counts with a spatially uniform, calibrated open-beam expectation $N_{0v}>0$ in each view. The primary prediction is
+
+$$
+\lambda_{vp}(\mathbf{T})
+=
+N_{0v}\exp[-L_{vp}(\mathbf{T})],
+\qquad
+L_{vp}(\mathbf{T})
+=
+\int_{r_{vp}}\mu_O(\mathbf{T}^{-1}\mathbf{x})\,ds.
+$$
+
+The integration follows the finite source-to-pixel segment $r_{vp}$ in world coordinates. Rigid motion preserves length, so the object-frame integrator retains millimetres along that segment. Exposure belongs to the view, while the attenuation volume and the object pose are shared.
+
+For observed counts $N_{vp}$ and a fixed binary inclusion mask $m_{vp}$, the implemented objective is a sum of Poisson half-deviances:
+
+$$
+\begin{aligned}
+\mathcal{D}(\mathbf{T})
+&=\sum_v\sum_p m_{vp}\,d(\lambda_{vp}(\mathbf{T}),N_{vp}),\\
+d(\lambda,N)
+&=\lambda-N+N\log\!\left(\frac{N}{\lambda}\right).
+\end{aligned}
+$$
+
+For $N=0$, the limiting expression is $d(\lambda,0)=\lambda$. For positive $N$, a zero predicted mean is invalid. The half-deviance differs from the negative log-likelihood by an observation-only constant, so both give the same pose gradient. With positive predicted means, differentiation in any smooth pose coordinate $q_k$ gives
+
+$$
+\frac{\partial\mathcal{D}}{\partial q_k}
+=
+\sum_{v,p}m_{vp}
+\left(1-\frac{N_{vp}}{\lambda_{vp}}\right)
+\frac{\partial\lambda_{vp}}{\partial q_k}.
+$$
+
+The FP64 primary composition forms the weighted depth cotangent $m_{vp}(N_{vp}-\lambda_{vp})$ directly; the projection VJP then pulls it back to pose. The example uses `reduction="sum"`, preserving the likelihood contribution of every included observation. Dividing each view by its own pixel count would define a different relative weighting. If exposures differ, their count statistics already enter through $\lambda_{vp}$. Assigning each image the same arbitrary scale would erase part of that model.
+
+A binary mask excludes specified pixels from the sum. Fix it before the solve and retain it with the input record. Excluding bad detector elements is defensible when their identity is independently known. Excluding whatever disagrees with the current pose changes the objective and can conceal the anatomy that would disprove the fit. Saturation also needs a declared treatment: the stored ceiling is not an ordinary unsaturated Poisson count. The example accepts finite integer-valued FP32 observations through $2^{24}$. Every excluded pixel must contain zero in the supplied preprocessed observation, so an underflowed prediction there cannot invalidate the count calculation before the mask is applied. Those zeros are excluded placeholders. Preserve the raw source and record the preprocessing recipe with the supplied array's provenance.
+
+Most energy-integrating or processed fluoroscopy images need a different comparison. Dark subtraction and flat-field division generally destroy the raw-integer-count interpretation. A log-transmission objective must use $\log T=-L$ consistently, while conventional positive log projections use the opposite sign. Where a display pipeline cannot be inverted, correlation or gradient-based similarity can still define a registration criterion, without acquiring a measurement likelihood by wishful notation. Otake and colleagues used normalised gradient information with multistart optimisation to address deformation and content mismatch in spine registration. <Citation keys={["otake2013"]} /> [Figure](#figure-11-2) follows the two supplied count images from the initial pose to the recovered one. Its logarithmic window makes the attenuated anatomy visible; the optimiser still compares counts through the half-deviance above. The gradient history and independent target errors show why the fitted images deserve more confidence than an overlay alone.
+
+<WorkedExample id="figure-11-2" example="registration" />
+
+## 11.3 Initialise within a defensible search region
+
+An initial pose can come from tracked geometry, independently acquired landmarks, or an explicitly trained proposal method. Record what information produced it. A pose obtained by perturbing the reference transform is a controlled capture-range experiment, and it is not an initialisation procedure available on a new acquisition without that reference.
+
+The example anchors one `PoseChart` at the supplied initial transform $\mathbf{T}_0$. Its dimensionless coordinates $\mathbf{q}\in\mathbb{R}^6$ define
+
+$$
+\mathbf{T}(\mathbf{q})
+=
+\mathbf{T}_0\exp\!\left(\widehat{\mathbf{S}\mathbf{q}}\right),
+\qquad
+\mathbf{S}=\operatorname{diag}(s_x,s_y,s_z,s_{\omega x},s_{\omega y},s_{\omega z}).
+$$
+
+The first three scales have units of millimetres and the last three radians. The hat maps the scaled six-vector into $\mathfrak{se}(3)$. A rotation scale should reflect the lever arm of the anatomy being fitted: for a point at distance $r$ from the object origin, a small angle $\delta\theta$ produces displacement of order $r\delta\theta$. This relationship gives translation and rotation steps comparable physical meaning without pretending that millimetres and radians are interchangeable.
+
+The anchor and scales remain fixed during a solve. Away from the anchor, the projector's derivative for a fresh local right increment must be pulled back through the right Jacobian of the exponential before it becomes a derivative in $\mathbf{q}$. `PoseChart.gradient()` performs that calculation. Simply rescaling six local derivatives is insufficient at a general trial pose. The declared rotation radius also bounds the chart, and crossing it requires a new solve with cleared optimiser history.
+
+The driver starts at $\mathbf{q}=\mathbf{0}$ and performs one local solve. For multistart registration, give each starting pose its own chart and reuse the same fixed observations. Choose the result without consulting the evaluation reference. Charge every proposal its full evaluation cost. Coarse-to-fine registration similarly needs a documented physical image pyramid, with geometry and comparison updated at every level. Blurring counts and retaining the independent Poisson interpretation is generally inconsistent.
+
+DiffPose provides a concrete alternative initialisation strategy: a patient-specific network learns pose from rendered projections of the known CT, then differentiable image optimisation refines its prediction. <Citation keys={["gopalakrishnan2024diffpose"]} /> Its relevance here is the separation between a proposal mechanism and local refinement. Adopting that approach would require its own training record and evaluation of acquisition mismatch, as well as the local solver's tests.
+
+## 11.4 Add views to constrain the same pose
+
+With simultaneous views, or sequential acquisitions during which the object remains still, every view evaluates the same $\mathbf{T}(\mathbf{q})$. Each source and detector can occupy a different position in the common world frame. One view's almost invisible depth motion may then become a conspicuous lateral motion in another. That benefit depends on the object and field of view as well as angular separation.
+
+The implementation gives each view its own prepared evaluator, all holding the _same_ `PoseChart` object. Each evaluator returns six derivatives already expressed in that chart. The host sums those small results:
+
+<Source
+  file="python/dpt/examples/registration.py"
+  region="example-registration-shared-objective"
+  caption="Combining view losses and pose gradients"
+/>
+
+Averaging transforms fitted independently to each view does not minimise this joint objective. Gradients must also use the same frame and scales before they can be added. Requiring one chart object keeps the anchor and scales identical in every view.
+
+A local information calculation explains the geometric benefit. Write $\mathbf{j}_{vp}=\nabla_{\mathbf{q}}\lambda_{vp}$ at a declared pose. Under the positive-mean independent Poisson model, the expected information is
+
+$$
+\mathbf{F}(\mathbf{q})
+=
+\sum_{v,p}\frac{m_{vp}}{\lambda_{vp}}
+\mathbf{j}_{vp}\mathbf{j}_{vp}^{\mathsf T}
+=
+\sum_v\mathbf{F}_v(\mathbf{q}).
+$$
+
+For any direction $\mathbf{a}$, its quadratic form is a sum of nonnegative squared directional sensitivities. Adding an independent view cannot reduce this information matrix in positive-semidefinite order under the stated fixed model. It can still leave a common null direction unresolved. Nearly repeated views may improve precision where information already exists while contributing little to the weakest direction.
+
+Local curvature says nothing about a distant pose producing another plausible projection. A repeated anatomical pattern can admit competing solutions even where the neighbourhood of each solution is well conditioned. Likewise, if the object moves between exposures, one shared pose no longer describes the acquisition. Fit time-specific poses or account for motion before interpreting a sharper local minimum as stronger evidence. The worked case uses two full orthogonal views so that the reader can first complete this shared-pose recovery. The restricted-view example at the end of the chapter then shows what happens when that information is removed.
+
+## 11.5 Account for imperfect agreement
+
+A primary renderer fitted to measured data will often leave structured residuals. Miscalibrated geometry can shift edges across the image. Scatter can add a smooth component. Anatomical change can create a disagreement confined to one region but impossible for a single rigid transform to repair. Inspecting residuals by view and location helps distinguish these explanations, while the total objective hides that structure.
+
+Allowing a nuisance parameter $\boldsymbol{\eta}$ changes what the images can determine about pose. Take a positive-semidefinite joint information matrix for $(\mathbf{q},\boldsymbol{\eta})$, including any justified prior, and assume its nuisance block is positive definite. Eliminating those locally identifiable nuisance directions gives
+
+$$
+\mathbf{H}_{\mathrm{pose,eff}}
+=
+\mathbf{H}_{qq}
+-
+\mathbf{H}_{q\eta}\mathbf{H}_{\eta\eta}^{-1}\mathbf{H}_{\eta q}.
+$$
+
+The inverse requires a nonsingular nuisance block, possibly after a justified prior has been included. Directions that can be explained by either pose or nuisance variation lose pose information. For example, unconstrained source motion can imitate changes in the object's position relative to that source. A numerical optimiser cannot distinguish parameter names that produce the same measurements.
+
+The supplied-count driver therefore keeps geometry and open-beam counts fixed. It does not estimate scatter, detector offsets or spectral parameters. Where calibrated spectral data and a material representation are available, `SpectralPoseEvaluator` provides the canonical multiview and shared-nuisance composition discussed in [§7.6](/chapters/same-pose-different-x-ray/#76-jointly-estimate-pose-and-nuisance-parameters). Its identified gain/exposure convention still matters: two unrestricted multiplicative scales cannot be recovered separately from their product.
+
+A mismatch study should begin with a separately checked matched-model reference, then change one declared factor at a time. Keep the supplied anatomy and image evidence traceable through every variant. For real acquisitions, residual patterns can motivate a model revision, but cannot by themselves establish which physical mechanism caused the error. A rigid optimiser cannot repair an incorrect anatomical model by becoming more enthusiastic.
+
+## 11.6 Assemble the complete application
+
+The supplied-input JSON case declares its input arrays by name, with file paths, SHA-256 digests, source descriptions, redistribution rights and units. The application section supplies the grid and chart, a positive ray-sample count, the recovery policy and calibrated views. The accompanying `python/dpt/examples/README.md` describes the complete input contract and the command for running the example. The worked recipe supplies a prepared, attributed input and writes new observations and execution records to a separate output directory. Its orchestration driver generates those observations before calling the supplied-count fitter; the fitter itself receives only the declared arrays and calibration.
+
+Preparation validates the supplied arrays and uploads the attenuation field once. Each view retains its own observations and binary mask, while sharing that attenuation allocation and a CUDA stream. The source below connects those persistent inputs to the existing projection, transmission and objective operators:
+
+<Source
+  file="python/dpt/examples/registration.py"
+  region="example-registration-prepare-view"
+  caption="Preparing a calibrated, masked count view"
+/>
+
+Image-sized intermediate arrays remain on the device throughout optimisation. The host exchanges rigid-transform values, a scalar objective and six derivatives with the device, together with numerical-status checks. Summing those derivatives on the host does not require copying the detector images. The example evaluates views sequentially on its shared stream.
+
+The optimiser needs one callback and one initial six-vector. Its policy records evaluation and iteration budgets separately, together with stopping tolerances. The returned state is the last accepted state:
+
+<Source
+  file="python/dpt/examples/registration.py"
+  region="example-registration-solve"
+  caption="Fitting and recording the shared pose"
+/>
+
+A gradient-tolerance stop records numerical stationarity in this chart. A small step or loss change records stagnation. Neither establishes geometric success. Preserve line-search failures and exhausted budgets in the study record rather than excluding inconvenient runs after looking at their images.
+
+One final evaluation per view is deliberately outside the solver budget. Reused prediction scratch may contain a rejected trial, so the example recomputes every view at the accepted pose before exporting its count prediction. Those export evaluations are counted separately in `fit-report.json`. Multiplying solver calls by the number of views gives a reported upper bound on view evaluations: a rejected numerical trial can stop before all views are evaluated. The report also retains each view's half-deviance and included-pixel count.
+
+Near the solution, rounding intermediate counts can obscure the small loss decrease predicted by the gradient. The worked configuration therefore retains optical depth, predicted counts and their cotangents in FP64. Fixed midpoint samples cause a separate problem: when one crosses an interpolation plane, the sampled derivative can jump. With `integration="cell_gauss"`, the ray is split at those planes and two Gauss nodes integrate each cubic segment exactly up to floating-point arithmetic. This preserves the trilinear field introduced in Chapter 4 while removing that sampling artefact.
+
+The VJP includes the moving endpoint terms at the field's external support. Support-topology changes and rays lying on interpolation planes still require care: the implemented branch derivative does not establish a unique derivative there. Observation generation uses a separately checked path with 4,096 midpoint samples per ray. Both projection calculations are checked before any Poisson observations are drawn.
+
+The gradient threshold remains 0.001 in the declared dimensionless chart. Early exits for small steps or small relative loss changes are disabled for this worked example, so neither can be mistaken for convergence. This matters near the solution: a substantial noise residual can remain, making the relative loss change tiny while the pose still has a useful descent direction.
+
+A profile of two warmed two-view gradient evaluations on the GB10 records 28 kernel launches, 384 bytes sent to the device and 256 bytes returned, with no CUDA allocation inside the measured range. The persistent buffer addresses also remain unchanged. Those observations support the intended division of work: image calculations stay on the GPU while the host handles the small pose and optimisation state. Setup and final image export are outside that range.
+
+## 11.7 Evaluate geometric recovery independently
+
+Suppose an independently established reference transform is $\mathbf{T}_\star=(\mathbf{R}_\star,\mathbf{t}_\star)$ and the estimate is $\widehat{\mathbf{T}}=(\widehat{\mathbf{R}},\widehat{\mathbf{t}})$. Separate translation and rotation errors:
+
+$$
+e_t=\|\widehat{\mathbf{t}}-\mathbf{t}_\star\|_2,
+\qquad
+e_R=\cos^{-1}\!\left(
+\frac{\operatorname{tr}(\mathbf{R}_\star^{\mathsf T}\widehat{\mathbf{R}})-1}{2}
+\right).
+$$
+
+The rotation formula is the geodesic angle in $[0,\pi]$, and numerical evaluation needs a stable implementation near zero and a half turn. The canonical metric uses an `atan2` construction. Translation error measures displacement of the selected object origin, so retain that origin in the report. Moving it changes the interpretation when rotational error is present.
+
+Translation and rotation errors describe the transform, but the practical question is how far its errors displace a point in the anatomy. Rotation makes that displacement depend on the point's location, so we combine both errors at independently selected object-frame target locations $\mathbf{x}_i$:
+
+$$
+\operatorname{TRE}_{\mathrm{RMS}}
+=
+\sqrt{\frac{1}{K}\sum_{i=1}^{K}
+\left\|
+\widehat{\mathbf{T}}\mathbf{x}_i-\mathbf{T}_\star\mathbf{x}_i
+\right\|_2^2}.
+$$
+
+This is a three-dimensional target registration error in millimetres. A projected target error in detector pixels answers a different question: a large depth error can produce little displacement in one projection. Report the RMS target error and the worst target error, with the target distribution and reference uncertainty. A reference produced by registering the same radiograph with a related objective may be useful for comparison, but its errors are not independent merely because its output file has a different name.
+
+The example reads optional evaluation landmarks and the reference pose only after fixing the accepted result. They cannot affect its initialisation, line search or stopping rule. Source and uncertainty descriptions are mandatory when a reference is supplied. Without one, the report states that geometric evaluation is unavailable, and it does not replace the missing reference with the fitted transform.
+
+<Source
+  file="python/dpt/examples/registration.py"
+  region="example-registration-export"
+  caption="Exporting predictions and evaluating the recovered geometry"
+/>
+
+A capture-range study varies initial error under a predeclared sampling protocol and records both successes and failures. Specify success thresholds before examining the evaluation cases. Use case-level summaries when several perturbations belong to the same acquisition, because hundreds of restarts on one image do not supply hundreds of independent patients. The present eight object-frame probes are the corners of the cube with coordinates ±40 mm. Their locations are fixed before fitting; the known generating transform provides their simulation reference.
+
+## 11.8 Complete the worked example
+
+Begin with the maintained CUDA environment and the prepared input in `public/generated/worked-examples/inputs/registration/`. Its `known.json` records the acquired source, crop, voxel spacing and attenuation assignment; the driver checks the volume hash before using it. Follow the linked recipe with a new output directory. The driver qualifies every required view against an independent CPU integral, then draws the two 128 × 128 count images at an open-beam expectation of 10,000 photons per pixel per view.
+
+The unknown is one six-parameter rigid pose. Calibration and the attenuation field remain fixed, and the initial transform is the identity. The following call passes the generated observations to the canonical fitter without supplying their generating transform:
+
+<Source
+  file="experiments/worked-applications/run.py"
+  region="worked-registration"
+  caption="Running the supplied-count registration from the declared initial pose"
+/>
+
+Read `fits/registration/optimisation.json` next. In the recorded execution, the half-deviance falls from 364,067.02 to 16,359.81. After 16 accepted updates, the largest absolute scaled gradient is 0.000119, below the fixed 0.001 threshold. A nonzero deviance is expected: the observations contain Poisson noise, and one rigid transform cannot reproduce every random pixel fluctuation. Driving that residual to zero would be a rather suspicious achievement.
+
+Only after fixing the result does the evaluator use the generating transform to measure the eight probe errors. RMS error falls from 3.7686 mm to 0.009976 mm, and the worst probe error is 0.01220 mm. The 45° and 135° views were absent from fitting. Their predicted means differ from the generating means by 0.00448 and 0.00412 Poisson standard deviations RMS, respectively. These checks establish successful recovery for this controlled case. They do not turn assigned CT attenuation into patient composition measurements or certify a clinical imaging system.
+
+The same command continues into the view-selection exercise in [Chapter 13](/chapters/acquisition-design/). Its `summary.json` passes only if every prescribed solve converges, meets the geometric criteria and predicts the reserved views accurately, and the acquisition comparison passes its declared criterion. The complete record retains source and input hashes, accepted states, rejected trials and independently evaluated outcomes.
+
+<details>
+<summary>Why the earlier registration runs stopped, and what the restricted-view case teaches</summary>
+
+The earlier study is retained below because it exposes two different problems. Its full-view fits recovered the controlled geometry, but all 40 fits failed the numerical stationarity test. Replaying a prescribed full-view case isolated rounding of depth and count cotangents in FP32. Retaining FP64 intermediates repaired the inconsistency between the objective and its derivative, but fixed midpoint quadrature still introduced a gradient jump when one sample crossed an interpolation plane. Cell-wise integration removes that sampling artefact. With the original 0.001 gradient threshold and the explicitly revised stopping policy, the same historical case reaches a gradient of 0.0000495. The original stopped record remains unchanged.
+
+[Figure](#figure-11-3) shows the deliberately restricted case. It combines one view, reduced detector support and fewer photons, so it cannot establish the separate effect of any one restriction. Its failed recovery leaves numerical completion and available image information as separate questions; the stopped fit alone cannot establish that the pose is unrecoverable. Restore the qualified full views to reproduce the successful example above before experimenting with these restrictions.
+
+<RegistrationResults id="figure-11-3" kind="stress" />
+
+[Figure](#figure-11-4) retains all 40 historical outcomes, including the eight restricted cases that fail the geometric criterion. These are the original stopped fits, not additional converged runs of the revised example.
+
+<RegistrationResults id="figure-11-4" kind="capture" />
+
+</details>
+
+The known volume has constrained every pose trial in this chapter. [Chapter 12](/chapters/reconstruction/) removes that advantage: geometry is fixed, and the unknowns become the attenuation values themselves. The renderer stays recognisable. The space of plausible explanations becomes much larger.
+
+<Bibliography keys={["otake2013", "gopalakrishnan2024diffpose"]} />

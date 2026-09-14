@@ -1,0 +1,32 @@
+---
+import Bibliography from "../components/citations/Bibliography.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="References — Differentiable Photon Transport"
+  description="Canonical references used by the book."
+>
+  <section class="reference-index">
+    <p class="eyebrow">Bibliography</p>
+    <h1>References</h1>
+    <Bibliography />
+  </section>
+</BaseLayout>
+
+<style>
+  .reference-index {
+    margin-inline: auto;
+    max-width: var(--measure-prose);
+    min-height: 55vh;
+    padding: var(--space-9) var(--page-gutter);
+  }
+
+  h1 {
+    margin-block: var(--space-3) var(--space-5);
+  }
+
+  [data-citation-key] {
+    color: var(--ink-muted);
+  }
+</style>

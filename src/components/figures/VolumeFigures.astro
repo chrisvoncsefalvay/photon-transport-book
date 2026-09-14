@@ -1,0 +1,1183 @@
+---
+import { renderToString } from "katex";
+import lattice from "../../../public/generated/figure-rollouts/figure-4-1.json";
+import support from "../../../public/generated/figure-rollouts/figure-4-2.json";
+import clipping from "../../../public/generated/figure-rollouts/figure-4-3.json";
+import midpoint from "../../../public/generated/figure-rollouts/figure-4-4.json";
+import RecordedPlot from "./RecordedPlot.astro";
+
+interface Props {
+  id: string;
+}
+
+const { id } = Astro.props;
+const math = (tex: string) =>
+  renderToString(tex, {
+    throwOnError: true,
+    strict: "error",
+    output: "htmlAndMathml",
+  });
+const tidy = (value: number) =>
+  Number(value.toPrecision(12)).toString().replaceAll("-", "−");
+const tuple = (values: number[]) => `(${values.map(tidy).join(", ")})`;
+
+// An axonometric drawing in physical millimetres. The unequal step lengths
+// come from the recorded spacing; only the screen projection is authored.
+const project = (u: number[]) => {
+  const [i = 0, j = 0, k = 0] = u;
+  const [sx = 0, sy = 0, sz = 0] = lattice.grid.spacing_mm;
+  return {
+    x: 196 + 52 * sx * i - 36 * sy * j,
+    y: 286 + 14 * sx * i + 23 * sy * j - 47 * sz * k,
+  };
+};
+const latticeLine = (a: number[], b: number[]) => {
+  const p = project(a);
+  const q = project(b);
+  return `M${p.x},${p.y} L${q.x},${q.y}`;
+};
+const latticeNodes = Array.from({ length: 36 }, (_, index) => [
+  index % 3,
+  Math.floor(index / 3) % 4,
+  Math.floor(index / 12),
+]);
+const latticeLines: string[] = [];
+for (let j = 0; j < 4; j++)
+  for (let k = 0; k < 3; k++)
+    latticeLines.push(latticeLine([0, j, k], [2, j, k]));
+for (let i = 0; i < 3; i++)
+  for (let k = 0; k < 3; k++)
+    latticeLines.push(latticeLine([i, 0, k], [i, 3, k]));
+for (let i = 0; i < 3; i++)
+  for (let j = 0; j < 4; j++)
+    latticeLines.push(latticeLine([i, j, 0], [i, j, 2]));
+const boxLimits = [
+  [-0.5, 2.5],
+  [-0.5, 3.5],
+  [-0.5, 2.5],
+];
+const latticeBox: string[] = [];
+for (let axis = 0; axis < 3; axis++) {
+  const other = [0, 1, 2].filter((value) => value !== axis);
+  for (const a of [0, 1])
+    for (const b of [0, 1]) {
+      const first = [0, 0, 0];
+      const second = [0, 0, 0];
+      for (const point of [first, second]) {
+        point[other[0]!] = boxLimits[other[0]!]![a]!;
+        point[other[1]!] = boxLimits[other[1]!]![b]!;
+      }
+      first[axis] = boxLimits[axis]![0]!;
+      second[axis] = boxLimits[axis]![1]!;
+      latticeBox.push(latticeLine(first, second));
+    }
+}
+const origin = project([0, 0, 0]);
+
+const supportX = support.rows.map((row) => row.grid_coordinate);
+const clipCases = [
+  {
+    key: "crossing" as const,
+    title: "Crossing",
+    result: "2 mm inside the box",
+  },
+  {
+    key: "parallel_miss" as const,
+    title: "Parallel miss",
+    result: "No accepted interval",
+  },
+  {
+    key: "tangent" as const,
+    title: "Tangency",
+    result: "Contact at λ = ½, zero length",
+  },
+];
+const clipX = (value: number) => 45 + (value + 1.5) * 50;
+const clipY = (value: number) => 192 - (value + 0.5) * 45;
+const intervalX = (value: number) => 90 + (value + 0.5) * 170;
+const [lowerX = 0, lowerY = 0] = clipping.parameters.lower_mm;
+const [upperX = 0, upperY = 0] = clipping.parameters.upper_mm;
+
+// Display only the prescribed polynomial in the archived payload. The
+// convergence series below uses recorded results, not a new quadrature run.
+const quadratic = (s: number) =>
+  midpoint.parameters.intercept_mm_inverse +
+  midpoint.parameters.linear_mm_inverse_squared * s +
+  midpoint.parameters.curvature_mm_inverse_cubed * s * s;
+const quadX = (s: number) => 65 + (373 * s) / midpoint.parameters.length_mm;
+const quadY = (mu: number) => 250 - (212 * mu) / 0.022;
+const quadCurve = Array.from({ length: 201 }, (_, index) => {
+  const s = (index * midpoint.parameters.length_mm) / 200;
+  return `${index ? "L" : "M"}${quadX(s)},${quadY(quadratic(s))}`;
+}).join(" ");
+const intervals = 10;
+const quadWidth = midpoint.parameters.length_mm / intervals;
+const shownMidpoints = Array.from({ length: intervals }, (_, index) => ({
+  start: index * quadWidth,
+  centre: (index + 0.5) * quadWidth,
+  value: quadratic((index + 0.5) * quadWidth),
+}));
+const midpointTen = midpoint.rows.find((row) => row.samples === intervals)!;
+---
+
+<div class="volume-figures" data-volume-figure={id}>
+  {
+    id === "figure-4-1" && (
+      <div class="lattice-layout">
+        <div class="lattice-drawing">
+          <h3>Physical lattice</h3>
+          <svg
+            class="lattice-svg"
+            viewBox="0 0 390 448"
+            role="img"
+            aria-labelledby={`${id}-title ${id}-description`}
+          >
+            <title id={`${id}-title`}>
+              Unequal sample spacing in three physical directions
+            </title>
+            <desc id={`${id}-description`}>
+              An axonometric view of a portion of the sample lattice, with
+              spacings 0.5, 0.8 and 2 millimetres. The grid origin is a sample
+              centre. Point A is at grid coordinate (2, 3, 2), on a sample
+              centre, while point B is at (0.5, 0.25, 0.5), between samples. The
+              dashed box marks the half-cell faces around the displayed centres,
+              not the full eight by eight by eight array.
+            </desc>
+            <defs>
+              <marker
+                id={`${id}-arrow`}
+                viewBox="0 0 8 8"
+                refX="7"
+                refY="4"
+                markerWidth="5"
+                markerHeight="5"
+                orient="auto-start-reverse"
+              >
+                <path d="M1 1 L7 4 L1 7" class="arrow-head" />
+              </marker>
+            </defs>
+            <g class="lattice-cell-box">
+              {latticeBox.map((path) => (
+                <path d={path} />
+              ))}
+            </g>
+            <g class="lattice-lines">
+              {latticeLines.map((path) => (
+                <path d={path} />
+              ))}
+            </g>
+            <g class="lattice-centres">
+              {latticeNodes.map((node) => {
+                const p = project(node);
+                return <circle cx={p.x} cy={p.y} r="2.2" />;
+              })}
+            </g>
+            <g class="lattice-axes" marker-end={`url(#${id}-arrow)`}>
+              <path d={latticeLine([0, 0, 0], [4.2, 0, 0])} />
+              <path d={latticeLine([0, 0, 0], [0, 4.5, 0])} />
+              <path d={latticeLine([0, 0, 0], [0, 0, 2.8])} />
+            </g>
+            <text class="axis-name" x="317" y="321">
+              x
+            </text>
+            <text class="axis-spacing" x="317" y="339">
+              0.5 mm
+            </text>
+            <text class="axis-name" x="28" y="380">
+              y
+            </text>
+            <text class="axis-spacing" x="28" y="398">
+              0.8 mm
+            </text>
+            <text class="axis-name" x="211" y="27">
+              z
+            </text>
+            <text class="axis-spacing" x="211" y="45">
+              2 mm
+            </text>
+            <circle class="origin-point" cx={origin.x} cy={origin.y} r="4" />
+            <text class="origin-letter" x={origin.x + 9} y={origin.y + 17}>
+              O
+            </text>
+            {lattice.points.map((point, index) => {
+              const p = project(point.grid);
+              return (
+                <g class={index === 0 ? "mapped-a" : "mapped-b"}>
+                  <circle class="mapped-halo" cx={p.x} cy={p.y} r="9" />
+                  <circle class="mapped-point" cx={p.x} cy={p.y} r="4" />
+                  <text class="mapped-label" x={p.x + 15} y={p.y - 8}>
+                    {index === 0 ? "A" : "B"}
+                  </text>
+                </g>
+              );
+            })}
+            <text class="lattice-crop" x="195" y="436" text-anchor="middle">
+              A portion of the 8 × 8 × 8 array, with spacing in mm
+            </text>
+          </svg>
+          <div class="lattice-key">
+            <>
+              <span>
+                <i class="centre-key" />
+                Sample centre
+              </span>
+              <span>
+                <i class="face-key" />
+                Cell faces
+              </span>
+            </>
+          </div>
+        </div>
+        <div class="lattice-readings">
+          <div class="sample-origin">
+            <>
+              <span>Sample origin O · object coordinates</span>
+              <strong>{tuple(lattice.grid.origin_mm)} mm</strong>
+            </>
+          </div>
+          {lattice.points.map((point, index) => (
+            <div class={`mapping ${index === 0 ? "mapping-a" : "mapping-b"}`}>
+              <h3>
+                <b>{index === 0 ? "A" : "B"}</b>
+                {index === 0 ? "At a sample centre" : "Between sample centres"}
+              </h3>
+              <dl>
+                <div>
+                  <dt>Object coordinates · mm</dt>
+                  <dd>{tuple(point.object_mm)}</dd>
+                </div>
+                <div>
+                  <dt>Grid coordinates</dt>
+                  <dd>{tuple(point.grid)}</dd>
+                </div>
+              </dl>
+              <span class="mapping-consequence">
+                {index === 0 ? (
+                  <span set:html={math(String.raw`A[2,3,2]`)} />
+                ) : (
+                  "Interpolate the surrounding samples."
+                )}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  {
+    id === "figure-4-2" && (
+      <>
+        <div class="recorded-panels">
+          <div>
+            <RecordedPlot
+              id={`${id}-cells`}
+              title="Piecewise-constant cells"
+              xLabel="Grid coordinate u"
+              yLabel="Attenuation μ (mm⁻¹)"
+              xDomain={[-1.2, 3.2]}
+              yDomain={[0, 0.034]}
+              xTicks={[-1, 0, 1, 2, 3]}
+              yTicks={[0, 0.01, 0.02, 0.03]}
+              series={[
+                {
+                  label: "Cell value",
+                  x: supportX,
+                  y: support.rows.map((row) => row.cell_mm_inverse),
+                  tone: "ink",
+                  mode: "step",
+                },
+                {
+                  label: "Stored sample",
+                  x: [0, 1, 2],
+                  y: support.parameters.coefficients_mm_inverse,
+                  tone: "accent",
+                  mode: "markers",
+                },
+              ]}
+            />
+            <p
+              class="support-bound"
+              set:html={math(
+                String.raw`\text{Cell box: }[-\tfrac12,\,\tfrac52]`,
+              )}
+            />
+          </div>
+          <div>
+            <RecordedPlot
+              id={`${id}-hats`}
+              title="Zero-extended hat interpolation"
+              xLabel="Grid coordinate u"
+              yLabel="Attenuation μ (mm⁻¹)"
+              xDomain={[-1.2, 3.2]}
+              yDomain={[0, 0.034]}
+              xTicks={[-1, 0, 1, 2, 3]}
+              yTicks={[0, 0.01, 0.02, 0.03]}
+              series={[
+                {
+                  label: "Interpolated field",
+                  x: supportX,
+                  y: support.rows.map((row) => row.zero_hat_mm_inverse),
+                  tone: "technical",
+                },
+                {
+                  label: "Stored sample",
+                  x: [0, 1, 2],
+                  y: support.parameters.coefficients_mm_inverse,
+                  tone: "accent",
+                  mode: "markers",
+                },
+              ]}
+            />
+            <p
+              class="support-bound"
+              set:html={math(String.raw`\text{Hat support box: }[-1,\,3]`)}
+            />
+          </div>
+        </div>
+        <p class="support-note">
+          The outer ramps reach zero half a spacing beyond the cell faces. The
+          production sampler uses a separate convention: clamping within the
+          half-cell box.
+        </p>
+      </>
+    )
+  }
+
+  {
+    id === "figure-4-3" && (
+      <>
+        <p class="clip-bounds">
+          Box bounds on each axis: −0.5 to 1.5 mm. All three rays lie in the
+          plane z = 0.5 mm.
+        </p>
+        <div class="slab-cases">
+          {clipCases.map((item) => {
+            const record = clipping.rays[item.key];
+            const geometry = clipping.parameters[item.key];
+            const [sx = 0, sy = 0] = geometry.source_mm;
+            const [ex = 0, ey = 0] = geometry.endpoint_mm;
+            const along = (parameter: number) => ({
+              x: clipX(sx + (ex - sx) * parameter),
+              y: clipY(sy + (ey - sy) * parameter),
+            });
+            const entry = record.entry === null ? null : along(record.entry);
+            const exit = record.exit === null ? null : along(record.exit);
+            return (
+              <section
+                class="slab-case"
+                aria-labelledby={`${id}-${item.key}-heading`}
+              >
+                <div class="slab-heading">
+                  <h3 id={`${id}-${item.key}-heading`}>{item.title}</h3>
+                  <span>{item.result}</span>
+                </div>
+                <svg
+                  class="slab-geometry"
+                  viewBox="0 0 290 235"
+                  role="img"
+                  aria-labelledby={`${id}-${item.key}-geometry-title`}
+                >
+                  <title id={`${id}-${item.key}-geometry-title`}>
+                    {item.title}: finite source-to-detector segment in an x–y
+                    section of the box
+                  </title>
+                  <rect
+                    class="clip-box"
+                    x={clipX(lowerX)}
+                    y={clipY(upperY)}
+                    width={clipX(upperX) - clipX(lowerX)}
+                    height={clipY(lowerY) - clipY(upperY)}
+                  />
+                  <line
+                    class="whole-ray"
+                    x1={clipX(sx)}
+                    y1={clipY(sy)}
+                    x2={clipX(ex)}
+                    y2={clipY(ey)}
+                  />
+                  {entry && exit && record.state === "crossing" && (
+                    <line
+                      class="accepted-ray"
+                      x1={entry.x}
+                      y1={entry.y}
+                      x2={exit.x}
+                      y2={exit.y}
+                    />
+                  )}
+                  {entry && record.state === "tangent" && (
+                    <circle class="contact" cx={entry.x} cy={entry.y} r="5" />
+                  )}
+                  <circle
+                    class="source-point"
+                    cx={clipX(sx)}
+                    cy={clipY(sy)}
+                    r="3.5"
+                  />
+                  <circle
+                    class="detector-point"
+                    cx={clipX(ex)}
+                    cy={clipY(ey)}
+                    r="4"
+                  />
+                  <text
+                    class="ray-end-label"
+                    x={clipX(sx) - 8}
+                    y={clipY(sy) + 21}
+                    text-anchor="end"
+                  >
+                    S
+                  </text>
+                  <text
+                    class="ray-end-label"
+                    x={clipX(ex) + 9}
+                    y={clipY(ey) - 10}
+                  >
+                    D
+                  </text>
+                  <text
+                    class="coordinate-label"
+                    x={clipX(lowerX)}
+                    y="214"
+                    text-anchor="middle"
+                  >
+                    −0.5
+                  </text>
+                  <text
+                    class="coordinate-label"
+                    x={clipX(upperX)}
+                    y="214"
+                    text-anchor="middle"
+                  >
+                    1.5
+                  </text>
+                  <text
+                    class="coordinate-label"
+                    x="84"
+                    y={clipY(lowerY) + 4}
+                    text-anchor="end"
+                  >
+                    −0.5
+                  </text>
+                  <text
+                    class="coordinate-label"
+                    x="84"
+                    y={clipY(upperY) + 4}
+                    text-anchor="end"
+                  >
+                    1.5
+                  </text>
+                  <text class="coordinate-label" x="234" y="214">
+                    x / mm
+                  </text>
+                  <text class="coordinate-label" x="63" y="48">
+                    y / mm
+                  </text>
+                </svg>
+                <svg
+                  class="slab-intervals"
+                  viewBox="0 0 460 240"
+                  role="img"
+                  aria-labelledby={`${id}-${item.key}-interval-title ${id}-${item.key}-interval-description`}
+                >
+                  <title id={`${id}-${item.key}-interval-title`}>
+                    Slab intervals for the {item.title.toLowerCase()}
+                  </title>
+                  <desc id={`${id}-${item.key}-interval-description`}>
+                    The finite ray is restricted to lambda between zero and one.{" "}
+                    {record.axis_states
+                      .map(
+                        (state, axis) =>
+                          `${["x", "y", "z"][axis]} slab: ${state.replaceAll("-", " ")}${record.axis_intervals[axis] ? `, interval ${tuple(record.axis_intervals[axis]!)}` : ""}`,
+                      )
+                      .join(". ")}
+                    .{" "}
+                    {record.entry === null
+                      ? "There is no common interval."
+                      : `The common interval is ${record.entry} to ${record.exit}, with length ${record.chord_mm} millimetres.`}
+                  </desc>
+                  {[0, 0.5, 1].map((value) => (
+                    <line
+                      class="interval-guide"
+                      x1={intervalX(value)}
+                      y1="26"
+                      x2={intervalX(value)}
+                      y2="192"
+                    />
+                  ))}
+                  <text class="interval-label" x="73" y="47" text-anchor="end">
+                    Finite ray
+                  </text>
+                  <line
+                    class="finite-interval"
+                    x1={intervalX(0)}
+                    y1="42"
+                    x2={intervalX(1)}
+                    y2="42"
+                  />
+                  {[0, 1].map((value) => (
+                    <line
+                      class="interval-cap"
+                      x1={intervalX(value)}
+                      y1="37"
+                      x2={intervalX(value)}
+                      y2="47"
+                    />
+                  ))}
+                  {record.axis_states.map((state, axis) => {
+                    const level = 79 + axis * 31;
+                    const interval = record.axis_intervals[axis];
+                    return (
+                      <g>
+                        <text
+                          class="interval-label"
+                          x="73"
+                          y={level + 4}
+                          text-anchor="end"
+                        >
+                          {["x slab", "y slab", "z slab"][axis]}
+                        </text>
+                        {interval ? (
+                          <>
+                            <line
+                              class="axis-interval"
+                              x1={intervalX(interval[0]!)}
+                              y1={level}
+                              x2={intervalX(interval[1]!)}
+                              y2={level}
+                            />
+                            {interval.map((value) => (
+                              <line
+                                class="interval-cap"
+                                x1={intervalX(value)}
+                                y1={level - 5}
+                                x2={intervalX(value)}
+                                y2={level + 5}
+                              />
+                            ))}
+                          </>
+                        ) : state === "parallel-inside" ? (
+                          <>
+                            <line
+                              class="unrestricted-interval"
+                              x1="92"
+                              y1={level}
+                              x2="362"
+                              y2={level}
+                            />
+                            <path
+                              class="unrestricted-interval"
+                              d={`M98 ${level - 4} L92 ${level} L98 ${level + 4} M356 ${level - 4} L362 ${level} L356 ${level + 4}`}
+                            />
+                            <text class="state-label" x="371" y={level + 4}>
+                              all λ
+                            </text>
+                          </>
+                        ) : (
+                          <text
+                            class="miss-label"
+                            x={intervalX(0)}
+                            y={level + 4}
+                          >
+                            Outside slab
+                          </text>
+                        )}
+                      </g>
+                    );
+                  })}
+                  <text
+                    class="interval-label result-label"
+                    x="73"
+                    y="186"
+                    text-anchor="end"
+                  >
+                    Accepted
+                  </text>
+                  {record.entry === null ? (
+                    <text class="miss-label" x={intervalX(0)} y="186">
+                      Empty
+                    </text>
+                  ) : record.entry === record.exit ? (
+                    <circle
+                      class="contact"
+                      cx={intervalX(record.entry)}
+                      cy="181"
+                      r="5"
+                    />
+                  ) : (
+                    <>
+                      <line
+                        class="accepted-ray"
+                        x1={intervalX(record.entry)}
+                        y1="181"
+                        x2={intervalX(record.exit!)}
+                        y2="181"
+                      />
+                      {[record.entry, record.exit!].map((value) => (
+                        <circle
+                          class="accepted-end"
+                          cx={intervalX(value)}
+                          cy="181"
+                          r="3"
+                        />
+                      ))}
+                    </>
+                  )}
+                  {[-0.5, 0, 0.5, 1, 1.5].map((value) => (
+                    <text
+                      class="coordinate-label"
+                      x={intervalX(value)}
+                      y="211"
+                      text-anchor="middle"
+                    >
+                      {tidy(value)}
+                    </text>
+                  ))}
+                  <text
+                    class="coordinate-label"
+                    x="260"
+                    y="233"
+                    text-anchor="middle"
+                  >
+                    Ray parameter λ
+                  </text>
+                </svg>
+              </section>
+            );
+          })}
+        </div>
+      </>
+    )
+  }
+
+  {
+    id === "figure-4-4" && (
+      <>
+        <div class="quadratic-formula">
+          <span set:html={math(String.raw`\mu(s)=\mu_0+cs^2`)} />
+          <span set:html={math(String.raw`\mu_0=0.01\;\mathrm{mm}^{-1}`)} />
+          <span set:html={math(String.raw`c=10^{-6}\;\mathrm{mm}^{-3}`)} />
+          <span set:html={math(String.raw`0\leq s\leq100\;\mathrm{mm}`)} />
+        </div>
+        <div class="recorded-panels">
+          <div class="quadratic-panel">
+            <h3>Ten midpoint intervals</h3>
+            <svg
+              viewBox="0 0 460 310"
+              role="img"
+              aria-labelledby={`${id}-quadratic-title ${id}-quadratic-description`}
+            >
+              <title id={`${id}-quadratic-title`}>
+                Midpoint rectangles beneath the quadratic attenuation curve
+              </title>
+              <desc id={`${id}-quadratic-description`}>
+                The prescribed field increases from 0.01 to 0.02 inverse
+                millimetres along a 100 millimetre path. Ten equal intervals use
+                the field at each midpoint. The recorded optical-depth estimate
+                is {midpointTen.midpoint}, below the exact value four thirds.
+              </desc>
+              {[0.01, 0.02].map((value) => (
+                <line
+                  class="quad-grid"
+                  x1={quadX(0)}
+                  y1={quadY(value)}
+                  x2={quadX(100)}
+                  y2={quadY(value)}
+                />
+              ))}
+              {shownMidpoints.map((sample) => (
+                <rect
+                  class="midpoint-rectangle"
+                  x={quadX(sample.start)}
+                  y={quadY(sample.value)}
+                  width={quadX(quadWidth) - quadX(0)}
+                  height={quadY(0) - quadY(sample.value)}
+                />
+              ))}
+              <path class="quadratic-curve" d={quadCurve} />
+              {shownMidpoints.map((sample) => (
+                <circle
+                  class="midpoint-dot"
+                  cx={quadX(sample.centre)}
+                  cy={quadY(sample.value)}
+                  r="3"
+                />
+              ))}
+              <path class="quad-axis" d={`M65 38 V250 H438`} />
+              {[0, 0.01, 0.02].map((value) => (
+                <text
+                  class="coordinate-label"
+                  x="54"
+                  y={quadY(value) + 4}
+                  text-anchor="end"
+                >
+                  {value}
+                </text>
+              ))}
+              {[0, 25, 50, 75, 100].map((value) => (
+                <text
+                  class="coordinate-label"
+                  x={quadX(value)}
+                  y="271"
+                  text-anchor="middle"
+                >
+                  {value}
+                </text>
+              ))}
+              <text
+                class="coordinate-label"
+                transform="translate(15 146) rotate(-90)"
+                text-anchor="middle"
+              >
+                Attenuation μ (mm⁻¹)
+              </text>
+              <text
+                class="coordinate-label"
+                x="251"
+                y="300"
+                text-anchor="middle"
+              >
+                Distance s (mm)
+              </text>
+            </svg>
+            <div class="midpoint-reading">
+              <>
+                <span set:html={math(String.raw`L=\frac43`)} />
+                <span
+                  set:html={math(
+                    String.raw`\widehat L_{10}=${midpointTen.midpoint}`,
+                  )}
+                />
+              </>
+            </div>
+          </div>
+          <div>
+            <RecordedPlot
+              id={`${id}-error`}
+              title="Midpoint error falls as M⁻²"
+              xLabel="Intervals M"
+              yLabel="Optical-depth error"
+              xDomain={[5, 320]}
+              yDomain={[6e-7, 4e-3]}
+              xScale="log"
+              yScale="log"
+              xTicks={[5, 10, 20, 40, 80, 160, 320]}
+              yTicks={[1e-6, 1e-5, 1e-4, 1e-3]}
+              series={[
+                {
+                  label: "Predicted error",
+                  x: midpoint.rows.map((row) => row.samples),
+                  y: midpoint.rows.map((row) => row.predicted_error),
+                  tone: "ink",
+                },
+                {
+                  label: "Recorded midpoint error",
+                  x: midpoint.rows.map((row) => row.samples),
+                  y: midpoint.rows.map((row) => row.signed_error),
+                  tone: "accent",
+                  mode: "markers",
+                },
+              ]}
+            >
+              <div
+                slot="before-legend"
+                class="error-rule"
+                set:html={math(
+                  String.raw`L-\widehat L_M=\frac{c\ell^3}{12M^2}`,
+                )}
+              />
+            </RecordedPlot>
+          </div>
+        </div>
+      </>
+    )
+  }
+</div>
+
+<style>
+  .volume-figures {
+    min-width: 0;
+    font-family: var(--font-ui);
+  }
+  .volume-figures h3 {
+    margin: 0 0 0.8rem;
+    font-family: var(--font-ui);
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1.45;
+  }
+  .volume-figures p {
+    margin: 0;
+  }
+  svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  svg text {
+    fill: var(--ink);
+    font-family: var(--font-ui);
+  }
+  svg path,
+  svg line,
+  svg circle,
+  svg rect {
+    vector-effect: non-scaling-stroke;
+  }
+  .lattice-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: clamp(1rem, 3vw, 2.5rem);
+    align-items: center;
+  }
+  .lattice-svg {
+    max-width: 27rem;
+    margin-inline: auto;
+  }
+  .lattice-lines {
+    fill: none;
+    stroke: var(--rule);
+    stroke-width: 0.8;
+  }
+  .lattice-cell-box {
+    fill: none;
+    stroke: var(--rule-strong);
+    stroke-width: 1;
+    stroke-dasharray: 4 4;
+  }
+  .lattice-centres {
+    fill: var(--technical);
+    opacity: 0.65;
+  }
+  .lattice-axes,
+  .arrow-head {
+    fill: none;
+    stroke: var(--ink-muted);
+    stroke-width: 1.2;
+  }
+  .axis-name {
+    font-size: 15px;
+  }
+  .axis-spacing,
+  .lattice-crop {
+    fill: var(--ink-muted);
+    font-size: 12px;
+  }
+  .origin-point {
+    fill: var(--paper);
+    stroke: var(--ink);
+    stroke-width: 1.5;
+  }
+  .origin-letter {
+    font-size: 13px;
+  }
+  .mapped-a {
+    color: var(--accent);
+  }
+  .mapped-b {
+    color: var(--technical);
+  }
+  .mapped-halo {
+    fill: var(--paper);
+    stroke: currentColor;
+    stroke-width: 1.5;
+  }
+  .mapped-point {
+    fill: currentColor;
+  }
+  .mapped-label {
+    fill: currentColor;
+    font-size: 17px;
+    font-weight: 650;
+  }
+  .lattice-key {
+    display: flex;
+    justify-content: center;
+    gap: 1.2rem;
+    font-size: 0.75rem;
+    color: var(--ink-muted);
+  }
+  .lattice-key > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .lattice-key i {
+    display: inline-block;
+    width: 1rem;
+  }
+  .centre-key {
+    width: 0.35rem !important;
+    height: 0.35rem;
+    border-radius: 50%;
+    background: var(--technical);
+  }
+  .face-key {
+    border-top: 1px dashed var(--ink-muted);
+  }
+  .sample-origin {
+    display: grid;
+    gap: 0.4rem;
+    padding-bottom: 1.1rem;
+    font-size: 0.8rem;
+    color: var(--ink-muted);
+  }
+  .sample-origin strong {
+    color: var(--ink);
+    font-weight: 500;
+    font-size: 1rem;
+  }
+  .mapping {
+    padding-block: 1.2rem;
+    border-top: 1px solid var(--rule);
+  }
+  .mapping h3 {
+    display: flex;
+    align-items: baseline;
+    gap: 0.7rem;
+  }
+  .mapping h3 b {
+    font-size: 1rem;
+  }
+  .mapping-a h3 b {
+    color: var(--accent);
+  }
+  .mapping-b h3 b {
+    color: var(--technical);
+  }
+  .mapping dl {
+    margin: 0;
+    display: grid;
+    gap: 0.8rem;
+  }
+  .mapping dt {
+    margin-bottom: 0.2rem;
+    color: var(--ink-muted);
+    font-size: 0.78rem;
+  }
+  .mapping dd {
+    margin: 0;
+    font-size: 1.1rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .mapping-consequence {
+    display: block;
+    margin-top: 0.8rem;
+    font-size: 0.84rem;
+  }
+  .support-bound,
+  .error-rule {
+    padding-block: 0.5rem;
+    text-align: center;
+    font-size: 0.85rem;
+  }
+  .volume-figures .support-note {
+    margin-top: 1.1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--rule);
+    color: var(--ink-muted);
+    font-size: 0.82rem;
+    line-height: 1.65;
+  }
+  .clip-bounds {
+    color: var(--ink-muted);
+    font-size: 0.82rem;
+    line-height: 1.6;
+  }
+  .slab-cases {
+    margin-top: 1.2rem;
+  }
+  .slab-case {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    column-gap: clamp(1rem, 3vw, 2rem);
+    align-items: center;
+    padding-block: 1rem;
+    border-top: 1px solid var(--rule);
+  }
+  .slab-heading {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.3rem;
+    align-items: baseline;
+    margin-bottom: 0.3rem;
+  }
+  .slab-heading h3 {
+    margin: 0;
+  }
+  .slab-heading span {
+    color: var(--ink-muted);
+    font-size: 0.8rem;
+  }
+  .slab-geometry {
+    max-width: 21rem;
+    margin-inline: auto;
+  }
+  .clip-box {
+    fill: var(--technical);
+    fill-opacity: 0.05;
+    stroke: var(--rule-strong);
+    stroke-width: 1;
+  }
+  .whole-ray {
+    stroke: var(--technical);
+    stroke-width: 1.5;
+  }
+  .accepted-ray {
+    stroke: var(--accent);
+    stroke-width: 4;
+  }
+  .source-point {
+    fill: var(--ink);
+  }
+  .detector-point {
+    fill: var(--paper);
+    stroke: var(--technical);
+    stroke-width: 1.5;
+  }
+  .contact {
+    fill: var(--paper);
+    stroke: var(--accent);
+    stroke-width: 2;
+  }
+  .ray-end-label {
+    font-size: 14px;
+  }
+  .coordinate-label,
+  .interval-label,
+  .state-label,
+  .miss-label {
+    font-size: 12px;
+  }
+  .coordinate-label,
+  .state-label {
+    fill: var(--ink-muted);
+  }
+  .interval-guide {
+    stroke: var(--rule);
+    stroke-dasharray: 3 4;
+  }
+  .finite-interval,
+  .interval-cap {
+    stroke: var(--ink);
+    stroke-width: 1.2;
+  }
+  .axis-interval {
+    stroke: var(--technical);
+    stroke-width: 2.3;
+  }
+  .unrestricted-interval {
+    fill: none;
+    stroke: var(--ink-muted);
+    stroke-width: 1;
+    stroke-dasharray: 3 3;
+  }
+  .result-label,
+  .miss-label {
+    fill: var(--accent);
+  }
+  .accepted-end {
+    fill: var(--accent);
+  }
+  .quadratic-formula {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: flex-start;
+    gap: 0.6rem 1.4rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.8rem;
+    color: var(--ink-muted);
+    line-height: 1.6;
+    text-align: left;
+  }
+  .quadratic-panel {
+    min-width: 0;
+  }
+  .quad-grid {
+    stroke: var(--rule);
+  }
+  .quad-axis {
+    fill: none;
+    stroke: var(--ink-muted);
+    stroke-width: 1;
+  }
+  .quadratic-curve {
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 2;
+  }
+  .midpoint-rectangle {
+    fill: var(--technical);
+    fill-opacity: 0.06;
+    stroke: var(--technical);
+    stroke-opacity: 0.45;
+    stroke-width: 1;
+  }
+  .midpoint-dot {
+    fill: var(--accent);
+  }
+  .midpoint-reading {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.7rem 1.5rem;
+    padding-block: 0.5rem;
+    font-size: 0.9rem;
+  }
+  @media (max-width: 700px) {
+    .lattice-layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .lattice-readings {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      column-gap: 1rem;
+    }
+    .sample-origin {
+      grid-column: 1 / -1;
+    }
+    .mapping h3 {
+      font-size: 0.8rem;
+      gap: 0.4rem;
+    }
+    .mapping dd {
+      font-size: 0.9rem;
+    }
+    .mapping-consequence {
+      font-size: 0.72rem;
+    }
+    .slab-case {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .slab-geometry {
+      max-width: 18rem;
+    }
+    .slab-intervals {
+      max-width: 31rem;
+      margin-inline: auto;
+    }
+    .quadratic-formula {
+      font-size: 0.74rem;
+    }
+  }
+  @media (max-width: 520px) {
+    .slab-intervals text,
+    .quadratic-panel .coordinate-label {
+      font-size: 15px;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .lattice-readings {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .mapping dd {
+      font-size: 1rem;
+    }
+    .mapping-consequence {
+      font-size: 0.8rem;
+    }
+  }
+</style>

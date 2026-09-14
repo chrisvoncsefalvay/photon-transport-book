@@ -1,0 +1,224 @@
+{
+  "schemaVersion": 1,
+  "coordinateSystem": "RAS-mm-pivot-centred",
+  "buffer": "pelvis-lod.bin",
+  "bufferByteLength": 90104,
+  "encoding": {
+    "byteOrder": "little-endian",
+    "positions": "float32 xyz, RAS millimetres",
+    "normals": "float32 xyz unit vectors",
+    "indices": "uint16 triangle vertex indices, local to each component",
+    "descriptors": "byteOffset is 4-byte aligned; count is the number of scalar array values"
+  },
+  "meshes": [
+    {
+      "id": "sacrum",
+      "label": "Sacrum",
+      "vertexCount": 1403,
+      "triangleCount": 2806,
+      "positions": {
+        "byteOffset": 0,
+        "count": 4209
+      },
+      "normals": {
+        "byteOffset": 16836,
+        "count": 4209
+      },
+      "indices": {
+        "byteOffset": 33672,
+        "count": 8418
+      }
+    },
+    {
+      "id": "left-hip",
+      "label": "Left hip",
+      "vertexCount": 550,
+      "triangleCount": 1099,
+      "positions": {
+        "byteOffset": 50508,
+        "count": 1650
+      },
+      "normals": {
+        "byteOffset": 57108,
+        "count": 1650
+      },
+      "indices": {
+        "byteOffset": 63708,
+        "count": 3297
+      }
+    },
+    {
+      "id": "right-hip",
+      "label": "Right hip",
+      "vertexCount": 550,
+      "triangleCount": 1100,
+      "positions": {
+        "byteOffset": 70304,
+        "count": 1650
+      },
+      "normals": {
+        "byteOffset": 76904,
+        "count": 1650
+      },
+      "indices": {
+        "byteOffset": 83504,
+        "count": 3300
+      }
+    }
+  ],
+  "provenance": {
+    "kind": "Simplified display geometry; not an attenuation or transport input",
+    "sourcePath": "public/generated/introduction-pose-sensitivity/meshes.json",
+    "sourceSha256": "e23c6c4efb8b0b6f1fee9581786ed7a96da6d3639e72473f93417cd6be9499a3",
+    "generatorSha256": "d3e594a81b1f63030b75ba49d1792826224094948a4d44a6d919e828763a91b1",
+    "bufferSha256": "3bd4966ed8da2f2f46cc3c1b48d0ec0c006c3c0b0bec054ffdb88ce54659e5d5",
+    "attribution": {
+      "title": "TotalSegmentator dataset v2",
+      "creator": "Jakob Wasserthal and University Hospital Basel",
+      "source": "https://doi.org/10.5281/zenodo.10047292",
+      "licence": "https://creativecommons.org/licenses/by/4.0/",
+      "changes": "NVIDIA preprocessing, resampling and augmentation; labels 2/3/4 extracted, Gaussian-smoothed sigma 0.8 voxels, level 0.5 stride-2 marching cubes, centred in RAS mm; vertices rounded to 0.0001 mm. Display geometry only, not a fresh CT segmentation.",
+      "label_sha256": "d02622b68def257f14dd36751cc985f839470be6069b0610b9ccc14277827037"
+    },
+    "changes": "Existing three display meshes decimated in unchanged RAS mm coordinates; vertex normals recomputed without vertex splitting. No anatomy is generated, components added, pose applied or original source edited.",
+    "libraries": {
+      "numpy": "2.4.1",
+      "pyvista": "0.47.1",
+      "vtk": "9.6.1"
+    },
+    "validation": {
+      "distanceMethod": "Unsigned closest-point distance to the other triangle surface, evaluated in both directions at all vertices, unique edge midpoints and face centroids. The reported maximum is sampled, not a certified Hausdorff bound.",
+      "topologyMethod": "Connected component count, Euler characteristic, boundary loop count, edge incidence and boundary vertex degree compared before and after.",
+      "meshes": [
+        {
+          "id": "sacrum",
+          "originalTriangles": 10764,
+          "simplifiedTriangles": 2806,
+          "settings": {
+            "algorithm": "vtkDecimatePro",
+            "targetTriangles": 1400,
+            "featureAngleDegrees": 26,
+            "preserveTopology": true,
+            "splitting": false,
+            "boundaryVertexDeletion": false
+          },
+          "originalTopology": {
+            "components": 10,
+            "eulerCharacteristic": 0,
+            "boundaryLoops": 0,
+            "boundaryEdges": 0,
+            "nonManifoldEdges": 0,
+            "nonCycleBoundaryVertices": 0
+          },
+          "simplifiedTopology": {
+            "components": 10,
+            "eulerCharacteristic": 0,
+            "boundaryLoops": 0,
+            "boundaryEdges": 0,
+            "nonManifoldEdges": 0,
+            "nonCycleBoundaryVertices": 0
+          },
+          "originalToSimplified": {
+            "samples": 32292,
+            "meanMm": 0.2980688178862224,
+            "rmsMm": 0.46023368488404537,
+            "p95Mm": 1.0019821231384713,
+            "maxSampledMm": 2.8960215025990355
+          },
+          "simplifiedToOriginal": {
+            "samples": 8418,
+            "meanMm": 0.1457392985495288,
+            "rmsMm": 0.2972680635724173,
+            "p95Mm": 0.6537297946603026,
+            "maxSampledMm": 3.1453264326293224
+          }
+        },
+        {
+          "id": "left-hip",
+          "originalTriangles": 22060,
+          "simplifiedTriangles": 1099,
+          "settings": {
+            "algorithm": "vtkQuadricDecimation",
+            "targetTriangles": 1100,
+            "volumePreservation": true,
+            "boundaryWeight": 1,
+            "inputOrdering": "VTK connected component 0, dataset_surface extraction"
+          },
+          "originalTopology": {
+            "components": 1,
+            "eulerCharacteristic": -1,
+            "boundaryLoops": 1,
+            "boundaryEdges": 6,
+            "nonManifoldEdges": 0,
+            "nonCycleBoundaryVertices": 0
+          },
+          "simplifiedTopology": {
+            "components": 1,
+            "eulerCharacteristic": -1,
+            "boundaryLoops": 1,
+            "boundaryEdges": 3,
+            "nonManifoldEdges": 0,
+            "nonCycleBoundaryVertices": 0
+          },
+          "originalToSimplified": {
+            "samples": 66185,
+            "meanMm": 0.24153296121713977,
+            "rmsMm": 0.3126590753792937,
+            "p95Mm": 0.62459598094424,
+            "maxSampledMm": 1.9191941023377483
+          },
+          "simplifiedToOriginal": {
+            "samples": 3299,
+            "meanMm": 0.30060498447487344,
+            "rmsMm": 0.38502986511562304,
+            "p95Mm": 0.7564466258300114,
+            "maxSampledMm": 1.9918277299075435
+          }
+        },
+        {
+          "id": "right-hip",
+          "originalTriangles": 22612,
+          "simplifiedTriangles": 1100,
+          "settings": {
+            "algorithm": "vtkQuadricDecimation",
+            "targetTriangles": 1100,
+            "volumePreservation": true,
+            "boundaryWeight": 1,
+            "inputOrdering": "VTK connected component 0, dataset_surface extraction"
+          },
+          "originalTopology": {
+            "components": 1,
+            "eulerCharacteristic": 0,
+            "boundaryLoops": 0,
+            "boundaryEdges": 0,
+            "nonManifoldEdges": 0,
+            "nonCycleBoundaryVertices": 0
+          },
+          "simplifiedTopology": {
+            "components": 1,
+            "eulerCharacteristic": 0,
+            "boundaryLoops": 0,
+            "boundaryEdges": 0,
+            "nonManifoldEdges": 0,
+            "nonCycleBoundaryVertices": 0
+          },
+          "originalToSimplified": {
+            "samples": 67836,
+            "meanMm": 0.2519212380820324,
+            "rmsMm": 0.3287923009433136,
+            "p95Mm": 0.6643692641933219,
+            "maxSampledMm": 2.0417002428265354
+          },
+          "simplifiedToOriginal": {
+            "samples": 3300,
+            "meanMm": 0.3101256121882258,
+            "rmsMm": 0.39989574290561897,
+            "p95Mm": 0.7897897352326038,
+            "maxSampledMm": 2.1511095048789075
+          }
+        }
+      ]
+    },
+    "regeneration": "python3 tools/public/simplify-transport-hero-mesh.py"
+  }
+}

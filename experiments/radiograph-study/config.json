@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "width": 480,
+  "height": 256,
+  "detector_width_mm": 600,
+  "detector_height_mm": 480,
+  "source_mm": [0, 750, 0],
+  "detector_centre_mm": [0, -450, 0],
+  "n0": 1000,
+  "mu_water_mm_inv": 0.01837,
+  "energy_kev": 80,
+  "sampling_sweep": [4096, 8192],
+  "samples_per_ray": 8192,
+  "count_max_budget": 0.25,
+  "count_p99_budget": 0.05,
+  "reference_count_budget": 0.05,
+  "reference_pixels": [
+    [128, 240],
+    [96, 160],
+    [160, 320]
+  ],
+  "radiograph_depth_window": [0, 8],
+  "ct_hu_window": [-1000, 1000],
+  "yaw_degrees": [
+    -15, -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2,
+    3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
+  ],
+  "noise": {
+    "background_counts": [10, 100, 1000, 10000],
+    "roi_size": 32,
+    "roi_border": 4,
+    "roi_stride": 8,
+    "roi_max_cv": 0.08,
+    "roi_transmission_range": [0.01, 0.2],
+    "normalised_display_window": [0.8, 1.2],
+    "seed": 2026091109,
+    "first_observation_id": 100,
+    "statistic_sigma_budget": 7
+  },
+  "volumes": [
+    {
+      "id": "chest",
+      "label": "Chest request",
+      "coverage": "Lower thorax, abdomen and pelvis; not a full chest volume.",
+      "image": "chest/sample_20260910_050215_411028_image.nii.gz",
+      "image_sha256": "e39243cb15fa77d37a19bc9271d8fd61cf659317753e28456eeca3b47b2d89e9"
+    },
+    {
+      "id": "abdomen",
+      "label": "Abdomen request",
+      "coverage": "Abdomen and pelvis with lung bases.",
+      "image": "abdomen/sample_20260910_050339_590877_image.nii.gz",
+      "image_sha256": "eef6fd9f3a6c4f365ee7692cc3526138ec6f8d2caba865598b763fc0115dcea6"
+    },
+    {
+      "id": "pelvis",
+      "label": "Pelvis request",
+      "coverage": "Abdomen and pelvis, including hips and lower spine; native inferior crop retained.",
+      "image": "pelvis/sample_20260910_050501_725681_image.nii.gz",
+      "image_sha256": "74b0c8968e221864e264ae7acab307b7c771d06fa2c7f276d947486b874c9b24"
+    }
+  ]
+}

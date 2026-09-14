@@ -1,0 +1,749 @@
+---
+layout: ../../layouts/ChapterLayout.astro
+title: X-ray theory for non-radiologists
+status: Draft
+scope: Radiographs, fluoroscopy and CT use the same underlying physics in different ways. This appendix explains the imaging quantities and conventions that the models in this book rely on.
+chapterNumber: A
+part: appendix
+---
+
+import Citation from "../../components/citations/Citation.astro";
+import Bibliography from "../../components/citations/Bibliography.astro";
+import ProjectionSandbox from "../../components/figures/ProjectionSandbox.astro";
+import RadiographStudy from "../../components/figures/RadiographStudy.astro";
+import ExactIllustrations from "../../components/figures/ExactIllustrations.astro";
+import AnatomyFigure from "../../components/figures/AnatomyFigure.astro";
+import CArmFigure from "../../components/figures/CArmFigure.astro";
+
+Just as it's not necessary to be Ansel Adams in order to be competent at rendering, you do not need to know everything a radiologist knows (or at least ought to know) in order to be proficient at differentiable photon transport. It does, however, help to speak the same language. The purpose of this appendix is to reach that same language, and the understanding that's behind it.
+
+An X-ray image is at the end of a measurement chain. An object attenuates the beam, a detector responds to the radiation that reaches it, and processing turns that response into a picture. Attenuation, transmitted radiation, detector output and displayed brightness have different units and statistics. A bright patch in a clinical image is not a material property you can copy into a renderer. To interpret it, you need to know how the image was acquired and processed.
+
+This appendix covers projection radiography and fluoroscopy, then examines what a CT volume can tell us when we use it as input to a simulation. The aim is to give the data a physical meaning before we build a forward model or differentiate it.
+
+## A.1. What kind of X-ray image are we discussing?
+
+In conventional diagnostic X-ray imaging, X-ray light travels from a source outside the patient, through the patient, to a detector. The detector records radiation, including photons that have scattered on the way and photons from all sorts of different and unrelated sources. Radiography does not observe anatomical surfaces directly but primarily observed the degree to which they absorb, scatter and modulate X-ray light. Radiography, fluoroscopy and CT use this arrangement in different ways, distinguished in [Table A.1](#table-A-1). <Citation keys={["dance2014", "fdaXray"]} />
+
+<div className="prose-table" role="region" aria-label="Types of X-ray image" tabIndex={0}>
+
+| Term                                           | What is acquired or computed                                        | What the resulting image represents                                                                       |
+| ---------------------------------------------- | ------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| **Radiograph**                                 | A projection exposure                                               | A two-dimensional measurement in which structures along each source-to-detector path are superimposed     |
+| **Fluoroscopy**                                | A sequence of projection exposures, commonly using pulsed radiation | Time-resolved projection imaging, with acquisition and temporal processing that may change between frames |
+| **Computed tomography, or CT**                 | Projection measurements from many directions                        | A reconstructed spatial estimate of attenuation-related properties                                        |
+| **Cone-beam CT, or CBCT**                      | Projections acquired using a cone-shaped beam and an area detector  | A reconstructed volume, often acquired using a rotating gantry or C-arm                                   |
+| **Digitally reconstructed radiograph, or DRR** | A numerical projection of a volume                                  | A simulated projection whose physical meaning depends on the forward model                                |
+
+</div>
+
+A DRR is computed from a model, the other images originate in detector measurements. That difference matters when deciding what a simulated pixel is supposed to represent.
+
+In a projection, a foreground surface does not simply hide everything behind it as an opaque surface would in a visible-light image. In the primary-beam approximation, every traversed structure contributes to attenuation along the ray. A rib, a lung, a vertebral body and the operating table can all contribute to the same detector measurement.
+
+At diagnostic energies, the refractive index of body materials is very close to unity. Conventional projection radiography uses no image-forming lens and usually neglects refraction: the useful contrast comes chiefly from transmission through the volume. X-ray lenses and mirrors do exist, but they are not how an ordinary radiograph forms its image. For its primary beam, the natural mathematical object is a line integral of attenuation, rather than a visible surface with a shading model. <Citation keys={["dance2014"]} />
+
+Light and dark deserve a moment of care. Photographic film is sensitive to X-rays, but conventional screen–film radiography usually records light produced by an intensifying screen. After development and fixing, exposed regions are darker and unexposed regions remain transparent. On an illuminated film negative, strongly attenuating structures appear lighter and are called _radiopaque_. This is _radiopacity_. Weakly attenuating structures are _radiolucent_. These are conventions for that presentation, not an immutable relationship between material and displayed grey level. <Citation keys={["dance2014"]} /> To prevent us from getting more confused than we need to, DICOM distinguishes the relationship between stored values and incident X-ray intensity from the transformations used to present those values. It keeps track of how we arrive at displayed pixels separately from how the stored signal relates to the radiation. <Citation keys={["dicomPS33"]} />
+
+<ProjectionSandbox id="figure-projection-sandbox" />
+
+## A.2. Anatomical directions and projection names
+
+The second convention that we will need to wrap our heads around is directional terminology. Most of differentiability is about pose, and that of course presupposes a definition of what's where.
+
+Clinical directions are defined relative to the patient, not the monitor or the room. _Anterior_ means towards the front of the body and _posterior_ towards the back. _Superior_ is towards the head and _inferior_ towards the feet. _Medial_ means towards the midline and _lateral_ away from it. For a limb, _proximal_ is nearer its attachment to the trunk and _distal_ farther away. A patient lying face upwards is _supine_. A patient lying face downwards is _prone_.
+
+The principal anatomical planes follow these directions. An axial or transverse plane divides superior from inferior portions. A coronal plane divides anterior from posterior portions, and a sagittal plane divides left from right. The midsagittal plane passes through the body’s midline. <Citation keys={["openstax2022"]} />
+
+Projection names usually describe the beam’s direction through the patient. In an **anteroposterior**, or **AP**, projection, the beam enters anteriorly and exits posteriorly. A **posteroanterior**, or **PA**, projection reverses this direction. A lateral projection passes across the patient, while an oblique projection lies between the principal directions. These names express anatomical relationships, not a complete camera calibration.
+
+In the standard DICOM coordinate system for a human patient, the positive axes point towards the patient’s left, posterior and head. This is commonly called **LPS**. Imaging and graphics libraries use other conventions, so a plausible-looking image may still be reflected or rotated incorrectly. DICOM records image position and orientation explicitly: array indices alone do not establish physical geometry. <Citation keys={["dicomPS33"]} />
+
+We will therefore endeavour to keep anatomical directions, patient coordinates, source coordinates, detector coordinates, and array indices distinct. “AP view” is useful clinical shorthand, but it cannot replace the transforms between those coordinate systems.
+
+<AnatomyFigure id="figure-anatomical-directions" />
+
+<RadiographStudy
+  kind="views"
+  id="figure-body-relative-radiographs"
+  title="AP, PA and lateral change the paths through the body"
+  description="Recorded primary projections of synthetic CT volumes show how AP, PA and lateral beams pass through the body. Beam arrows and anatomical labels distinguish a change in viewing direction from a reflection of the displayed image."
+/>
+
+### The C-arm and its conventions
+
+A C-arm carries the tube and detector at opposite ends of a C-shaped gantry. Ideally they move as a rigid pair. Orbital rotation moves the arm along its curved support, while angular rotation tilts the assembly about another mechanical axis. The relation of those axes to the patient depends on how the unit is positioned. In an isocentric system, the central ray passes through a common point, the isocentre, as the gantry rotates. Not every mobile C-arm maintains that geometry. <Citation keys={["dance2014"]} />
+
+Interventional projection names describe the detector's position relative to the patient. Left anterior oblique, or LAO, places it towards the patient's left and anteriorly, and right anterior oblique, or RAO, towards the right and anteriorly. Cranial angulation directs it towards the head, caudal towards the feet. “RAO 30, cranial 20” specifies a clinical view, not a calibrated transform. The coordinate systems have not agreed to sort themselves out. <Citation keys={["dicomPS33"]} />
+
+Many C-arms now use flat-panel detectors instead of image intensifiers. An intensifier's curved input surface produces pincushion distortion, while magnetic fields can produce an S-shaped distortion that changes with orientation. Flat panels avoid these distortions, but cannot prevent the gantry from flexing under gravity. Source and detector geometry can therefore vary with gantry angle, so calibration must account for that variation rather than assume one rigid geometry for every view. <Citation keys={["dance2014"]} />
+
+<CArmFigure id="c-arm-positioning" />
+
+## A.3. What the X-ray source produces
+
+An X-ray tube accelerates electrons towards a target. Their interactions produce a continuous bremsstrahlung spectrum and characteristic emission lines. The beam is generally polychromatic: it contains a distribution of photon energies. Tube potential, target material, filtration and emission direction all affect that distribution. <Citation keys={["dance2014"]} />
+
+Two mechanisms produce these photons. Electrons decelerating in the target's electric fields emit bremsstrahlung. An electron can lose any fraction of its kinetic energy in an emission event, up to all of it, which gives the spectrum its continuous range and upper limit. An electron can also eject an inner-shell electron from a target atom. Filling the vacancy can emit a characteristic photon whose energy is set by the difference between atomic energy levels. Tungsten's principal K lines lie at approximately 58–69 keV. Producing them by electron impact requires an energy above the K-shell binding energy, about 69.5 keV. <Citation keys={["dance2014"]} />
+
+The tube potential is commonly specified in **kilovolts peak**, or **kVp**. Keep four descriptors separate:
+
+- **kVp** is the applied peak potential, an electrical setting rather than a photon energy.
+- **Maximum photon energy** is the peak electron energy expressed in photon-energy units. A 120 kVp exposure has an endpoint of 120 keV, the Duane–Hunt limit.
+- **Mean energy** is the photon-number-weighted average of the spectrum. It lies below the endpoint and changes with filtration.
+- **Effective energy** is the energy of a monoenergetic beam with the same first half-value layer in a stated material. It describes beam quality, but it need not coincide with the energy of any individual photon in an exposure.
+
+The first **half-value layer**, or **HVL**, is the thickness of that material that halves the initial air kerma under narrow-beam conditions. For a monoenergetic beam, $\mathrm{HVL}=\ln 2/\mu$. For a spectrum, the HVL can be measured or calculated from its spectral distribution. In the usual beam-hardening regime, the additional thickness needed to halve the remaining air kerma again exceeds the first HVL: the surviving beam is harder. <Citation keys={["dance2014"]} />
+
+Tube current, measured in milliamperes, describes electron flow. The current-time product, **mAs**, describes the charge delivered during an exposure. With the other acquisition settings fixed, increasing mAs approximately scales photon output. It does not directly state how many photons arrive at a particular detector pixel. That also depends on geometry, filtration, attenuation, and detector efficiency.
+
+**Filtration** changes the spectrum by preferentially removing photons at particular energies, usually reducing its low-energy component. **Collimation** restricts the beam’s spatial extent. Keep the two separate in a model. Spectrum models estimate the spectral shape from the tube settings: TASMICS interpolates Monte Carlo-generated tungsten-anode spectra, while SpekPy provides tools for modelling X-ray tube spectra and filtration. They describe changes that a kVp value alone cannot specify. <Citation keys={["hernandez2014", "poludniowski2021"]} />
+
+The source has spatial structure too. Its focal spot has a finite extent, and attenuation within the target produces a direction-dependent output known as the _heel effect_. A point source with a spatially uniform spectrum omits both effects. Those omissions matter when modelling geometric blur or variation across the detector. <Citation keys={["dance2014"]} />
+
+## A.4. How photons interact with matter
+
+Photoelectric absorption, Compton scattering and coherent scattering account for the interactions discussed here. <Citation keys={["dance2014", "xcom"]} />
+
+In **photoelectric absorption**, the incident photon is absorbed and an electron is released. Subsequent atomic relaxation can produce secondary radiation. The interaction probability depends strongly on energy and composition, with discontinuities at atomic absorption edges.
+
+In **Compton scattering**, the photon transfers some energy to an electron and changes direction. For scattering from a free electron initially at rest,
+
+$$
+E'=
+\frac{E}
+{1+\dfrac{E}{m_ec^2}(1-\cos\vartheta)},
+$$
+
+where $E$ and $E'$ are the incident and scattered photon energies, and $\vartheta$ is the scattering angle.
+
+In **coherent scattering**, often called Rayleigh scattering, the photon changes direction without an appreciable change in energy.
+
+Their dependence on energy and composition differs. Away from absorption edges, a useful rough scaling for photoelectric mass attenuation is $Z^3/E^3$. Here $Z$ is atomic number for an element. An effective atomic number is only an approximation for a mixture. This steep dependence makes photoelectric absorption important at low energies and in high-$Z$ materials, and gives bone and contrast agents much of their conspicuity. It is a guide to behaviour, not a substitute for tabulated coefficients. <Citation keys={["dance2014", "hubbell1995"]} />
+
+Compton scattering depends chiefly on electron density. Per unit mass, electron density varies relatively little among most body materials, so Compton mass attenuation depends less strongly on composition and changes more slowly with energy. It dominates in soft tissue over much of the higher-energy diagnostic range, but not at every diagnostic energy. Coherent scattering is usually a smaller contribution, with its share also depending on material and energy. As beam energy rises, the photoelectric share generally falls, reducing bone–soft-tissue subject contrast. <Citation keys={["dance2014"]} />
+
+An **absorption edge** is a step increase in the photoelectric cross-section at an electron-shell binding energy. Photons just above the edge can ionise that shell, whereas those just below cannot. The K edges of iodine, about 33.17 keV, and barium, about 37.44 keV, lie within diagnostic spectra and contribute to their usefulness as contrast agents. <Citation keys={["hubbell1995"]} />
+
+Pair production in the nuclear field becomes possible above 1.022 MeV. The diagnostic beams considered here do not reach that threshold, so this process is outside the present model. <Citation keys={["dance2014"]} />
+
+The linear attenuation coefficient,
+
+$$
+\mu(\mathbf{x},E),
+$$
+
+has units of inverse length. Material databases frequently provide the **mass attenuation coefficient**, $\mu/\rho$, with units such as $\mathrm{cm^2/g}$. The conversion is
+
+$$
+\mu(E)=\rho\left(\frac{\mu}{\rho}\right)(E).
+$$
+
+For a mixture with elemental mass fractions $w_k$,
+
+$$
+\left(\frac{\mu}{\rho}\right)_{\mathrm{mix}}(E)
+=
+\sum_k w_k
+\left(\frac{\mu}{\rho}\right)_k(E),
+\qquad
+\sum_k w_k=1.
+$$
+
+Multiplying by the mixture’s mass density gives its linear attenuation coefficient. NIST provides tabulated coefficients and tools for evaluating mixtures. <Citation keys={["hubbell1995", "xcom"]} />
+
+A coefficient in $\mathrm{cm^{-1}}$ must be divided by ten before it is multiplied by a path length in millimetres. This conversion belongs inside the exponent of the transmission model. Scaling the final image cannot repair it.
+
+All these interactions can remove a photon from its original path. Attenuation therefore includes more than absorption. A photon scattered out of the primary ray has been removed from that ray even if it later reaches another detector location. The total attenuation coefficient and the energy-absorption coefficient describe different quantities. <Citation keys={["hubbell1995"]} />
+
+## A.5. Attenuation along a ray
+
+For a monoenergetic primary beam, define the optical depth along ray $p$ as
+
+$$
+L_p(E)
+=
+\int_{\ell_p}
+\mu(\mathbf{x},E)\,\mathrm{d}s.
+$$
+
+The corresponding transmission is
+
+$$
+T_p(E)=\exp[-L_p(E)].
+$$
+
+This is the Beer–Lambert model for uncollided radiation. It describes the surviving primary beam. Scattered photons collected by the detector require a separate contribution. <Citation keys={["dance2014"]} />
+
+Readers familiar with volume rendering have met this expression before: $T_p$ is the transmittance of an absorption-only volume model, with $\mu$ taking the role of the extinction coefficient. <Citation keys={["max1995"]} /> A differentiable X-ray renderer and a radiance-field renderer share this exponential transmittance. The spectrum, detector and measurement statistics determine what must be built around it. A familiar exponential does not make the rest optional.
+
+A discrete implementation replaces the integral with a sum,
+
+$$
+L_p(E)
+\approx
+\sum_j \mu_j(E)\,\ell_{pj},
+$$
+
+where $\ell_{pj}$ is the physical length travelled through element $j$. Multiplying attenuation coefficients by voxel indices, rather than physical distances, would give an image whose meaning changes when the volume is resampled.
+
+The exponent is dimensionless. Transmission is also dimensionless and lies between zero and one for a passive attenuating object. Increasing the attenuation or path length decreases the expected primary signal. A displayed radiograph may reverse that visual relationship, which is one reason to keep the transmission image separate from its presentation.
+
+### A numerical example
+
+The [NIST liquid-water table](https://physics.nist.gov/PhysRefData/XrayMassCoef/ComTab/water.html) gives a mass attenuation coefficient at 60 keV of approximately <Citation keys={["hubbell1995"]} />
+
+$$
+\left(\frac{\mu}{\rho}\right)_{\mathrm{water}}
+=
+0.2059\ \mathrm{cm^2/g}.
+$$
+
+Assuming a density of $1.0\ \mathrm{g/cm^3}$, this gives
+
+$$
+\mu_{\mathrm{water}}
+=
+0.2059\ \mathrm{cm^{-1}}
+=
+0.02059\ \mathrm{mm^{-1}}.
+$$
+
+The coefficient comes from attenuation data. No image intensity has been fitted.
+
+For a 20 cm water slab, the ideal monoenergetic primary transmission is therefore
+
+$$
+T=\exp[-0.2059\times20]
+=\exp[-4.118]
+\approx0.01628.
+$$
+
+About $1.63\%$ of the incident primary photons survive without interaction. An additional centimetre of water multiplies the surviving primary signal by
+
+$$
+\exp[-0.2059]\approx0.8139,
+$$
+
+reducing it by approximately $18.6\%$.
+
+This calculation assumes a specified energy and material, a narrow primary beam, and no scattered contribution. It does not predict the complete signal from a clinical detector under a polychromatic exposure.
+
+<ExactIllustrations
+  kind="water-hvl"
+  id="figure-half-value-layers"
+  title="A half-value layer halves the surviving beam"
+  description="For 60 keV photons in water, each additional 3.3664 cm halves the surviving primary beam, leaving 1.63% after 20 cm. Equal thicknesses therefore remove equal fractions of what remains, rather than equal numbers of photons."
+/>
+
+## A.6. Why a clinical exposure is not generally a single line integral
+
+Let $n_{0,p}(E)$ be the expected incident photon spectrum associated with detector pixel $p$ in the absence of the object, expressed as photons per unit energy for the exposure. Let $R_p(E)$ be the detector’s expected output per incident photon of energy $E$.
+
+A polychromatic primary-signal model is
+
+$$
+P_p
+=
+\int
+n_{0,p}(E)\,
+R_p(E)\,
+\exp[-L_p(E)]\,\mathrm{d}E.
+$$
+
+Here $n_{0,p}$ already incorporates the exposure and geometrical factors used to define the incident spectrum at that pixel. Those factors should not be applied a second time elsewhere in the model.
+
+The corresponding open-beam signal is
+
+$$
+P_{0,p}
+=
+\int n_{0,p}(E)R_p(E)\,\mathrm{d}E.
+$$
+
+For a monoenergetic beam and a linear detector response, normalisation and a negative logarithm recover the optical depth:
+
+$$
+-\log\left(\frac{P_p}{P_{0,p}}\right)=L_p.
+$$
+
+For a polychromatic beam,
+
+$$
+-\log
+\left[
+\frac{
+\int n_{0,p}(E)R_p(E)e^{-L_p(E)}\,\mathrm{d}E
+}{
+\int n_{0,p}(E)R_p(E)\,\mathrm{d}E
+}
+\right]
+$$
+
+does not generally reduce to a line integral of one material-independent scalar field. Energy-selective reconstruction uses spectral information lost in this scalar approximation. <Citation keys={["alvarez1976"]} />
+
+Preferential attenuation changes the spectrum as the beam passes through an object. In many diagnostic settings, the surviving beam becomes relatively enriched in higher-energy photons: **beam hardening**. The effect of an additional thickness then depends on what the beam has already traversed. Treating this as a linear projection can produce CT reconstruction artefacts. <Citation keys={["brooks1976"]} />
+
+The averaging problem follows from the strict convexity of $e^{-L}$. For a nonconstant, non-negative optical depth $L$ with finite expectation, Jensen's inequality gives
+
+$$
+\mathbb{E}\!\left[e^{-L}\right]
+>
+e^{-\mathbb{E}[L]}.
+$$
+
+Equality holds when $L$ is constant almost surely. Here the expectation uses normalised, non-negative measurement weights. A physical measurement can average transmissions over several variables:
+
+- **Energy:** spectral averaging and beam hardening.
+- **Detector area:** a pixel collects over a finite region.
+- **Source extent:** the focal spot contributes different paths and penumbra.
+- **Time:** the object can move during the exposure.
+
+Sum or integrate those transmitted contributions first, then take the logarithm afterwards. Averaging optical depths and then exponentiating generally overestimates attenuation. A single ray through a pixel centre is an approximation to a finite detector measurement, even when ray traversal itself is exact.
+
+Material-basis models make the spectral structure more explicit. For example,
+
+$$
+\mu(\mathbf{x},E)
+=
+\sum_{k=1}^{K} a_k(\mathbf{x})f_k(E),
+$$
+
+where the basis functions $f_k$ describe the energy dependence and the coefficients $a_k$ describe its spatially varying contributions.
+
+A two-function basis has a physical motivation: away from absorption edges, photoelectric absorption and Compton scattering provide two different, smooth energy dependences that approximate attenuation in many body materials. Two sufficiently independent spectral measurements can then constrain their contributions, provided the measurement map is identifiable and adequately conditioned. Contrast-agent edges can require additional basis information. Counting two channels is not, on its own, a proof of anything. <Citation keys={["alvarez1976", "alvarez2017"]} />
+
+## A.7. Projection geometry, magnification, and blur
+
+[Figure](#figure-projection-sandbox) lets us change the source distances and focal-spot size for an exact geometric phantom.
+
+The source-to-detector distance, **SDD**, is also commonly called the source-to-image distance, **SID**. For an object plane at source-to-object distance **SOD**, its geometrical magnification is
+
+$$
+M=\frac{\mathrm{SDD}}{\mathrm{SOD}}.
+$$
+
+A three-dimensional patient has no single magnification because different structures lie at different distances from the source. Likewise, detector pixel spacing becomes an object-space sampling interval only after a depth has been specified. At the selected plane, a detector pitch $p$ corresponds approximately to $p/M$.
+
+A finite focal spot creates geometric unsharpness. With effective focal-spot width $f$ and object-to-detector distance $\mathrm{ODD}$, similar triangles give the detector-plane blur width
+
+$$
+u_{\mathrm{det}}
+=
+f\frac{\mathrm{ODD}}{\mathrm{SOD}}
+=
+f(M-1).
+$$
+
+The corresponding object-plane blur is
+
+$$
+u_{\mathrm{obj}}
+=
+\frac{u_{\mathrm{det}}}{M}
+=
+f\frac{\mathrm{ODD}}{\mathrm{SDD}}.
+$$
+
+These expressions describe focal-spot blur at a chosen object plane, before adding detector blur and motion. <Citation keys={["dance2014"]} />
+
+At higher magnification, an object occupies more detector pixels, but its focal-spot blur also changes. Oblique structures can appear shorter through foreshortening. A change in an instrument’s projected length need not imply deformation.
+
+For inverse problems, source position, detector pose, principal point, and detector sampling must have explicit meanings. An optimisation can otherwise trade a calibration error against an anatomical pose error while still producing a convincing overlay.
+
+## A.8. Scatter changes both intensity and contrast
+
+Some photons interact within the patient or surrounding objects and still reach the detector. Their contribution depends on the irradiated volume, composition, beam spectrum, geometry and scatter-rejection hardware. Scatter can vary substantially even when primary attenuation along a particular ray is unchanged. <Citation keys={["siewerdsen2001"]} />
+
+A differential cross-section describes how scattering probability varies with direction. For a free electron initially at rest, the Klein–Nishina formula describes Compton scattering and becomes increasingly forward-peaked as photon energy rises. Coherent scattering is also strongly forward-peaked and depends on the atomic form factor. Normalising an angular scattering distribution gives the corresponding phase function. Sampling such distributions is part of the stochastic transport planned for [chapter 9](/chapters/scattering-stochastic-transport/). Material models must also account for binding effects when the free-electron approximation is insufficient. <Citation keys={["dance2014"]} />
+
+At the level of expected detector signals, write
+
+$$
+Y=P+S,
+$$
+
+where $P$ is the primary contribution and $S$ the scattered contribution, both expressed in the same signal units.
+
+Suppose a small feature changes the primary signal by $\Delta P$, while approximately the same scatter $S$ reaches the feature and its immediate background. Defining primary contrast as
+
+$$
+C_{\mathrm{primary}}
+=
+\frac{\Delta P}{P_{\mathrm{background}}},
+$$
+
+the observed contrast becomes
+
+$$
+C_{\mathrm{observed}}
+=
+\frac{\Delta P}{P_{\mathrm{background}}+S}
+=
+\frac{C_{\mathrm{primary}}}
+{1+\mathrm{SPR}},
+$$
+
+where
+
+$$
+\mathrm{SPR}=\frac{S}{P_{\mathrm{background}}}
+$$
+
+is the local scatter-to-primary ratio under these assumptions.
+
+This derivation explains contrast dilution under the stated local approximation. It does not assume that scatter is constant across the image. A post-processing offset may imitate some of its appearance, but it misses the dependence on anatomy and acquisition.
+
+Collimation limits the irradiated region and can reduce scatter. An antiscatter grid rejects some scattered radiation, but also attenuates some primary radiation. Cropping an image after acquisition does neither. <Citation keys={["dance2014"]} />
+
+<ExactIllustrations
+  kind="scatter"
+  id="figure-scatter-contrast"
+  title="Scatter fills in primary contrast"
+  description="Adding the same scatter signal to both regions leaves their primary signal difference unchanged but raises the background. The contrast falls by a factor of 1 + SPR, so an image can become brighter while the feature becomes harder to distinguish."
+/>
+
+## A.9. What a detector measures
+
+An **indirect-conversion detector** first converts absorbed X-ray energy into light, usually in a scintillator, and then converts that light into an electrical signal. A **direct-conversion detector** converts absorbed X-ray energy into charge without the intermediate optical stage. Conversion, charge collection, and readout introduce efficiencies and spatial spreading that affect the recorded image.
+
+Before storage, the raw readout commonly undergoes dark-offset subtraction, division by an open-beam gain map (flat-fielding), and interpolation across mapped defective pixels. DICOM distinguishes images intended _for processing_ from those intended _for presentation_. The latter may already include enhancement. A simulated image must be compared with the appropriate stage of this chain. Even a “for processing” image need not be an untouched detector readout. <Citation keys={["dance2014", "dicomPS33"]} />
+
+Conversion mechanism is separate from readout mode: **energy integration** or **photon counting**. An energy-integrating detector accumulates a signal related to deposited energy. A photon-counting detector attempts to identify individual events, often assigning them to energy intervals. Charge sharing, energy redistribution, threshold behaviour and count-rate effects distort the resulting spectrum. It is not a perfect histogram of incident photon energies. <Citation keys={["dance2014", "xu2014"]} />
+
+Choose $R_p(E)$ to match the measurement being simulated. Setting it to one describes ideal equal-weight photon counting. Weighting it by energy gives a different model, which still needs assumptions about detection efficiency and energy deposition.
+
+### Photon statistics and pixel statistics
+
+For an ideal independent photon-counting process with expected count $\lambda$,
+
+$$
+N\sim\operatorname{Poisson}(\lambda),
+\qquad
+\operatorname{Var}(N)=\lambda.
+$$
+
+The relative standard deviation is
+
+$$
+\frac{\sigma_N}{\mathbb{E}[N]}
+=
+\frac{1}{\sqrt{\lambda}}.
+$$
+
+In the water-slab example, an expected incident count of $100{,}000$ would give approximately $1{,}628$ surviving primary photons. Ideal counting noise would then have a relative standard deviation of approximately $2.48\%$. These are calculated expectations for the stated model, not measurements from a scanner.
+
+An energy-integrating pixel has a different statistical description. Consider
+
+$$
+Y=\sum_{i=1}^{N}Q_i+\varepsilon,
+$$
+
+where $N$ is Poisson with mean $\lambda>0$, $Q_i$ is the random output generated by one detected event, and $\varepsilon$ is independent zero-mean readout noise with finite variance. Assume the event outputs are independent and identically distributed, independent of $N$, with positive mean and finite second moment. Then
+
+$$
+\mathbb{E}[Y]
+=
+\lambda\,\mathbb{E}[Q],
+$$
+
+$$
+\operatorname{Var}(Y)
+=
+\lambda\,\mathbb{E}[Q^2]
++
+\operatorname{Var}(\varepsilon).
+$$
+
+For this event-output model, the **Swank factor** is $A_S=\mathbb{E}[Q]^2/\mathbb{E}[Q^2]$. Without readout noise, the relative variance is $\operatorname{Var}(Y)/\mathbb{E}[Y]^2=1/(\lambda A_S)$. Thus $1/A_S$ gives the increase in relative variance over ideal equal-weight Poisson counting at the same event rate. It does not give a universal ratio of absolute variances: counts and detector charge have different units. <Citation keys={["swank1973", "dance2014"]} />
+
+The dominant term depends on exposure and detector design. Quantum noise often dominates at radiographic exposures. At low fluoroscopic exposures, readout noise can become comparable or larger. If that noise is approximately Gaussian, it can make a Gaussian measurement model more appropriate than a Poisson count likelihood. Low dose alone does not make a distribution Gaussian. Spatial spreading and processing can also correlate neighbouring pixels. Cascaded detector models describe how these stages propagate signal and noise. <Citation keys={["dance2014", "xu2014", "prakash2011"]} />
+
+Taking logarithms changes the statistics again. If an ideal count measurement is large and its incident reference is known accurately, a first-order approximation gives
+
+$$
+\operatorname{Var}
+\left[
+-\log\left(\frac{N}{N_0}\right)
+\right]
+\approx
+\frac{1}{\lambda}.
+$$
+
+This approximation deteriorates at low counts. A zero count has no finite logarithm, and offset or scatter correction can produce non-positive values even before the logarithm is applied. Replacing these values with a small positive constant imposes a numerical rule that changes the inferred data distribution. It should not be mistaken for a physical measurement model.
+
+<span id="figure-radiograph-noise" />
+
+The [recorded pelvic patches in Chapter 7](/chapters/same-pose-different-x-ray/#figure-radiograph-noise) show the same expected image at four count levels, with one fixed display window. The original sampling records distinguish a change in photon statistics from a change in displayed contrast.
+
+### Indicative magnitudes
+
+Some scales help, provided we do not promote them into specifications. The IAEA handbook gives tube-potential ranges of 25–40 kV for mammography and 40–150 kV across general diagnostic radiology. It describes routine focal spots of 0.6–2.0 mm and fine spots of 0.3–1.0 mm, while mammography commonly uses 0.3 mm for contact imaging and 0.1 mm for magnification. Its flat-panel examples include a 200 μm sampling pitch. Actual hardware and protocols vary. <Citation keys={["dance2014"]} />
+
+Detector exposure changes substantially between acquisition modes. A worked radiographic example in the handbook uses 2.5 μGy at the detector and a 115 cm source-to-image distance. Its full-field flat-panel fluoroscopy discussion gives 30–55 nGy per pulse. These are detector exposures, not patient entrance doses. Adult chest and abdominal examples use antiscatter grid ratios of 10:1 or 12:1. Those ratios describe grid geometry, not the fraction of scatter removed. <Citation keys={["dance2014"]} />
+
+In cone-beam CT experiments with pelvis-sized objects, Siewerdsen and Jaffray found scatter-to-primary ratios exceeding one: more scattered than primary energy fluence reached the detector. That result belongs to the measured object and acquisition geometry, not to every CBCT image. Nor is there a universal open-field photon count to enter into a renderer. Converting detector air kerma to photon fluence requires the spectrum and the air energy-transfer coefficients. <Citation keys={["siewerdsen2001", "dance2014"]} />
+
+## A.10. Resolution is more than pixel spacing
+
+Detector pitch specifies sampling. It does not, by itself, specify the smallest structure that the complete system can resolve.
+
+The **modulation transfer function**, or **MTF**, describes the transfer of contrast as a function of spatial frequency under the assumptions of the measurement. The **noise-power spectrum**, or **NPS**, describes how noise power is distributed over spatial frequencies. **Detective quantum efficiency**, or **DQE**, relates output and input squared signal-to-noise ratios:
+
+$$
+\mathrm{DQE}
+=
+\frac{\mathrm{SNR}_{\mathrm{out}}^2}
+{\mathrm{SNR}_{\mathrm{in}}^2}.
+$$
+
+Its interpretation depends on spatial frequency and acquisition conditions. Pixel count alone tells us none of this. <Citation keys={["dance2014"]} />
+
+Resolving a high-contrast metal edge and detecting a faint soft-tissue feature place different demands on an imaging system. Task-based models account for those differences when selecting source, detector, geometry and reconstruction parameters. <Citation keys={["prakash2011"]} />
+
+“Looks sharp” is an incomplete test of a simulation. A model may reproduce an instrument boundary while misrepresenting the detectability of adjacent anatomy. A similarity measure dominated by high-contrast structures may barely test the low-contrast part of the image.
+
+## A.11. CT values and Hounsfield units
+
+A CT image is reconstructed from projection measurements. Its voxel values depend on the acquisition spectrum, calibration, reconstruction method, spatial resolution and artefacts. The volume estimates attenuation-related properties, but it does not directly inventory the patient’s materials. <Citation keys={["dance2014"]} />
+
+Conventional CT numbers are expressed in **Hounsfield units**, or **HU**, using
+
+$$
+\mathrm{HU}
+=
+1000
+\frac{
+\mu_{\mathrm{rec}}-\mu_{\mathrm{water,rec}}
+}{
+\mu_{\mathrm{water,rec}}
+}.
+$$
+
+Here the subscript emphasises the reconstructed and calibrated quantities. Water is assigned approximately zero, and air approximately $-1000$. A negative HU value means attenuation below the water reference. It does not mean negative physical attenuation.
+
+The values in [Table A.2](#table-A-2) provide orientation rather than material-classification thresholds.
+
+<div className="prose-table" role="region" aria-label="Indicative conventional CT values" tabIndex={0}>
+
+| Material or tissue | Indicative conventional CT value |
+| ------------------ | -------------------------------: |
+| Air                |         Approximately $-1000$ HU |
+| Aerated lung       |      Roughly $-950$ to $-600$ HU |
+| Fat                |                 Around $-100$ HU |
+| Water              |             Approximately $0$ HU |
+| Many soft tissues  |           Tens of HU above water |
+| Compact bone       |    Hundreds to a few thousand HU |
+
+</div>
+
+These broad anchors follow Table 11.1 of the IAEA handbook. Actual values depend on tissue composition, acquisition, reconstruction and partial-volume effects. <Citation keys={["dance2014"]} />
+
+### Stored values are not necessarily HU
+
+Pixel data in a CT file commonly require a rescaling transformation,
+
+$$
+U=m\,\mathrm{SV}+b,
+$$
+
+where $\mathrm{SV}$ is the stored value, $m$ the rescale slope and $b$ the rescale intercept. Check the image type and metadata to establish the output units. Do not assume an intercept of $-1024$, or even HU output, for every image object. DICOM defines both the transformation and the conditions governing its units. <Citation keys={["dicomPS33"]} />
+
+### A single CT number does not identify a material spectrum
+
+Rearranging the conventional HU expression suggests
+
+$$
+\mu(E_\ast)
+\approx
+\mu_{\mathrm{water}}(E_\ast)
+\left(1+\frac{\mathrm{HU}}{1000}\right).
+$$
+
+This is an approximation for constructing a scalar attenuation field at a chosen energy $E_\ast$. It assumes that the CT values can be interpreted consistently with that energy and the chosen material model. The assumption needs to be stated.
+
+There is no universal conversion from HU to $\mu(E)$ at arbitrary energies. Calibration to physical properties needs assumptions about composition and the acquisition system. Stoichiometric calibration methods make those assumptions explicit and use calibration measurements rather than a universal image-value conversion. <Citation keys={["schneider1996"]} />
+
+One scalar measurement cannot generally determine density and several independent composition parameters. Different mixtures may produce similar values under one spectrum and behave differently under another. Assigning a material class to each voxel adds information through the classification. That information was not uniquely encoded in its HU value.
+
+A voxel spanning bone and soft tissue need not represent a homogeneous material with an intermediate chemistry. Partial volume may instead give the scanner’s spatially averaged response to unresolved structure. A monochromatic scalar projector may tolerate that approximation. Spectral simulation, absorption-edge modelling and dosimetry need a closer account of what the voxel contains.
+
+## A.12. Image geometry and display processing
+
+A medical image array has both a numerical domain and a physical geometry.
+
+When Image Position (Patient), Image Orientation (Patient) and Pixel Spacing are present, as in CT, they define a patient-space image plane. Let $\mathbf{r}_0$ be the position of the first pixel centre, $\mathbf{u}$ the direction along increasing column index, and $\mathbf{v}$ the direction along increasing row index. Then
+
+$$
+\mathbf{r}(i,j)
+=
+\mathbf{r}_0
++
+i\,\Delta_c\,\mathbf{u}
++
+j\,\Delta_r\,\mathbf{v},
+$$
+
+where $i$ and $j$ are zero-based column and row indices, and $\Delta_c$ and $\Delta_r$ are the corresponding physical spacings. A projection radiograph does not necessarily carry this patient-space calibration, so check the attributes rather than assuming that every DICOM object supplies them. Slice thickness and spacing between slice centres describe different properties, so do not substitute one for the other. <Citation keys={["dicomPS33"]} />
+
+Display transformations operate on the values rather than on that geometry. **Window centre** and **window width** select how an interval of image values maps into the available display range. A narrow window can make a small numerical difference visually prominent. Values outside the displayed interval may be clipped to the display endpoints. The underlying CT numbers have not changed.
+
+Projection images can undergo more than a display-range adjustment. DICOM’s radiography modules account for processing such as edge enhancement, subtraction, temporal filtering and convolution. A stored image may already have been substantially processed before a viewer applies its window or presentation settings. <Citation keys={["dicomPS33"]} />
+
+Keep the stages separate:
+
+$$
+\text{transport}
+\longrightarrow
+\text{detector response}
+\longrightarrow
+\text{measurement processing}
+\longrightarrow
+\text{display}.
+$$
+
+Comparing simulated primary transmission directly with a windowed, sharpened clinical image asks the optimiser to explain every intervening transformation through the parameters it has been given. If those parameters describe only pose, it will try to move anatomy to account for processing errors.
+
+Choose the image domain as part of the inverse problem. Expected counts, detector output, logarithmic projections, reconstructed HU and display values are not interchangeable targets.
+
+<span id="figure-acquisition-display-chain" />
+
+[The measurement-chain figure in Chapter 1](/chapters/introduction/#figure-measurement-chain) places these quantities beside their units and comparison domains.
+
+## A.13. Same pose, different X-ray
+
+The acquisition controls in [Figure](#figure-projection-sandbox) change the projection while the phantom stays fixed.
+
+Correct rigid alignment does not guarantee matching intensities. Ordinary acquisition changes can alter an image while the structure of interest stays in the same pose. [Chapter 7, Same pose, different X-ray](/chapters/same-pose-different-x-ray/), develops this problem.
+
+### Acquisition settings can respond to the patient
+
+Automatic exposure and dose-rate control systems respond to the attenuation presented to them. Depending on the system and operating mode, they can change tube potential, current, pulse duration or filtration. A change in patient thickness or projection direction can alter the source conditions as well as the path through anatomy. <Citation keys={["rauch2012"]} />
+
+We can ask what would happen if the patient moved while the source settings stayed fixed, or what the system would acquire after its controller responded to the movement. These are different forward models and can have different derivatives.
+
+### A fluoroscopic frame has temporal extent
+
+Frame rate does not specify exposure duration. A pulsed acquisition integrates radiation during each pulse, and temporal processing can combine information across frames. Motion during exposure and persistence from filtering can alter boundaries even when nominal frame timestamps match. <Citation keys={["dance2014"]} />
+
+For a moving object, the detector accumulates a time-integrated signal. In general, rendering the object once at the midpoint pose does not reproduce the integral of its changing transmission.
+
+The detector can retain a history too. Lag carries residual signal into later frames, while ghosting can change the response after an earlier exposure. Veiling glare spreads signal spatially, reducing contrast around bright regions. These effects depend on the detector technology. Two frames of an unmoving object, taken at different points in a sequence, need not agree even before any motion model enters the argument. <Citation keys={["dance2014"]} />
+
+### Contrast material changes the scene
+
+Iodine and barium have absorption edges at approximately 33.17 keV and 37.44 keV respectively. Their appearance depends on concentration, path length and spectral weighting. Treating contrast-enhanced anatomy as an unchanged material field can produce a mismatch that no rigid transformation will remove. <Citation keys={["hubbell1995"]} />
+
+Digital subtraction angiography introduces another image domain. A mask image is acquired before contrast filling and compared with a later image. Under ideal monochromatic conditions, with consistent geometry and normalisation,
+
+$$
+L_{\mathrm{filled}}-L_{\mathrm{mask}}
+=
+L_{\mathrm{contrast}}.
+$$
+
+When motion or other changes make the mask inconsistent with the later acquisition, subtraction leaves residual anatomy. A subtraction image is not an ordinary transmission image of the complete patient. <Citation keys={["dance2014"]} />
+
+### Anatomy is not one rigid object
+
+Preoperative CT and intraoperative projections may differ in patient positioning and deformation, as well as image content. Even if an individual bone is approximately rigid, its relationship to neighbouring structures may change. Work on spine registration shows how such deformation can undermine a single global rigid fit. <Citation keys={["otake2013"]} />
+
+Distinguish the target structure from the rest of the scene. A pose error may need a different response from an unmodelled instrument or a changed material distribution. Letting every discrepancy drive the same six rigid degrees of freedom can lower the loss while worsening the physical alignment.
+
+## A.14. Radiation quantities and dose
+
+Acquisition reports place several radiation quantities side by side. Some share units, but they measure different things, as [Table A.3](#table-A-3) makes explicit.
+
+<div className="prose-table" role="region" aria-label="Radiation quantities and units" tabIndex={0}>
+
+| Quantity                        | Typical units                     | Meaning                                                                                                |
+| ------------------------------- | --------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| **Absorbed dose**               | Gray, $\mathrm{Gy}=\mathrm{J/kg}$ | Energy imparted to matter per unit mass                                                                |
+| **Air kerma**                   | Gy                                | Initial kinetic energy transferred from uncharged radiation to charged particles, per unit mass of air |
+| **Kerma–area product, or KAP**  | $\mathrm{Gy\,cm^2}$               | Air kerma integrated over beam cross-sectional area                                                    |
+| **CTDI$_{\mathrm{vol}}$**       | mGy                               | A standardised CT output index based on reference phantom measurements                                 |
+| **Dose–length product, or DLP** | $\mathrm{mGy\,cm}$                | A CT output index combining CTDI$_{\mathrm{vol}}$ with scan length                                     |
+| **Effective dose**              | Sievert, Sv                       | A tissue-weighted radiation-protection quantity based on reference assumptions                         |
+
+</div>
+
+CT output indices describe standardised scanner output, not the absorbed dose in an individual organ. Effective dose is a radiation-protection quantity, not a patient-specific prediction of harm. <Citation keys={["dance2014"]} />
+
+In fluoroscopy, cumulative reference air kerma and kerma–area product provide exposure information. Neither directly gives the maximum absorbed dose at the patient’s skin. Field size, beam movement, patient geometry and the reference location matter. <Citation keys={["iaeaFluoroscopyDose"]} />
+
+Here attenuation and energy absorption must be kept separate again. The coefficient $\mu$ describes removal from the primary beam. The mass energy-absorption coefficient, $\mu_{\mathrm{en}}/\rho$, concerns energy absorption. It cannot replace $\mu/\rho$ in an attenuation renderer, and a transmitted image alone does not specify where energy was deposited. <Citation keys={["hubbell1995"]} />
+
+Predicting absorbed dose requires an account of energy transfer and deposition in the relevant material and geometry. A model that reproduces detector images may omit those processes entirely. Image agreement alone cannot validate a dose prediction.
+
+## A.15. What these distinctions mean for differentiable modelling
+
+[The measurement-chain figure in Chapter 1](/chapters/introduction/#figure-measurement-chain) locates the prediction and observation before they enter the loss.
+
+Before differentiating, specify the observable and what is held fixed.
+
+For the polychromatic primary signal,
+
+$$
+P_p(\theta)
+=
+\int
+n_{0,p}(E)\,
+R_p(E)\,
+e^{-L_p(E,\theta)}
+\,\mathrm{d}E,
+$$
+
+suppose $\theta$ changes the attenuation path while the incident spectrum and detector response remain fixed. Differentiating gives
+
+$$
+\frac{\partial P_p}{\partial\theta}
+=
+-
+\int
+n_{0,p}(E)\,
+R_p(E)\,
+e^{-L_p(E,\theta)}
+\frac{\partial L_p(E,\theta)}{\partial\theta}
+\,\mathrm{d}E.
+$$
+
+This derivative describes the specified experiment. If $\theta$ also changes incident fluence, detector response, scatter, or the acquisition controller’s output, additional terms are required. If the objective is defined on a processed image, the processing model contributes further derivatives.
+
+The sign depends on the domain. Increasing optical depth decreases expected primary detector signal and increases a negative-log projection. Displayed brightness may move in either direction, depending on the presentation transform. Before treating two gradients as contradictory, check that they differentiate the same quantity.
+
+Identifiability is a separate issue. Consider a homogeneous slab whose optical depth is
+
+$$
+L=\mu t.
+$$
+
+A single noiseless monochromatic transmission determines the product $\mu t$, but cannot independently determine both attenuation and thickness. Perfect derivatives do not remove this ambiguity. Autodiff has no jurisdiction over missing information. Additional views, spectral measurements, known geometry, or justified material information may supply the missing constraints.
+
+In larger inverse problems, pose, material properties, source output and processing parameters can compensate for one another unless the measurements constrain them sufficiently. A low loss shows that the model fits the selected observations. It does not establish a unique physical interpretation for every recovered parameter.
+
+Keep the renderer’s output explicit. Label optical depth, transmission, detector expectation and noisy measurements as such, and keep display processing separate. Then a simplification can be judged against the task it needs to support, without first having to guess what its pixels mean.
+
+<Bibliography
+  keys={[
+    "dance2014",
+    "fdaXray",
+    "openstax2022",
+    "dicomPS33",
+    "hernandez2014",
+    "poludniowski2021",
+    "hubbell1995",
+    "xcom",
+    "brooks1976",
+    "alvarez1976",
+    "alvarez2017",
+    "siewerdsen2001",
+    "xu2014",
+    "prakash2011",
+    "schneider1996",
+    "rauch2012",
+    "otake2013",
+    "iaeaFluoroscopyDose",
+    "max1995",
+    "swank1973",
+  ]}
+/>

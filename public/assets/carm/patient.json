@@ -1,0 +1,14 @@
+{
+  "heightMetres": 1.8,
+  "bounds": [
+    [-0.31800329089164736, 0.0, -0.16720921844244005],
+    [0.31800329089164736, 1.8, 0.16720921844244005]
+  ],
+  "torsoTarget": [0, 1.26, -0.010816866159439095],
+  "standingAxes": {
+    "x": "patient left",
+    "y": "superior",
+    "z": "anterior"
+  },
+  "supineTableContactOffsetMetres": 0.15639235228300097
+}

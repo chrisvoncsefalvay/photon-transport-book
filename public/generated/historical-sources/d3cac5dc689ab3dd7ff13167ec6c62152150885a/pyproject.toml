@@ -1,0 +1,64 @@
+[build-system]
+requires = ["hatchling==1.32.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "differentiable-photon-transport"
+version = "0.1.0"
+description = "Scientific code for Differentiable Photon Transport — Volume I: Foundations"
+requires-python = ">=3.12"
+license = "Apache-2.0"
+dependencies = []
+
+[project.scripts]
+dpt-check-gpu = "dpt.gpu_check:main"
+
+[dependency-groups]
+check = [
+  "pyright==1.1.411",
+  "pytest==9.1.1",
+  "ruff==0.16.6",
+]
+gpu = [
+  "torch==2.14.0",
+  "wandb==0.29.0",
+  "warp-lang==1.17.0",
+]
+experiment = [
+  { include-group = "gpu" },
+  "matplotlib==3.10.7",
+]
+benchmark = [
+  { include-group = "gpu" },
+  "pytest-benchmark==5.3.0",
+]
+
+[tool.hatch.build.targets.sdist]
+include = ["python/dpt"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["python/dpt"]
+
+[tool.uv]
+default-groups = ["check"]
+
+[tool.pyright]
+include = ["python", "tests/python"]
+extraPaths = ["python"]
+# Warp kernel annotations are runtime DSL expressions rather than Python type expressions.
+ignore = ["python/dpt/_gpu_preflight_kernel.py", "python/dpt/kernels", "python/dpt/transport/kernels.py"]
+pythonVersion = "3.12"
+typeCheckingMode = "strict"
+
+[tool.pytest.ini_options]
+addopts = "-ra --strict-config --strict-markers"
+testpaths = ["tests/python"]
+markers = ["gpu: requires actual CUDA execution (enable with --run-gpu)"]
+
+[tool.ruff]
+line-length = 100
+src = ["python", "tests/python"]
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["B", "E", "F", "I", "N", "RUF", "UP"]

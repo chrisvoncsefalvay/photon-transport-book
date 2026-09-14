@@ -1,0 +1,46 @@
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-prose);
+  font-size: var(--size-0);
+  line-height: var(--leading-prose);
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  line-height: var(--leading-tight);
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: var(--size-3);
+}
+
+h2 {
+  font-size: var(--size-2);
+}
+
+h3 {
+  font-size: var(--size-1);
+}
+
+.eyebrow {
+  color: var(--ink-muted);
+  font-family: var(--font-ui);
+  font-size: var(--size--1);
+  font-weight: 650;
+  letter-spacing: 0.1em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+code,
+kbd,
+samp {
+  font-family: var(--font-code);
+}

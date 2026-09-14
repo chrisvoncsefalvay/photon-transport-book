@@ -1,0 +1,54 @@
+{
+  "outside_whole_cells": {
+    "definition": "coarse cells with r_bar=0; partial-volume cells excluded",
+    "cell_count": 32572,
+    "volume_mm3": 4229989.300415039,
+    "signed_integral_jm_mm3": [
+      [
+        155.77880234686936,
+        -19.360704883151453
+      ],
+      [
+        232.4328512387052,
+        13.76945949202346
+      ]
+    ],
+    "absolute_integral_jm_mm3": [
+      [
+        533.7374957264341,
+        81.96837188171915
+      ],
+      [
+        1434.7868921015026,
+        268.5659112598837
+      ]
+    ],
+    "empty_region": false
+  },
+  "outside_fraction_weighted": {
+    "definition": "(1-r_bar) volume weighting of piecewise-constant coarse response, including partial-volume cells; not exact subvoxel localisation",
+    "volume_mm3": 4241304.460673427,
+    "signed_integral_jm_mm3": [
+      [
+        197.21372126736964,
+        -15.756025694552365
+      ],
+      [
+        252.55178850368182,
+        59.13994145507788
+      ]
+    ],
+    "absolute_integral_jm_mm3": [
+      [
+        591.5962366735794,
+        96.52609639074589
+      ],
+      [
+        1543.1793821738763,
+        322.5145069738479
+      ]
+    ]
+  },
+  "pattern_inner_product_mm3": 11804.684530791605,
+  "cell_volume_mm3": 129.86581420898438
+}

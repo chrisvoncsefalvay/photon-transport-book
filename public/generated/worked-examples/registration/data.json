@@ -1,0 +1,207 @@
+{
+  "evaluation": {
+    "stationary": true,
+    "termination": "gradient_tolerance",
+    "errors": {
+      "translation_mm": 0.00935091620306295,
+      "rotation_radians": 6.143042727484921e-05,
+      "landmark_rms_mm": 0.009975743856850895,
+      "landmark_max_mm": 0.012200336430683092,
+      "landmarks": 8
+    },
+    "initial_errors": {
+      "translation_mm": 3.5355328570761233,
+      "rotation_radians": 0.023065125189341593,
+      "landmark_rms_mm": 3.7685961725470896,
+      "landmark_max_mm": 3.9924729278359012,
+      "landmarks": 8
+    },
+    "held_out": [
+      {
+        "angle_degrees": 45.0,
+        "expected_error_poisson_sd_rms": 0.004482254166948947
+      },
+      {
+        "angle_degrees": 135.0,
+        "expected_error_poisson_sd_rms": 0.0041217420842986
+      }
+    ],
+    "geometric_pass": true,
+    "held_out_pass": true
+  },
+  "history": [
+    {
+      "iteration": 0,
+      "loss": 364067.0155442624,
+      "gradient_infinity_norm": 124892.63584245207,
+      "step": 0.0,
+      "evaluations": 1,
+      "curvature_pairs": 0
+    },
+    {
+      "iteration": 1,
+      "loss": 178543.73095429898,
+      "gradient_infinity_norm": 78024.29988640858,
+      "step": 1.0,
+      "evaluations": 2,
+      "curvature_pairs": 1
+    },
+    {
+      "iteration": 2,
+      "loss": 63727.34193322337,
+      "gradient_infinity_norm": 61732.50887104041,
+      "step": 1.0,
+      "evaluations": 3,
+      "curvature_pairs": 2
+    },
+    {
+      "iteration": 3,
+      "loss": 18459.80059582604,
+      "gradient_infinity_norm": 7060.237702819615,
+      "step": 1.0,
+      "evaluations": 4,
+      "curvature_pairs": 3
+    },
+    {
+      "iteration": 4,
+      "loss": 17319.466434083693,
+      "gradient_infinity_norm": 2712.335925804109,
+      "step": 1.0,
+      "evaluations": 5,
+      "curvature_pairs": 4
+    },
+    {
+      "iteration": 5,
+      "loss": 17055.739318603242,
+      "gradient_infinity_norm": 2375.076575704931,
+      "step": 1.0,
+      "evaluations": 6,
+      "curvature_pairs": 5
+    },
+    {
+      "iteration": 6,
+      "loss": 16860.428915706005,
+      "gradient_infinity_norm": 1765.7127722145613,
+      "step": 1.0,
+      "evaluations": 7,
+      "curvature_pairs": 6
+    },
+    {
+      "iteration": 7,
+      "loss": 16494.968089610702,
+      "gradient_infinity_norm": 1654.2695815298748,
+      "step": 1.0,
+      "evaluations": 8,
+      "curvature_pairs": 7
+    },
+    {
+      "iteration": 8,
+      "loss": 16461.581318339275,
+      "gradient_infinity_norm": 2475.3208346439123,
+      "step": 1.0,
+      "evaluations": 9,
+      "curvature_pairs": 8
+    },
+    {
+      "iteration": 9,
+      "loss": 16366.66913641517,
+      "gradient_infinity_norm": 603.7395945743986,
+      "step": 1.0,
+      "evaluations": 10,
+      "curvature_pairs": 9
+    },
+    {
+      "iteration": 10,
+      "loss": 16360.090118296332,
+      "gradient_infinity_norm": 77.16905766749662,
+      "step": 1.0,
+      "evaluations": 11,
+      "curvature_pairs": 10
+    },
+    {
+      "iteration": 11,
+      "loss": 16359.82200559909,
+      "gradient_infinity_norm": 20.12640930517187,
+      "step": 1.0,
+      "evaluations": 12,
+      "curvature_pairs": 10
+    },
+    {
+      "iteration": 12,
+      "loss": 16359.81413792224,
+      "gradient_infinity_norm": 3.0050932072106757,
+      "step": 1.0,
+      "evaluations": 13,
+      "curvature_pairs": 10
+    },
+    {
+      "iteration": 13,
+      "loss": 16359.814018723893,
+      "gradient_infinity_norm": 0.35308903040048634,
+      "step": 1.0,
+      "evaluations": 14,
+      "curvature_pairs": 10
+    },
+    {
+      "iteration": 14,
+      "loss": 16359.814016303098,
+      "gradient_infinity_norm": 0.031667272013059744,
+      "step": 1.0,
+      "evaluations": 15,
+      "curvature_pairs": 10
+    },
+    {
+      "iteration": 15,
+      "loss": 16359.814016292074,
+      "gradient_infinity_norm": 0.0010771429085814077,
+      "step": 1.0,
+      "evaluations": 16,
+      "curvature_pairs": 10
+    },
+    {
+      "iteration": 16,
+      "loss": 16359.814016292035,
+      "gradient_infinity_norm": 0.00011913366639504375,
+      "step": 1.0,
+      "evaluations": 17,
+      "curvature_pairs": 10
+    }
+  ],
+  "independent_rms_error_mm": [
+    3.7685961725470896,
+    2.5956467048444662,
+    1.3031714266643428,
+    0.4933601171502072,
+    0.4188929104659031,
+    0.38216211165685954,
+    0.32937900056576547,
+    0.14588508746865975,
+    0.052678569465662274,
+    0.02246971431731771,
+    0.011239755490126206,
+    0.009742178288682133,
+    0.010001270457881649,
+    0.009970465405597198,
+    0.009975364283668714,
+    0.00997571268781545,
+    0.009975743856847834
+  ],
+  "accepted_pose": {
+    "rotation": [
+      0.9997666598636424,
+      -0.0179920186903846,
+      -0.011954626240114135,
+      0.017895725297165526,
+      0.999806937252335,
+      -0.008113645185347088,
+      0.012098299102946826,
+      0.007897815239049814,
+      0.99989562238929
+    ],
+    "translation_mm": [
+      1.4986676889686343,
+      -1.9980329661379306,
+      2.4928670811781415
+    ]
+  }
+}

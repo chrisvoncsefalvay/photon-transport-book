@@ -1,0 +1,621 @@
+---
+layout: ../../layouts/ChapterLayout.astro
+title: Tracing rays through a sampled volume
+status: Draft
+scope: A sampled volume specifies attenuation at discrete locations. Predicting a radiograph means defining the field between those samples and integrating it along each detector ray.
+chapterNumber: "04"
+---
+
+import EquationNote from "../../components/marginalia/EquationNote.astro";
+import MarginNote from "../../components/marginalia/MarginNote.astro";
+
+import RadiographStudy from "../../components/figures/RadiographStudy.astro";
+import RecordedFigure from "../../components/figures/RecordedFigure.astro";
+
+import Citation from "../../components/citations/Citation.astro";
+import Bibliography from "../../components/citations/Bibliography.astro";
+
+import Source from "../../components/source/Source.astro";
+
+A ray can pass through the correct piece of anatomy and still produce the wrong attenuation. Moving its samples by half a voxel changes what it sees near an edge. Using the slice spacing for every direction stretches some paths and shortens others. Both errors can leave a projection looking perfectly respectable, which is inconsiderate of them.
+
+[Chapter 3](/chapters/frames-geometry-motion/#34-constructing-source-to-detector-rays) brought the source and detector into physical object coordinates. We can now ask what attenuation a point on their connecting segment encounters. The volume supplies values at specified locations, and interpolation fills the gaps between them. Integrating that field over physical distance produces the optical depth.
+
+These choices determine the image before GPU execution enters the discussion. They also determine the function we will differentiate in [Chapter 5](/chapters/differentiating-projection/).
+
+Our library operation is `dpt.projection.project_optical_depth`: it combines `GridSpec`, the acquisition geometry and a pose with the resident attenuation array, then writes one optical depth per detector pixel. The output feeds [Chapter 2's transmission operator](/chapters/transmission/#26-evaluating-transmission-numerically) directly. Before presenting that call, we need to settle the field it integrates. The boundary extension deserves particular care: zero-extended hats and a field clamped to half-cell faces have different integrals even when their stored arrays agree.
+
+<RadiographStudy
+  kind="volume"
+  id="figure-ct-to-projection"
+  title="A slice is not a projection"
+  description="Orthogonal slices show individual planes of the synthetic CT, while the primary projection combines attenuation along rays through the whole volume. Structures that are separate in depth can therefore overlap in the detector image."
+/>
+
+## 4.1 What a voxel represents
+
+Fix a photon energy $E$ and suppose the stored values have already been converted to linear attenuation coefficients in $\mathrm{mm}^{-1}$. The energy argument will be suppressed throughout this chapter. A CT intensity or Hounsfield unit needs the [material conversion described in Appendix A.11](/appendix/x-ray-theory/#a11-ct-values-and-hounsfield-units) before it can fill this role.
+
+Let the array have dimensions $N_x,N_y,N_z$, with storage order $A[k,j,i]$. Here $i$ advances along the first grid direction, $j$ along the second and $k$ along the third. These are volume indices, and the detector retains its own column and row indices. Let $\mathbf{o}^O$ be the physical centre of sample $(0,0,0)$, and let the columns of the proper orthogonal matrix $\mathbf{Q}\in\mathrm{SO}(3)$ give the right-handed grid axes in object coordinates. With positive spacings $\Delta_x,\Delta_y,\Delta_z$, define
+
+$$
+\begin{gathered}
+\mathbf{S}=\operatorname{diag}(\Delta_x,\Delta_y,\Delta_z),\\
+\mathbf{x}_{ijk}^O=\mathbf{o}^O+\mathbf{Q}\,\mathbf{S} \begin{bmatrix}i\\j\\k\end{bmatrix}.
+\end{gathered}
+$$
+
+<EquationNote term="\mathbf{x}_{ijk}^O">
+  Physical centre of volume sample $(i,j,k)$ in the object frame, in mm.
+</EquationNote>
+
+<EquationNote term="\mathbf{o}^O">
+  Physical location of the first stored sample centre, in mm.
+</EquationNote>
+
+<EquationNote term="\mathbf{Q}">
+  Grid-axis directions expressed in object coordinates.
+</EquationNote>
+
+<EquationNote term="\mathbf{S}">
+  Diagonal matrix of voxel spacings, in mm.
+</EquationNote>
+
+[Equation (4.1)](#equation-4-1) fixes the sample locations independently of array storage. We interpret $A[k,j,i]$ as the attenuation assigned to $\mathbf{x}_{ijk}^O$. A reconstruction may estimate an average over a region rather than a literal point sample. Treating its values as interpolation coefficients is then a modelling choice. We must still declare the locations and the interpolation rule.
+
+A cell associated with an interior sample extends half a spacing in each grid direction. If $\mathbf{u}$ denotes continuous grid coordinates, the union of the stored cells has bounds
+
+$$
+\begin{gathered}
+-\frac12\leq u_a\leq N_a-\frac12,\\
+a\in\{x,y,z\}.
+\end{gathered}
+$$
+
+<EquationNote term="u_a">
+  Continuous grid coordinate along axis $a$.
+</EquationNote>
+
+<EquationNote term="N_a">
+  Number of stored samples along grid axis $a$.
+</EquationNote>
+
+The extent in [equation (4.2)](#equation-4-2) is $N_a\Delta_a$, while the distance between the first and last sample centres is $(N_a-1)\Delta_a$. Confusing those two lengths moves the boundary by half a voxel at each end. Neither the filename nor the array shape tells us which physical origin a loader has supplied.
+
+A piecewise-constant model assigns each value to its cell. A trilinear model blends neighbouring sample values. Their integrals differ at finite resolution, even with exact integration. Choose the field model before choosing the algorithm that integrates it. [Table 4.1](#table-4-1) collects the coefficient, grid and support conventions needed to define that field.
+
+<div className="prose-table" role="region" aria-label="Attenuation volume quantities and grid conventions" tabIndex={0}>
+
+| Quantity                     | Meaning                                                      | Units                                              |
+| ---------------------------- | ------------------------------------------------------------ | -------------------------------------------------- |
+| $A[k,j,i]$                   | Stored attenuation coefficient at a declared sample location | $\mathrm{mm}^{-1}$                                 |
+| $\mathbf{o}^O$               | First sample centre in the object frame                      | mm                                                 |
+| $\mathbf{Q}$                 | Grid directions expressed in the object frame                | Dimensionless                                      |
+| $\Delta_x,\Delta_y,\Delta_z$ | Physical distance between adjacent centres                   | mm                                                 |
+| Cell bounds                  | Half-spacing faces associated with stored samples            | mm after applying the grid map                     |
+| Interpolation support        | Region where the chosen interpolant can be nonzero           | Determined by interpolation and boundary extension |
+
+</div>
+
+## 4.2 Physical coordinates to array indices
+
+A ray sample arrives as $\mathbf{x}^O$ in millimetres. Subtract the sample origin, rotate into the grid basis and divide by spacing:
+
+$$
+\mathbf{u}(\mathbf{x}^O) =\mathbf{S}^{-1}\mathbf{Q}^{\mathsf T} (\mathbf{x}^O-\mathbf{o}^O).
+$$
+
+<EquationNote term="\mathbf{u}">
+  Continuous, dimensionless coordinates on the sample lattice.
+</EquationNote>
+
+<EquationNote term="\mathbf{x}^O">
+  Physical query point in the object frame, in mm.
+</EquationNote>
+
+[Equation (4.3)](#equation-4-3) produces continuous, dimensionless grid coordinates. An integer coordinate selects a sample centre. A fractional coordinate describes a position between centres. The spacing division acts after the basis change: anisotropic scaling and a general rotation do not commute.
+
+For an axis-aligned grid with $\mathbf{o}^O=(10,-20,30)^{\mathsf T}\,\mathrm{mm}$ and spacings $(0.5,0.8,2)\,\mathrm{mm}$, the point $(11,-17.6,34)^{\mathsf T}\,\mathrm{mm}$ maps to $(2,3,2)^{\mathsf T}$. It therefore selects $A[2,3,2]$. The point $(10.25,-19.8,31)^{\mathsf T}\,\mathrm{mm}$ maps to $(0.5,0.25,0.5)^{\mathsf T}$ and needs interpolation. Unequal coordinates and unequal spacings make axis mistakes easier to see.
+
+The coordinate conversion in [Figure](#figure-4-1) keeps sample centres, cell faces and array indices distinct.
+
+<RecordedFigure
+  id="figure-4-1"
+  title="Sample centres in an anisotropic volume"
+  description="The same physical points are located on an anisotropic grid and in array coordinates, with cell faces half a spacing beyond sample centres. Sample centres and half-cell faces must remain distinct when locating samples and clipping rays."
+/>
+
+For a contiguous array whose last index varies fastest, the scalar address is
+
+$$
+\operatorname{offset}(i,j,k) =(kN_y+j)N_x+i.
+$$
+
+<EquationNote term="N_x">
+  Number of samples in the fastest-varying storage direction.
+</EquationNote>
+
+<EquationNote term="N_y">
+  Number of samples in the middle storage direction.
+</EquationNote>
+
+The offset in [equation (4.4)](#equation-4-4) counts stored scalars, not millimetres. A strided view needs its actual strides instead. Keeping physical geometry out of the address calculation lets a storage change leave the represented field unchanged.
+
+At the API boundary, establish whether an external origin refers to a first centre or an outer corner. A corner-to-centre conversion adds half a spacing along each grid axis in physical coordinates. Apply that conversion once when constructing the volume geometry. Adding another half voxel in the sampler would translate the entire field.
+
+The origin and basis belong to the volume, even when the array was loaded from a file whose anatomical orientation differs from our object frame. Reordering array axes without updating the map changes the anatomy. Updating both the array and the map consistently changes only its storage description.
+
+The executable grid contract fixes all of these choices at preparation time. Its `shape` is `(nz, ny, nx)` and its spacing is `(dx, dy, dz)`, and the map converts between physical axis order and the x-fastest flat array explicitly. The library accepts a contiguous binary32 field, so a strided external volume must be converted by its caller before repeated projection begins. `GridSpec` contains no CT conversion and guesses no anatomical orientation.
+
+<Source
+  file="python/dpt/volumes.py"
+  region="volume-sampling-contract"
+  caption="Sample centres, array order and volume support"
+/>
+
+Notice the `support` property. The implemented field extends the outermost sample value to the outer half-cell face, then becomes zero beyond that face. Keeping support tied to the declared cell extent gives a constant field its full physical box width. A nonzero boundary coefficient produces a jump there. The interpolation derivation below first examines zero-extended hats, which gives us a useful comparison with this boundary choice, but its exterior ramp is not the one selected by `GridSpec`.
+
+## 4.3 Interpolation and the field between samples
+
+First consider trilinear interpolation with zero-valued samples outside the stored index range. Define the one-dimensional hat function $\beta$ and the resulting reference field by
+
+$$
+\begin{gathered}
+\beta(v)=\max(1-|v|,0),\\
+\mu_A(\mathbf{x}^O)=\sum_{i=0}^{N_x-1}\sum_{j=0}^{N_y-1}\sum_{k=0}^{N_z-1} A[k,j,i]\,\beta(u_x-i)\beta(u_y-j)\beta(u_z-k).
+\end{gathered}
+$$
+
+<EquationNote term="\beta">
+  One-dimensional, dimensionless hat basis function.
+</EquationNote>
+
+<EquationNote term="\mu_A">
+  Attenuation field defined by the stored coefficients and their hat basis, in
+  $\mathrm{mm}^{-1}$.
+</EquationNote>
+
+Only the nearest two lattice locations in each direction can contribute to [equation (4.5)](#equation-4-5), giving at most eight array reads. Outside indices contribute zero, and the implementation must test their validity before reading them. Clamping an outside index to the nearest stored sample would implement a different extension.
+
+Within one interpolation cell, write $\mathbf{m}=\lfloor\mathbf{u}\rfloor$ and $\boldsymbol{\alpha}=\mathbf{u}-\mathbf{m}$. With $w_0(a)=1-a$ and $w_1(a)=a$, the same evaluation becomes
+
+$$
+\mu_A(\mathbf{x}^O)=\sum_{a,b,c\in\{0,1\}} A[m_z+c,m_y+b,m_x+a]\,w_a(\alpha_x)w_b(\alpha_y)w_c(\alpha_z)
+$$
+
+<EquationNote term="\alpha_x">
+  Fractional position within the current interpolation cell along its first
+  axis.
+</EquationNote>
+
+<EquationNote term="\alpha_y">
+  Fractional position along the second interpolation-cell axis.
+</EquationNote>
+
+<EquationNote term="\alpha_z">
+  Fractional position along the third interpolation-cell axis.
+</EquationNote>
+
+where out-of-range coefficients in [equation (4.6)](#equation-4-6) mean zero. The weights are nonnegative and sum to one over the extended lattice. A constant stored region therefore reproduces its constant value wherever all contributing samples have that value. Near the edge of an unpadded array, mixing with the outside zeros creates a ramp.
+
+That ramp fixes the interpolation support: the field is zero when any grid coordinate lies outside $[-1,N_a]$, and also on the outer faces. This is half a spacing farther out than the cell bounds in equation (4.2). The cell box covers the regions assigned to stored samples, while the interpolation box contains their full hat functions ([Figure](#figure-4-2)). When the intended object has a known zero exterior, an adequate border of zero-valued samples lets us place this interpolation boundary outside the anatomy of interest.
+
+<RecordedFigure
+  id="figure-4-2"
+  title="Cell boundaries and interpolation support"
+  description="Piecewise-constant cells end half a spacing beyond their centres, while the zero-extended hat basis reaches a full spacing beyond each centre. The different supports change the sampled field near the array edge and the interval over which a ray can encounter it."
+/>
+
+The interpolant is continuous. Its spatial derivative generally jumps at integer grid planes, because neighbouring linear pieces have different slopes. Within an open interpolation cell, the chain rule gives
+
+$$
+\nabla_{\mathbf{x}^O}\mu_A =\mathbf{Q}\mathbf{S}^{-1}\nabla_{\mathbf{u}}\mu_A.
+$$
+
+<EquationNote term="\nabla_{\mathbf{x}^O}\mu_A">
+  Spatial attenuation gradient in object coordinates, in $\mathrm{mm}^{-2}$.
+</EquationNote>
+
+The gradient in [equation (4.7)](#equation-4-7) has units $\mathrm{mm}^{-2}$. The inverse spacing is essential: the same coefficient difference across a thinner interval produces a steeper physical gradient. We will use this derivative when a pose update moves ray samples through the field.
+
+Higher-order interpolation can make the field smoother, but changes its support, reads and approximation properties. Some interpolants can overshoot nonnegative samples. For primary attenuation, a negative interpolated coefficient would imply amplification along that part of the ray. Trilinear interpolation avoids that overshoot for nonnegative inputs through its nonnegative weights.
+
+The CUDA sampler uses the same trilinear weights between sample centres, with the half-cell extension declared in [Listing 4.1](#listing-4-1). It first checks the physical support in grid coordinates. Inside that support it clamps each coordinate to the range of sample centres, then reads the corresponding corners. Clamping without the initial support test would extend the edge values indefinitely and turn a finite volume into a surprisingly large object.
+
+<Source
+  file="python/dpt/kernels/projection.py"
+  region="projection-clamped-trilinear"
+  caption="Clamped trilinear values and grid-coordinate gradients"
+/>
+
+The value and its grid-coordinate gradient share eight coefficient loads. Each binary32 coefficient is promoted before differences and interpolation are evaluated in binary64. For the value, weighted interpolation retains a small endpoint beside a much larger neighbour. For a slope, the code differences the appropriate corner values before blending them across the other axes. Subtracting two already-interpolated values could erase a small transverse slope beneath a large common background. Those apparently interchangeable algebraic arrangements have different rounding behaviour, so the derivative needs the slope that the stored corner differences still contain.
+
+In the outer half-cell, the field is constant along the clamped axis, so `slope` suppresses that component. This zero interior slope does not mean moving the support face has zero effect on a ray integral. The clipping calculation below supplies that dependency, and [Chapter 5](/chapters/differentiating-projection/#53-geometry-through-the-sampled-field) carries it through the derivative. At a clamp transition or tied interpolation branch, the returned slope is a branch value, not a claim that the field is differentiable there.
+
+## 4.4 Intersecting a ray with the volume
+
+Take the finite object-space segment from Chapter 3, with endpoints $\mathbf{s}^O$ and $\mathbf{q}_p^O$. Its physical length is $d_p=\lVert\mathbf{q}_p^O-\mathbf{s}^O\rVert>0$. Applying the affine grid map to its endpoints gives
+
+$$
+\begin{gathered}
+\mathbf{a}_p=\mathbf{u}(\mathbf{s}^O),\\
+\mathbf{b}_p=\mathbf{u}(\mathbf{q}_p^O)-\mathbf{a}_p,\\
+\mathbf{u}_p(t)=\mathbf{a}_p+t\mathbf{b}_p, \quad 0\leq t\leq1.
+\end{gathered}
+$$
+
+<EquationNote term="\mathbf{a}_p">
+  Source position expressed in continuous grid coordinates.
+</EquationNote>
+
+<EquationNote term="\mathbf{b}_p">
+  Source-to-detector displacement in grid coordinates.
+</EquationNote>
+
+<EquationNote term="\mathbf{u}_p(t)">
+  Position along ray $p$ on the sample lattice.
+</EquationNote>
+
+The vector $\mathbf{b}_p$ in [equation (4.8)](#equation-4-8) is a displacement in grid coordinates. Its Euclidean norm is not a physical ray length when spacing is anisotropic. Keep $d_p$ for integration weights.
+
+For a box with lower and upper bounds $l_a,h_a$ in each grid direction, a nonzero component $b_{p,a}$ gives two plane intersections:
+
+$$
+\begin{gathered}
+\tau_{a,0}=\frac{l_a-a_{p,a}}{b_{p,a}},\\
+\tau_{a,1}=\frac{h_a-a_{p,a}}{b_{p,a}},\\
+\tau_a^- =\min(\tau_{a,0},\tau_{a,1}),\\
+\tau_a^+ =\max(\tau_{a,0},\tau_{a,1}).
+\end{gathered}
+$$
+
+<EquationNote term="\tau_a^-">
+  Earlier ray-parameter crossing of the two planes perpendicular to axis $a$.
+</EquationNote>
+
+<EquationNote term="\tau_a^+">
+  Later ray-parameter crossing of those planes.
+</EquationNote>
+
+Sorting each pair in [equation (4.9)](#equation-4-9) accommodates either ray direction. If $b_{p,a}=0$, the ray is parallel to those planes: it misses the box if $a_{p,a}$ lies outside $[l_a,h_a]$, and otherwise that coordinate imposes no restriction on $t$. Handle this case directly rather than evaluating a division that can produce an infinity or a NaN.
+
+Intersect the three accepted intervals with the source-to-detector segment:
+
+$$
+\begin{gathered}
+t_p^- =\max(0,\tau_x^-,\tau_y^-,\tau_z^-),\\
+t_p^+ =\min(1,\tau_x^+,\tau_y^+,\tau_z^+).
+\end{gathered}
+$$
+
+<EquationNote term="t_p^-">
+  Entry parameter of the accepted finite ray interval.
+</EquationNote>
+
+<EquationNote term="t_p^+">
+  Exit parameter of the accepted finite ray interval.
+</EquationNote>
+
+An unconstraining parallel coordinate supplies $(-\infty,+\infty)$ to [equation (4.10)](#equation-4-10), or is omitted from the extrema. The interval has positive length only when $t_p^+>t_p^-$. A single tangency contributes zero path length. For the zero-extended hat reference, choose $l_a=-1$ and $h_a=N_a$. The implemented clamped trilinear field and a cellwise-constant volume instead use the half-cell bounds in equation (4.2), but their shared support does not make their interior fields identical.
+
+The clipped physical length is
+
+$$
+\ell_p=d_p\max(0,t_p^+-t_p^-).
+$$
+
+<EquationNote term="\ell_p">
+  Physical length of the clipped segment, in mm.
+</EquationNote>
+
+<EquationNote term="d_p">
+  Full source-to-detector sample distance, in mm.
+</EquationNote>
+
+[Equation (4.11)](#equation-4-11) preserves the finite endpoints: a large volume can contain the source or detector, but material beyond either endpoint is still excluded. A miss gives $L_p=0$ and $T_p=1$ immediately, without invoking an interpolation routine on an invalid interval.
+
+[Figure](#figure-4-3) shows how the slab intervals combine before any attenuation samples are read.
+
+<RecordedFigure
+  id="figure-4-3"
+  title="Clipping a finite detector ray"
+  description="The slab construction clips a finite source-to-detector segment against the volume, distinguishing a crossing from a parallel miss and a zero-length contact. Only a positive-length intersection contributes attenuation."
+/>
+
+A tiny direction component is not mathematically zero. Replacing every component below a fixed threshold by zero can discard a real, distant intersection. A numerical parallel policy therefore needs a scale-aware error argument and tests against the resulting interval, particularly for long rays and thin volumes.
+
+`finite_interval()` implements the slab calculation for the library's half-cell bounds. Initialising its limits to zero and one clips the _finite_ source-to-detector segment before any field samples are requested. A parallel miss produces an empty interval, while an exactly parallel coordinate inside its slab imposes no further restriction. There is no adjustable epsilon that quietly changes a nearly parallel ray into a parallel one.
+
+<Source
+  file="python/dpt/kernels/projection.py"
+  region="projection-active-intersection"
+  caption="Finite-ray clipping and its active-face derivatives"
+/>
+
+The extra vectors record the derivatives of the selected entry and exit parameters with respect to grid-space origin and direction. They are a small amount of per-ray state, independent of the number of integration samples. Keeping them with the interval prevents the reverse calculation from treating its bounds as constants. Strict comparisons select the first winning axis at a tie, and tests treat that outcome as a declared branch convention, since choosing a deterministic branch cannot create a unique derivative at a corner.
+
+## 4.5 Quadrature along a physical path
+
+For a nonempty interval, choose a positive integer sample count $M_p$. Equal midpoint samples and their physical weights are
+
+$$
+\begin{gathered}
+\Delta t_p=\frac{t_p^+-t_p^-}{M_p},\\
+t_{pr}=t_p^-+\left(r+\frac12\right)\Delta t_p,\\
+w_{pr}=d_p\Delta t_p, \quad 0\leq r<M_p.
+\end{gathered}
+$$
+
+<EquationNote term="t_{pr}">
+  Dimensionless position of midpoint sample $r$ along ray $p$.
+</EquationNote>
+
+<EquationNote term="w_{pr}">
+  Physical integration weight of that sample, in mm.
+</EquationNote>
+
+<EquationNote term="M_p">
+  Positive integer number of samples on the accepted interval.
+</EquationNote>
+
+Every weight in [equation (4.12)](#equation-4-12) is measured in millimetres, and their sum is $\ell_p$. Midpoints avoid evaluating exactly on the two clipped endpoints. They can still land on internal interpolation knots.
+
+The discrete optical depth is
+
+$$
+\widehat L_p=\sum_{r=0}^{M_p-1}w_{pr} {}\times\mu_A\!\left((1-t_{pr})\mathbf{s}^O+t_{pr}\mathbf{q}_p^O\right).
+$$
+
+<EquationNote term="\widehat L_p">
+  Dimensionless optical depth approximated by the chosen quadrature.
+</EquationNote>
+
+[Equation (4.13)](#equation-4-13) is dimensionless, as the continuous line integral is. Accumulating attenuation values without the distance weights would make a projection depend on the number of samples.
+
+<MarginNote label="Distance weights">
+  Doubling the sampling density should improve the approximation, not double the
+  object.
+</MarginNote>
+
+A target physical step $h$ can set $M_p=\max(1,\lceil\ell_p/h\rceil)$. Then the actual step is $\ell_p/M_p\leq h$, so the final sample represents a full equal-width subinterval rather than an accidentally truncated endpoint weight. Another choice fixes $M_p$ during an optimisation stage. The latter keeps the sample-count branch unchanged as pose varies. Chapter 5 will examine the effect of allowing that integer to change.
+
+Midpoint integration is not the only option. For a piecewise-constant field, intersect the ray with the grid planes and accumulate the exact segment lengths through its cells:
+
+$$
+L_p^{\mathrm{cell}} =\sum_{v\in\mathcal{V}_p}\ell_{pv}\,\mu_v.
+$$
+
+<EquationNote term="\ell_{pv}">
+  Physical distance travelled through cell $v$ by ray $p$, in mm.
+</EquationNote>
+
+<EquationNote term="\mu_v">
+  Constant attenuation assigned to cell $v$, in $\mathrm{mm}^{-1}$.
+</EquationNote>
+
+The expression in [equation (4.14)](#equation-4-14) is exact for that field model, apart from numerical arithmetic. It does not become the exact integral of a trilinear field merely because the cells came from the same array. A trilinear polynomial restricted to an oblique line can be cubic within an interpolation cell, so two-point Gauss integration is exact there if the ray is split at every crossed interpolation plane. That is a different integration strategy again.
+
+Siddon's method organises the cellwise calculation around three families of voxel-boundary planes. The intersections determine which cells a ray traverses and the physical lengths that weight their coefficients. This geometric organisation avoids testing every voxel individually. <Citation keys={["siddon1985"]} />
+
+We can measure midpoint error without any volume loader. Along a prescribed physical segment of length $\ell$, let the analytic attenuation be $\mu(s)=\mu_0+b s+c s^2$. Choose coefficients so it is nonnegative on the segment. Its exact optical depth is
+
+$$
+L=\mu_0\ell+\frac{b\ell^2}{2}+\frac{c\ell^3}{3}.
+$$
+
+<EquationNote term="\mu_0">
+  Constant term in the analytic attenuation field, in $\mathrm{mm}^{-1}$.
+</EquationNote>
+
+<EquationNote term="b">
+  Linear attenuation-gradient coefficient, in $\mathrm{mm}^{-2}$.
+</EquationNote>
+
+<EquationNote term="c">
+  Quadratic attenuation coefficient, in $\mathrm{mm}^{-3}$.
+</EquationNote>
+
+Here $b$ has units $\mathrm{mm}^{-2}$ and $c$ has units $\mathrm{mm}^{-3}$. For $M$ equal midpoint intervals, subtracting the sum of squared midpoint locations from [equation (4.15)](#equation-4-15) gives
+
+$$
+L-\widehat L_M=\frac{c\ell^3}{12M^2}.
+$$
+
+<EquationNote term="\widehat L_M">
+  Optical-depth estimate from $M$ equal midpoint intervals.
+</EquationNote>
+
+[Equation (4.16)](#equation-4-16) predicts both sign and convergence rate of the midpoint error illustrated in [Figure](#figure-4-4). With $\mu_0=0.01\,\mathrm{mm}^{-1}$, $b=0$, $c=10^{-6}\,\mathrm{mm}^{-3}$ and $\ell=100\,\mathrm{mm}$, the exact optical depth is $4/3$. Counts $M=10,20,40$ give errors $1/1200$, $1/4800$ and $1/19200$.
+
+<RecordedFigure
+  id="figure-4-4"
+  title="Midpoint integration of a quadratic attenuation field"
+  description="Midpoint quadrature approximates a nonnegative quadratic attenuation field over a 100 mm path. Doubling the number of intervals quarters the optical-depth error, exposing the second-order convergence rate against an exact integral."
+/>
+
+The forward kernel applies the fixed-count midpoint rule to that clipped interval. One invocation handles one flat detector index: misses write zero, and every intersecting ray uses the prepared `samples_per_ray`. This makes the discretisation repeatable as pose changes within a clipping branch. It also means physical step size varies with chord length, so choosing a sample count requires convergence checks on the longer relevant paths.
+
+<Source
+  file="python/dpt/kernels/projection.py"
+  region="projection-streamed-quadrature"
+  caption="Midpoint quadrature along each ray"
+/>
+
+`ray.length` remains a millimetre distance even though `ray.origin` and `ray.direction` use grid coordinates. Multiplying it by `step` supplies the physical quadrature weight. Sample values accumulate in a binary64 register. The default output is rounded to binary32; `precision="float64"` retains the binary64 result while leaving the stored field coefficients unchanged. No positions or interpolation weights are written to a ray-by-sample array. The status flag records invalid coordinates or an unrepresentable output, and a zero written on a failed ray is not permission to interpret the result as vacuum.
+
+The same operator also accepts `integration="cell_gauss"`, which splits at interpolation planes and applies the exact cubic rule described above. [Chapter 11](/chapters/registration/#116-assemble-the-complete-application) uses that mode with binary64 outputs to complete a pose fit whose midpoint samples otherwise introduce gradient jumps near the solution.
+
+## 4.6 A GPU projection operator
+
+Let us assign each detector ray to one CUDA thread. Each thread clips its ray to the volume, accumulates optical depth in registers and writes the result to its detector pixel. All threads read from the same volume without modifying it. Neighbouring threads write adjacent output values, but their rays may cross the volume obliquely, so adjacent writes do not imply contiguous reads.
+
+In Warp, this maps to a typed kernel over a flat pixel index or a two-dimensional detector grid. The [pinned Warp programming guide](https://raw.githubusercontent.com/NVIDIA/warp/v1.17.0/docs/user_guide/basics.rst) defines `wp.tid()` for identifying each execution instance and explicit array arguments for its reads and writes. The array and geometry descriptors are allocated before the repeated projection calls. The loop forms each sample position from its index, and it does not materialise a tensor containing every position along every ray. The source, detector geometry and attenuation volume stay on the CUDA device throughout a sequence of pose evaluations.
+
+For fixed geometry and quadrature, the complete operator is linear in the stored coefficients. Flattening them into $\mathbf{a}$ gives
+
+$$
+\begin{gathered}
+\widehat L_p=\sum_v W_{pv}a_v,\\
+W_{pv}=\sum_r w_{pr}B_v(\mathbf{x}_{pr}^O)
+\end{gathered}
+$$
+
+<EquationNote term="W_{pv}">
+  Combined path and basis weight linking coefficient $v$ to ray $p$, in mm.
+</EquationNote>
+
+<EquationNote term="a_v">
+  Flattened attenuation coefficient, in $\mathrm{mm}^{-1}$.
+</EquationNote>
+
+where $B_v$ is the tensor-product basis from equation (4.5) for the zero-extended reference. For the implemented field, use the corresponding clamped interpolation weights inside its half-cell support. Both choices remain linear in the stored coefficients. The matrix in [equation (4.17)](#equation-4-17) describes the selected operator, but we need not store it. Evaluating its nonzero contributions while traversing each ray avoids a potentially enormous sparse matrix and keeps the interpolation convention visible in the calculation. The interface in [Table 4.2](#table-4-2) makes the required geometry, coefficient storage and repeated-call behaviour explicit.
+
+<div className="prose-table" role="region" aria-label="Projection operator inputs and outputs" tabIndex={0}>
+
+| Interface item            | Required meaning                                                          | Repeated-call behaviour                                                                                     |
+| ------------------------- | ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Volume coefficients       | Nonnegative finite attenuation, declared dtype and strides                | Remain resident and read-only during a projection                                                           |
+| Grid geometry             | Sample-centre origin, basis, positive spacing and dimensions              | Small device-side parameters, updated only when the grid changes                                            |
+| Ray geometry              | Finite physical endpoints or parameters that construct them               | Uses the Chapter 3 conventions                                                                              |
+| Sampling policy           | Fixed count or physical target step, boundary extension and interpolation | Identifies the discrete operator being evaluated                                                            |
+| Optical-depth output      | One dimensionless scalar per detector sample                              | Caller-owned storage written once per ray                                                                   |
+| Optional detector outputs | Transmission or expected primary counts                                   | Derived using [Chapter 2's numerical rules](/chapters/transmission/#26-evaluating-transmission-numerically) |
+
+</div>
+
+Each thread writes to a distinct detector pixel, so the forward projection needs no atomic operations. It still sums contributions along each ray, and the precision of that sum must be chosen independently of the volume's storage precision. Tests for long rays should include many small contributions added after larger ones, when rounding can erase their effect. If optical depth is not needed separately, evaluating the exponential in the projection kernel can avoid a second kernel launch and a read of the intermediate optical-depth image. Retaining optical depth as an explicit output, however, supports log-domain objectives and diagnostics.
+
+The public call keeps optical depth as an explicit output. `prepare_projection()` has already bound the grid, detector, fixed quadrature and owning CUDA stream, and allocated the small reduction workspace needed if pose is active. The caller supplies both the immutable field and the current packed pose, plus the destination array. A projection call allocates no device buffer and copies no image or volume between host and device, but checked calls do transfer diagnostic status.
+
+<Source
+  file="python/dpt/projection.py"
+  region="projection-public-operator"
+  caption="The projection API and its device buffers"
+/>
+
+With validation enabled, the call checks input values before writing any pixels, then checks the numerical status reported by the kernel after execution. It also checks buffer metadata and memory ranges, rejecting an output buffer that overlaps the field or pose storage.
+
+Setting `validate=False` makes the caller responsible for ensuring that the current input values are valid and for checking the accumulated numerical status before accepting a result. An earlier validation remains sufficient only while the validated contents are unchanged. A pose-recovery loop can therefore validate its fixed volume once, but must ensure that each new trial pose is valid and check execution status before accepting the corresponding projection.
+
+The next call passes `out_L` to `transmit()` on the same stream, with independently prepared output destinations. Keeping the two operators separate gives both counts and log transmission access to the same optical depths. It also lets [the reverse chain](/chapters/differentiating-projection/#52-attenuation-and-transmission-derivatives) reuse their independently tested numerical policies.
+
+A variable-step projector can give neighbouring rays different loop lengths. Our fixed-count kernel removes that source of divergence for intersecting rays, although misses exit early and interpolation branches can differ. Measure the remaining divergence together with memory throughput and occupancy. A block cooperating on one long ray may expose more parallelism but introduces a reduction, changes rounding order and spends more threads on short rays. The useful choice depends on the detector size, path-length distribution and device.
+
+A trilinear sample requests at most eight coefficients. Cache reuse can reduce the associated memory transactions, while scattered access can make each requested scalar expensive. Profile register pressure, achieved occupancy and cache behaviour on the actual acquisition. The launch configuration should follow those measurements rather than a generic claim that one block size is best.
+
+## 4.7 Resolution, truncation and convergence
+
+There are three different approximations we need to keep apart.
+
+- **Field approximation.** Sampling the anatomy and choosing an interpolant produces a field $\mu_A$. The sample spacing, coefficient values and boundary extension determine what this field can represent. Fine structures may be lost or blurred before any ray is integrated; taking more samples along that ray cannot restore them.
+- **Quadrature error.** Numerical quadrature replaces the exact line integral of $\mu_A$ with a finite weighted sum. Its error depends on the integration rule, sample placement and variation of the field along the ray, including crossings of interpolation knots. Refining the quadrature tests how accurately we integrate the chosen field, not how faithfully that field represents the anatomy.
+- **Floating-point error.** Finite-precision coordinate calculations, interpolation, weighting and accumulation perturb the exact-arithmetic quadrature. Small contributions can disappear when added to a much larger running total, and rounding the final output introduces another error. Increasing the sample count does not guarantee that this error decreases; arithmetic precision and evaluation order need their own checks.
+
+If $L$ denotes the intended continuous-field integral, $L_A$ its exact interpolated-field counterpart and $\widehat L$ the exact-arithmetic quadrature, then
+
+$$
+L_{\mathrm{computed}}-L =(L_A-L) {}+(\widehat L-L_A) {}+(L_{\mathrm{computed}}-\widehat L).
+$$
+
+<EquationNote term="L_A">
+  Exact line integral of the chosen interpolated field.
+</EquationNote>
+
+<EquationNote term="\widehat L">
+  Exact-arithmetic quadrature of that field.
+</EquationNote>
+
+<EquationNote term="L_{\mathrm{computed}}">
+  Optical depth returned after floating-point evaluation.
+</EquationNote>
+
+[Equation (4.18)](#equation-4-18) tells us what a convergence experiment can establish. Halving the integration step while keeping the array fixed tests quadrature convergence towards $L_A$. It cannot recover anatomy that the array and interpolation have already lost.
+
+`experiments/projection-convergence/run.py` records those comparisons separately in `convergence.json`. Its prescribed object is a positive quadratic field in a fixed physical box, with no claim to represent anatomy. One reference integrates that continuous polynomial analytically. A second, `dpt.validation.projection.integrate_sampled_field`, splits the uploaded field at every interpolation or clamp transition and integrates each line segment with a two-point Gauss rule. Since trilinear interpolation restricted to a line is at most cubic, this second reference is exact for the selected sampled field up to binary64 arithmetic. It uses the actual uploaded binary32 coefficients, so quantising the field is not accidentally counted as a kernel error.
+
+The CUDA midpoint sweep can then expose quadrature error relative to the sampled-field reference, while the grid sweep exposes the difference from the continuous quadratic. The recorder retains both errors, configuration and source hashes. A run that finishes has produced evidence to inspect, but it has not made an arbitrary sample count suitable for every acquisition.
+
+A grid-refinement study holds the physical object and acquisition fixed, samples the same analytic field on successively finer grids and reduces quadrature error enough to expose the field approximation. Keep the zero boundary outside the prescribed object's support at every resolution. Changing array dimensions while retaining the old spacing changes the physical object size, which is a different experiment.
+
+The boundary extension also makes truncation a physical modelling question. If tissue reaches an edge of the supplied array, the hat reference ramps towards zero while the implemented field holds the edge value to a half-cell face and then drops to zero. Refining quadrature integrates the chosen exterior more accurately. It does not tell us what attenuation was outside the scan. Padding with known zeros is appropriate where the exterior is actually known to be zero, and it is not a reconstruction of missing tissue.
+
+Errors in optical depth pass nonlinearly into transmission. For a perturbation $\delta L$,
+
+$$
+\frac{T(L+\delta L)-T(L)}{T(L)} =\exp(-\delta L)-1.
+$$
+
+<EquationNote term="\delta L">
+  Dimensionless error or perturbation in optical depth.
+</EquationNote>
+
+For small errors, [equation (4.19)](#equation-4-19) gives a relative transmission error of approximately $-\delta L$. A heavily attenuated ray can have a tiny absolute count error while retaining a substantial relative transmission error. Report optical-depth error alongside the quantity the application actually compares.
+
+For smooth fields and a suitable uniform midpoint sequence, a quadratic error regime is expected. An unsplit interpolation knot interrupts the smoothness assumptions behind the usual second-derivative error formula. A finite study may also reach a plateau where field error or floating-point error dominates. The slope of one log-log plot is therefore useful only with the field, quadrature and arithmetic held to a declared comparison.
+
+## 4.8 Boundary and consistency checks
+
+As it has (hopefully, by now) become our habit, we close this chapter too by checking our work. We begin with coordinates whose answers fit on a page.
+
+- An axis-aligned box gives a known chord length.
+- A ray that misses it has zero optical depth.
+- Reversing the endpoints leaves the integral unchanged, provided the field and physical segment are unchanged.
+
+These tests detect mistakes that an anatomical projection can conceal.
+
+The zero-extended hat reference also has a compact exact check. Put one nonzero coefficient $a$ at grid index $(0,0,0)$ and all other coefficients at zero. Trace a grid-axis ray through that sample, with its other two grid coordinates fixed at zero and endpoints beyond the full support. Then
+
+$$
+L=a\Delta_x\int_{-1}^{1}\beta(u_x)\,\mathrm du_x=a\Delta_x.
+$$
+
+<EquationNote term="a">
+  The single nonzero attenuation coefficient, in $\mathrm{mm}^{-1}$.
+</EquationNote>
+
+<EquationNote term="\Delta_x">
+  Physical grid spacing along the ray direction, in mm.
+</EquationNote>
+
+The triangular area in [equation (4.20)](#equation-4-20) tests the zero extension and its physical width together. For a single-sample axis, $N_x=1$, clipping to both half-cell faces retains only three quarters of that area. With $N_x\geq2$, the boundary sample loses only its outer eighth, so clipping retains seven eighths. A clamped extension has a different support again. These are distinguishable numerical models, not interchangeable boundary conveniences.
+
+For the implemented field, use a constant box to test the full half-cell chord and use an outer-sample case to test the clamp. A single nonzero boundary sample beside a zero neighbour contributes a constant half-cell followed by a linear decline to the next centre. The resulting area can happen to match the complete hat area even though the functions differ. Shorten the segment to the outer half-cell and the two values separate. Tests need such partial segments: one agreeing total integral is insufficient to identify the boundary model.
+
+For nonnegative coefficients and quadrature weights, the discrete operator has useful ordering properties:
+
+$$
+\begin{gathered}
+\mathbf{a}\geq\mathbf{0}\ \Longrightarrow\ \widehat L_p\geq0,\\
+\mathbf{a}'\geq\mathbf{a}\ \Longrightarrow\ \widehat L_p(\mathbf{a}')\geq\widehat L_p(\mathbf{a}),\\
+0<T_p\leq1.
+\end{gathered}
+$$
+
+<EquationNote term="\mathbf{a}">
+  Vector of stored attenuation coefficients.
+</EquationNote>
+
+The transmission inequality in [equation (4.21)](#equation-4-21) concerns finite real optical depths, and stored transmission may underflow to zero. The two optical-depth inequalities are direct tests of interpolation and accumulation signs. A negative result from finite nonnegative inputs cannot be explained by a different physical interpretation of primary attenuation. The independent cases in [Table 4.3](#table-4-3) separate these sign errors from geometry and quadrature errors.
+
+<div className="prose-table" role="region" aria-label="Independent projection checks" tabIndex={0}>
+
+| Case                                    | Expected comparison                              | Error isolated                                  |
+| --------------------------------------- | ------------------------------------------------ | ----------------------------------------------- |
+| Zero coefficients and missed rays       | $L=0$, $T=1$                                     | Initialisation, clipping and empty paths        |
+| Constant cellwise field                 | Attenuation times exact box chord                | Cell traversal and physical units               |
+| Constant interpolation neighbourhood    | Constant coefficient times segment length        | Partition of unity under the declared extension |
+| Single hat basis                        | Equation (4.20), for the zero-extended reference | Reference support convention and spacing        |
+| Affine field within interpolation cells | Endpoint-average attenuation times length        | Coordinates and trilinear reproduction          |
+| Prescribed quadratic along a ray        | Equations (4.15)–(4.16)                          | Midpoint error independently of volume sampling |
+| Grid and endpoints translated together  | Identical continuous indices and integral        | Origin handling                                 |
+| Consistent grid-axis permutation        | Same physical field and projection               | Storage order versus geometry                   |
+| Reversed endpoints                      | Same physical integral                           | Direction signs and endpoint weights            |
+| Increasing one coefficient              | Nondecreasing optical depths for affected rays   | Basis weights and accumulation                  |
+
+</div>
+
+Set absolute and relative error tolerances in the quantity being tested. Coordinates are in millimetres, while optical depth is dimensionless. Near zero, an absolute optical-depth tolerance carries the comparison, because a relative error alone divides by a vanishing reference. Keep a separate tolerance for the quadrature error predicted by an analytic test and the floating-point difference between two evaluations of the same quadrature.
+
+Once those checks hold, a pose update has a definite meaning: it moves a set of physical samples through one declared field and changes their weighted sum. We can now ask for the derivative of that operation, including the places where the sample pattern or interpolation branch changes.
+
+<Bibliography keys={["siddon1985"]} />

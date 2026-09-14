@@ -1,0 +1,474 @@
+---
+layout: ../../layouts/ChapterLayout.astro
+title: From an X-ray spectrum to a detector measurement
+status: Draft
+scope: An X-ray beam contains photons with different energies. Predicting the measurement means combining their energy-dependent transmission with the detector’s response.
+chapterNumber: "08"
+---
+
+import EquationNote from "../../components/marginalia/EquationNote.astro";
+import MarginNote from "../../components/marginalia/MarginNote.astro";
+import Citation from "../../components/citations/Citation.astro";
+import SpectralRadiographs from "../../components/figures/SpectralRadiographs.astro";
+import RecordedFigure from "../../components/figures/RecordedFigure.astro";
+import Bibliography from "../../components/citations/Bibliography.astro";
+import Source from "../../components/source/Source.astro";
+
+A thick path removes photons unevenly across the spectrum. The photons that survive are therefore a different mixture from those that entered. Even if the object and detector remain perfectly still, changing the source spectrum changes which material differences the image emphasises. A single attenuation coefficient cannot follow that change merely by being given a more impressive variable name.
+
+We will retain straight, uncollided paths and let photon energy vary. The geometry still supplies physical material paths. Energy-dependent attenuation acts along those paths, and the detector assigns a response to the surviving photons. This order matters: the energy integral belongs outside the exponential, and the detector response belongs inside the energy integral.
+
+The result is an expected primary signal. Scatter requires the additional paths in Chapter 9.
+
+This chapter supplies the physical operators used inside [Chapter 7's joint evaluator](/chapters/same-pose-different-x-ray/#listing-7-3). The existing geometric projector will integrate one field per material. `spectral_signal` will consume those paths, supplied attenuation tables and response-weighted photon populations. Its image feeds the detector and objective, and its reverse product supplies material-path seeds to the same projector. Keeping those boundaries explicit lets us change the energy model without rewriting ray geometry.
+
+## 8.1 The source spectrum and its units
+
+Let $n_{0,p}(E)$ be the expected number of open-beam photons per unit energy associated with pixel $p$ over one exposure. We measure $E$ in keV, so this density has units photons per keV. It is defined at the detector, before detection losses. Source output, geometric acceptance and source-to-detector distance have already entered this quantity, as they did for $n_{0,p}$ in [Chapter 2](/chapters/transmission/#21-from-incident-photons-to-a-transmission-image).
+
+For a nonzero open-beam population, separate the total expected count $n_{0,p}$ from a normalised spectral shape $f_p(E)$:
+
+$$
+\begin{gathered}
+n_{0,p}=\int_{E_{\min}}^{E_{\max}}n_{0,p}(E)\,\mathrm dE,\\
+n_{0,p}(E)=n_{0,p}f_p(E),\\
+\int_{E_{\min}}^{E_{\max}}f_p(E)\,\mathrm dE=1.
+\end{gathered}
+$$
+
+<EquationNote term="n_{0,p}">
+  Expected open-beam photon population over the exposure.
+</EquationNote>
+
+<EquationNote term="f_p(E)">
+  Normalised open-beam spectral density (keV⁻¹).
+</EquationNote>
+
+In [equation (8.1)](#equation-8-1), $f_p$ has units $\mathrm{keV}^{-1}$. Multiplying exposure while preserving shape changes $n_{0,p}$, while changing filtration can alter both factors. If $n_{0,p}=0$, no normalised shape is determined by the empty spectrum. Use the zero expected signal directly rather than dividing by zero.
+
+A spectrum supplied as photons per area, per energy and per exposure must be integrated over the appropriate detector acceptance before it becomes $n_{0,p}(E)$. A source angular distribution requires the corresponding geometric transformation. Conversely, a spectrum already reported as photons in each energy bin is a bin integral, not a density to multiply by the bin width again.
+
+Energy support is part of the input contract. Record the source model, tube potential, filtration, energy grid and normalisation convention. An energy outside a table's support does not acquire a physical coefficient by clipping its index to the last row. If the source has discrete lines, treat their expected populations separately or integrate them consistently into bins. A delta-function line cannot be sampled faithfully by hoping that a quadrature node lands on it.
+
+The source shape may depend on pixel through filtration or angular emission. A single shared shape is a useful reduction when justified by the acquisition, not a property of the notation. On the GPU, a justified shared spectrum lets pixels reuse one set of spectral weights.
+
+`Spectrum` records the distinction between density and integrated populations before either reaches the GPU. Its `bin_fluence` property supplies the expected photons associated with each discrete term. It multiplies density values by the caller's quadrature weights, but returns bin-integrated populations unchanged. A density with no weights, or a bin population with an extra set of weights, is rejected at ingestion.
+
+<Source
+  file="python/dpt/spectral.py"
+  region="spectrum-units"
+  caption="Converting a spectrum to photon populations"
+/>
+
+This is a small host-side preparation operation. The repeated image calculation receives already prepared CUDA arrays and never asks Python to reconstruct a spectrum for each pixel. `Provenance` records the original source identity, checksum and rights alongside its description. Those fields identify the supplied input, but they do not certify its calibration. An analytic spectrum must name its defining construction rather than borrowing the name of a real X-ray tube.
+
+## 8.2 Energy-dependent material attenuation
+
+Keep the physical attenuation field in the object frame. For a mixture described by elemental mass fractions $w_m(\mathbf{x})$, density $\rho(\mathbf{x})$ and elemental mass attenuation coefficients $\kappa_m(E)$, the independent-constituent mixture model is
+
+$$
+\begin{gathered}
+\mu(\mathbf{x},E) =\rho(\mathbf{x}) \times\sum_m w_m(\mathbf{x})\kappa_m(E),\\
+w_m\geq0,\\
+\sum_m w_m=1.
+\end{gathered}
+$$
+
+<EquationNote term="w_m">Local mass fraction of constituent m.</EquationNote>
+
+<EquationNote term="\kappa_m(E)">
+  Mass attenuation coefficient of constituent m (mm² g⁻¹).
+</EquationNote>
+
+With $\rho$ in $\mathrm{g\,mm}^{-3}$ and $\kappa_m$ in $\mathrm{mm}^2\mathrm{g}^{-1}$, [equation (8.2)](#equation-8-2) produces $\mu$ in $\mathrm{mm}^{-1}$. Tabulations often use $\mathrm{g\,cm}^{-3}$ and $\mathrm{cm}^2\mathrm{g}^{-1}$ instead. Their product is inverse centimetres, so divide that product by ten to obtain inverse millimetres. Convert once at a declared boundary.
+
+Mass fractions and volume fractions are different mixture descriptions. A volume-fraction combination of reference materials uses their linear coefficients and its own density assumptions. Mixing one scheme's fractions with another scheme's coefficients can yield plausible positive numbers without representing the intended material. NIST's attenuation tables use mass-fraction additivity for compounds and distinguish total attenuation from energy-absorption coefficients. That distinction fixes both the mixture weights and the quantity needed in our exponent. <Citation keys={["hubbell1995"]} />
+
+The coefficient here removes photons from the primary beam. It includes scattering out of the uncollided population. The mass energy-absorption coefficient answers a different question about energy deposited through secondary charged particles. It cannot replace the attenuation coefficient in a transmission exponent.
+
+For computation, a separable basis is often convenient. Let $a_m(\mathbf{x})$ be non-negative, dimensionless material fields and let $\mu_m(E)$ be linear attenuation coefficients at declared reference densities. Define the material paths $A_{pm}$ along the finite ray $\ell_p$:
+
+$$
+\begin{gathered}
+\mu(\mathbf{x},E) =\sum_{m=1}^{M}a_m(\mathbf{x})\mu_m(E),\\
+A_{pm}=\int_{\ell_p}a_m(\mathbf{x})\,\mathrm ds,\\
+L_p(E)=\sum_{m=1}^{M}\mu_m(E)A_{pm}.
+\end{gathered}
+$$
+
+<EquationNote term="A_{pm}">
+  Material-basis path integral for pixel p (mm).
+</EquationNote>
+
+<EquationNote term="\mu_m(E)">
+  Linear coefficient of basis material m (mm⁻¹).
+</EquationNote>
+
+The basis in [equation (8.3)](#equation-8-3) separates spatial integration from energy evaluation. $A_{pm}$ has units of millimetres, and it is a literal material length when $a_m$ is a material indicator. A fitted basis field can instead be a relative concentration, so its interpretation must follow its definition. The basis is a modelling assumption: a single CT number does not uniquely specify all its coefficients, as discussed in [Appendix A.11](/appendix/x-ray-theory/#a11-ct-values-and-hounsfield-units).
+
+Interpolation needs the same care as the field representation. Preserve non-negative coefficients and distinguish the two sides of an absorption edge. Smoothing a discontinuity into a continuous curve changes the spectral operator near that edge. Refining the energy quadrature cannot repair a coefficient table that has already removed the feature. XCOM supplies values immediately above and below constituent absorption edges, reflecting the discontinuities that a material mixture inherits. Its isolated-atom data also have limits near edges where molecular or solid-state effects matter. <Citation keys={["xcom"]} />
+
+`MaterialTable` performs that preparation without bundling a material database. A mass table requires its reference density, while a linear table rejects another density factor because it already contains one. The conversion property returns inverse millimetres, the unit needed by our millimetre paths. It also rejects a conversion that overflows or turns a positive coefficient into zero.
+
+<Source
+  file="python/dpt/materials.py"
+  region="material-table-contract"
+  caption="Material coefficients, units and absorption edges"
+/>
+
+Two equal adjacent energies encode the below-edge and above-edge values in that order. `at_energies` requires an explicit side for an exact-edge query and interpolates between distinct neighbouring nodes elsewhere. Its default log–log interpolation requires positive coefficients, while the linear option permits zero. Neither extrapolates beyond the supplied support. These are declared numerical interpretations of a table, not additional physical measurements, and the coefficient uncertainty remains after interpolation has been performed perfectly.
+
+## 8.3 Polychromatic transmission
+
+At each energy, primary survival is still exponential. The expected spectral population reaching the detector is $n_p(E)=n_{0,p}(E)e^{-L_p(E)}$. Let $R_p(E)$ be the expected detector output per incident photon of energy $E$, under a spatially local, linear response model. The expected primary output before an additive electronic offset is
+
+$$
+\begin{gathered}
+\bar y_p=\int_{E_{\min}}^{E_{\max}}n_{0,p}(E)R_p(E) \times e^{-L_p(E)}\,\mathrm dE,\\
+\bar y_{0,p}=\int_{E_{\min}}^{E_{\max}}n_{0,p}(E)R_p(E)\,\mathrm dE.
+\end{gathered}
+$$
+
+<EquationNote term="R_p(E)">
+  Mean detector output per incident photon at energy E.
+</EquationNote>
+
+<EquationNote term="\bar y_{0,p}">
+  Expected open-beam detector output.
+</EquationNote>
+
+[Equation (8.4)](#equation-8-4) has units of detector output: photons per keV times output per photon times keV. The ideal counter has $R_p(E)=1$. An ideal full-energy integrator expressed in keV has $R_p(E)=E$. Actual response may include detection efficiency and incomplete energy deposition. Multiplying by $E$ alone does not calibrate a real detector.
+
+For non-negative response and a positive open-beam output, define the normalised response-weighted spectrum $\alpha_p(E)$. The measured-domain transmission and its apparent optical depth are
+
+$$
+\begin{gathered}
+\alpha_p(E)=\frac{n_{0,p}(E)R_p(E)}{\bar y_{0,p}},\\
+\bar T_p=\int\alpha_p(E)e^{-L_p(E)}\,\mathrm dE,\\
+\bar L_p=-\log\bar T_p.
+\end{gathered}
+$$
+
+<EquationNote term="\alpha_p(E)">
+  Normalised response-weighted incident spectrum (keV⁻¹).
+</EquationNote>
+
+<EquationNote term="\bar T_p">
+  Detector-domain primary transmission.
+</EquationNote>
+
+<EquationNote term="\bar L_p">
+  Apparent optical depth from the transmission ratio.
+</EquationNote>
+
+[Equation (8.5)](#equation-8-5) exposes two averages that must not be exchanged. The detector averages transmitted contributions, and it does not average optical depths and then exponentiate. For a finite positive signal, Jensen's inequality gives $\bar L_p\leq\int\alpha_p(E)L_p(E)\,\mathrm dE$. Equality holds when optical depth is constant on the contributing energy support.
+
+Consider a homogeneous slab of thickness $d$ with coefficient $\mu(E)$ and fixed $\alpha(E)$. Define the transmitted, normalised energy weights $\beta_d(E)$. Differentiating the log transmission gives
+
+$$
+\begin{gathered}
+\beta_d(E)=\frac{\alpha(E)e^{-\mu(E)d}}{\int\alpha(E')e^{-\mu(E')d}\,\mathrm dE'},\\
+\frac{\mathrm d\bar L}{\mathrm dd}=\mathbb E_{\beta_d}[\mu],\\
+\frac{\mathrm d^2\bar L}{\mathrm dd^2}=-\operatorname{Var}_{\beta_d}(\mu)\leq0.
+\end{gathered}
+$$
+
+<EquationNote term="\beta_d(E)">
+  Normalised transmitted energy weighting after thickness d (keV⁻¹).
+</EquationNote>
+
+The slope in [equation (8.6)](#equation-8-6) is the surviving population's average coefficient. Its decline with thickness follows from the coefficient variance. When attenuation decreases with energy over the relevant band, this reweighting preferentially retains higher energies: beam hardening. Absorption edges can complicate the ordering by energy, while the variance identity still holds for fixed non-negative coefficients and weights.
+
+An exact two-energy example makes the effect visible without inventing a tube spectrum. Assign equal incident counting weights and illustrative coefficients $0.02$ and $0.04\,\mathrm{mm}^{-1}$. At $d=50\,\mathrm{mm}$,
+
+$$
+\begin{gathered}
+\bar T=\tfrac12e^{-1}+\tfrac12e^{-2},\\
+\bar L=-\log\!\left(\tfrac12e^{-1}+\tfrac12e^{-2}\right),\\
+\tfrac12L_1+\tfrac12L_2=1.5.
+\end{gathered}
+$$
+
+[Equation (8.7)](#equation-8-7) compares an exact transmitted mixture with the mean optical depth. The numbers define an analytic test, not tissue properties or a measured beam. At increasing thickness the lower coefficient contributes an increasing fraction of the surviving signal. Replacing the mixture by one fixed effective coefficient can match one thickness without matching the next.
+
+[Figure](#figure-8-1) shows how the transmitted mixture changes with thickness.
+
+<RecordedFigure
+  id="figure-8-1"
+  title="Two-energy transmission through a slab"
+  description="An equally weighted two-energy beam produces curved apparent optical depth as slab thickness increases. The changing transmitted mixture explains why taking a logarithm does not turn a polychromatic measurement into one fixed-coefficient line integral."
+/>
+
+## 8.4 Energy quadrature and material paths
+
+Assume first a continuous spectrum on a fixed interval. Choose energy nodes $E_k$ and non-negative quadrature weights $w_k$ in keV. After the geometric operator computes the material paths, the discrete spectral calculation is
+
+$$
+\begin{gathered}
+L_{pk}=\sum_m\mu_m(E_k)A_{pm},\\
+c_{pk}=w_k n_{0,p}(E_k)R_p(E_k),\\
+\bar y_p^{(K)}=\sum_{k=1}^{K}c_{pk}e^{-L_{pk}}.
+\end{gathered}
+$$
+
+<EquationNote term="w_k">
+  Energy-quadrature weight at node k (keV).
+</EquationNote>
+
+<EquationNote term="c_{pk}">
+  Open-beam response contribution including the energy weight.
+</EquationNote>
+
+<EquationNote term="L_{pk}">
+  Optical depth at pixel p and energy node k.
+</EquationNote>
+
+The coefficient $c_{pk}$ in [equation (8.8)](#equation-8-8) already includes an energy weight. For a bin-integrated photon count, replace $w_k n_{0,p}(E_k)$ by that bin population and state the approximation used for response and attenuation within the bin. These alternatives must not be applied together.
+
+Each material path is reused across energy nodes. This saves repeated volume traversal when the basis is exact for the chosen field model. It also makes the sources of approximation separable: ray quadrature determines $A_{pm}$, material representation determines which fields exist, and energy quadrature determines the final sum. Doubling all three resolutions at once can reduce error without revealing its source.
+
+The geometric composition uses the sampler and finite-ray quadrature already developed in [Chapter 4](/chapters/volumes-line-integrals/). `prepare_material_projection` binds material-major field and output views once. `project_material_paths` then schedules the canonical projector for each material. The Python loop runs over the small material count, while CUDA threads still perform every ray integral. Its output layout is `(material, pixel)`, flattened with pixels contiguous, so adjacent pixel threads read adjacent path values for a given material.
+
+<Source
+  file="python/dpt/material_projection.py"
+  region="material-path-composition"
+  caption="Projecting material paths in millimetres"
+/>
+
+The adapter's default `field_domain="fractions"` adopts a narrower basis than the general fields in [equation (8.3)](#equation-8-3): fixed-density material fractions lie in `[0, 1]` and sum to at most one at each voxel, and the remainder is vacuum. They use the same oriented sample-centre grid and constant extension to its half-cell support faces as the scalar projector.
+
+The validator accumulates stored fractions in binary64 and allows an excess of at most $2^{-24}$ above one: independently rounding a nonnegative partition to binary32 can create that much excess without changing its intended occupancy. Individual fractions must still lie in `[0, 1]`. Larger violations are rejected, never rescaled to sum to one. Silent renormalisation would change material amounts and their derivatives while leaving the array shape reassuringly intact.
+
+The explicit `field_domain="nonnegative"` option instead accepts finite, nonnegative dimensionless equivalent-basis coefficients without upper or sum caps. Those coefficients are not volume fractions: their normalisation belongs in the supplied basis attenuation, in $\mathrm{mm}^{-1}$. [Chapter 12](/chapters/reconstruction/#figure-acquired-spectral) uses that domain for the acquired PMMA/Al-equivalent example.
+
+With paths available, `spectral_signal` launches the following pixel-owned sum. Coefficients are material-major with energy contiguous. Weights and response are either shared energy vectors or energy-major pixel arrays, and `wp.static` removes the unused indexing branch for the prepared layout. The number of materials and energies belongs to that specialisation, rather than varying within a warp.
+
+<Source
+  file="python/dpt/kernels/spectral.py"
+  region="spectral-primary-sum"
+  caption="Summing the transmitted spectral contributions"
+/>
+
+`optical_depth` combines material paths and coefficients in binary64. The exponential and the weight–response product retain that precision until the final store. Calling the scalar `transmit` interface on a prematurely narrowed depth would change this numerical contract. The physics is still [the same exponential survival law](/chapters/transmission/#26-evaluating-transmission-numerically), but its spectral inputs need the wider intermediate sum.
+
+By default, paths and image outputs use binary32 storage. Setting `SpectralSpec(precision="float64")` retains binary64 paths, image means, image cotangents and path cotangents; the supplied coefficients, weights and response remain binary32. [Chapter 12](/chapters/reconstruction/) uses this option because rounding a predicted count can obscure the small loss decrease near a solution. Retaining precision through the loss and its reverse products lets the line search see the improvement that the gradient predicts.
+
+Compensated accumulation retains small energy-bin contributions when a broad spectrum places very different magnitudes in one pixel's sum. No pixel-by-energy image is written. This saves both its storage and the later traffic needed to read it back, at the cost of doing the energy loop within each pixel thread. Register demand consequently depends on the active material count, especially in reverse execution, so a timing for one material basis cannot stand in for all bases.
+
+[Figure](#figure-8-2) applies that separation to CT-derived anatomy. The material paths and view stay fixed while three detector channels weight the transmitted spectrum differently. The material assignments and response are declared simulation inputs, not measured patient composition or scanner calibration.
+
+<SpectralRadiographs id="figure-8-2" />
+
+Partition the energy interval at absorption edges and response thresholds. Integrate each smooth piece with its own nodes, respecting the one-sided coefficient values. Discrete source lines contribute explicit weighted terms. A high-order rule spanning a jump does not retain its smooth-integrand error guarantee merely because it has more decimal places in its weights.
+
+For a fixed material basis, record convergence of the signal and of the derivatives that optimisation will use. Very small absolute changes in a nearly extinguished signal can coexist with large relative error. Choose an absolute signal tolerance, a relative tolerance where the reference is sufficiently nonzero, and a separate derivative tolerance.
+
+Strong attenuation can underflow an exponential even when the desired log signal remains representable. For strictly positive terms, put $z_{pk}=\log c_{pk}-L_{pk}$ and $m_p=\max_k z_{pk}$. Then
+
+$$
+\log\bar y_p^{(K)} =m_p+\log\sum_k\exp(z_{pk}-m_p).
+$$
+
+<EquationNote term="m_p">Largest log contribution for this pixel.</EquationNote>
+
+[Equation (8.9)](#equation-8-9) evaluates the same positive sum in log space. Zero-weight terms are omitted, and if all weights vanish, the expected signal is zero and its logarithm is not finite. This numerical rearrangement does not authorise inserting a positive floor into the physical measurement model.
+
+The `spectral_signal` API returns the linear expected mean in its declared storage precision; it does not expose a spectral log-mean output. Binary64 intermediates extend the useful arithmetic range before storage, but cannot preserve a linear output below the destination's range. The retained-binary64 mode also rejects a nonzero exponential or intermediate product that rounds to zero: a later large factor could make the full contribution representable, so silently discarding it would be wrong. Taking a logarithm of the stored zero would not implement [equation (8.9)](#equation-8-9). A log-domain output would have to evaluate the log sum before rounding to the linear destination.
+
+## 8.5 What the detector measures
+
+A detector does more than decide whether a photon arrived. Let $Q_p$ be the random output caused by one photon incident at energy $E$. Its conditional mean is $R_p(E)$. A non-detection contributes zero, so efficiency can be included without a separate correction if it is already part of this response distribution.
+
+For a photon-counting detector with energy bins, let $P_{pb}(E)$ be the probability that an incident photon produces one accepted count in bin $b$. In an ideal exclusive-bin model,
+
+$$
+\begin{gathered}
+\bar C_{pb}=\int n_{0,p}(E)e^{-L_p(E)} \times P_{pb}(E)\,\mathrm dE,\\
+0\leq P_{pb}(E),\\
+\sum_bP_{pb}(E)\leq1.
+\end{gathered}
+$$
+
+<EquationNote term="P_{pb}(E)">
+  Probability of an accepted count in energy bin b from one incident photon.
+</EquationNote>
+
+<EquationNote term="\bar C_{pb}">
+  Expected count in pixel p and energy bin b.
+</EquationNote>
+
+The inequality in [equation (8.10)](#equation-8-10) allows missed events. Perfect energy classification is a limiting response, not a consequence of calling the instrument photon-counting. Energy redistribution broadens the response. Charge sharing or multiple threshold counts can violate the exclusive-event model and require a different joint response law.
+
+An energy integrator accumulates deposited energy or a related charge. If every detected photon deposits its full energy and detection is Bernoulli with efficiency $\eta_p(E)$, the mean response is $\eta_p(E)E$ in keV per photon. The second moment is $\eta_p(E)E^2$, not the square of the mean. This distinction determines noise.
+
+Saturation and pulse pile-up couple events. A response that depends on arrival rate cannot be represented by one fixed $R_p(E)$ for every exposure. Either restrict the model to a regime where independent linear response is justified, or introduce a rate-dependent detector model and validate it with suitable calibration data. Exposure scaling alone cannot identify an arbitrary spectrum and an arbitrary detector response because their product enters the mean.
+
+Different calibration observations constrain different factors. An open-beam image constrains the integrated response-weighted spectrum. Energy-resolved measurements constrain its shape, while independent detector characterisation constrains redistribution and efficiency. An image fit should not be expected to manufacture all three from one projection.
+
+## 8.6 Spatial response and measurement noise
+
+A spatial response can distribute a photon's output across several pixels. Let $\bar z_r$ be the local expected output before that distribution and let $H_{pr}$ map it to readout pixel $p$. With additive mean electronic offsets $b_p$,
+
+$$
+\bar y_p=\sum_rH_{pr}\bar z_r+b_p.
+$$
+
+<EquationNote term="H_{pr}">
+  Linear spatial-response coefficient from input r to readout p.
+</EquationNote>
+
+<EquationNote term="b_p">
+  Mean additive electronic offset at pixel p.
+</EquationNote>
+
+[Equation (8.11)](#equation-8-11) assumes a linear, specified spatial response. A shift-invariant blur is a special case. For a lossless redistribution on a complete readout, column sums equal one, while cropped boundaries or detection losses require different accounting. An energy-dependent blur belongs inside the spectral integral, so a single post-integral matrix is justified only when that separation is valid.
+
+The implemented `BlurSpec` declares a fixed, non-negative finite stencil with total weight at most one. Its array is a matrix rule on a finite detector: samples outside the image are zero. The same kernel factory produces `blur` and `blur_transpose`, changing the offset direction while retaining the weights and boundary support.
+
+<Source
+  file="python/dpt/kernels/detector.py"
+  region="detector-spatial-transpose"
+  caption="The detector response and its discrete transpose"
+/>
+
+Flipping the offsets is necessary for an asymmetric stencil. Applying the forward blur to a reverse seed would give the wrong product unless the actual finite matrix happened to be symmetric. Nor do we renormalise an edge row to conceal lost signal: that would alter the forward operator and its transpose. The small stencil uses binary64 storage and compensated binary64 accumulation, because a weak tail multiplied by a bright pixel can still contribute representable signal. Tests pair the forward and transpose products with an asymmetric stencil, so symmetry cannot let an incorrect reverse rule pass unnoticed.
+
+Mean blur alone does not determine noise correlations. Model a Poisson population of independent photon events, and let $Q_p(E)$ be one event's output in pixel $p$. For a single incident stream with spectral intensity $n(E)$, compound-Poisson statistics give
+
+$$
+\begin{gathered}
+\mathbb E[Y_p]=\int n(E) \times\mathbb E[Q_p\mid E]\,\mathrm dE,\\
+\operatorname{Cov}(Y_p,Y_q) =\int n(E)\mathbb E[Q_pQ_q\mid E]\,\mathrm dE.
+\end{gathered}
+$$
+
+<EquationNote term="Q_p">
+  Single-photon random output in readout pixel p.
+</EquationNote>
+
+<EquationNote term="n(E)">
+  Spectral arrival intensity for the incident stream (photons per keV).
+</EquationNote>
+
+In [equation (8.12)](#equation-8-12), $n(E)$ is the spectral population reaching this detector response, already attenuated. Independent incident streams contribute sums of these moments. The covariance uses a raw second moment because the number of events is itself Poisson. Independent electronic noise adds its covariance, and it does not change that photon term.
+
+For a local ideal counter, $Q=1$ for every arrival, and mean equals variance. For a full-energy integrator, $Q=E$, giving variance $\int n(E)E^2\,\mathrm dE$ in squared energy units. With two arrival energies, the mean weights them by energy and the variance by energy squared. A Poisson likelihood written directly for deposited keV would confuse these two quantities.
+
+<MarginNote label="Two response moments">
+  The expected image can be computed using only the mean single-photon response.
+  Predicting its noise requires the second moment as well: squaring the mean
+  does not supply it.
+</MarginNote>
+
+Exclusive assignment of independent Poisson events to different pixels can yield independent thinned counts. Sharing one event's charge between pixels instead produces joint contributions and generally nonzero covariance. Both mechanisms may produce a blurred expected image, but their noise is different. A processed image can add further dependencies through interpolation, subtraction or temporal filtering.
+
+[Figure](#figure-8-3) shows why a mean blur does not determine the noise covariance.
+
+<RecordedFigure
+  id="figure-8-3"
+  title="Shared charge and exclusive photon assignment"
+  description="Exclusive pixel assignment and shared charge can produce the same mean response while giving different joint scores for each photon. Matching the mean detector image is therefore insufficient to determine its pixel covariance."
+/>
+
+Only after choosing this observation model should we choose a discrepancy. Independent Poisson bins justify a Poisson count likelihood under the corresponding assumptions. A Gaussian approximation needs an appropriate count regime and covariance model. Applying a negative logarithm changes both the noise distribution and its sensitivity to calibration, especially near zero signal.
+
+Observation generation is a separate API. `sample_poisson_counts` consumes count-domain means and writes integer draws. `sample_compound_poisson` consumes energy-bin arrival rates and prescribed per-event scores, sums the scored draws, and can be followed by `add_gaussian_read_noise`. This implements independent Poisson arrivals with the declared deterministic scores, and it does not infer a charge-sharing event law from a blur kernel or from the mean response alone.
+
+`ObservationIdentity` attaches randomness to an observation and global pixel, with separate domains for energy bins and read noise. Keeping that identity reproduces a draw when an image is processed in different chunks, while a fresh observation requires a fresh identity. `energy_offset` selects the first energy-bin counter domain, so chunks can share the same observation without reusing a bin.
+
+The Poisson sampler uses inversion at small means and rejection at larger means, with binary64 acceptance arithmetic. `draw_budget` limits random rejection proposals, not the sampled photon count. Small-mean inversion uses one proposal and a separate bounded recurrence.
+
+Exhausting either numerical bound marks the whole realisation invalid. The zero stored on that failure path is a placeholder for a failed calculation, never an observed absence of photons.
+
+## 8.7 Differentiate the spectral image
+
+Suppose a scalar parameter $\theta$ changes the material paths, spectrum or response. For fixed energy limits and sufficient regularity to exchange derivative and integral, differentiation of the primary signal gives
+
+$$
+\frac{\partial\bar y_p}{\partial\theta} =\int e^{-L_p(E)} \times\Bigl[ \frac{\partial(n_{0,p}(E)R_p(E))}{\partial\theta} -n_{0,p}(E)R_p(E) \times\frac{\partial L_p(E)}{\partial\theta} \Bigr]\,\mathrm dE.
+$$
+
+<EquationNote term="\theta">
+  Scalar parameter whose effect on the expected signal is differentiated.
+</EquationNote>
+
+[Equation (8.13)](#equation-8-13) separates changes in the incident/response weighting from changes in attenuation. For pose alone, with a fixed acquisition model, the first term vanishes. If an energy endpoint or threshold moves with the parameter, boundary contributions may be required, and the fixed-limit expression does not silently include them.
+
+With fixed basis spectra, the derivative with respect to a material path has a particularly useful sign:
+
+$$
+\frac{\partial\bar y_p}{\partial A_{pm}} =-\int n_{0,p}(E)R_p(E) \times\mu_m(E)e^{-L_p(E)}\,\mathrm dE.
+$$
+
+For non-negative inputs, [equation (8.14)](#equation-8-14) is non-positive. A positive derivative under those assumptions is a sign or modelling error. Its units are output per millimetre. A pose derivative then contracts these path sensitivities with the derivatives of $A_{pm}$ with respect to the chosen translation or rotation coordinates.
+
+For the discrete operator, reverse accumulation can avoid storing a Jacobian indexed by every pixel and energy. If $\gamma_p=\partial\mathcal J/\partial\bar y_p^{(K)}$ is the incoming objective adjoint, the material-path adjoint is
+
+$$
+\frac{\partial\mathcal J}{\partial A_{pm}} =-\gamma_p\sum_k c_{pk} \times\mu_m(E_k)e^{-L_{pk}}.
+$$
+
+<EquationNote term="\gamma_p">
+  Incoming derivative of the objective with respect to expected output.
+</EquationNote>
+
+[Equation (8.15)](#equation-8-15) is the reverse rule for the implemented spectral sum. It still needs the geometric operator's derivative to reach pose. Recomputing the exponentials in reverse trades arithmetic for saved intermediates, while retaining them trades memory traffic for arithmetic. The derivative is unchanged only if recomputation uses the same inputs and numerical conventions.
+
+`spectral_vjp` consumes the objective's pixel seed and writes whichever declared input derivatives the caller requests. The pixel kernel below recomputes each energy depth from the original paths and coefficients. Material-path derivatives accumulate in compensated binary64 registers and are stored only after the energy loop. Per-pixel weight or response derivatives can be written directly by their owning pixel thread.
+
+<Source
+  file="python/dpt/kernels/spectral.py"
+  region="spectral-recomputed-adjoint"
+  caption="Backpropagation from the spectral image to material paths"
+/>
+
+Shared parameters need a further sum over pixels. Separate bounded reductions handle shared spectrum, response and coefficient derivatives, and they do not let every pixel atomically update one scalar. The coefficient reduction reuses the computed energy depth across material parameters while preserving each parameter's accumulation order. `wp.static` removes inactive output branches, so fitting pose alone does not also compute an unused calibration Jacobian.
+
+Original arrays remain unchanged until their reverse consumers finish. The manual spectral VJP rejects ambient tape recording and supplies first derivatives only, and it does not differentiate energy nodes or host table interpolation. [Chapter 7's evaluator](/chapters/same-pose-different-x-ray/#listing-7-3) currently activates material paths to recover pose, with named gain/exposure/offset groups outside this operator. The lower-level spectrum and response derivatives are available for a separately constrained inverse model, but their presence alone does not establish identifiability.
+
+Normalisation can carry its own derivative. For a parameter-dependent open beam and positive signals,
+
+$$
+\frac{\partial\bar L_p}{\partial\theta} =-\frac{1}{\bar y_p}\frac{\partial\bar y_p}{\partial\theta} +\frac{1}{\bar y_{0,p}}\frac{\partial\bar y_{0,p}}{\partial\theta}.
+$$
+
+<EquationNote term="\bar y_p">
+  Positive expected primary output in the chosen detector domain.
+</EquationNote>
+
+The second term in [equation (8.16)](#equation-8-16) disappears only when the reference is held fixed. Jointly fitting exposure while differentiating a normalised image as though the open beam were constant creates the wrong objective derivative.
+
+Parameter constraints also affect identifiability. One scalar spectral measurement per ray generally cannot determine several independently unknown material paths: its local Jacobian has one row. Multiple independent spectra or energy bins can provide additional rows, but full rank and useful conditioning still depend on their responses and the object. Merely creating more parameters in the optimiser does not create another measurement.
+
+## 8.8 Implement and validate the extended operator
+
+The spectral calculation takes material paths, physical coefficient tables and a detector response. [Listing 8.3](#listing-8-3) supplies the paths, [Listing 8.4](#listing-8-4) evaluates the spectral sum and [Listing 8.6](#listing-8-6) sends image derivatives back to those paths. This separation gives each stage an independent numerical reference before the stages are composed in a pose fit.
+
+A ray-owned kernel can keep a small set of material paths in registers and traverse energy nodes locally. If the material count becomes large, those registers can spill. An alternative stages paths in device memory and evaluates energies in a separate kernel. That exposes parallelism across energy but can increase intermediate storage and require reductions. Choose after measuring the intended material and energy dimensions.
+
+Keep tables on the device across optimisation iterations. Record coefficient layout, sharing of source weights, launch count, register use, spills, occupancy and actual memory traffic. Avoid host copies in the objective loop. If reverse execution uses retained optical depths, record the pixel-by-energy allocation explicitly, and if it recomputes them, measure both passes. [Table 8.1](#table-8-1) gives independent limiting cases for checking the extended operator before using it in a fit.
+
+<div className="prose-table" role="region" aria-label="Spectral operator validation cases" tabIndex={0}>
+
+| Case                           | Required result                                                         | What it isolates                               |
+| ------------------------------ | ----------------------------------------------------------------------- | ---------------------------------------------- |
+| Zero material paths            | The expected open-beam response.                                        | Spectral normalisation and detector weighting. |
+| One discrete energy            | The monoenergetic exponential at that energy.                           | Agreement with the transmission operator.      |
+| Energy-independent attenuation | One exponential factors outside the response integral.                  | Order of weighting and attenuation.            |
+| Two-energy slab                | The exact sum in equation (8.7).                                        | Averaging and beam-hardening behaviour.        |
+| Non-negative added material    | Expected primary output cannot increase.                                | Sign and coefficient consistency.              |
+| Split an energy interval       | Converged signal and derivative agree.                                  | Energy quadrature and edge treatment.          |
+| Rescale exposure               | Mean and compound-Poisson variance scale linearly under fixed response. | Separation of expectation and noise.           |
+| Material-path perturbation     | Central differences approach equation (8.14) before round-off.          | Independent derivative agreement.              |
+
+</div>
+
+Use analytic cases before comparison with independent physical software, then match material composition, source spectrum, interaction definitions and detector response for that comparison. Convergence towards the same discrete answer is weaker than agreement with a separately specified reference. Keep physical-table uncertainty separate from numerical integration error.
+
+For a monochromatic slab the derivative reduces exactly to $-n_0R\mu e^{-\mu d}$. For the two-energy example it is the weighted sum of the two such terms. These references can be computed without calling the spectral quadrature being tested. Run step-size sweeps in material paths and pose, respecting non-negativity at boundaries and the declared rigid-update convention.
+
+`experiments/spectral-projection/run.py` executes this composition from supplied field, coefficient, spectrum and observation arrays. It records source and input digests with the objective and derivatives, and an explicit prediction export downloads numerical arrays after evaluation.
+
+Photons that scatter into the detector follow paths absent from the spectral primary calculation. Including those contributions requires the event-by-event path model in [Chapter 9](/chapters/scattering-stochastic-transport/#91-beyond-the-uncollided-photon).
+
+<Bibliography keys={["hubbell1995", "xcom"]} />

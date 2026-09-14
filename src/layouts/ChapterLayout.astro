@@ -1,0 +1,89 @@
+---
+import ChapterNavigation from "../components/navigation/ChapterNavigation.astro";
+import TableOfContents from "../components/navigation/TableOfContents.astro";
+import { chapterNeighbours, chapters } from "../lib/chapters";
+import BaseLayout from "./BaseLayout.astro";
+import DefinitionNotes from "../components/marginalia/DefinitionNotes.astro";
+
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface ChapterMetadata {
+  title: string;
+  status: string;
+  scope: string;
+  chapterNumber?: string;
+  description?: string;
+  navigationFrom?: string;
+  part?: "chapter" | "appendix";
+}
+
+interface Props extends Partial<ChapterMetadata> {
+  frontmatter?: ChapterMetadata;
+  headings?: Heading[];
+}
+
+const metadata = Astro.props.frontmatter ?? Astro.props;
+const {
+  title,
+  status,
+  scope,
+  chapterNumber,
+  description: requestedDescription,
+  navigationFrom = Astro.url.pathname,
+  part = "chapter",
+} = metadata;
+if (!title || !status || !scope) {
+  throw new Error(
+    "Chapter layouts require title, status and scope frontmatter.",
+  );
+}
+const description = requestedDescription ?? scope;
+const contentsTitle =
+  chapters.find((chapter) => chapter.href === Astro.url.pathname)?.shortTitle ??
+  title;
+const headings = Astro.props.headings ?? [];
+const neighbours = chapterNeighbours(navigationFrom);
+const sectionLabel = chapterNumber
+  ? `${part === "appendix" ? "Appendix" : "Chapter"} ${chapterNumber}`
+  : "Appendix";
+---
+
+<BaseLayout
+  title={`${title} — Differentiable Photon Transport`}
+  {description}
+  eyebrow={status}
+  citation={{ title, part, ...(chapterNumber ? { chapterNumber } : {}) }}
+>
+  <div class="chapter-header-panel" slot="header-panel">
+    <div class="chapter-header-panel__identity">
+      <span>{sectionLabel}</span>
+      <strong>{contentsTitle}</strong>
+    </div>
+    <TableOfContents {headings} />
+  </div>
+  <ChapterNavigation
+    slot="footer-navigation"
+    previous={neighbours.previous}
+    next={neighbours.next}
+  />
+  <div class="chapter-grid">
+    <article class="chapter">
+      <header class="chapter-header">
+        <div class="chapter-header__meta">
+          <span>{sectionLabel}</span>
+          <span>{status}</span>
+        </div>
+        <h1>{title}</h1>
+        <p class="chapter-header__scope">{scope}</p>
+      </header>
+      <div class="prose">
+        <slot />
+      </div>
+      <DefinitionNotes />
+    </article>
+  </div>
+</BaseLayout>

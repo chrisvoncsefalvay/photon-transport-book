@@ -1,0 +1,156 @@
+.material-response {
+  color: var(--ink);
+  font-family: var(--font-ui);
+  padding: clamp(0.8rem, 2vw, 1.5rem);
+}
+.material-response h3,
+.material-response h4 {
+  margin: 0 0 0.65rem;
+  font: 500 var(--size--1) / 1.45 var(--font-ui);
+}
+.material-response p,
+.material-response li,
+.material-response dl {
+  font: 400 var(--size--1) / 1.6 var(--font-ui);
+}
+.material-response-reading,
+.material-response-empty {
+  max-width: 78ch;
+  margin: 0.25rem 0 1.25rem;
+}
+.material-response-matrices {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(1rem, 2vw, 1.8rem);
+  margin-block: 1.2rem 1.6rem;
+}
+.material-response table {
+  width: 100%;
+  border-collapse: collapse;
+  font: 400 0.78rem / 1.5 var(--font-ui);
+  font-variant-numeric: tabular-nums;
+}
+.material-response th,
+.material-response td {
+  padding: 0.5rem 0.4rem;
+  border-bottom: 1px solid var(--rule);
+  text-align: left;
+  vertical-align: top;
+}
+.material-response th {
+  font-weight: 500;
+}
+.material-response thead th {
+  border-bottom-color: var(--rule-strong);
+  color: var(--ink-muted);
+}
+.material-response-matrices caption {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.material-response .material-response-note,
+.material-response .material-response-unavailable,
+.material-response-panel p,
+.material-response-panel a {
+  color: var(--ink-muted);
+  font: 400 0.75rem / 1.5 var(--font-ui);
+}
+.material-response-statuses {
+  overflow-x: auto;
+  margin-block: 0.5rem 1rem;
+}
+.material-response-statuses table {
+  min-width: 38rem;
+}
+.material-response-statuses caption {
+  padding-bottom: 0.6rem;
+  text-align: left;
+}
+.material-response-statuses small {
+  display: block;
+  color: var(--ink-muted);
+  font-size: inherit;
+}
+.material-response-details {
+  margin-top: 0.8rem;
+  border-top: 1px solid var(--rule);
+  padding-top: 0.8rem;
+}
+.material-response-details > summary,
+.material-response-plane > summary {
+  cursor: pointer;
+  font: 500 var(--size--1) / 1.6 var(--font-ui);
+}
+.material-response-details section {
+  margin-top: 1.2rem;
+}
+.material-response-plane {
+  margin-block: 0.75rem;
+}
+.material-response-panels {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+  margin-block: 1rem 1.4rem;
+}
+.material-response-panel {
+  min-width: 0;
+}
+.material-response-panel h4 span {
+  color: var(--ink-muted);
+  font-weight: 400;
+}
+.material-response-panel img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: fill;
+  background: var(--paper-inset);
+}
+.material-response-identities dd {
+  margin: 0 0 0.65rem;
+  overflow-wrap: anywhere;
+}
+.material-response-identities code {
+  font-size: 0.72rem;
+}
+@media (max-width: 48rem) {
+  .material-response-matrices {
+    grid-template-columns: 1fr;
+  }
+  .material-response-matrices section {
+    max-width: 30rem;
+  }
+  .material-response-panels {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media print {
+  .material-response-statuses {
+    overflow: visible;
+  }
+  .material-response-statuses table {
+    min-width: 0;
+  }
+  .material-response-matrices {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .material-response details::details-content {
+    content-visibility: visible;
+    display: block;
+  }
+  .material-response details > :not(summary) {
+    display: block !important;
+  }
+  .material-response-panels {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .material-response-panel,
+  .material-response table {
+    break-inside: avoid;
+  }
+}

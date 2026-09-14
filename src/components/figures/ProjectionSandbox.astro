@@ -1,0 +1,287 @@
+---
+import FigurePlate from "./FigurePlate.astro";
+import {
+  SANDBOX_DEFAULT,
+  SANDBOX_PHANTOM,
+  SANDBOX_DETECTOR_SIZE,
+  sandboxSvg,
+  sandboxDiagramProjection,
+  sandboxEllipsoidOutline,
+} from "../../lib/projection-sandbox";
+import "../../styles/projection-sandbox.css";
+
+interface Props {
+  id: string;
+}
+const { id } = Astro.props;
+const fallback = `data:image/svg+xml;base64,${Buffer.from(sandboxSvg(SANDBOX_DEFAULT)).toString("base64")}`;
+const project = sandboxDiagramProjection(SANDBOX_DEFAULT);
+const source = project([0, 0, -SANDBOX_DEFAULT.sod]);
+const half = SANDBOX_DETECTOR_SIZE / 2;
+const detectorCorners = [
+  [-half, -half, 500],
+  [-half, half, 500],
+  [half, half, 500],
+  [half, -half, 500],
+] as const;
+const detectorOutline = detectorCorners
+  .map((point) => project(point).join(","))
+  .join(" ");
+---
+
+<FigurePlate
+  {id}
+  title="A surface hides what attenuation still sees"
+  description="The surface and transmission views show the same geometric phantom, with internal inserts visible through attenuation. Source distance, detector distance and focal-spot size change their apparent size and sharpness."
+>
+  <projection-sandbox class="projection-sandbox">
+    <p class="sandbox-intro">
+      Geometric phantom: one ellipsoid, two bone inserts and an air cavity.
+    </p>
+    <div class="sandbox-panels">
+      <section class="sandbox-scene-panel">
+        <h4>Acquisition geometry</h4>
+        <div class="sandbox-scene-frame">
+          <svg
+            class="sandbox-static-scene"
+            data-scene-fallback
+            viewBox="0 0 420 340"
+            role="img"
+            aria-labelledby={`${id}-scene-title ${id}-scene-desc`}
+          >
+            <title id={`${id}-scene-title`}>
+              Source, nested ellipsoid phantom and detector
+            </title>
+            <desc id={`${id}-scene-desc`}
+              >The phantom centre is 500 mm from the point source. The detector
+              is 1000 mm from the source and measures 320 by 320 mm. Three
+              contained, disjoint regions replace the surrounding material.</desc
+            >
+            {
+              detectorCorners.map((corner) => {
+                const point = project(corner);
+                return (
+                  <line
+                    class="sandbox-ray"
+                    x1={source[0]}
+                    y1={source[1]}
+                    x2={point[0]}
+                    y2={point[1]}
+                  />
+                );
+              })
+            }
+            <polygon class="sandbox-detector-plane" points={detectorOutline}
+            ></polygon>
+            {
+              SANDBOX_PHANTOM.map((shape, index) => (
+                <g
+                  class:list={[
+                    "sandbox-ellipsoid",
+                    { "is-outer": index === 0, "is-air": index === 3 },
+                  ]}
+                >
+                  {(
+                    [
+                      [0, 1],
+                      [0, 2],
+                      [1, 2],
+                    ] as const
+                  ).map((plane) => (
+                    <polyline
+                      points={sandboxEllipsoidOutline(
+                        SANDBOX_DEFAULT,
+                        shape,
+                        plane,
+                      )}
+                    />
+                  ))}
+                </g>
+              ))
+            }
+            <circle class="sandbox-source" cx={source[0]} cy={source[1]} r="5"
+            ></circle>
+            <text
+              class="sandbox-static-label"
+              data-fallback-source-label
+              x={source[0]}
+              y={source[1] - 15}>Source</text
+            >
+            <text
+              class="sandbox-static-label"
+              data-fallback-phantom-label
+              x={project([0, 0, 0])[0]}
+              y={project([0, 95, 0])[1] - 12}
+              text-anchor="middle">Phantom</text
+            >
+            <text class="sandbox-static-label" x="375" y="311" text-anchor="end"
+              >Detector</text
+            >
+          </svg>
+          <canvas
+            data-sandbox-scene
+            class="sandbox-live-scene"
+            tabindex="0"
+            role="img"
+            aria-label="Orbitable acquisition geometry. Arrow keys orbit, plus and minus zoom, Home resets the view."
+            hidden></canvas>
+        </div>
+        <div class="sandbox-view-controls">
+          <button
+            type="button"
+            data-zoom-in
+            disabled
+            aria-label="Zoom in on the geometry">+</button
+          ><button
+            type="button"
+            data-zoom-out
+            disabled
+            aria-label="Zoom out from the geometry">−</button
+          ><button type="button" data-reset-view disabled>Reset view</button>
+        </div>
+        <p class="sandbox-help" data-sandbox-status>
+          Static acquisition view. Interactive orbit controls load when
+          available.
+        </p>
+      </section>
+      <section>
+        <h4 data-image-title>Attenuation image</h4>
+        <div class="sandbox-image-frame">
+          <img
+            data-image-fallback
+            src={fallback}
+            width="80"
+            height="80"
+            alt="Exact primary-transmission image of the geometric ellipsoid phantom, showing two brighter bone inserts and a darker air cavity inside the surrounding region."
+          />
+          <canvas
+            data-sandbox-image
+            width="80"
+            height="80"
+            role="img"
+            aria-label="Attenuation image of the geometric ellipsoid phantom"
+            hidden></canvas>
+        </div>
+        <p class="sandbox-help" data-image-domain>
+          Fixed display window: −log(mean T) from 0 to 4, where greater
+          attenuation is brighter.
+        </p>
+        <fieldset class="sandbox-mode">
+          <legend>Image formation</legend><label
+            ><input
+              type="radio"
+              name={`${id}-mode`}
+              value="attenuation"
+              checked
+              disabled
+              data-sandbox-mode
+            /> Attenuation</label
+          ><label
+            ><input
+              type="radio"
+              name={`${id}-mode`}
+              value="surface"
+              disabled
+              data-sandbox-mode
+            /> Opaque surfaces</label
+          >
+        </fieldset>
+      </section>
+    </div>
+    <div class="sandbox-geometry-controls">
+      <div>
+        <label for={`${id}-sod`}
+          >Source to object <output data-sod-value>500 mm</output></label
+        ><input
+          id={`${id}-sod`}
+          type="range"
+          min="200"
+          max="600"
+          step="10"
+          value="500"
+          data-sandbox-input="sod"
+          disabled
+        /><span class="sandbox-range-limits"
+          ><span>200 mm</span><span>600 mm</span></span
+        >
+      </div>
+      <div>
+        <label for={`${id}-sdd`}
+          >Source to detector <output data-sdd-value>1000 mm</output></label
+        ><input
+          id={`${id}-sdd`}
+          type="range"
+          min="800"
+          max="1400"
+          step="10"
+          value="1000"
+          data-sandbox-input="sdd"
+          disabled
+        /><span class="sandbox-range-limits"
+          ><span>800 mm</span><span>1400 mm</span></span
+        >
+      </div>
+      <div>
+        <label for={`${id}-spot`}
+          >Focal-spot diameter <output data-spot-value>0.0 mm</output></label
+        ><input
+          id={`${id}-spot`}
+          type="range"
+          min="0"
+          max="10"
+          step="0.5"
+          value="0"
+          data-sandbox-input="spot"
+          disabled
+        /><span class="sandbox-range-limits"
+          ><span>Point source</span><span>10 mm</span></span
+        >
+      </div>
+    </div>
+    <div class="sandbox-readout">
+      <p>
+        Magnification at the object centre <strong
+          ><span data-magnification>2.00</span>×</strong
+        ><span>M = SDD / SOD</span>
+      </p><button type="button" data-reset-geometry disabled
+        >Reset geometry</button
+      >
+    </div>
+    <p class="sandbox-help">
+      Drag to orbit the apparatus. Use the sliders to change acquisition
+      geometry. Focal-spot averaging affects attenuation mode only.
+    </p>
+    <details class="sandbox-assumptions">
+      <summary>Exact geometry and display assumptions</summary><p>
+        The surrounding ellipsoid has radii (55, 75, 40) mm and attenuation 0.02
+        mm⁻¹. Each bone insert uses 0.05 mm⁻¹ and the air cavity uses zero.
+        These are stipulated coefficients at one energy, not calibrated material
+        data. The inserts are disjoint and fully contained. Their coefficients
+        replace the background over each inner chord.
+      </p><p>
+        Each detector pixel uses its centre ray. A nonzero focal spot uses 32
+        symmetric, equally weighted points on a disc: an approximation to a
+        uniform finite source. Every sub-ray uses its exact finite-segment
+        chord, and the image averages exp(−L), never L. Larger focal spots and
+        magnifications can move features beyond the fixed detector. No random
+        photons are sampled.
+      </p><p>
+        The detector has a fixed 320 mm square footprint with an 80 × 80 display
+        sampling grid. The radiographic polarity and optical-depth window remain
+        fixed as geometry changes. Surface shading is an illustrative
+        directional-light rendering of the first intersected surface.
+      </p>
+    </details>
+    <noscript
+      ><p class="sandbox-help">
+        The static image shows SOD 500 mm, SDD 1000 mm and a point source.
+        JavaScript enables the geometry and image controls.
+      </p></noscript
+    >
+  </projection-sandbox>
+</FigurePlate>
+
+<script>
+  import { registerProjectionSandbox } from "../../lib/projection-sandbox";
+  registerProjectionSandbox();
+</script>

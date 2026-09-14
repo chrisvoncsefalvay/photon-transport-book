@@ -1,0 +1,53 @@
+---
+import { loadTerminology } from "../../lib/terminology";
+import "../../styles/definition-notes.css";
+
+const { definitions } = loadTerminology();
+const payload = JSON.stringify(
+  definitions.filter((entry) => entry.kind !== "frame"),
+).replaceAll("<", "\\u003c");
+---
+
+<definition-notes>
+  <script
+    is:inline
+    type="application/json"
+    data-definition-registry
+    set:html={payload}
+  />
+  <aside
+    class="definition-sidenote"
+    data-definition-panel
+    hidden
+    aria-label="Definition"
+    tabindex="-1"
+  >
+    <div class="definition-sidenote__toolbar">
+      <span data-definition-status>Definition</span>
+      <button type="button" data-definition-close aria-label="Close definition"
+        >Close <span aria-hidden="true">×</span></button
+      >
+    </div>
+    <div data-definition-content></div>
+    <a class="definition-sidenote__reference" href="/notation/"
+      >Symbols, terms and frames</a
+    >
+  </aside>
+</definition-notes>
+
+<script>
+  import { initialiseDefinitionNotes } from "../../lib/definition-notes";
+  class DefinitionNotesElement extends HTMLElement {
+    private dispose: (() => void) | undefined;
+    connectedCallback() {
+      this.dispose?.();
+      this.dispose = initialiseDefinitionNotes(this);
+    }
+    disconnectedCallback() {
+      this.dispose?.();
+      this.dispose = undefined;
+    }
+  }
+  if (!customElements.get("definition-notes"))
+    customElements.define("definition-notes", DefinitionNotesElement);
+</script>

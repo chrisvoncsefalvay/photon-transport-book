@@ -1,0 +1,3122 @@
+{
+  "schema_version": 1,
+  "id": "maisi-radiograph-study",
+  "model": {
+    "synthetic": true,
+    "mu_formula": "0.01837 mm^-1 * max(0, 1 + HU/1000)",
+    "reference_energy_kev": 80,
+    "source": "Archived NVIDIA MAISI/NV-Generate-CT outputs",
+    "limits": "Uncalibrated water-equivalent primary transmission; no spectrum, scatter or clinical validation. Native cropped fields are preserved."
+  },
+  "detector": {
+    "width": 480,
+    "height": 256,
+    "width_mm": 600,
+    "height_mm": 480,
+    "pixel_spacing_mm": [
+      1.25,
+      1.875
+    ],
+    "source_mm": [
+      0,
+      750,
+      0
+    ],
+    "centre_mm": [
+      0,
+      -450,
+      0
+    ],
+    "u_axis": [
+      1,
+      0,
+      0
+    ],
+    "v_axis": [
+      0,
+      0,
+      -1
+    ],
+    "orientation": "Acquisition coordinates; columns +x, rows -z; no clinical left-right mirror"
+  },
+  "display": {
+    "radiograph_depth_window": [
+      0,
+      8
+    ],
+    "radiograph_mapping": "Linear optical depth; higher attenuation is brighter",
+    "ct_hu_window": [
+      -1000,
+      1000
+    ]
+  },
+  "volumes": [
+    {
+      "id": "chest",
+      "label": "Chest request",
+      "coverage": "Lower thorax, abdomen and pelvis; not a full chest volume.",
+      "source_image": "chest/sample_20260910_050215_411028_image.nii.gz",
+      "source_image_sha256": "e39243cb15fa77d37a19bc9271d8fd61cf659317753e28456eeca3b47b2d89e9",
+      "native_affine": [
+        [
+          1.5177865028381348,
+          0.0,
+          0.0,
+          -200.20420837402344
+        ],
+        [
+          0.0,
+          1.5177865028381348,
+          0.0,
+          -41.20420455932617
+        ],
+        [
+          0.0,
+          0.0,
+          2.0237154960632324,
+          -5.619279384613037
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "shape_xyz": [
+        256,
+        256,
+        256
+      ],
+      "spacing_mm": [
+        1.5177865028381348,
+        1.5177865028381348,
+        2.0237154960632324
+      ],
+      "pivot_ras_mm": [
+        -6.686429262161255,
+        152.313574552536,
+        252.4044463634491
+      ],
+      "pivot_definition": "Physical centre of the native voxel-support box",
+      "grid": {
+        "shape": [
+          256,
+          256,
+          256
+        ],
+        "spacing_mm": [
+          1.5177865028381348,
+          1.5177865028381348,
+          2.0237154960632324
+        ],
+        "origin_mm": [
+          -193.51777911186218,
+          -193.51777911186218,
+          -258.02372574806213
+        ],
+        "orientation": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      },
+      "mu_range_mm_inv": [
+        0.0,
+        0.036740001291036606
+      ],
+      "mu_sha256": "c551359c4a3311711e611abf60869b0a8dd429a56bf33761848542734e96a3d8",
+      "resampled": false,
+      "attenuation_masked": false,
+      "slices": [
+        {
+          "id": "axial",
+          "index": 128,
+          "image": "study/chest/axial.png",
+          "width": 256,
+          "height": 256,
+          "width_mm": 388.5533447265625,
+          "height_mm": 388.5533447265625,
+          "orientation": {
+            "left": "L",
+            "right": "R",
+            "top": "A",
+            "bottom": "P"
+          }
+        },
+        {
+          "id": "coronal",
+          "index": 128,
+          "image": "study/chest/coronal.png",
+          "width": 256,
+          "height": 256,
+          "width_mm": 388.5533447265625,
+          "height_mm": 518.0711669921875,
+          "orientation": {
+            "left": "L",
+            "right": "R",
+            "top": "S",
+            "bottom": "I"
+          }
+        },
+        {
+          "id": "sagittal",
+          "index": 128,
+          "image": "study/chest/sagittal.png",
+          "width": 256,
+          "height": 256,
+          "width_mm": 388.5533447265625,
+          "height_mm": 518.0711669921875,
+          "orientation": {
+            "left": "P",
+            "right": "A",
+            "top": "S",
+            "bottom": "I"
+          }
+        }
+      ],
+      "views": [
+        {
+          "id": "ap",
+          "label": "AP",
+          "image": "study/chest/ap.png",
+          "counts_f32_sha256": "15606dd8125aed5809707b590c8deff66469eea79f5a8b854ac101580d85938d",
+          "depth_f32_sha256": "63c0a273ff4fac60cd24667114c1365c461e0ec6b08edd77fdfc3056964ce62f",
+          "yaw_degrees": 0,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "source_body_mm": [
+            0.0,
+            750.0,
+            0.0
+          ],
+          "refinement": {
+            "coarse_samples": 4096,
+            "fine_samples": 8192,
+            "count_max": 0.00823974609375,
+            "count_p99": 0.0010986328125
+          },
+          "independent_rays": [
+            {
+              "row": 128,
+              "column": 240,
+              "reference_depth": 4.661409238513106,
+              "reference_count": 9.453131293872502,
+              "recorded_count": 9.453129768371582,
+              "absolute_count_error": 1.5255009202519432e-06
+            },
+            {
+              "row": 96,
+              "column": 160,
+              "reference_depth": 4.479774333643196,
+              "reference_count": 11.335971013324631,
+              "recorded_count": 11.335969924926758,
+              "absolute_count_error": 1.0883978731612842e-06
+            },
+            {
+              "row": 160,
+              "column": 320,
+              "reference_depth": 4.222718752325572,
+              "reference_count": 14.65873680512896,
+              "recorded_count": 14.658738136291504,
+              "absolute_count_error": 1.3311625437495422e-06
+            }
+          ]
+        },
+        {
+          "id": "pa",
+          "label": "PA",
+          "image": "study/chest/pa.png",
+          "counts_f32_sha256": "4692ae90c4eb088a573d0afdd4f7f5418ad7005f2fd1915607c4604162cdb89d",
+          "depth_f32_sha256": "7b05dceff5f259cc9729ee5d9c188a4f9dc53818907792780210b7b282fd2089",
+          "yaw_degrees": 180,
+          "matrix": [
+            -1.0,
+            -1.2246467991473532e-16,
+            0.0,
+            0.0,
+            1.2246467991473532e-16,
+            -1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "source_body_mm": [
+            9.184850993605149e-14,
+            -750.0,
+            0.0
+          ],
+          "refinement": {
+            "coarse_samples": 4096,
+            "fine_samples": 8192,
+            "count_max": 0.01214599609375,
+            "count_p99": 0.00103759765625
+          },
+          "independent_rays": [
+            {
+              "row": 128,
+              "column": 240,
+              "reference_depth": 4.696561340374472,
+              "reference_count": 9.126606498543541,
+              "recorded_count": 9.126605987548828,
+              "absolute_count_error": 5.109947132098114e-07
+            },
+            {
+              "row": 96,
+              "column": 160,
+              "reference_depth": 4.341390738767195,
+              "reference_count": 13.01841039976178,
+              "recorded_count": 13.018412590026855,
+              "absolute_count_error": 2.1902650750860175e-06
+            },
+            {
+              "row": 160,
+              "column": 320,
+              "reference_depth": 4.115508865176048,
+              "reference_count": 16.317634820292152,
+              "recorded_count": 16.3176326751709,
+              "absolute_count_error": 2.1451212539602693e-06
+            }
+          ]
+        },
+        {
+          "id": "lateral",
+          "label": "Right-to-left lateral",
+          "image": "study/chest/lateral.png",
+          "counts_f32_sha256": "3668aab71c6e9e2e14efecd2a29306ebb51e32aa8fa6c9c88c5d746a49ba2677",
+          "depth_f32_sha256": "397120daf6be983739a684ae39e7a7422620d43f24c5c68efee5f5556c52dbba",
+          "yaw_degrees": 90,
+          "matrix": [
+            1.1102230246251565e-16,
+            -1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.1102230246251565e-16,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "source_body_mm": [
+            750.0,
+            8.326672684688674e-14,
+            0.0
+          ],
+          "refinement": {
+            "coarse_samples": 4096,
+            "fine_samples": 8192,
+            "count_max": 0.0032958984375,
+            "count_p99": 0.0008914184570310013
+          },
+          "independent_rays": [
+            {
+              "row": 128,
+              "column": 240,
+              "reference_depth": 6.234276597524459,
+              "reference_count": 1.9610473278225513,
+              "recorded_count": 1.9610470533370972,
+              "absolute_count_error": 2.744854541436581e-07
+            },
+            {
+              "row": 96,
+              "column": 160,
+              "reference_depth": 5.364094677632535,
+              "reference_count": 4.681696767359045,
+              "recorded_count": 4.68169641494751,
+              "absolute_count_error": 3.5241153550913396e-07
+            },
+            {
+              "row": 160,
+              "column": 320,
+              "reference_depth": 5.696772424229836,
+              "reference_count": 3.356782261146231,
+              "recorded_count": 3.3567817211151123,
+              "absolute_count_error": 5.40031118489992e-07
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "abdomen",
+      "label": "Abdomen request",
+      "coverage": "Abdomen and pelvis with lung bases.",
+      "source_image": "abdomen/sample_20260910_050339_590877_image.nii.gz",
+      "source_image_sha256": "eef6fd9f3a6c4f365ee7692cc3526138ec6f8d2caba865598b763fc0115dcea6",
+      "native_affine": [
+        [
+          1.4941633939743042,
+          0.0,
+          0.0,
+          -200.14060974121094
+        ],
+        [
+          0.0,
+          1.4941633939743042,
+          0.0,
+          -8.140613555908203
+        ],
+        [
+          0.0,
+          0.0,
+          1.4941633939743042,
+          -20.05897331237793
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "shape_xyz": [
+        256,
+        256,
+        256
+      ],
+      "spacing_mm": [
+        1.4941633939743042,
+        1.4941633939743042,
+        1.4941633939743042
+      ],
+      "pivot_ras_mm": [
+        -9.634777009487152,
+        182.36521917581558,
+        170.44685941934586
+      ],
+      "pivot_definition": "Physical centre of the native voxel-support box",
+      "grid": {
+        "shape": [
+          256,
+          256,
+          256
+        ],
+        "spacing_mm": [
+          1.4941633939743042,
+          1.4941633939743042,
+          1.4941633939743042
+        ],
+        "origin_mm": [
+          -190.50583273172379,
+          -190.50583273172379,
+          -190.50583273172379
+        ],
+        "orientation": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      },
+      "mu_range_mm_inv": [
+        0.0,
+        0.036740001291036606
+      ],
+      "mu_sha256": "7ad58a1308628ad957541625050c02b3c23acd8f74783eec467ff5256bc377f1",
+      "resampled": false,
+      "attenuation_masked": false,
+      "slices": [
+        {
+          "id": "axial",
+          "index": 128,
+          "image": "study/abdomen/axial.png",
+          "width": 256,
+          "height": 256,
+          "width_mm": 382.5058288574219,
+          "height_mm": 382.5058288574219,
+          "orientation": {
+            "left": "L",
+            "right": "R",
+            "top": "A",
+            "bottom": "P"
+          }
+        },
+        {
+          "id": "coronal",
+          "index": 128,
+          "image": "study/abdomen/coronal.png",
+          "width": 256,
+          "height": 256,
+          "width_mm": 382.5058288574219,
+          "height_mm": 382.5058288574219,
+          "orientation": {
+            "left": "L",
+            "right": "R",
+            "top": "S",
+            "bottom": "I"
+          }
+        },
+        {
+          "id": "sagittal",
+          "index": 128,
+          "image": "study/abdomen/sagittal.png",
+          "width": 256,
+          "height": 256,
+          "width_mm": 382.5058288574219,
+          "height_mm": 382.5058288574219,
+          "orientation": {
+            "left": "P",
+            "right": "A",
+            "top": "S",
+            "bottom": "I"
+          }
+        }
+      ],
+      "views": [
+        {
+          "id": "ap",
+          "label": "AP",
+          "image": "study/abdomen/ap.png",
+          "counts_f32_sha256": "0ab57a80ad4cd4b0e9639f449f5f173144c9466e68948e0dc6900d8fef585a3f",
+          "depth_f32_sha256": "eee3e1b068e3fe5387b74bddc5ef51008ec82e968714addc2f187532e5a67169",
+          "yaw_degrees": 0,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "source_body_mm": [
+            0.0,
+            750.0,
+            0.0
+          ],
+          "refinement": {
+            "coarse_samples": 4096,
+            "fine_samples": 8192,
+            "count_max": 0.00714111328125,
+            "count_p99": 0.0009476470947265003
+          },
+          "independent_rays": [
+            {
+              "row": 128,
+              "column": 240,
+              "reference_depth": 4.69150350172964,
+              "reference_count": 9.17288433584945,
+              "recorded_count": 9.172883987426758,
+              "absolute_count_error": 3.484226915873023e-07
+            },
+            {
+              "row": 96,
+              "column": 160,
+              "reference_depth": 4.949682497568585,
+              "reference_count": 7.085658285679006,
+              "recorded_count": 7.085656642913818,
+              "absolute_count_error": 1.6427651878814231e-06
+            },
+            {
+              "row": 160,
+              "column": 320,
+              "reference_depth": 4.842879794578405,
+              "reference_count": 7.884316116210245,
+              "recorded_count": 7.884316921234131,
+              "absolute_count_error": 8.050238857748582e-07
+            }
+          ]
+        },
+        {
+          "id": "pa",
+          "label": "PA",
+          "image": "study/abdomen/pa.png",
+          "counts_f32_sha256": "2f846c3cdfa55db41862419b606104d295d1e67cbcc5fcc3404f3a62ca80adae",
+          "depth_f32_sha256": "3f24b671da024ba86ed3b0966c85c2663b256613bc4770e95928bf9239b4aa39",
+          "yaw_degrees": 180,
+          "matrix": [
+            -1.0,
+            -1.2246467991473532e-16,
+            0.0,
+            0.0,
+            1.2246467991473532e-16,
+            -1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "source_body_mm": [
+            9.184850993605149e-14,
+            -750.0,
+            0.0
+          ],
+          "refinement": {
+            "coarse_samples": 4096,
+            "fine_samples": 8192,
+            "count_max": 0.0054931640625,
+            "count_p99": 0.00048065185546875
+          },
+          "independent_rays": [
+            {
+              "row": 128,
+              "column": 240,
+              "reference_depth": 4.6786365678074455,
+              "reference_count": 9.291673821833655,
+              "recorded_count": 9.291674613952637,
+              "absolute_count_error": 7.921189819626306e-07
+            },
+            {
+              "row": 96,
+              "column": 160,
+              "reference_depth": 4.704764829753591,
+              "reference_count": 9.052042738731966,
+              "recorded_count": 9.052042961120605,
+              "absolute_count_error": 2.223886390595453e-07
+            },
+            {
+              "row": 160,
+              "column": 320,
+              "reference_depth": 4.47353276572022,
+              "reference_count": 11.406946515168082,
+              "recorded_count": 11.40694808959961,
+              "absolute_count_error": 1.5744315273735765e-06
+            }
+          ]
+        },
+        {
+          "id": "lateral",
+          "label": "Right-to-left lateral",
+          "image": "study/abdomen/lateral.png",
+          "counts_f32_sha256": "ec3946e938aceab849c1ef67ba495fa3703efc304c8549d3a86e95af6e4df10a",
+          "depth_f32_sha256": "0b2b63ee14963bfa005a9cc29deb137cb4bb5e3318bb4ae7ef8eeecbd437e9ff",
+          "yaw_degrees": 90,
+          "matrix": [
+            1.1102230246251565e-16,
+            -1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.1102230246251565e-16,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "source_body_mm": [
+            750.0,
+            8.326672684688674e-14,
+            0.0
+          ],
+          "refinement": {
+            "coarse_samples": 4096,
+            "fine_samples": 8192,
+            "count_max": 0.0079345703125,
+            "count_p99": 0.0008544921875
+          },
+          "independent_rays": [
+            {
+              "row": 128,
+              "column": 240,
+              "reference_depth": 6.36785538348621,
+              "reference_count": 1.7158350907666227,
+              "recorded_count": 1.7158348560333252,
+              "absolute_count_error": 2.347332974661498e-07
+            },
+            {
+              "row": 96,
+              "column": 160,
+              "reference_depth": 4.78628699421159,
+              "reference_count": 8.343378954762795,
+              "recorded_count": 8.343379974365234,
+              "absolute_count_error": 1.0196024398112513e-06
+            },
+            {
+              "row": 160,
+              "column": 320,
+              "reference_depth": 7.141870896755365,
+              "reference_count": 0.791270325693661,
+              "recorded_count": 0.7912702560424805,
+              "absolute_count_error": 6.96511804898492e-08
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pelvis",
+      "label": "Pelvis request",
+      "coverage": "Abdomen and pelvis, including hips and lower spine; native inferior crop retained.",
+      "source_image": "pelvis/sample_20260910_050501_725681_image.nii.gz",
+      "source_image_sha256": "74b0c8968e221864e264ae7acab307b7c771d06fa2c7f276d947486b874c9b24",
+      "native_affine": [
+        [
+          1.5177865028381348,
+          0.0,
+          0.0,
+          -191.13389587402344
+        ],
+        [
+          0.0,
+          1.5177865028381348,
+          0.0,
+          -55.13389205932617
+        ],
+        [
+          0.0,
+          0.0,
+          1.5177865028381348,
+          -395.37664794921875
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "shape_xyz": [
+        256,
+        256,
+        256
+      ],
+      "spacing_mm": [
+        1.5177865028381348,
+        1.5177865028381348,
+        1.5177865028381348
+      ],
+      "pivot_ras_mm": [
+        2.383883237838745,
+        138.383887052536,
+        -201.85886883735657
+      ],
+      "pivot_definition": "Physical centre of the native voxel-support box",
+      "grid": {
+        "shape": [
+          256,
+          256,
+          256
+        ],
+        "spacing_mm": [
+          1.5177865028381348,
+          1.5177865028381348,
+          1.5177865028381348
+        ],
+        "origin_mm": [
+          -193.51777911186218,
+          -193.51777911186218,
+          -193.51777911186218
+        ],
+        "orientation": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      },
+      "mu_range_mm_inv": [
+        0.0,
+        0.036740001291036606
+      ],
+      "mu_sha256": "1d9d422c695b75de4d36bc81eeb65f172bec944934763537210993c5bcfc7a74",
+      "resampled": false,
+      "attenuation_masked": false,
+      "slices": [
+        {
+          "id": "axial",
+          "index": 128,
+          "image": "study/pelvis/axial.png",
+          "width": 256,
+          "height": 256,
+          "width_mm": 388.5533447265625,
+          "height_mm": 388.5533447265625,
+          "orientation": {
+            "left": "L",
+            "right": "R",
+            "top": "A",
+            "bottom": "P"
+          }
+        },
+        {
+          "id": "coronal",
+          "index": 128,
+          "image": "study/pelvis/coronal.png",
+          "width": 256,
+          "height": 256,
+          "width_mm": 388.5533447265625,
+          "height_mm": 388.5533447265625,
+          "orientation": {
+            "left": "L",
+            "right": "R",
+            "top": "S",
+            "bottom": "I"
+          }
+        },
+        {
+          "id": "sagittal",
+          "index": 128,
+          "image": "study/pelvis/sagittal.png",
+          "width": 256,
+          "height": 256,
+          "width_mm": 388.5533447265625,
+          "height_mm": 388.5533447265625,
+          "orientation": {
+            "left": "P",
+            "right": "A",
+            "top": "S",
+            "bottom": "I"
+          }
+        }
+      ],
+      "views": [
+        {
+          "id": "ap",
+          "label": "AP",
+          "image": "study/pelvis/ap.png",
+          "counts_f32_sha256": "1e15f2a2f360ccad1ea92f4b5f43f147f270917044775e5898602649ae5ed5fd",
+          "depth_f32_sha256": "01a0f73adfb94b22f5cec29e83638a4d9a1c315912d6a604a195c39465e32a42",
+          "yaw_degrees": 0,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "source_body_mm": [
+            0.0,
+            750.0,
+            0.0
+          ],
+          "refinement": {
+            "coarse_samples": 4096,
+            "fine_samples": 8192,
+            "count_max": 0.00714111328125,
+            "count_p99": 0.001007080078125
+          },
+          "independent_rays": [
+            {
+              "row": 128,
+              "column": 240,
+              "reference_depth": 4.708025894853153,
+              "reference_count": 9.022571517979417,
+              "recorded_count": 9.022571563720703,
+              "absolute_count_error": 4.5741286314182616e-08
+            },
+            {
+              "row": 96,
+              "column": 160,
+              "reference_depth": 4.311661787395159,
+              "reference_count": 13.411244429211447,
+              "recorded_count": 13.411246299743652,
+              "absolute_count_error": 1.8705322055723173e-06
+            },
+            {
+              "row": 160,
+              "column": 320,
+              "reference_depth": 4.323128240492243,
+              "reference_count": 13.258343315989077,
+              "recorded_count": 13.258344650268555,
+              "absolute_count_error": 1.3342794780157874e-06
+            }
+          ]
+        },
+        {
+          "id": "pa",
+          "label": "PA",
+          "image": "study/pelvis/pa.png",
+          "counts_f32_sha256": "e0726d09e93a4610915c7ccc6128063306ad4b58bafdb62062f20500486aac60",
+          "depth_f32_sha256": "9c2f9d8ea2e2bca6e1ed6246261fd7edf4e6892aecd41c15c71dacd03fcbb658",
+          "yaw_degrees": 180,
+          "matrix": [
+            -1.0,
+            -1.2246467991473532e-16,
+            0.0,
+            0.0,
+            1.2246467991473532e-16,
+            -1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "source_body_mm": [
+            9.184850993605149e-14,
+            -750.0,
+            0.0
+          ],
+          "refinement": {
+            "coarse_samples": 4096,
+            "fine_samples": 8192,
+            "count_max": 0.0074462890625,
+            "count_p99": 0.00115966796875
+          },
+          "independent_rays": [
+            {
+              "row": 128,
+              "column": 240,
+              "reference_depth": 4.71815184679994,
+              "reference_count": 8.931670399242146,
+              "recorded_count": 8.931668281555176,
+              "absolute_count_error": 2.1176869697825396e-06
+            },
+            {
+              "row": 96,
+              "column": 160,
+              "reference_depth": 4.079588280784843,
+              "reference_count": 16.914428214405973,
+              "recorded_count": 16.914426803588867,
+              "absolute_count_error": 1.4108171058069274e-06
+            },
+            {
+              "row": 160,
+              "column": 320,
+              "reference_depth": 4.268810899421592,
+              "reference_count": 13.998418788534657,
+              "recorded_count": 13.998421669006348,
+              "absolute_count_error": 2.8804716905028727e-06
+            }
+          ]
+        },
+        {
+          "id": "lateral",
+          "label": "Right-to-left lateral",
+          "image": "study/pelvis/lateral.png",
+          "counts_f32_sha256": "9a0c602fe2ed301ba35224270456e548e40e834b2e35ea74981a1a31616ecd59",
+          "depth_f32_sha256": "eefecc207fbca83838abc1191afe5031a581f46c0233bae0a2d8851e64276e38",
+          "yaw_degrees": 90,
+          "matrix": [
+            1.1102230246251565e-16,
+            -1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.1102230246251565e-16,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "source_body_mm": [
+            750.0,
+            8.326672684688674e-14,
+            0.0
+          ],
+          "refinement": {
+            "coarse_samples": 4096,
+            "fine_samples": 8192,
+            "count_max": 0.0030517578125,
+            "count_p99": 0.000823974609375
+          },
+          "independent_rays": [
+            {
+              "row": 128,
+              "column": 240,
+              "reference_depth": 6.239211920263953,
+              "reference_count": 1.9513927701280493,
+              "recorded_count": 1.9513925313949585,
+              "absolute_count_error": 2.387330908515395e-07
+            },
+            {
+              "row": 96,
+              "column": 160,
+              "reference_depth": 5.5941623971129735,
+              "reference_count": 3.7195135063469573,
+              "recorded_count": 3.719513416290283,
+              "absolute_count_error": 9.005667411798868e-08
+            },
+            {
+              "row": 160,
+              "column": 320,
+              "reference_depth": 5.968488583083176,
+              "reference_count": 2.5581048615840962,
+              "recorded_count": 2.5581047534942627,
+              "absolute_count_error": 1.0808983352816881e-07
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "animation": {
+    "volume": "pelvis",
+    "axis": "rz",
+    "frames": [
+      {
+        "id": "yaw-000",
+        "label": "Yaw -15\u00b0",
+        "image": "study/pelvis/yaw-000.png",
+        "counts_f32_sha256": "28d537f4c5e373e8400757182c857130d708c065bfce366bd1c901c07e91dea7",
+        "depth_f32_sha256": "53a874eb85724467d7963ceacc2a08fe38b3dcb7737aaef1e7b56dc12d02fae6",
+        "yaw_degrees": -15,
+        "matrix": [
+          0.9659258262890683,
+          0.25881904510252074,
+          0.0,
+          0.0,
+          -0.25881904510252074,
+          0.9659258262890683,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "source_body_mm": [
+          -194.11428382689056,
+          724.4443697168012,
+          0.0
+        ],
+        "refinement": {
+          "coarse_samples": 4096,
+          "fine_samples": 8192,
+          "count_max": 0.01361083984375,
+          "count_p99": 0.00067138671875
+        },
+        "independent_rays": [
+          {
+            "row": 128,
+            "column": 240,
+            "reference_depth": 4.936891990064105,
+            "reference_count": 7.176869526699866,
+            "recorded_count": 7.176868915557861,
+            "absolute_count_error": 6.111420045584737e-07
+          },
+          {
+            "row": 96,
+            "column": 160,
+            "reference_depth": 4.318379547808487,
+            "reference_count": 13.321452839164227,
+            "recorded_count": 13.32144832611084,
+            "absolute_count_error": 4.513053387000809e-06
+          },
+          {
+            "row": 160,
+            "column": 320,
+            "reference_depth": 4.200640328402182,
+            "reference_count": 14.985977800323058,
+            "recorded_count": 14.985980033874512,
+            "absolute_count_error": 2.2335514540117174e-06
+          }
+        ],
+        "index": 0
+      },
+      {
+        "id": "yaw-001",
+        "label": "Yaw -14\u00b0",
+        "image": "study/pelvis/yaw-001.png",
+        "counts_f32_sha256": "337aa5eccc2ce46b279598b8f6a48633343312b4d1406049a86476af18c776ab",
+        "depth_f32_sha256": "1c21f6d7d0a72b9a0911ae99ffd54995cc91f4b261a02246f248c8a4f27d1759",
+        "yaw_degrees": -14,
+        "matrix": [
+          0.9702957262759965,
+          0.24192189559966773,
+          0.0,
+          0.0,
+          -0.24192189559966773,
+          0.9702957262759965,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "source_body_mm": [
+          -181.4414216997508,
+          727.7217947069973,
+          0.0
+        ],
+        "refinement": {
+          "coarse_samples": 4096,
+          "fine_samples": 8192,
+          "count_max": 0.00830078125,
+          "count_p99": 0.0006256103515625
+        },
+        "independent_rays": [
+          {
+            "row": 128,
+            "column": 240,
+            "reference_depth": 4.922860652782487,
+            "reference_count": 7.278280404978015,
+            "recorded_count": 7.278280258178711,
+            "absolute_count_error": 1.4679930426808596e-07
+          },
+          {
+            "row": 96,
+            "column": 160,
+            "reference_depth": 4.3185009794810485,
+            "reference_count": 13.319835291077787,
+            "recorded_count": 13.319835662841797,
+            "absolute_count_error": 3.717640097988806e-07
+          },
+          {
+            "row": 160,
+            "column": 320,
+            "reference_depth": 4.2037484066367155,
+            "reference_count": 14.939472517364873,
+            "recorded_count": 14.939476013183594,
+            "absolute_count_error": 3.4958187207223546e-06
+          }
+        ],
+        "index": 1
+      },
+      {
+        "id": "yaw-002",
+        "label": "Yaw -13\u00b0",
+        "image": "study/pelvis/yaw-002.png",
+        "counts_f32_sha256": "4f040b105368d612a77bc1845423b5c52f0a5ff34a073e8c7a6e4719013d8de3",
+        "depth_f32_sha256": "8726ec484545cfb43bec92c67ee57774369846b9e699cabae159402157afae9f",
+        "yaw_degrees": -13,
+        "matrix": [
+          0.9743700647852352,
+          0.224951054343865,
+          0.0,
+          0.0,
+          -0.224951054343865,
+          0.9743700647852352,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "source_body_mm": [
+          -168.71329075789876,
+          730.7775485889264,
+          0.0
+        ],
+        "refinement": {
+          "coarse_samples": 4096,
+          "fine_samples": 8192,
+          "count_max": 0.0064697265625,
+          "count_p99": 0.0006225967407226252
+        },
+        "independent_rays": [
+          {
+            "row": 128,
+            "column": 240,
+            "reference_depth": 4.887678471943476,
+            "reference_count": 7.538903952312614,
+            "recorded_count": 7.53890323638916,
+            "absolute_count_error": 7.159234538534065e-07
+          },
+          {
+            "row": 96,
+            "column": 160,
+            "reference_depth": 4.321871854796608,
+            "reference_count": 13.275011377443535,
+            "recorded_count": 13.275012969970703,
+            "absolute_count_error": 1.5925271679151365e-06
+          },
+          {
+            "row": 160,
+            "column": 320,
+            "reference_depth": 4.197605425099076,
+            "reference_count": 15.031527878929433,
+            "recorded_count": 15.031533241271973,
+            "absolute_count_error": 5.3623425397830715e-06
+          }
+        ],
+        "index": 2
+      },
+      {
+        "id": "yaw-003",
+        "label": "Yaw -12\u00b0",
+        "image": "study/pelvis/yaw-003.png",
+        "counts_f32_sha256": "d59935a8f513546206793214b20565b618ab955c859aff74c79371f6812de5a3",
+        "depth_f32_sha256": "84931760996a5a30979c42a4c5fa70204031f7a31d7bc622dea4b35c8c4a7576",
+        "yaw_degrees": -12,
+        "matrix": [
+          0.9781476007338057,
+          0.20791169081775934,
+          0.0,
+          0.0,
+          -0.20791169081775934,
+          0.9781476007338057,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "source_body_mm": [
+          -155.9337681133195,
+          733.6107005503543,
+          0.0
+        ],
+        "refinement": {
+          "coarse_samples": 4096,
+          "fine_samples": 8192,
+          "count_max": 0.00689697265625,
+          "count_p99": 0.00067138671875
+        },
+        "independent_rays": [
+          {
+            "row": 128,
+            "column": 240,
+            "reference_depth": 4.867639535825669,
+            "reference_count": 7.691499385778368,
+            "recorded_count": 7.69149923324585,
+            "absolute_count_error": 1.5253251817171076e-07
+          },
+          {
+            "row": 96,
+            "column": 160,
+            "reference_depth": 4.324343659910104,
+            "reference_count": 13.242238657014312,
+            "recorded_count": 13.24223804473877,
+            "absolute_count_error": 6.12275542266616e-07
+          },
+          {
+            "row": 160,
+            "column": 320,
+            "reference_depth": 4.19090938481842,
+            "reference_count": 15.132517332472952,
+            "recorded_count": 15.1325101852417,
+            "absolute_count_error": 7.1472312530573845e-06
+          }
+        ],
+        "index": 3
+      },
+      {
+        "id": "yaw-004",
+        "label": "Yaw -11\u00b0",
+        "image": "study/pelvis/yaw-004.png",
+        "counts_f32_sha256": "a3331736ae2aab6a67b8a3f1add4d2b7b4953ae2662022a05aef3ff98ffa6be9",
+        "depth_f32_sha256": "cb68fd80147beef417d369a7ca3381b02ca1886085c3dd24bf2caa535df338b7",
+        "yaw_degrees": -11,
+        "matrix": [
+          0.981627183447664,
+          0.1908089953765448,
+          0.0,
+          0.0,
+          -0.1908089953765448,
+          0.981627183447664,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "source_body_mm": [
+          -143.1067465324086,
+          736.220387585748,
+          0.0
+        ],
+        "refinement": {
+          "coarse_samples": 4096,
+          "fine_samples": 8192,
+          "count_max": 0.00836181640625,
+          "count_p99": 0.000701904296875
+        },
+        "independent_rays": [
+          {
+            "row": 128,
+            "column": 240,
+            "reference_depth": 4.831571241700991,
+            "reference_count": 7.973982364098993,
+            "recorded_count": 7.973982810974121,
+            "absolute_count_error": 4.468751280128913e-07
+          },
+          {
+            "row": 96,
+            "column": 160,
+            "reference_depth": 4.32566802349163,
+            "reference_count": 13.224712726312877,
+            "recorded_count": 13.224715232849121,
+            "absolute_count_error": 2.506536244339941e-06
+          },
+          {
+            "row": 160,
+            "column": 320,
+            "reference_depth": 4.199533741189908,
+            "reference_count": 15.002570270534815,
+            "recorded_count": 15.002559661865234,
+            "absolute_count_error": 1.060866958013662e-05
+          }
+        ],
+        "index": 4
+      },
+      {
+        "id": "yaw-005",
+        "label": "Yaw -10\u00b0",
+        "image": "study/pelvis/yaw-005.png",
+        "counts_f32_sha256": "da8691b0bddc3b185497ca4f4df73e00b85b65ed59f5b23831a4083628c734d8",
+        "depth_f32_sha256": "1fe8bf34273cbda9724ad08a75378a57c4fbfe4af3d3378892e824e590c14e4b",
+        "yaw_degrees": -10,
+        "matrix": [
+          0.984807753012208,
+          0.17364817766693033,
+          0.0,
+          0.0,
+          -0.17364817766693033,
+          0.984807753012208,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "source_body_mm": [
+          -130.23613325019775,
+          738.605814759156,
+          0.0
+        ],
+        "refinement": {
+          "coarse_samples": 4096,
+          "fine_samples": 8192,
+          "count_max": 0.00555419921875,
+          "count_p99": 0.000640869140625
+        },
+        "independent_rays": [
+          {
+            "row": 128,
+            "column": 240,
+            "reference_depth": 4.777010644990868,
+            "reference_count": 8.421135140815855,
+            "recorded_count": 8.421133041381836,
+            "absolute_count_error": 2.099434018631996e-06
+          },
+          {
+            "row": 96,
+            "column": 160,
+            "reference_depth": 4.301905448425505,
+            "reference_count": 13.54272943906951,
+            "recorded_count": 13.54272747039795,
+            "absolute_count_error": 1.9686715599931404e-06
+          },
+          {
+            "row": 160,
+            "column": 320,
+            "reference_depth": 4.21477336303862,
+            "reference_count": 14.775670100619083,
+            "recorded_count": 14.775679588317871,
+            "absolute_count_error": 9.48769878839073e-06
+          }
+        ],
+        "index": 5
+      },
+      {
+        "id": "yaw-006",
+        "label": "Yaw -9\u00b0",
+        "image": "study/pelvis/yaw-006.png",
+        "counts_f32_sha256": "5a62ec831f39de2210d0bc23ac27fed3d3261e1df1d5e58b4bc243374f1b67c0",
+        "depth_f32_sha256": "f29bfecbe8f7e180137d7c9a698d4af66829bbd3ed8ca2b8d1d09bc9427f9f6f",
+        "yaw_degrees": -9,
+        "matrix": [
+          0.9876883405951378,
+          0.15643446504023087,
+          0.0,
+          0.0,
+          -0.15643446504023087,
+          0.9876883405951378,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "source_body_mm": [
+          -117.32584878017315,
+          740.7662554463533,
+          0.0
+        ],
+        "refinement": {
+          "coarse_samples": 4096,
+          "fine_samples": 8192,
+          "count_max": 0.0069580078125,
+          "count_p99": 0.00067138671875
+        },
+        "independent_rays": [
+          {
+            "row": 128,
+            "column": 240,
+            "reference_depth": 4.722511214641571,
+            "reference_count": 8.892818708465716,
+            "recorded_count": 8.892817497253418,
+            "absolute_count_error": 1.2112122984575535e-06
+          },
+          {
+            "row": 96,
+            "column": 160,
+            "reference_depth": 4.303450798962766,
+            "reference_count": 13.521817337280433,
+            "recorded_count": 13.521821022033691,
+            "absolute_count_error": 3.6847532580708275e-06
+          },
+          {
+            "row": 160,
+            "column": 320,
+            "reference_depth": 4.216321449809146,
+            "reference_count": 14.75281377756106,
+            "recorded_count": 14.752814292907715,
+            "absolute_count_error": 5.15346654239579e-07
+          }
+        ],
+        "index": 6
+      },
+      {
+        "id": "yaw-007",
+        "label": "Yaw -8\u00b0",
+        "image": "study/pelvis/yaw-007.png",
+        "counts_f32_sha256": "76bbe98e197b9810816f674a22f2d38dc2da06ceea240d04a6fa599619904b02",
+        "depth_f32_sha256": "991b73ce36e20f9b4c5ecac239c76cd10145e67ab304f86d8dc1272b71d072d0",
+        "yaw_degrees": -8,
+        "matrix": [
+          0.9902680687415704,
+          0.13917310096006544,
+          0.0,
+          0.0,
+          -0.13917310096006544,
+          0.9902680687415704,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "source_body_mm": [
+          -104.37982572004908,
+          742.7010515561777,
+          0.0
+        ],
+        "refinement": {
+          "coarse_samples": 4096,
+          "fine_samples": 8192,
+          "count_max": 0.00787353515625,
+          "count_p99": 0.00075531005859375
+        },
+        "independent_rays": [
+          {
+            "row": 128,
+            "column": 240,
+            "reference_depth": 4.688177004974999,
+            "reference_count": 9.20344871379099,
+            "recorded_count": 9.203448295593262,
+            "absolute_count_error": 4.181977288908456e-07
+          },
+          {
+            "row": 96,
+            "column": 160,
+            "reference_depth": 4.303775166030138,
+            "reference_count": 13.517432016310499,
+            "recorded_count": 13.517431259155273,
+            "absolute_count_error": 7.571552256280256e-07
+          },
+          {
+            "row": 160,
+            "column": 320,
+            "reference_depth": 4.2226302771482045,
+            "reference_count": 14.66003379684272,
+            "recorded_count": 14.660037994384766,
+            "absolute_count_error": 4.197542045503155e-06
+          }
+        ],
+        "index": 7
+      },
+      {
+        "id": "yaw-008",
+        "label": "Yaw -7\u00b0",
+        "image": "study/pelvis/yaw-008.png",
+        "counts_f32_sha256": "fcf48c898b5538e8d60bb3fe9c51c44d282c35ca5e71ea76bb6699085754a3d0",
+        "depth_f32_sha256": "13d2fe5b242bc60a188b77bec9f2f556148b468a01e4bb0cada343c09a2b41f8",
+        "yaw_degrees": -7,
+        "matrix": [
+          0.992546151641322,
+          0.12186934340514748,
+          0.0,
+          0.0,
+          -0.12186934340514748,
+          0.992546151641322,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "source_body_mm": [
+          -91.40200755386061,
+          744.4096137309915,
+          0.0
+        ],
+        "refinement": {
+          "coarse_samples": 4096,
+          "fine_samples": 8192,
+          "count_max": 0.00677490234375,
+          "count_p99": 0.00067138671875
+        },
+        "independent_rays": [
+          {
+            "row": 128,
+            "column": 240,
+            "reference_depth": 4.652121679761986,
+            "reference_count": 9.54133677891835,
+            "recorded_count": 9.541333198547363,
+            "absolute_count_error": 3.5803709863557742e-06
+          },
+          {
+            "row": 96,
+            "column": 160,
+            "reference_depth": 4.299556320671694,
+            "reference_count": 13.574580437041638,
+            "recorded_count": 13.57458209991455,
+            "absolute_count_error": 1.6628729131440423e-06
+          },
+          {
+            "row": 160,
+            "column": 320,
+            "reference_depth": 4.234860850471313,
+            "reference_count": 14.48182519671401,
+            "recorded_count": 14.481832504272461,
+            "absolute_count_error": 7.307558451685736e-06
+          }
+        ],
+        "index": 8
+      },
+      {
+        "id": "yaw-009",
+        "label": "Yaw -6\u00b0",
+        "image": "study/pelvis/yaw-009.png",
+        "counts_f32_sha256": "717ea34dd4f63df02d2072a5c495ea0b7ba5d8cb6b130a31ba2d9208d906a1b0",
+        "depth_f32_sha256": "96053311ba29b7bd630c8a27a0e8ad1612f38a46e7ae42888a0bddb8260605a9",
+        "yaw_degrees": -6,
+        "matrix": [
+          0.9945218953682733,
+          0.10452846326765347,
+          0.0,
+          0.0,
+          -0.10452846326765347,
+          0.9945218953682733,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "source_body_mm": [
+          -78.39634745074011,
+          745.891421526205,
+          0.0
+        ],
+        "refinement": {
+          "coarse_samples": 4096,
+          "fine_samples": 8192,
+          "count_max": 0.006103515625,
+          "count_p99": 0.000823974609375
+        },
+        "independent_rays": [
+          {
+            "row": 128,
+            "column": 240,
+            "reference_depth": 4.623809224966727,
+            "reference_count": 9.81533593675567,
+            "recorded_count": 9.815335273742676,
+            "absolute_count_error": 6.630129938400842e-07
+          },
+          {
+            "row": 96,
+            "column": 160,
+            "reference_depth": 4.310803120744089,
+            "reference_count": 13.422765163079275,
+            "recorded_count": 13.422767639160156,
+            "absolute_count_error": 2.4760808816637336e-06
+          },
+          {
+            "row": 160,
+            "column": 320,
+            "reference_depth": 4.2459982685077335,
+            "reference_count": 14.321429908234288,
+            "recorded_count": 14.321428298950195,
+            "absolute_count_error": 1.6092840926518193e-06
+          }
+        ],
+        "index": 9
+      },
+      {
+        "id": "yaw-010",
+        "label": "Yaw -5\u00b0",
+        "image": "study/pelvis/yaw-010.png",
+        "counts_f32_sha256": "e7ef70787c7a25496031385a43eb743d010d9461f17251c228b3e4325e98d6a2",
+        "depth_f32_sha256": "2fcfe4a3b891bcd78e132e9c5fb3bb718b5d46e68166f2f1138ca554963184d7",
+        "yaw_degrees": -5,
+        "matrix": [
+          0.9961946980917455,
+          0.08715574274765736,
+          0.0,
+          0.0,
+          -0.08715574274765736,
+          0.9961946980917455,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "source_body_mm": [
+          -65.36680706074301,
+          747.1460235688091,
+          0.0
+        ],
+        "refinement": {
+          "coarse_samples": 4096,
+          "fine_samples": 8192,
+          "count_max": 0.00701904296875,
+          "count_p99": 0.0008544921875
+        },
+        "independent_rays": [
+          {
+            "row": 128,
+            "column": 240,
+            "reference_depth": 4.607764250162977,
+            "reference_count": 9.97409297502156,
+            "recorded_count": 9.974093437194824,
+            "absolute_count_error": 4.6217326499231604e-07
+          },
+          {
+            "row": 96,
+            "column": 160,
+            "reference_depth": 4.314837367318969,
+            "reference_count": 13.368723500685057,
+            "recorded_count": 13.368721961975098,
+            "absolute_count_error": 1.538709959447715e-06
+          },
+          {
+            "row": 160,
+            "column": 320,
+            "reference_depth": 4.227822506203631,
+            "reference_count": 14.584112813541203,
+            "recorded_count": 14.58410930633545,
+            "absolute_count_error": 3.507205754260667e-06
+          }
+        ],
+        "index": 10
+      },
+      {
+        "id": "yaw-011",
+        "label": "Yaw -4\u00b0",
+        "image": "study/pelvis/yaw-011.png",
+        "counts_f32_sha256": "460a8419bb839b1619a4cb9c68c93778328c0a827236fc3c492e5df4c3bfc6ab",
+        "depth_f32_sha256": "5deb1f568b24644a8fb7c341be3e350ff187401d558487a5faed99827db760e6",
+        "yaw_degrees": -4,
+        "matrix": [
+          0.9975640502598242,
+          0.06975647374412519,
+          0.0,
+          0.0,
+          -0.06975647374412519,
+          0.9975640502598242,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "source_body_mm": [
+          -52.317355308093894,
+          748.1730376948682,
+          0.0
+        ],
+        "refinement": {
+          "coarse_samples": 4096,
+          "fine_samples": 8192,
+          "count_max": 0.01043701171875,
+          "count_p99": 0.00091552734375
+        },
+        "independent_rays": [
+          {
+            "row": 128,
+            "column": 240,
+            "reference_depth": 4.610260625715624,
+            "reference_count": 9.949224946043252,
+            "recorded_count": 9.94922161102295,
+            "absolute_count_error": 3.3350203025861447e-06
+          },
+          {
+            "row": 96,
+            "column": 160,
+            "reference_depth": 4.321857186538957,
+            "reference_count": 13.27520610015886,
+            "recorded_count": 13.275203704833984,
+            "absolute_count_error": 2.3953248753372236e-06
+          },
+          {
+            "row": 160,
+            "column": 320,
+            "reference_depth": 4.239670532804732,
+            "reference_count": 14.41233945403555,
+            "recorded_count": 14.412336349487305,
+            "absolute_count_error": 3.104548245147498e-06
+          }
+        ],
+        "index": 11
+      },
+      {
+        "id": "yaw-012",
+        "label": "Yaw -3\u00b0",
+        "image": "study/pelvis/yaw-012.png",
+        "counts_f32_sha256": "4a2fb3d1cb742372b5a4d8d7eaa23906cd2c8bcdac67d6a41681bf354076871c",
+        "depth_f32_sha256": "9e03c9a13e13f63aa7ea7e9c060e49a8b9c96a8d716057da2f96596274586de0",
+        "yaw_degrees": -3,
+        "matrix": [
+          0.9986295347545738,
+          0.05233595624294383,
+          0.0,
+          0.0,
+          -0.05233595624294383,
+          0.9986295347545738,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "source_body_mm": [
+          -39.25196718220787,
+          748.9721510659303,
+          0.0
+        ],
+        "refinement": {
+          "coarse_samples": 4096,
+          "fine_samples": 8192,
+          "count_max": 0.00677490234375,
+          "count_p99": 0.0009765625
+        },
+        "independent_rays": [
+          {
+            "row": 128,
+            "column": 240,
+            "reference_depth": 4.603094265465944,
+            "reference_count": 10.020780767369398,
+            "recorded_count": 10.020783424377441,
+            "absolute_count_error": 2.6570080429166865e-06
+          },
+          {
+            "row": 96,
+            "column": 160,
+            "reference_depth": 4.324293954541885,
+            "reference_count": 13.242896883721375,
+            "recorded_count": 13.242895126342773,
+            "absolute_count_error": 1.7573786017521797e-06
+          },
+          {
+            "row": 160,
+            "column": 320,
+            "reference_depth": 4.268334299390994,
+            "reference_count": 14.005092025463735,
+            "recorded_count": 14.005090713500977,
+            "absolute_count_error": 1.3119627588764615e-06
+          }
+        ],
+        "index": 12
+      },
+      {
+        "id": "yaw-013",
+        "label": "Yaw -2\u00b0",
+        "image": "study/pelvis/yaw-013.png",
+        "counts_f32_sha256": "448607588cdbae2fd153910e87052ca241589d8b45788ce6756a589bac9dbabc",
+        "depth_f32_sha256": "d43c26dcaa48cf36c3808804829069c8a685aab7e6b88311ee43513d9a097827",
+        "yaw_degrees": -2,
+        "matrix": [
+          0.9993908270190958,
+          0.034899496702500976,
+          0.0,
+          0.0,
+          -0.034899496702500976,
+          0.9993908270190958,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "source_body_mm": [
+          -26.174622526875734,
+          749.5431202643218,
+          0.0
+        ],
+        "refinement": {
+          "coarse_samples": 4096,
+          "fine_samples": 8192,
+          "count_max": 0.0091552734375,
+          "count_p99": 0.0009613037109375
+        },
+        "independent_rays": [
+          {
+            "row": 128,
+            "column": 240,
+            "reference_depth": 4.605241510126504,
+            "reference_count": 9.99928678405093,
+            "recorded_count": 9.999284744262695,
+            "absolute_count_error": 2.0397882352085617e-06
+          },
+          {
+            "row": 96,
+            "column": 160,
+            "reference_depth": 4.319824751859624,
+            "reference_count": 13.302214526546152,
+            "recorded_count": 13.302215576171875,
+            "absolute_count_error": 1.0496257232261996e-06
+          },
+          {
+            "row": 160,
+            "column": 320,
+            "reference_depth": 4.272038782186084,
+            "reference_count": 13.95330638174686,
+            "recorded_count": 13.9533052444458,
+            "absolute_count_error": 1.1373010586623877e-06
+          }
+        ],
+        "index": 13
+      },
+      {
+        "id": "yaw-014",
+        "label": "Yaw -1\u00b0",
+        "image": "study/pelvis/yaw-014.png",
+        "counts_f32_sha256": "9f13f935118d122883340eba504e226dd79d3851f7e461011ec5feab746f8649",
+        "depth_f32_sha256": "ec71f95175b1cb2b001c640ee4c9a00c30f134fac62707f8cd7f32c653d297d3",
+        "yaw_degrees": -1,
+        "matrix": [
+          0.9998476951563913,
+          0.01745240643728351,
+          0.0,
+          0.0,
+          -0.01745240643728351,
+          0.9998476951563913,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "source_body_mm": [
+          -13.089304827962634,
+          749.8857713672935,
+          0.0
+        ],
+        "refinement": {
+          "coarse_samples": 4096,
+          "fine_samples": 8192,
+          "count_max": 0.013671875,
+          "count_p99": 0.0009765625
+        },
+        "independent_rays": [
+          {
+            "row": 128,
+            "column": 240,
+            "reference_depth": 4.661011413588598,
+            "reference_count": 9.456892733263413,
+            "recorded_count": 9.456893920898438,
+            "absolute_count_error": 1.1876350249906409e-06
+          },
+          {
+            "row": 96,
+            "column": 160,
+            "reference_depth": 4.3203434201032795,
+            "reference_count": 13.295316879250873,
+            "recorded_count": 13.295315742492676,
+            "absolute_count_error": 1.1367581969068397e-06
+          },
+          {
+            "row": 160,
+            "column": 320,
+            "reference_depth": 4.306680051859467,
+            "reference_count": 13.478222396903371,
+            "recorded_count": 13.478219985961914,
+            "absolute_count_error": 2.4109414571427124e-06
+          }
+        ],
+        "index": 14
+      },
+      {
+        "id": "ap",
+        "label": "AP",
+        "image": "study/pelvis/ap.png",
+        "counts_f32_sha256": "1e15f2a2f360ccad1ea92f4b5f43f147f270917044775e5898602649ae5ed5fd",
+        "depth_f32_sha256": "01a0f73adfb94b22f5cec29e83638a4d9a1c315912d6a604a195c39465e32a42",
+        "yaw_degrees": 0,
+        "matrix": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "source_body_mm": [
+          0.0,
+          750.0,
+          0.0
+        ],
+        "refinement": {
+          "coarse_samples": 4096,
+          "fine_samples": 8192,
+          "count_max": 0.00714111328125,
+          "count_p99": 0.001007080078125
+        },
+        "independent_rays": [
+          {
+            "row": 128,
+            "column": 240,
+            "reference_depth": 4.708025894853153,
+            "reference_count": 9.022571517979417,
+            "recorded_count": 9.022571563720703,
+            "absolute_count_error": 4.5741286314182616e-08
+          },
+          {
+            "row": 96,
+            "column": 160,
+            "reference_depth": 4.311661787395159,
+            "reference_count": 13.411244429211447,
+            "recorded_count": 13.411246299743652,
+            "absolute_count_error": 1.8705322055723173e-06
+          },
+          {
+            "row": 160,
+            "column": 320,
+            "reference_depth": 4.323128240492243,
+            "reference_count": 13.258343315989077,
+            "recorded_count": 13.258344650268555,
+            "absolute_count_error": 1.3342794780157874e-06
+          }
+        ],
+        "index": 15
+      },
+      {
+        "id": "yaw-016",
+        "label": "Yaw +1\u00b0",
+        "image": "study/pelvis/yaw-016.png",
+        "counts_f32_sha256": "a110397be77a4a4b434d7c79a2f05f5c29f811ed102f9709168cd4f62becff50",
+        "depth_f32_sha256": "04d4c9452881d5715c4db4a14e6b2bba24bb8044265b1501405c619dec902264",
+        "yaw_degrees": 1,
+        "matrix": [
+          0.9998476951563913,
+          -0.01745240643728351,
+          0.0,
+          0.0,
+          0.01745240643728351,
+          0.9998476951563913,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "source_body_mm": [
+          13.089304827962634,
+          749.8857713672935,
+          0.0
+        ],
+        "refinement": {
+          "coarse_samples": 4096,
+          "fine_samples": 8192,
+          "count_max": 0.00933837890625,
+          "count_p99": 0.001007080078125
+        },
+        "independent_rays": [
+          {
+            "row": 128,
+            "column": 240,
+            "reference_depth": 4.6888593624971815,
+            "reference_count": 9.197170813460957,
+            "recorded_count": 9.19717025756836,
+            "absolute_count_error": 5.558925977311446e-07
+          },
+          {
+            "row": 96,
+            "column": 160,
+            "reference_depth": 4.302362201130112,
+            "reference_count": 13.536545173218048,
+            "recorded_count": 13.536542892456055,
+            "absolute_count_error": 2.2807619934894774e-06
+          },
+          {
+            "row": 160,
+            "column": 320,
+            "reference_depth": 4.294847887071816,
+            "reference_count": 13.638646153904705,
+            "recorded_count": 13.63864517211914,
+            "absolute_count_error": 9.817855648464047e-07
+          }
+        ],
+        "index": 16
+      },
+      {
+        "id": "yaw-017",
+        "label": "Yaw +2\u00b0",
+        "image": "study/pelvis/yaw-017.png",
+        "counts_f32_sha256": "0f62561ffb6e3f980114aed8de73797f2aa8d6e2c1d873d0c230134dcb183d52",
+        "depth_f32_sha256": "6e7971eee1806231eb61384bd26cf985d3c96284527a007aada18ea9603b8c44",
+        "yaw_degrees": 2,
+        "matrix": [
+          0.9993908270190958,
+          -0.034899496702500976,
+          0.0,
+          0.0,
+          0.034899496702500976,
+          0.9993908270190958,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "source_body_mm": [
+          26.174622526875734,
+          749.5431202643218,
+          0.0
+        ],
+        "refinement": {
+          "coarse_samples": 4096,
+          "fine_samples": 8192,
+          "count_max": 0.0093994140625,
+          "count_p99": 0.0010223388671875
+        },
+        "independent_rays": [
+          {
+            "row": 128,
+            "column": 240,
+            "reference_depth": 4.643890156445716,
+            "reference_count": 9.620200654694322,
+            "recorded_count": 9.620203971862793,
+            "absolute_count_error": 3.317168470573506e-06
+          },
+          {
+            "row": 96,
+            "column": 160,
+            "reference_depth": 4.3004753442977615,
+            "reference_count": 13.562110807725672,
+            "recorded_count": 13.562108039855957,
+            "absolute_count_error": 2.7678697147592857e-06
+          },
+          {
+            "row": 160,
+            "column": 320,
+            "reference_depth": 4.222283608663899,
+            "reference_count": 14.665116849555123,
+            "recorded_count": 14.66511344909668,
+            "absolute_count_error": 3.400458442825993e-06
+          }
+        ],
+        "index": 17
+      },
+      {
+        "id": "yaw-018",
+        "label": "Yaw +3\u00b0",
+        "image": "study/pelvis/yaw-018.png",
+        "counts_f32_sha256": "946c19a19f3185f61e0718a6db834b264d3d73c321250223edec90650801f02e",
+        "depth_f32_sha256": "86527e34414626ba80d25192684247b432c0bf54ecc496b5568a8b633a3c8a90",
+        "yaw_degrees": 3,
+        "matrix": [
+          0.9986295347545738,
+          -0.05233595624294383,
+          0.0,
+          0.0,
+          0.05233595624294383,
+          0.9986295347545738,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "source_body_mm": [
+          39.25196718220787,
+          748.9721510659303,
+          0.0
+        ],
+        "refinement": {
+          "coarse_samples": 4096,
+          "fine_samples": 8192,
+          "count_max": 0.00927734375,
+          "count_p99": 0.00103759765625
+        },
+        "independent_rays": [
+          {
+            "row": 128,
+            "column": 240,
+            "reference_depth": 4.691889604296826,
+            "reference_count": 9.169343345295642,
+            "recorded_count": 9.169341087341309,
+            "absolute_count_error": 2.2579543337286623e-06
+          },
+          {
+            "row": 96,
+            "column": 160,
+            "reference_depth": 4.298359335942754,
+            "reference_count": 13.590838731050159,
+            "recorded_count": 13.590837478637695,
+            "absolute_count_error": 1.2524124635149292e-06
+          },
+          {
+            "row": 160,
+            "column": 320,
+            "reference_depth": 4.137411739603318,
+            "reference_count": 15.964117370829843,
+            "recorded_count": 15.964120864868164,
+            "absolute_count_error": 3.494038320894788e-06
+          }
+        ],
+        "index": 18
+      },
+      {
+        "id": "yaw-019",
+        "label": "Yaw +4\u00b0",
+        "image": "study/pelvis/yaw-019.png",
+        "counts_f32_sha256": "76509fc0e225343ff43bc5279ec3d9b2b23e0b6166fe7cad03d3c5cfb3859a25",
+        "depth_f32_sha256": "42a9b6fadcf0c5b471245a03e209f01e372400e33ef308615d70a606f54de2eb",
+        "yaw_degrees": 4,
+        "matrix": [
+          0.9975640502598242,
+          -0.06975647374412519,
+          0.0,
+          0.0,
+          0.06975647374412519,
+          0.9975640502598242,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "source_body_mm": [
+          52.317355308093894,
+          748.1730376948682,
+          0.0
+        ],
+        "refinement": {
+          "coarse_samples": 4096,
+          "fine_samples": 8192,
+          "count_max": 0.009033203125,
+          "count_p99": 0.0009918212890625
+        },
+        "independent_rays": [
+          {
+            "row": 128,
+            "column": 240,
+            "reference_depth": 4.723115738647917,
+            "reference_count": 8.88744441068205,
+            "recorded_count": 8.887442588806152,
+            "absolute_count_error": 1.8218758981447536e-06
+          },
+          {
+            "row": 96,
+            "column": 160,
+            "reference_depth": 4.300672901319726,
+            "reference_count": 13.559431782141814,
+            "recorded_count": 13.559430122375488,
+            "absolute_count_error": 1.6597663261563866e-06
+          },
+          {
+            "row": 160,
+            "column": 320,
+            "reference_depth": 4.132529886978515,
+            "reference_count": 16.042242381353766,
+            "recorded_count": 16.042236328125,
+            "absolute_count_error": 6.053228766234042e-06
+          }
+        ],
+        "index": 19
+      },
+      {
+        "id": "yaw-020",
+        "label": "Yaw +5\u00b0",
+        "image": "study/pelvis/yaw-020.png",
+        "counts_f32_sha256": "38e4d634a02c744e45a1439ff15fa5682c25174cd6b5897de1e15e5d4af73be8",
+        "depth_f32_sha256": "4777758e0e94d7395b068c2266ba2803ef6147de013394eda71ba3ac6936a0bc",
+        "yaw_degrees": 5,
+        "matrix": [
+          0.9961946980917455,
+          -0.08715574274765736,
+          0.0,
+          0.0,
+          0.08715574274765736,
+          0.9961946980917455,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "source_body_mm": [
+          65.36680706074301,
+          747.1460235688091,
+          0.0
+        ],
+        "refinement": {
+          "coarse_samples": 4096,
+          "fine_samples": 8192,
+          "count_max": 0.00677490234375,
+          "count_p99": 0.001007080078125
+        },
+        "independent_rays": [
+          {
+            "row": 128,
+            "column": 240,
+            "reference_depth": 4.692285678932114,
+            "reference_count": 9.165712320100278,
+            "recorded_count": 9.1657133102417,
+            "absolute_count_error": 9.901414212976078e-07
+          },
+          {
+            "row": 96,
+            "column": 160,
+            "reference_depth": 4.3163561918409865,
+            "reference_count": 13.348434167472885,
+            "recorded_count": 13.348435401916504,
+            "absolute_count_error": 1.2344436193245656e-06
+          },
+          {
+            "row": 160,
+            "column": 320,
+            "reference_depth": 4.13558610914932,
+            "reference_count": 15.993288569485436,
+            "recorded_count": 15.9932861328125,
+            "absolute_count_error": 2.436672936312334e-06
+          }
+        ],
+        "index": 20
+      },
+      {
+        "id": "yaw-021",
+        "label": "Yaw +6\u00b0",
+        "image": "study/pelvis/yaw-021.png",
+        "counts_f32_sha256": "26cdc871615c876c74a633c6b103367922ccde4de34994fb35d5d2aa7ae29ee0",
+        "depth_f32_sha256": "730f874314be4c06ded31ffda7ab22f819a7526f331e6876b5b7f8bae4d4f104",
+        "yaw_degrees": 6,
+        "matrix": [
+          0.9945218953682733,
+          -0.10452846326765347,
+          0.0,
+          0.0,
+          0.10452846326765347,
+          0.9945218953682733,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "source_body_mm": [
+          78.39634745074011,
+          745.891421526205,
+          0.0
+        ],
+        "refinement": {
+          "coarse_samples": 4096,
+          "fine_samples": 8192,
+          "count_max": 0.0081787109375,
+          "count_p99": 0.00091552734375
+        },
+        "independent_rays": [
+          {
+            "row": 128,
+            "column": 240,
+            "reference_depth": 4.662175912977914,
+            "reference_count": 9.445886597013919,
+            "recorded_count": 9.445884704589844,
+            "absolute_count_error": 1.8924240752227206e-06
+          },
+          {
+            "row": 96,
+            "column": 160,
+            "reference_depth": 4.328781724562369,
+            "reference_count": 13.183598965334477,
+            "recorded_count": 13.183601379394531,
+            "absolute_count_error": 2.414060054078959e-06
+          },
+          {
+            "row": 160,
+            "column": 320,
+            "reference_depth": 4.120096404210962,
+            "reference_count": 16.242948477836617,
+            "recorded_count": 16.242942810058594,
+            "absolute_count_error": 5.667778022910852e-06
+          }
+        ],
+        "index": 21
+      },
+      {
+        "id": "yaw-022",
+        "label": "Yaw +7\u00b0",
+        "image": "study/pelvis/yaw-022.png",
+        "counts_f32_sha256": "803b426e1cd590b2fda2452a9d2e8f7527461268483b1eed408ab7e38b265bc4",
+        "depth_f32_sha256": "cb82e979fffbd92c8296c204181716f69875706ad00dad0e70b9d72b9781662b",
+        "yaw_degrees": 7,
+        "matrix": [
+          0.992546151641322,
+          -0.12186934340514748,
+          0.0,
+          0.0,
+          0.12186934340514748,
+          0.992546151641322,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "source_body_mm": [
+          91.40200755386061,
+          744.4096137309915,
+          0.0
+        ],
+        "refinement": {
+          "coarse_samples": 4096,
+          "fine_samples": 8192,
+          "count_max": 0.009033203125,
+          "count_p99": 0.00091552734375
+        },
+        "independent_rays": [
+          {
+            "row": 128,
+            "column": 240,
+            "reference_depth": 4.65757423087566,
+            "reference_count": 9.489453728472316,
+            "recorded_count": 9.48945426940918,
+            "absolute_count_error": 5.409368633024769e-07
+          },
+          {
+            "row": 96,
+            "column": 160,
+            "reference_depth": 4.334644938694604,
+            "reference_count": 13.106526867467888,
+            "recorded_count": 13.106528282165527,
+            "absolute_count_error": 1.4146976390350119e-06
+          },
+          {
+            "row": 160,
+            "column": 320,
+            "reference_depth": 4.0887347192567365,
+            "reference_count": 16.760426793327785,
+            "recorded_count": 16.760419845581055,
+            "absolute_count_error": 6.947746729935034e-06
+          }
+        ],
+        "index": 22
+      },
+      {
+        "id": "yaw-023",
+        "label": "Yaw +8\u00b0",
+        "image": "study/pelvis/yaw-023.png",
+        "counts_f32_sha256": "73d0f281112fad9c7ed668860b2444e578cf0fecdba95959e45ff08e3e376049",
+        "depth_f32_sha256": "718c0e180cc6d3c77082a927212e77e8f7b6b7f8a41ad254b3ddd357c96212a3",
+        "yaw_degrees": 8,
+        "matrix": [
+          0.9902680687415704,
+          -0.13917310096006544,
+          0.0,
+          0.0,
+          0.13917310096006544,
+          0.9902680687415704,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "source_body_mm": [
+          104.37982572004908,
+          742.7010515561777,
+          0.0
+        ],
+        "refinement": {
+          "coarse_samples": 4096,
+          "fine_samples": 8192,
+          "count_max": 0.00762939453125,
+          "count_p99": 0.0008544921875
+        },
+        "independent_rays": [
+          {
+            "row": 128,
+            "column": 240,
+            "reference_depth": 4.669627773698942,
+            "reference_count": 9.375758781580483,
+            "recorded_count": 9.375760078430176,
+            "absolute_count_error": 1.2968496925225281e-06
+          },
+          {
+            "row": 96,
+            "column": 160,
+            "reference_depth": 4.339710063131448,
+            "reference_count": 13.040308521602155,
+            "recorded_count": 13.040306091308594,
+            "absolute_count_error": 2.430293561062058e-06
+          },
+          {
+            "row": 160,
+            "column": 320,
+            "reference_depth": 4.064199270087956,
+            "reference_count": 17.176737696146127,
+            "recorded_count": 17.176734924316406,
+            "absolute_count_error": 2.771829720416008e-06
+          }
+        ],
+        "index": 23
+      },
+      {
+        "id": "yaw-024",
+        "label": "Yaw +9\u00b0",
+        "image": "study/pelvis/yaw-024.png",
+        "counts_f32_sha256": "556a13d25fb33393ad80595e5fd066b8a82e62aa0c5d1249ec72db11f6f24498",
+        "depth_f32_sha256": "96bde36dbbbd3f1c6029456c9213b4f9dc9343b5f2a30711df88e1b34d8ffaff",
+        "yaw_degrees": 9,
+        "matrix": [
+          0.9876883405951378,
+          -0.15643446504023087,
+          0.0,
+          0.0,
+          0.15643446504023087,
+          0.9876883405951378,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "source_body_mm": [
+          117.32584878017315,
+          740.7662554463533,
+          0.0
+        ],
+        "refinement": {
+          "coarse_samples": 4096,
+          "fine_samples": 8192,
+          "count_max": 0.00628662109375,
+          "count_p99": 0.000885009765625
+        },
+        "independent_rays": [
+          {
+            "row": 128,
+            "column": 240,
+            "reference_depth": 4.682884921330364,
+            "reference_count": 9.252283238425843,
+            "recorded_count": 9.252285957336426,
+            "absolute_count_error": 2.7189105828995253e-06
+          },
+          {
+            "row": 96,
+            "column": 160,
+            "reference_depth": 4.333737922276889,
+            "reference_count": 13.118420095377031,
+            "recorded_count": 13.11842155456543,
+            "absolute_count_error": 1.4591883985559662e-06
+          },
+          {
+            "row": 160,
+            "column": 320,
+            "reference_depth": 4.062215922229423,
+            "reference_count": 17.210838948216413,
+            "recorded_count": 17.21084213256836,
+            "absolute_count_error": 3.1843519465724057e-06
+          }
+        ],
+        "index": 24
+      },
+      {
+        "id": "yaw-025",
+        "label": "Yaw +10\u00b0",
+        "image": "study/pelvis/yaw-025.png",
+        "counts_f32_sha256": "534b36adac5842feaf6c2af4885bf5aa8c5816568357f2d54b1169e14dfc0901",
+        "depth_f32_sha256": "e8f8d0844ff562274fb067b3671ccacfc5a5186f595b901a6be8515d0351719f",
+        "yaw_degrees": 10,
+        "matrix": [
+          0.984807753012208,
+          -0.17364817766693033,
+          0.0,
+          0.0,
+          0.17364817766693033,
+          0.984807753012208,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "source_body_mm": [
+          130.23613325019775,
+          738.605814759156,
+          0.0
+        ],
+        "refinement": {
+          "coarse_samples": 4096,
+          "fine_samples": 8192,
+          "count_max": 0.00830078125,
+          "count_p99": 0.00078582763671875
+        },
+        "independent_rays": [
+          {
+            "row": 128,
+            "column": 240,
+            "reference_depth": 4.700842382236379,
+            "reference_count": 9.087618627964392,
+            "recorded_count": 9.087618827819824,
+            "absolute_count_error": 1.9985543175948806e-07
+          },
+          {
+            "row": 96,
+            "column": 160,
+            "reference_depth": 4.336203346188972,
+            "reference_count": 13.08611746498596,
+            "recorded_count": 13.086113929748535,
+            "absolute_count_error": 3.5352374254671304e-06
+          },
+          {
+            "row": 160,
+            "column": 320,
+            "reference_depth": 4.0480417381335245,
+            "reference_count": 17.45652563875977,
+            "recorded_count": 17.456523895263672,
+            "absolute_count_error": 1.7434960994933135e-06
+          }
+        ],
+        "index": 25
+      },
+      {
+        "id": "yaw-026",
+        "label": "Yaw +11\u00b0",
+        "image": "study/pelvis/yaw-026.png",
+        "counts_f32_sha256": "e3725b9bfe545df01d79fb1f5f864d1bb6531c43e0535cba3f1d2550ca1a401f",
+        "depth_f32_sha256": "1c009ddcb5da18e707dedd0f9cc93abb60069253db7d6a5af2e5c7ff35e35eb2",
+        "yaw_degrees": 11,
+        "matrix": [
+          0.981627183447664,
+          -0.1908089953765448,
+          0.0,
+          0.0,
+          0.1908089953765448,
+          0.981627183447664,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "source_body_mm": [
+          143.1067465324086,
+          736.220387585748,
+          0.0
+        ],
+        "refinement": {
+          "coarse_samples": 4096,
+          "fine_samples": 8192,
+          "count_max": 0.0079345703125,
+          "count_p99": 0.00079345703125
+        },
+        "independent_rays": [
+          {
+            "row": 128,
+            "column": 240,
+            "reference_depth": 4.7190160423730925,
+            "reference_count": 8.923955023499222,
+            "recorded_count": 8.923954010009766,
+            "absolute_count_error": 1.0134894559143959e-06
+          },
+          {
+            "row": 96,
+            "column": 160,
+            "reference_depth": 4.338531835154228,
+            "reference_count": 13.055682032905958,
+            "recorded_count": 13.055681228637695,
+            "absolute_count_error": 8.042682626552278e-07
+          },
+          {
+            "row": 160,
+            "column": 320,
+            "reference_depth": 4.020140172667515,
+            "reference_count": 17.950448600882545,
+            "recorded_count": 17.950448989868164,
+            "absolute_count_error": 3.889856188266094e-07
+          }
+        ],
+        "index": 26
+      },
+      {
+        "id": "yaw-027",
+        "label": "Yaw +12\u00b0",
+        "image": "study/pelvis/yaw-027.png",
+        "counts_f32_sha256": "27004debe95b3da6da38e7185eb7814df12c065436d62694699488996efdd0aa",
+        "depth_f32_sha256": "94cc830c491af7eecf45b87f1df328d06870d3c435891ee70fbd74b303d6093a",
+        "yaw_degrees": 12,
+        "matrix": [
+          0.9781476007338057,
+          -0.20791169081775934,
+          0.0,
+          0.0,
+          0.20791169081775934,
+          0.9781476007338057,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "source_body_mm": [
+          155.9337681133195,
+          733.6107005503543,
+          0.0
+        ],
+        "refinement": {
+          "coarse_samples": 4096,
+          "fine_samples": 8192,
+          "count_max": 0.00567626953125,
+          "count_p99": 0.0007781982421875
+        },
+        "independent_rays": [
+          {
+            "row": 128,
+            "column": 240,
+            "reference_depth": 4.730828758202185,
+            "reference_count": 8.819159059806383,
+            "recorded_count": 8.819159507751465,
+            "absolute_count_error": 4.479450819161457e-07
+          },
+          {
+            "row": 96,
+            "column": 160,
+            "reference_depth": 4.345158073791715,
+            "reference_count": 12.969457954328021,
+            "recorded_count": 12.96945858001709,
+            "absolute_count_error": 6.256890685563121e-07
+          },
+          {
+            "row": 160,
+            "column": 320,
+            "reference_depth": 4.0074581507689055,
+            "reference_count": 18.17954622311696,
+            "recorded_count": 18.17954444885254,
+            "absolute_count_error": 1.774264422493843e-06
+          }
+        ],
+        "index": 27
+      },
+      {
+        "id": "yaw-028",
+        "label": "Yaw +13\u00b0",
+        "image": "study/pelvis/yaw-028.png",
+        "counts_f32_sha256": "ea26a80d0c0bf3bc38fd561add71d8d0081846e99b8eb7ee1d83f60271a4c128",
+        "depth_f32_sha256": "e880757defb77460274c35a158fdc0023b26ac72c41122b40232d6e487f83755",
+        "yaw_degrees": 13,
+        "matrix": [
+          0.9743700647852352,
+          -0.224951054343865,
+          0.0,
+          0.0,
+          0.224951054343865,
+          0.9743700647852352,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "source_body_mm": [
+          168.71329075789876,
+          730.7775485889264,
+          0.0
+        ],
+        "refinement": {
+          "coarse_samples": 4096,
+          "fine_samples": 8192,
+          "count_max": 0.0091552734375,
+          "count_p99": 0.0007476806640625
+        },
+        "independent_rays": [
+          {
+            "row": 128,
+            "column": 240,
+            "reference_depth": 4.758940729767516,
+            "reference_count": 8.574687499788835,
+            "recorded_count": 8.574687004089355,
+            "absolute_count_error": 4.956994796856407e-07
+          },
+          {
+            "row": 96,
+            "column": 160,
+            "reference_depth": 4.357490645850739,
+            "reference_count": 12.810493415125917,
+            "recorded_count": 12.810494422912598,
+            "absolute_count_error": 1.0077866807733926e-06
+          },
+          {
+            "row": 160,
+            "column": 320,
+            "reference_depth": 4.0978026838933745,
+            "reference_count": 16.6091308457507,
+            "recorded_count": 16.609132766723633,
+            "absolute_count_error": 1.920972934499332e-06
+          }
+        ],
+        "index": 28
+      },
+      {
+        "id": "yaw-029",
+        "label": "Yaw +14\u00b0",
+        "image": "study/pelvis/yaw-029.png",
+        "counts_f32_sha256": "23cbc5e131d37814a4ba54794c9a2bc8679bc61110a9388cbdde9793d1dde2be",
+        "depth_f32_sha256": "3cae5a9d47ff23aa9c72d622a0b85893a11a5c08297cedcf97f1685997a37e2b",
+        "yaw_degrees": 14,
+        "matrix": [
+          0.9702957262759965,
+          -0.24192189559966773,
+          0.0,
+          0.0,
+          0.24192189559966773,
+          0.9702957262759965,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "source_body_mm": [
+          181.4414216997508,
+          727.7217947069973,
+          0.0
+        ],
+        "refinement": {
+          "coarse_samples": 4096,
+          "fine_samples": 8192,
+          "count_max": 0.007568359375,
+          "count_p99": 0.000762939453125
+        },
+        "independent_rays": [
+          {
+            "row": 128,
+            "column": 240,
+            "reference_depth": 4.808566140983087,
+            "reference_count": 8.159550959583639,
+            "recorded_count": 8.159551620483398,
+            "absolute_count_error": 6.608997598078759e-07
+          },
+          {
+            "row": 96,
+            "column": 160,
+            "reference_depth": 4.3634386153171665,
+            "reference_count": 12.734523149827089,
+            "recorded_count": 12.734522819519043,
+            "absolute_count_error": 3.303080458039176e-07
+          },
+          {
+            "row": 160,
+            "column": 320,
+            "reference_depth": 4.224719154161076,
+            "reference_count": 14.629442750826414,
+            "recorded_count": 14.62944507598877,
+            "absolute_count_error": 2.3251623559872314e-06
+          }
+        ],
+        "index": 29
+      },
+      {
+        "id": "yaw-030",
+        "label": "Yaw +15\u00b0",
+        "image": "study/pelvis/yaw-030.png",
+        "counts_f32_sha256": "d53e73b3788d264d6c39e1686d617d87ba37b0156cb2e3ad9fa8b287aacb7e8e",
+        "depth_f32_sha256": "cadbc19e7da2f9893ca7bf4ca92e55a8faa538dd8bf3cedde8d94966c6d42b1e",
+        "yaw_degrees": 15,
+        "matrix": [
+          0.9659258262890683,
+          -0.25881904510252074,
+          0.0,
+          0.0,
+          0.25881904510252074,
+          0.9659258262890683,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "source_body_mm": [
+          194.11428382689056,
+          724.4443697168012,
+          0.0
+        ],
+        "refinement": {
+          "coarse_samples": 4096,
+          "fine_samples": 8192,
+          "count_max": 0.00970458984375,
+          "count_p99": 0.0007781982421875
+        },
+        "independent_rays": [
+          {
+            "row": 128,
+            "column": 240,
+            "reference_depth": 4.8522223137182845,
+            "reference_count": 7.8109997550133965,
+            "recorded_count": 7.811002731323242,
+            "absolute_count_error": 2.9763098456925263e-06
+          },
+          {
+            "row": 96,
+            "column": 160,
+            "reference_depth": 4.371515881647163,
+            "reference_count": 12.632077312897383,
+            "recorded_count": 12.632079124450684,
+            "absolute_count_error": 1.8115533002571738e-06
+          },
+          {
+            "row": 160,
+            "column": 320,
+            "reference_depth": 4.248869708397158,
+            "reference_count": 14.280365767942476,
+            "recorded_count": 14.280370712280273,
+            "absolute_count_error": 4.944337797851972e-06
+          }
+        ],
+        "index": 30
+      }
+    ],
+    "suggested_frames_per_second": 15,
+    "playback": "Recorded frames in forward/reverse order; no interpolated projections"
+  },
+  "noise": {
+    "source": "pelvis/ap",
+    "width": 32,
+    "height": 32,
+    "roi": {
+      "x": 264,
+      "y": 75,
+      "width": 32,
+      "height": 32,
+      "border_pixels": 4,
+      "coefficient_of_variation": 0.04877557090848345,
+      "selection": "Lowest CV among eligible fixed-stride windows in the central 60% of the detector"
+    },
+    "normalisation": {
+      "background_reference_counts": 10.440581887960434,
+      "reference_open_beam_counts": 1000,
+      "definition": "Mean of the four-pixel border of the same synthetic pelvic AP region"
+    },
+    "display_window": [
+      0.8,
+      1.2
+    ],
+    "display_mapping": "Inverse linear normalised counts; common fixed window",
+    "ideal_image": "study/noise/ideal.png",
+    "levels": [
+      {
+        "background_counts": 10,
+        "image": "study/noise/counts-10.png",
+        "expected_f32_sha256": "a59b16ad31ed3329e5bcb3ddfcca577ee08564773f99415ec2c26362df379fe0",
+        "observed_u64_sha256": "8104657d2e5dc3b45d43e3aa9202f4e19dd2f245be82e7cdf82fdcf3f9548a3e",
+        "seed": 2026091109,
+        "observation_id": 100,
+        "statistics": {
+          "expected_total": 10234.339797019958,
+          "observed_total": 10414,
+          "total_z": 1.7759141595510166,
+          "pearson_z": -0.28471266365509057,
+          "expected_background_mean": 9.999999991485051,
+          "observed_background_mean": 10.223214285714286,
+          "normalised_rmse": 0.31388371419798017
+        },
+        "replay_identical": true
+      },
+      {
+        "background_counts": 100,
+        "image": "study/noise/counts-100.png",
+        "expected_f32_sha256": "b79089a0fdf3296be2a7d5573b5fc39bcf5407d095a61bd7343adaf9cb893e88",
+        "observed_u64_sha256": "56a1a2b8e2116534fc783de7e3d41cd5ada7f41bdf0c16bad0175abf9bce3828",
+        "seed": 2026091109,
+        "observation_id": 101,
+        "statistics": {
+          "expected_total": 102343.39795684814,
+          "observed_total": 102495,
+          "total_z": 0.47388737460190467,
+          "pearson_z": -0.608497997612944,
+          "expected_background_mean": 99.9999999659402,
+          "observed_background_mean": 99.89955357142857,
+          "normalised_rmse": 0.09848668397102928
+        },
+        "replay_identical": true
+      },
+      {
+        "background_counts": 1000,
+        "image": "study/noise/counts-1000.png",
+        "expected_f32_sha256": "29f37c7f6a925ede6037d9d5c36b69ad09c5f9d02e36aec2b51c6f8df8060e72",
+        "observed_u64_sha256": "416e4fe4604ce117ca31acaa03622cc01d581389707c12cb7f1d9411f881a95f",
+        "seed": 2026091109,
+        "observation_id": 102,
+        "statistics": {
+          "expected_total": 1023433.9791259766,
+          "observed_total": 1023950,
+          "total_z": 0.5100788944125869,
+          "pearson_z": 0.9115728672211301,
+          "expected_background_mean": 1000.0000004087176,
+          "observed_background_mean": 1000.9799107142857,
+          "normalised_rmse": 0.03225184470991399
+        },
+        "replay_identical": true
+      },
+      {
+        "background_counts": 10000,
+        "image": "study/noise/counts-10000.png",
+        "expected_f32_sha256": "a26686bd6b62ee3a77fd1f5568cf51329e771d35dc35489b49fffdc84f1b475b",
+        "observed_u64_sha256": "8dbaaa82d3d11eafe2645422676d3d501c520d47bf7e3ef68dd4b632596626c8",
+        "seed": 2026091109,
+        "observation_id": 103,
+        "statistics": {
+          "expected_total": 10234339.795898438,
+          "observed_total": 10233362,
+          "total_z": -0.3056457034276786,
+          "pearson_z": -0.6090713046272248,
+          "expected_background_mean": 9999.999997820172,
+          "observed_background_mean": 9999.83482142857,
+          "normalised_rmse": 0.009867362147321857
+        },
+        "replay_identical": true
+      }
+    ]
+  },
+  "checks": {
+    "input_hashes": true,
+    "native_geometry": true,
+    "finite_nonnegative": true,
+    "all_view_refinements": true,
+    "independent_reference_rays": true,
+    "poisson_statistics": true,
+    "poisson_replay": true
+  },
+  "status": "passed"
+}

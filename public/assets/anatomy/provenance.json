@@ -1,0 +1,17 @@
+{
+  "source": "A23DMOD_USD.usd",
+  "source_sha256": "d28ec84567f512605bf5129d70f4506e3e6a036cd3fb34c01ab40fc5f5c4a6b4",
+  "source_up_axis": "Z",
+  "source_height": 1.7464719193994365,
+  "source_triangles": 651008,
+  "triangles": 39999,
+  "vertices": 20097,
+  "body_axes": {
+    "superior": "+Y",
+    "anterior": "+Z",
+    "left": "+X"
+  },
+  "normalised_height": 2,
+  "glb_sha256": "1da26d12c5686b68e7fdb9299271d4ff382139e8e8aa3813c8202072d687086c",
+  "rights": "Owner supplied; book redistribution confirmed by Chris von Csefalvay, 7 September 2026."
+}

@@ -1,0 +1,28 @@
+---
+import { getCitationRenderer } from "../../lib/citations";
+
+interface Props {
+  keys: string[];
+}
+
+const { keys } = Astro.props;
+const renderer = await getCitationRenderer();
+const numeric = renderer.style.format === "numeric";
+const entries = keys.map((key) => ({
+  href: `/references/#${encodeURIComponent(key)}`,
+  label: numeric
+    ? String(renderer.citationNumber(key))
+    : renderer.renderCitation([key]).slice(1, -1),
+}));
+---
+
+<cite class="citation" data-citation-keys={keys.join(" ")}>
+  {numeric ? "[" : "("}{
+    entries.map((entry, index) => (
+      <Fragment>
+        {index > 0 && (numeric ? ", " : "; ")}
+        <a href={entry.href}>{entry.label}</a>
+      </Fragment>
+    ))
+  }{numeric ? "]" : ")"}
+</cite>

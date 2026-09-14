@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "layer_optical_depths": [0.3, 0.7],
+  "histories": 65536,
+  "replicates": 8,
+  "seed": 85197,
+  "observed_mean": 0.2,
+  "finite_difference_steps": [0.1, 0.03, 0.01]
+}

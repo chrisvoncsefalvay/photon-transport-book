@@ -1,0 +1,67 @@
+---
+layout: ../../layouts/ChapterLayout.astro
+title: The chapter as an instrument
+status: Bootstrap demonstration
+scope: A deliberately non-scientific page used to verify the editorial, source and figure systems.
+chapterNumber: D
+navigationFrom: /chapters/frames-geometry-motion/
+---
+
+import Source from "../../components/source/Source.astro";
+import FigurePlate from "../../components/figures/FigurePlate.astro";
+import InteractiveFigure from "../../components/figures/InteractiveFigure.astro";
+import MarginNote from "../../components/marginalia/MarginNote.astro";
+import EquationNote from "../../components/marginalia/EquationNote.astro";
+import Citation from "../../components/citations/Citation.astro";
+import Bibliography from "../../components/citations/Bibliography.astro";
+import Provenance from "../../components/Provenance.astro";
+
+## Reading mathematics beside code
+
+This page carries no scientific claim. It tests how a short expression, its notation and canonical source sit in the reading column. The example relation is intentionally generic:
+
+$$
+\mathbf{y} = \mathbf{A}\mathbf{x}.
+$$
+
+<MarginNote>
+  The note rail moves into the reading flow on narrow screens and into the outer
+  margin when space permits.
+</MarginNote>
+
+<EquationNote term="A">
+  The linear operator applied to the input vector.
+</EquationNote>
+
+<Source
+  file="python/dpt/bootstrap.py"
+  region="bootstrap-package-identity"
+  caption="Bootstrap-only import and package identity check"
+/>
+
+## A bounded interactive plate
+
+The scene below proves the rendering boundary, not a transport model. Three.js is requested only by this component, and a static technical diagram remains when client rendering is unavailable.
+
+<FigurePlate
+  id="figure-rendering-boundary"
+  title="Non-scientific source, path and detector geometry used only to verify the figure shell"
+  description="A source point, straight line and detector plane. No physical quantities or results are represented."
+  width="full"
+>
+  <InteractiveFigure
+    title="Rendering boundary"
+    description="A source point, straight line and detector plane. No physical quantities or results are represented."
+  />
+</FigurePlate>
+
+## Evidence and references
+
+Citation markers carry stable keys for the build-time CSL renderer <Citation keys={["siddon1985"]} />. Formatting belongs to the citation integration, not chapter prose.
+
+<Bibliography keys={["siddon1985"]} />
+
+<Provenance status="bootstrap">
+  This page is a design-system fixture. It contains no measured, simulated or
+  benchmark result.
+</Provenance>

@@ -1,0 +1,423 @@
+dpt-reconstruction {
+  display: block;
+  min-width: 0;
+  color: var(--ink);
+}
+dpt-reconstruction [hidden] {
+  display: none !important;
+}
+.reconstruction-stage {
+  position: relative;
+  background: var(--paper-inset);
+}
+.reconstruction-poster {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0;
+}
+.reconstruction-stage > canvas {
+  display: block;
+  width: 100%;
+  height: clamp(22rem, 38vw, 35rem);
+  touch-action: none;
+  cursor: grab;
+}
+.reconstruction-stage > canvas:active {
+  cursor: grabbing;
+}
+.reconstruction-stage > canvas:focus-visible {
+  outline: 2px solid #dccba7;
+  outline-offset: -4px;
+}
+.reconstruction-labels {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  pointer-events: none;
+  color: var(--ink-muted);
+  font: 0.72rem var(--font-ui);
+  letter-spacing: 0.04em;
+}
+.reconstruction-labels span {
+  flex: 1;
+  padding: 1rem 1.3rem;
+  text-align: center;
+}
+.reconstruction-stage:has(canvas[data-layout="stacked"]:not([hidden]))
+  .reconstruction-live-labels {
+  height: 100%;
+  flex-direction: column;
+}
+@media (max-width: 680px) {
+  dpt-reconstruction[data-auto-three="true"] .reconstruction-stage > canvas {
+    height: 42rem;
+  }
+}
+.reconstruction-scene-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.8rem 1.3rem;
+  padding: 0.8rem 1.5rem;
+  border-top: 1px solid var(--rule);
+  background: var(--paper);
+}
+.reconstruction-scene-controls > label:first-child {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.reconstruction-scene-controls .reconstruction-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 2.6rem;
+  cursor: pointer;
+}
+.reconstruction-toggle input {
+  accent-color: var(--accent);
+  width: 1rem;
+  height: 1rem;
+}
+.reconstruction-scene-controls p {
+  width: 100%;
+  margin: 0;
+  font: 0.7rem/1.6 var(--font-ui);
+  color: var(--ink-muted);
+}
+@media print {
+  .reconstruction-scene-controls {
+    display: none !important;
+  }
+}
+.reconstruction-entry {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--rule);
+  padding: 1.1rem 1.5rem;
+}
+.reconstruction-entry p {
+  margin: 0.25rem 0 0;
+  color: var(--ink-muted);
+  font: 0.76rem/1.6 var(--font-ui);
+}
+.reconstruction-entry--quiet:has([data-reconstruction-start][hidden]):has(
+    [data-reconstruction-status].sr-only
+  ) {
+  padding: 0;
+  border-bottom: 0;
+}
+dpt-reconstruction button,
+dpt-reconstruction select {
+  min-height: 2.6rem;
+  border: 1px solid var(--rule-strong);
+  border-radius: 0.15rem;
+  background: var(--paper-raised);
+  color: var(--ink);
+  padding: 0.5rem 0.7rem;
+  font: 0.76rem/1.3 var(--font-ui);
+  cursor: pointer;
+}
+dpt-reconstruction button:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+dpt-reconstruction button:focus-visible,
+dpt-reconstruction input:focus-visible,
+dpt-reconstruction select:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+dpt-reconstruction button:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+.reconstruction-entry button {
+  flex: 0 0 auto;
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.reconstruction-entry button span {
+  margin-left: 0.8rem;
+}
+.reconstruction-controls {
+  display: flex;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1.1rem 1.5rem 0.5rem;
+}
+dpt-reconstruction label {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  min-width: 0;
+  font: 0.7rem/1.5 var(--font-ui);
+  color: var(--ink-muted);
+}
+dpt-reconstruction input[type="range"] {
+  width: 100%;
+  min-width: 0;
+  min-height: 2.6rem;
+  accent-color: var(--accent);
+}
+.reconstruction-controls label {
+  flex: 1 1 8rem;
+}
+.reconstruction-view-buttons {
+  display: flex;
+  gap: 0.35rem;
+  align-items: center;
+}
+.reconstruction-view-buttons button {
+  min-width: 2.6rem;
+}
+.reconstruction-instructions,
+.reconstruction-display-note {
+  margin: 0;
+  padding: 0.25rem 1.5rem;
+  color: var(--ink-muted);
+  font: 0.7rem/1.6 var(--font-ui);
+}
+.reconstruction-display-note {
+  padding-bottom: 1rem;
+}
+.reconstruction-slice-heading {
+  margin-top: 0.3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  border-top: 1px solid var(--rule);
+  padding: 1.2rem 1.5rem;
+}
+.reconstruction-slice-heading strong {
+  font: 1.35rem var(--font-display);
+}
+.reconstruction-slice-heading label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.reconstruction-slices {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.85rem;
+  padding: 0 1.5rem;
+  align-items: start;
+}
+.reconstruction-slice {
+  min-width: 0;
+}
+.reconstruction-slice > span {
+  display: block;
+  margin-bottom: 0.4rem;
+  font: 0.7rem var(--font-ui);
+  color: var(--ink-muted);
+}
+.reconstruction-slice-area {
+  position: relative;
+  background: #10191b;
+}
+.reconstruction-slice-area canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+  image-rendering: pixelated;
+}
+.reconstruction-slice-area canvas:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+.reconstruction-crosshair-x,
+.reconstruction-crosshair-y {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0.7;
+  background: #e4b868;
+}
+.reconstruction-crosshair-x {
+  top: 0;
+  bottom: 0;
+  width: 1px;
+}
+.reconstruction-crosshair-y {
+  left: 0;
+  right: 0;
+  height: 1px;
+}
+.reconstruction-slice-controls {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  padding: 0.9rem 1.5rem 0;
+}
+.reconstruction-scale {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding: 0.3rem 1.5rem 1.2rem;
+  font: 0.7rem/1.6 var(--font-ui);
+  color: var(--ink-muted);
+}
+.reconstruction-profile {
+  border-top: 1px solid var(--rule);
+  padding: 1.1rem 1.5rem;
+}
+.reconstruction-profile > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.reconstruction-profile strong {
+  font: 1.12rem var(--font-display);
+}
+.reconstruction-profile label {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+.reconstruction-profile svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-top: 0.8rem;
+  overflow: visible;
+  font: 11px var(--font-ui);
+}
+.reconstruction-profile p {
+  color: var(--ink-muted);
+  font: 0.68rem/1.6 var(--font-ui);
+  margin: 0.25rem 0 0;
+}
+.reconstruction-profile-key {
+  display: inline-block;
+}
+.reconstruction-provenance {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.87rem;
+}
+.reconstruction-provenance summary {
+  cursor: pointer;
+  color: var(--ink-muted);
+  font: 0.76rem/1.6 var(--font-ui);
+}
+.reconstruction-provenance p {
+  margin: 0.9rem 0 0;
+  line-height: 1.6;
+}
+.reconstruction-provenance ul {
+  margin: 0.8rem 0;
+  padding-left: 1.2rem;
+}
+.reconstruction-provenance dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.6rem 2rem;
+  margin: 1rem 0;
+  font: 0.73rem/1.6 var(--font-ui);
+}
+.reconstruction-provenance dt {
+  color: var(--ink-muted);
+}
+.reconstruction-provenance dd {
+  margin: 0;
+}
+.reconstruction-no-script {
+  padding: 1rem 1.5rem;
+  font: 0.75rem var(--font-ui);
+}
+@media (max-width: 640px) {
+  .reconstruction-entry {
+    align-items: start;
+    flex-direction: column;
+    padding: 1rem;
+  }
+  .reconstruction-entry button {
+    width: 100%;
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .reconstruction-controls {
+    padding: 1rem;
+    gap: 0.75rem;
+  }
+  .reconstruction-instructions,
+  .reconstruction-display-note {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .reconstruction-stage > canvas {
+    height: 24rem;
+  }
+  .reconstruction-labels span {
+    font-size: 0.65rem;
+    padding: 0.6rem 0.3rem;
+  }
+  .reconstruction-slice-heading {
+    padding: 1rem;
+    align-items: start;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .reconstruction-slices {
+    padding: 0 1rem;
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+  }
+  .reconstruction-slice-area {
+    max-width: 24rem;
+    margin-inline: auto;
+  }
+  .reconstruction-slice-controls {
+    padding: 0.8rem 1rem 0;
+  }
+  .reconstruction-scale {
+    padding: 0.4rem 1rem 1rem;
+  }
+  .reconstruction-profile,
+  .reconstruction-provenance {
+    padding: 1rem;
+  }
+  .reconstruction-profile > div {
+    flex-direction: column;
+    align-items: start;
+    gap: 0.5rem;
+  }
+  .reconstruction-provenance dl {
+    grid-template-columns: 1fr;
+  }
+}
+@media print {
+  .reconstruction-stage > canvas,
+  .reconstruction-entry button,
+  .reconstruction-inspector {
+    display: none !important;
+  }
+  dpt-reconstruction .reconstruction-poster {
+    display: block !important;
+  }
+  dpt-reconstruction .reconstruction-poster-labels {
+    display: flex !important;
+  }
+  dpt-reconstruction .reconstruction-live-labels {
+    display: none !important;
+  }
+  .reconstruction-entry {
+    padding: 0.6rem 0;
+  }
+  .reconstruction-provenance {
+    display: none;
+  }
+}

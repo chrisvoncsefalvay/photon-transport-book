@@ -1,0 +1,108 @@
+---
+import ChapterContents from "../components/navigation/ChapterContents.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import TransportHero from "../components/hero/TransportHero.astro";
+import { BOOK_DESCRIPTION, BOOK_TITLE } from "../lib/site-metadata";
+---
+
+<BaseLayout title={BOOK_TITLE} description={BOOK_DESCRIPTION}>
+  <section class="hero">
+    <div class="hero__body">
+      <p class="eyebrow">An illustrated tour of</p>
+      <h1>Differentiable<br /><em>Photon</em> Transport</h1>
+      <p class="hero__author"><cite>Chris von Csefalvay</cite></p>
+      <p class="hero__dek">
+        Go from zero to actual differentiable photon transport in CUDA/Warp
+        without losing your sanity to physics, your livelihood to GPU rental and
+        your will to live to maths.
+      </p>
+    </div>
+    <TransportHero />
+  </section>
+
+  <ChapterContents />
+</BaseLayout>
+
+<style>
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(18rem, 0.9fr);
+    column-gap: 1.5rem;
+    margin-inline: auto;
+    max-width: var(--measure-page);
+    padding: clamp(4rem, 7vw, 7rem) var(--page-gutter) var(--space-8);
+  }
+
+  .hero__body {
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero h1 {
+    font-size: var(--size-4);
+    letter-spacing: -0.05em;
+    line-height: 0.89;
+    margin-block: var(--space-4) var(--space-5);
+    max-width: 10ch;
+  }
+
+  .hero__author {
+    color: var(--accent);
+    font-family: var(--font-display);
+    font-size: var(--size-1);
+    font-style: italic;
+    letter-spacing: -0.01em;
+  }
+
+  .hero h1 em {
+    color: var(--accent);
+    font-weight: inherit;
+  }
+
+  .hero__author cite {
+    font-style: inherit;
+  }
+
+  .hero__dek {
+    border-block-start: 1px solid var(--rule-strong);
+    font-size: var(--size-1);
+    line-height: 1.48;
+    margin-block-start: var(--space-7);
+    max-width: 37rem;
+    padding-block-start: var(--space-5);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hero__body > * {
+      animation: enter-text 800ms var(--motion-ease) backwards;
+    }
+
+    .hero__body > :nth-child(2) {
+      animation-delay: 70ms;
+    }
+    .hero__body > :nth-child(3) {
+      animation-delay: 140ms;
+    }
+    .hero__body > :nth-child(4) {
+      animation-delay: 210ms;
+    }
+  }
+
+  @keyframes enter-text {
+    from {
+      opacity: 0;
+      transform: translateY(0.65rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (max-width: 58rem) {
+    .hero {
+      grid-template-columns: minmax(0, 1fr);
+      padding-block-end: var(--space-7);
+    }
+  }
+</style>

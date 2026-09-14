@@ -1,0 +1,546 @@
+---
+layout: ../../layouts/ChapterLayout.astro
+title: Recovering an object’s pose from its projection
+status: Draft
+scope: Projection gradients turn an image mismatch into a direction in which the optimiser can move the object. Recovering the right pose also depends on the image comparison, the starting estimate and what the view can actually constrain.
+chapterNumber: "06"
+---
+
+import Citation from "../../components/citations/Citation.astro";
+import Bibliography from "../../components/citations/Bibliography.astro";
+
+import Source from "../../components/source/Source.astro";
+import RecordedFigure from "../../components/figures/RecordedFigure.astro";
+import EquationNote from "../../components/marginalia/EquationNote.astro";
+import MarginNote from "../../components/marginalia/MarginNote.astro";
+
+A projected bone edge is three pixels to the left of where the renderer puts it. Moving the object might repair that disagreement. So might moving the source, changing the detector calibration, or deciding that the bright line was an instrument rather than bone. The optimiser receives none of this context. It receives numbers and permission to change six of them.
+
+Pose recovery gives those six numbers a physical meaning. We need an image model, a rule for comparing its prediction with the observation, and a way of deciding whether the resulting movement recovered the object. These decisions are coupled: an objective that ignores intensity scale can tolerate an exposure error, but it also discards any geometric information carried only by that scale.
+
+Even with anatomy and acquisition calibration fixed, some motions barely change the projection. Those weak directions determine how precisely the image can locate the object.
+
+This chapter assembles the operators we have built into `dpt.recovery.PrimaryPoseEvaluator` and `recover_pose()`. The evaluator keeps the volume and image work on CUDA, returning a loss and six derivatives to the optimiser. The first implemented problem fixes acquisition calibration and fits a rigid pose to counts or log transmission. More general detector signals and jointly fitted acquisition parameters follow in [Chapter 7](/chapters/same-pose-different-x-ray/#76-jointly-estimate-pose-and-nuisance-parameters). Giving the first solve that narrower contract lets us identify what each residual and derivative actually means.
+
+## 6.1 Pose recovery as an inverse problem
+
+Let the attenuation field be specified in object coordinates, and let the source and detector geometry be known in world coordinates. The unknown rigid transform is $\mathbf{G}_{WO}\in SE(3)$, mapping object coordinates into world coordinates. At each candidate pose, transform the physical source-to-detector segments into the object frame, integrate attenuation, and predict the quantity represented by the observed image.
+
+Write $\mathbf{f}(\mathbf{G}_{WO})$ for that prediction and $\mathbf{y}$ for the observation. The components of $\mathbf{f}$ might be expected photon counts, calibrated detector signal, or a specified processed image. They must describe the same measurement domain as $\mathbf{y}$. A count prediction cannot be compared directly with a display image whose greyscale has been inverted and windowed.
+
+A pose estimate minimises a data discrepancy, optionally with prior information:
+
+$$
+\widehat{\mathbf{G}}_{WO} = \underset{\mathbf{G}\in SE(3)}{\operatorname{argmin}} \left[ \mathcal{D}\!\left(\mathbf{f}(\mathbf{G}),\mathbf{y}\right) + \mathcal{R}(\mathbf{G}) \right].
+$$
+
+<EquationNote term="\widehat{\mathbf{G}}_{WO}">
+  Estimated transform from object coordinates into world coordinates.
+</EquationNote>
+
+<EquationNote term="\mathcal{D}">
+  Image discrepancy in the declared measurement domain.
+</EquationNote>
+
+<EquationNote term="\mathcal{R}">
+  Pose prior or regularisation term.
+</EquationNote>
+
+In [equation (6.1)](#equation-6-1), the regulariser $\mathcal{R}$ expresses information beyond the image: a tracked initial pose with stated uncertainty, for example, or a mechanically restricted motion. Setting it to zero leaves a data-only fit. A numerical damping term used to control an optimisation step is a different object. It need not represent any belief about the final pose.
+
+The known quantities deserve as much attention as the six unknowns. An error in voxel spacing changes the physical object. An error in principal point moves every predicted ray. An attenuation field from another anatomical state changes what those rays cross. Holding these quantities fixed does not make their errors disappear: it gives pose the job of compensating for them.
+
+The rigid model is appropriate when the relative positions of the represented material structures remain fixed over the acquisition. It can describe the pose of a single bone even when neighbouring structures move independently, provided the image comparison isolates the relevant anatomy. A rigid fit to a whole region containing several moving bones asks one transform to satisfy incompatible geometry.
+
+## 6.2 What should the images agree on?
+
+For independent ideal photon counts $N_p$ with strictly positive expected counts $\lambda_p(\mathbf{G})$, the Poisson negative log-likelihood, after dropping terms independent of pose, is
+
+$$
+\mathcal{D}_{\mathrm{P}}(\mathbf{G}) = \sum_{p\in\mathcal{M}} \left[ \lambda_p(\mathbf{G}) - N_p\log\lambda_p(\mathbf{G}) \right].
+$$
+
+<EquationNote term="\lambda_p">
+  Positive expected photon count at pixel p.
+</EquationNote>
+
+<EquationNote term="\mathcal{M}">
+  Fixed set of pixels included in the fit.
+</EquationNote>
+
+The fixed pixel set $\mathcal{M}$ in [equation (6.2)](#equation-6-2) identifies the observations included in the fit. Zero observed counts are allowed: the product $0\log\lambda_p$ contributes zero. The expected count must remain positive. Detector energy integration, electronic noise and processing require a measurement model appropriate to those operations.
+
+The count likelihood developed in [Chapter 2](/chapters/transmission/#25-from-transmission-to-log-projections) supplies the statistical comparison. For a local pose coordinate $\xi_k$, differentiating this objective gives
+
+$$
+\frac{\partial\mathcal{D}_{\mathrm{P}}}{\partial\xi_k} = \sum_{p\in\mathcal{M}} \left(1-\frac{N_p}{\lambda_p}\right) \frac{\partial\lambda_p}{\partial\xi_k}.
+$$
+
+<EquationNote term="N_p">Observed photon count at pixel p.</EquationNote>
+
+<EquationNote term="\xi_k">
+  One local translation or rotation coordinate.
+</EquationNote>
+
+Each pixel in [equation (6.3)](#equation-6-3) contributes its count discrepancy through a pose sensitivity. A bright residual on an edge can have a large geometric effect because the expected count changes rapidly with movement there. A discrepancy in a locally uniform region may have little pose sensitivity, however conspicuous it looks.
+
+For additive Gaussian measurement errors with a known, pose-independent positive-definite covariance $\mathbf{C}$, use a whitened residual:
+
+$$
+\begin{gathered}
+\mathbf{r}(\mathbf{G}) = \mathbf{C}^{-1/2} \left[\mathbf{f}(\mathbf{G})-\mathbf{y}\right],\\
+\mathcal{D}_{\mathrm{G}}(\mathbf{G}) = \frac{1}{2}\|\mathbf{r}(\mathbf{G})\|^2.
+\end{gathered}
+$$
+
+<EquationNote term="\mathbf{C}^{-1/2}">
+  Whitening factor for the specified measurement covariance.
+</EquationNote>
+
+<EquationNote term="\mathbf{r}">
+  Residual measured in noise-normalised coordinates.
+</EquationNote>
+
+Whitening in [equation (6.4)](#equation-6-4) measures discrepancies relative to their uncertainty and correlation. Here $\mathbf{C}^{-1/2}$ denotes a whitening factor whose transpose times itself is $\mathbf{C}^{-1}$. With independent errors it divides each residual by its standard deviation. If covariance depends on pose, the full Gaussian likelihood also contains a log-determinant term and derivatives of covariance. Freezing the weights defines an approximation to that likelihood.
+
+Sometimes the available image has uncertain scale and offset. Normalised cross-correlation compares centred image patterns. With $\widetilde{\mathbf{f}}=\mathbf{f}-\bar f\mathbf{1}$ and $\widetilde{\mathbf{y}}=\mathbf{y}-\bar y\mathbf{1}$ on the same fixed mask, define
+
+$$
+\begin{gathered}
+c(\mathbf{G}) = \frac{ \widetilde{\mathbf{f}}(\mathbf{G})^{\mathsf T}\widetilde{\mathbf{y}} }{ \|\widetilde{\mathbf{f}}(\mathbf{G})\| \|\widetilde{\mathbf{y}}\| },\\
+\mathcal{D}_{\mathrm{NCC}}(\mathbf{G})=1-c(\mathbf{G}).
+\end{gathered}
+$$
+
+<EquationNote term="c(\mathbf{G})">
+  Correlation of the centred image patterns.
+</EquationNote>
+
+For nonconstant images, [equation (6.5)](#equation-6-5) is unchanged by a positive scalar gain and a uniform offset applied to either image. That is useful when those quantities are unknown. It also makes them unavailable as evidence for pose. Constant images have zero centred norm and no defined correlation. Adding a denominator floor changes the objective and its derivative near that case.
+
+A gradient-image objective can suppress slowly varying backgrounds while emphasising anatomical boundaries. Its benefit depends on which boundaries remain visible in both images. Tools, collimator edges and saturation boundaries can supply stronger gradients than the anatomy. Restricting the fit to a justified region may help, but the region should not quietly change as the candidate pose becomes less convenient. [Table 6.1](#table-6-1) compares what each objective assumes and which image information it discards.
+
+<div className="prose-table" role="region" aria-label="Image objectives and their assumptions" tabIndex={0}>
+
+| Comparison                   | Required interpretation                                      | Information it discards or changes                            |
+| ---------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------- |
+| Poisson likelihood           | Independent ideal counts with modelled positive means        | Retains count scale and relies on its acquisition calibration |
+| Whitened squared residual    | Additive Gaussian errors with specified covariance           | Downweights directions with larger uncertainty                |
+| Normalised cross-correlation | Nonconstant patterns with uncertain positive gain and offset | Removes uniform offset and positive intensity scale           |
+| Gradient comparison          | Corresponding spatial features in the chosen filter domain   | Suppresses components removed by the spatial filter           |
+
+</div>
+
+If a motion changes only overall positive intensity scale, NCC cannot detect it. The invariances of an objective therefore limit which movements its gradient can recover.
+
+`ObjectiveSpec` makes the selected comparison explicit. The current library provides squared error in a declared measurement domain and a Poisson count objective, with fixed nonnegative per-pixel weights when requested. The table's NCC and gradient comparisons describe other modelling choices, so selecting them would require their own objective and derivative implementation. Likewise, diagonal weights implement diagonal precision, not an arbitrary correlated covariance. `reduction="mean"` divides by the number of entries, including zero-weight entries, and it does not infer the number of retained pixels from a mask.
+
+For Poisson counts, the code subtracts the observation-only value of the negative log-likelihood at perfect agreement. The resulting half-deviance is nonnegative in exact arithmetic and has the same parameter derivative as equation (6.2). This avoids carrying a large irrelevant constant through a line search. The `observed == 0` branch gives the mean as its loss and one as its count-space derivative, without evaluating a logarithm of zero. It includes a zero predicted mean through the continuous extension of this zero-observation loss, while a positive observation still requires a positive mean.
+
+<Source
+  file="python/dpt/kernels/objectives.py"
+  region="objective-loss-and-seed"
+  caption="Image loss and detector gradient"
+/>
+
+Near agreement, the Poisson residual is much smaller than either count. The kernel expresses the loss through a relative residual and `log1p`, and when even that subtraction would cancel, it uses the corresponding short series. Away from agreement it subtracts the two logarithms instead of forming a ratio that could lose range. Binary64 operands matter before the division, not only after it. The detector seed is rounded to binary32 for the existing transmission interface, while loss terms enter a fixed binary64 reduction tree. Loss and seed therefore share the chosen objective without requiring an image-sized loss buffer.
+
+`evaluate_objective()` exposes these outputs through caller-owned `out_loss` and optional `out_seed` buffers. A Poisson observation must be a finite nonnegative integer-valued count in the stored representation. A zero predicted mean with a positive observed count is rejected: adding a floor would silently replace the likelihood. Mean reduction on an empty image is also rejected. The composed count-space path retains the range limits [identified in Chapter 5](/chapters/differentiating-projection/#52-attenuation-and-transmission-derivatives), including an unrepresentable detector seed.
+
+## 6.3 Parameter scales and pose updates
+
+Use a local rigid increment $\boldsymbol{\xi}=[\boldsymbol{\rho};\boldsymbol{\phi}]$, with translation coordinates $\boldsymbol{\rho}$ in millimetres and rotation coordinates $\boldsymbol{\phi}$ in radians. For a left update,
+
+$$
+\mathbf{G}_{k+1} = \exp\!\left(\boldsymbol{\xi}_k^{\wedge}\right)\mathbf{G}_k.
+$$
+
+<EquationNote term="\boldsymbol{\xi}_k^{\wedge}">
+  Matrix built from the translation-first local increment.
+</EquationNote>
+
+<EquationNote term="\mathbf{G}_k">
+  Accepted base pose at iteration k.
+</EquationNote>
+
+The increment in [equation (6.6)](#equation-6-6) is expressed in world coordinates. A right update instead expresses its increment in the current object frame. Gradients, Jacobians and updates must use the same choice. For a finite increment, the exponential produces a translation $\mathbf{J}(\boldsymbol{\phi})\boldsymbol{\rho}$, with $\mathbf{J}$ the $SO(3)$ left Jacobian derived in [Chapter 3](/chapters/frames-geometry-motion/#36-pose-parameters-and-local-updates). This translation is not generally equal to the coordinate $\boldsymbol{\rho}$ placed in the wedge matrix.
+
+A raw Euclidean step in these six coordinates treats one millimetre and one radian as equally large. At a point 100 mm from the rotation origin, a rotation of 0.01 rad produces about 1 mm of transverse movement. That relationship supplies a useful initial scale.
+
+Choose a reference displacement $\ell>0$ in millimetres and a characteristic radius $r_*>0$ in millimetres. A dimensionless local variable $\mathbf{u}$ can be mapped to the rigid increment by
+
+$$
+\begin{gathered}
+\boldsymbol{\xi}=\mathbf{D}\mathbf{u},\\
+\mathbf{D} = \operatorname{diag} \left( \ell,\ell,\ell, \frac{\ell}{r_*},\frac{\ell}{r_*},\frac{\ell}{r_*} \right).
+\end{gathered}
+$$
+
+<EquationNote term="\ell">Reference physical displacement (mm).</EquationNote>
+
+<EquationNote term="r_*">
+  Characteristic distance from the update origin (mm).
+</EquationNote>
+
+<EquationNote term="\mathbf{D}">
+  Scales dimensionless coordinates into millimetres and radians.
+</EquationNote>
+
+With [equation (6.7)](#equation-6-7), unit translation and rotation coordinates correspond to movements of roughly the same size near radius $r_*$. The radius is measured from the origin about which the chosen increment rotates. A remote world origin can make rotation appear to contain a large translation of the anatomy. Choosing a useful origin and converting the pose consistently is often more effective than asking a diagonal scale matrix to repair that coupling.
+
+<MarginNote label="Converting increments between frames">
+  Changing the origin also changes how a rotation contributes to the translation
+  coordinates. The matrix that converts a rigid increment between frames is
+  called the SE(3) adjoint.
+</MarginNote>
+
+For the whitened residual, let $\mathbf{J}_{\xi}$ be its Jacobian with respect to a local increment at the current pose. The chain rule gives
+
+$$
+\mathbf{J}_u=\mathbf{J}_{\xi}\mathbf{D}, \qquad \nabla_u\mathcal{D}_{\mathrm{G}} = \mathbf{J}_u^{\mathsf T}\mathbf{r}.
+$$
+
+<EquationNote term="\mathbf{J}_{\xi}">
+  Whitened residual Jacobian in physical pose coordinates.
+</EquationNote>
+
+<EquationNote term="\mathbf{J}_u">
+  Whitened residual Jacobian in scaled pose coordinates.
+</EquationNote>
+
+The rescaling in [equation (6.8)](#equation-6-8) changes both the derivative coordinates and the interpretation of a step norm. It does not add information to the image. A nearly invisible motion remains nearly invisible after rescaling, although a sensible scale makes its numerical severity easier to assess.
+
+`PoseChart` selects the right-composed alternative and gives each solve one fixed anchor. Its default scales are one millimetre for translation and 0.01 radian for rotation, corresponding to the 100 mm lever-arm example. They are explicit choices the caller can replace. The chart rejects trial rotation vectors at or beyond its declared radius, which cannot exceed $\pi$, rather than wrapping them into coordinates that would invalidate the optimiser's history.
+
+Changing a fixed chart coordinate changes the vector inside the exponential from the anchor. A fresh right increment instead multiplies the current pose by another exponential. Because rigid increments do not generally commute, these operations need not have the same local derivative away from the anchor. `PoseChart.gradient()` therefore first pulls the projector's local right cotangent back through `right_jacobian_se3()`, then applies the physical scales. The Jacobian includes translation–rotation coupling. Merely multiplying the six local cotangents by the scales would be correct at the anchor and wrong at a general trial pose, an awkward place for a registration routine to become less accurate.
+
+Linearising the residual as $\mathbf{r}+\mathbf{J}_u\Delta\mathbf{u}$ yields a damped Gauss–Newton step for the data-only objective:
+
+$$
+\begin{gathered}
+\left( \mathbf{J}_u^{\mathsf T}\mathbf{J}_u+\beta\mathbf{I}_6 \right)\Delta\mathbf{u} = -\mathbf{J}_u^{\mathsf T}\mathbf{r},\\
+\beta>0.
+\end{gathered}
+$$
+
+<EquationNote term="\beta">
+  Positive damping coefficient in the scaled system.
+</EquationNote>
+
+<EquationNote term="\Delta\mathbf{u}">
+  Proposed dimensionless local step.
+</EquationNote>
+
+The damping in [equation (6.9)](#equation-6-9) limits movement when the linear approximation is poor or a direction is weakly constrained. Solve the linear system rather than forming a matrix inverse. If the objective includes a differentiable prior, its gradient and curvature approximation also belong in the step.
+
+Evaluate the actual objective at the proposed rigid pose before accepting it. A large predicted reduction can fail because the ray intersections or visible structures changed substantially. Rejecting the proposal, increasing damping and trying a smaller step gives the current local model a chance to remain relevant.
+
+## 6.4 Initialisation and capture range
+
+A derivative describes nearby changes. It has no obligation to point towards the correct bone from the far side of the detector.
+
+Consider a one-dimensional image feature $f(x)=\exp[-x^2/(2\sigma^2)]$, with position $x$ and width $\sigma$ in pixels. Compare it with a copy shifted by $\delta$ using normalised overlap over the real line:
+
+$$
+c_{\mathrm{ov}}(\delta) = \frac{\int_{-\infty}^{\infty}f(x)f(x-\delta)\,\mathrm{d}x} {\int_{-\infty}^{\infty}f(x)^2\,\mathrm{d}x} = \exp\!\left(-\frac{\delta^2}{4\sigma^2}\right).
+$$
+
+<EquationNote term="\sigma">Gaussian feature width (pixels).</EquationNote>
+
+<EquationNote term="\delta">
+  Relative feature displacement (pixels).
+</EquationNote>
+
+The overlap in [equation (6.10)](#equation-6-10) follows by completing the square in the product of the two Gaussians. It isolates a common registration problem: corresponding features cease to interact when their separation greatly exceeds their width. This is an uncentred overlap on an infinite domain, distinct from the finite-mask NCC objective above.
+
+For the discrepancy $1-c_{\mathrm{ov}}$, the derivative is
+
+$$
+\frac{\mathrm{d}}{\mathrm{d}\delta} \left[1-c_{\mathrm{ov}}(\delta)\right] = \frac{\delta}{2\sigma^2} \exp\!\left(-\frac{\delta^2}{4\sigma^2}\right).
+$$
+
+At large separation, [equation (6.11)](#equation-6-11) becomes very small even though the shift error is large ([Figure](#figure-6-1)). A stopping rule based only on gradient magnitude can therefore report convergence while the features barely overlap.
+
+<RecordedFigure
+  id="figure-6-1"
+  title="Feature width and the reach of a local gradient"
+  description="The overlap of two Gaussian features and its shift sensitivity both vanish when the features are far apart. A small gradient can therefore mean poor overlap rather than an accurately recovered position."
+/>
+
+Smoothing broadens features and can extend the range over which their overlap changes appreciably. It also removes distinctions between nearby structures. Repeated vertebrae, ribs or approximately symmetric outlines can still produce several plausible alignments. A coarse image may make an individual minimum wider while making the choice between minima less informative.
+
+Initialisation supplies information on that larger scale: calibrated positioning, tracking, a previous frame, a coarse search, or a learned predictor. A multi-start method spends more computation on competing hypotheses, while a learned initialiser spends training effort on predicting a useful hypothesis. Both are followed by an image fit whose local behaviour still needs examination.
+
+DiffPose uses a patient-specific network trained on X-rays rendered from the preoperative CT to initialise the pose, then refines it through differentiable rendering with a sparse multiscale correlation objective. Otake and colleagues instead use a multi-start search with a normalised gradient-information objective for spine registration. These methods allocate computation differently to finding a useful starting region and fitting the image within it. <Citation keys={["gopalakrishnan2024diffpose", "otake2013"]} />
+
+Capture range is consequently a property of a specified anatomy, view, objective, initialisation distribution and optimisation procedure. Define the starting translations, rotation axes and angles, stopping rule and success criterion before summarising it. A cube of translation perturbations and a ball of rotations are different sampling distributions from independent perturbations of Euler angles. They should not acquire the same label simply because all were described as “random”.
+
+## 6.5 Single-view ambiguity and identifiability
+
+One view supplies many pixels, so a single projection does not automatically imply that six rigid parameters are unrecoverable. What matters is how independently those pixels respond to the six motions.
+
+Perspective already reveals one source of coupling. In a source-centred coordinate system with detector plane at $Z=f_d>0$, a point $(X,Y,Z)$ with $Z>0$ projects to $(u,v)=(f_dX/Z,f_dY/Z)$. All coordinates here are in millimetres, and the geometric Jacobian is
+
+$$
+\frac{\partial(u,v)}{\partial(X,Y,Z)} = \begin{bmatrix} f_d/Z & 0 & -f_dX/Z^2 \\ 0 & f_d/Z & -f_dY/Z^2 \end{bmatrix}.
+$$
+
+<EquationNote term="f_d">Source-to-detector-plane distance (mm).</EquationNote>
+
+<EquationNote term="Z">
+  Point depth along the source coordinate axis (mm).
+</EquationNote>
+
+The matrix in [equation (6.12)](#equation-6-12) annihilates the direction $(X,Y,Z)^{\mathsf T}$: moving a point along its source ray leaves its projected location unchanged ([Figure](#figure-6-2)). Several points on a known rigid object cannot generally move independently along their own rays. Their common distances and orientation can recover information that one point lacks. Unknown object scale, however, introduces a further coupling with depth.
+
+<RecordedFigure
+  id="figure-6-2"
+  title="A point can move without moving its projection"
+  description="Several points along one source ray project to the same detector location. A single projected point cannot reveal motion along that ray, although rigid relationships with other points can supply additional constraints."
+/>
+
+For the fixed-covariance Gaussian model, the local data information in scaled coordinates is
+
+$$
+\begin{gathered}
+\mathbf{I}_u = \mathbf{J}_u^{\mathsf T}\mathbf{J}_u,\\
+\mathbf{v}^{\mathsf T}\mathbf{I}_u\mathbf{v} = \|\mathbf{J}_u\mathbf{v}\|^2.
+\end{gathered}
+$$
+
+<EquationNote term="\mathbf{I}_u">
+  Local data information in scaled pose coordinates.
+</EquationNote>
+
+The quadratic form in [equation (6.13)](#equation-6-13) measures the squared whitened image change generated by a small motion in direction $\mathbf{v}$. A zero value identifies a first-order invisible direction. A small value identifies a direction whose effect is weak relative to the specified noise.
+
+The singular value decomposition makes these directions explicit:
+
+$$
+\begin{gathered}
+\mathbf{J}_u = \mathbf{U}\boldsymbol{\Sigma}\mathbf{V}^{\mathsf T},\\
+\mathbf{I}_u = \mathbf{V}\boldsymbol{\Sigma}^{\mathsf T} \boldsymbol{\Sigma}\mathbf{V}^{\mathsf T}.
+\end{gathered}
+$$
+
+<EquationNote term="\mathbf{V}">
+  Right singular vectors: directions in scaled pose space.
+</EquationNote>
+
+<EquationNote term="\boldsymbol{\Sigma}">
+  Singular values of the whitened residual Jacobian.
+</EquationNote>
+
+In [equation (6.14)](#equation-6-14), the right singular vectors describe combinations of translations and rotations, and the squared singular values give their local information. Full column rank supports first-order local identifiability. It neither excludes a second distant solution nor proves that a local optimiser will reach this one.
+
+A perfectly spherical, radially symmetric attenuation field is unchanged by rotations about its centre. No transmission image of that field can identify those rotations. An almost symmetric object may replace the exact ambiguity with a very weak direction. The optimiser then has enough information to select a number, but perhaps too little to select it reproducibly.
+
+For independent views with known relative acquisition geometry and a shared pose parameterisation, their information matrices add:
+
+$$
+\mathbf{I}_{\mathrm{joint}} = \sum_{v=1}^{V} \mathbf{J}_{u,v}^{\mathsf T}\mathbf{J}_{u,v}.
+$$
+
+<EquationNote term="\mathbf{J}_{u,v}">
+  Scaled residual Jacobian for view v.
+</EquationNote>
+
+A second view helps in [equation (6.15)](#equation-6-15) when it sees a motion that the first view constrains poorly. Repeating nearly the same view improves precision in already visible directions but cannot resolve an exact shared null direction. The relative geometry must be known or estimated with its uncertainty: allowing every view its own unconstrained camera pose can reintroduce the freedom we intended to remove.
+
+Priors also add curvature. They can stabilise an estimate along a weak direction, but the resulting precision belongs partly to the prior. Report that distinction when interpreting an uncertainty estimate. An inverse information matrix is a local Gaussian approximation near a suitably regular solution, but it does not represent distant alternative alignments.
+
+The offline diagnostic `sensitivity_spectrum()` computes this decomposition for a supplied Jacobian and declared parameter scales. It accepts at most 4096 observation rows and 32 parameters, so it cannot accidentally turn a normal registration step into an allocation of the full image Jacobian. Its rank threshold and singular directions remain part of the report.
+
+<Source
+  file="python/dpt/validation/identifiability.py"
+  region="scaled-sensitivity-diagnostics"
+  caption="Scaled, noise-weighted pose sensitivities"
+/>
+
+The optional precision weights scale rows by their square roots. Correlated noise requires a Jacobian already transformed by the appropriate whitening operator: diagonal weights cannot manufacture that operator. Parameter scales act on columns, so the returned right singular vectors describe dimensionless combinations of the declared inputs. Rank depends on the chosen threshold and noise scale. The production solver below requests VJPs and does not retain this diagnostic matrix.
+
+## 6.6 The canonical optimisation loop
+
+The evaluator supplies an objective and six derivatives for each pose. A Gauss–Newton step needs additional curvature information; L-BFGS builds a curvature approximation from accepted steps and changes in their gradients, so it can use this loss-and-gradient interface directly. Our implementation uses limited-memory BFGS in the fixed, scaled chart described in section 6.3. Each candidate is obtained by right-composing the chart exponential with its original anchor, and each derivative is pulled back into those same coordinates. The anchor stays fixed through the solve. Recentring after every accepted step would change the coordinates of the stored curvature pairs. A fresh anchor therefore requires a fresh solve. The damped Gauss–Newton construction above is another possible controller, not the one used by `recover_pose()`.
+
+The predicted image, residual and derivative must use the same mask, interpolation and acquisition model. A renderer that changes sampling density between the objective and its derivative can supply a direction for a different function. A line search that changes the mask between candidates can reward dropping difficult pixels. [Table 6.2](#table-6-2) follows the calculations and retained state through one iteration.
+
+<div className="prose-table" role="region" aria-label="Pose optimisation iteration" tabIndex={0}>
+
+| Stage                   | Calculation                                                     | State retained                                                           |
+| ----------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| Establish the candidate | Compose fixed anchor with the scaled chart exponential          | Fixed anchor, accepted coordinates and parameter scales                  |
+| Predict the observation | Transform rays, integrate the field, form detector expectations | Device-resident prediction and intermediates required by differentiation |
+| Compare                 | Evaluate the chosen objective on the fixed valid observations   | Objective value and any residuals needed for the next step               |
+| Differentiate           | Pull the local right VJP back into the fixed chart              | Chart gradient, curvature pairs and solver state                         |
+| Propose and evaluate    | Form a rigid candidate using the scaled increment and render it | Actual objective at the candidate                                        |
+| Accept or reject        | Apply the safeguarded line-search rule                          | New accepted coordinates, or the unchanged incumbent and a revised step  |
+| Record and stop         | Test declared stopping criteria                                 | Accepted-pose history and the quantities used in the decision            |
+
+</div>
+
+Image-sized arrays should remain on the device through rendering, comparison and differentiation. Copying a full image to the CPU merely to reduce it to one scalar introduces avoidable transfers. The host may need that scalar for step acceptance, but it rarely needs all its contributing pixels. For six pose parameters, a small dense curvature system is inexpensive, but storing a full image Jacobian or an autodiff tape can still dominate memory. The [Jacobian products derived in Chapter 5](/chapters/differentiating-projection/#51-which-projection-derivative-do-we-need) can support a solve without retaining every derivative entry.
+
+`PrimaryPoseEvaluator` prepares its workspaces once. The call below is the complete repeated evaluation: project to optical depth, form the chosen detector quantity, compute the objective and pull its derivative back to pose. Its default FP64 path composes transmission and the objective directly in depth space, avoiding a rounded binary32 count cotangent between them. For Poisson counts the depth cotangent is the weighted difference $N-\lambda$. The explicit FP32 path retains the separate transmission and objective interfaces described earlier. The volume, observations and image-sized intermediates remain on CUDA. The small result has exactly the interface needed by a numerical optimiser: an objective and its gradient with respect to the supplied chart coordinates.
+
+<Source
+  file="python/dpt/recovery.py"
+  region="recovery-device-composition"
+  caption="The primary-image objective and pose gradient"
+/>
+
+The first call checks the fixed device inputs. Later calls rely on their documented immutability while still checking each operator's numerical status before returning an evaluation. Every call uploads twelve pose values and downloads one loss and six local pose derivatives, with additional small status checks. Pinned staging buffers persist across calls. The `finally` synchronisation is intentional: even a failed evaluation may have queued a transfer from the host pose buffer, and the next trial must not overwrite that buffer before the transfer finishes.
+
+The optimiser retains a bounded history of accepted parameter steps and gradient differences. The two-loop recursion below applies the resulting inverse-curvature approximation without constructing a dense image Jacobian. Its dot products and history are small host operations. Moving six-coordinate bookkeeping onto the GPU would not remove the image work that dominates the evaluator. <Citation keys={["liu1989lbfgs"]} />
+
+<Source
+  file="python/dpt/registration.py"
+  region="registration-lbfgs-direction"
+  caption="Computing an L-BFGS search direction"
+/>
+
+Curvature pairs are useful only when the step and gradient difference share coordinates and provide usable positive curvature. The driver checks their inner product and reciprocal before retaining them. If the proposed direction is nonfinite or fails the descent test, it discards the history and tries steepest descent.
+
+<Source
+  file="python/dpt/registration.py"
+  region="registration-safeguarded-loop"
+  caption="The guarded optimisation loop"
+/>
+
+Loss decrease and curvature serve different purposes in this search. Armijo requires at least a fixed fraction of the decrease predicted by the initial directional derivative, so a merely lower loss is insufficient. The strong-Wolfe condition also requires the magnitude of the directional derivative to fall sufficiently. Along a smooth descent line, satisfying that condition gives a positive inner product between the step and its gradient change in exact arithmetic, which is what the L-BFGS update needs. The maximum-step exception below does not guarantee that curvature condition, so the driver's separate check of each stored pair still matters.
+
+The line search scales the first steepest-descent direction, then brackets and bisects candidate step lengths to seek sufficient decrease and the strong-Wolfe curvature condition. At the configured maximum step, strict decrease satisfying Armijo is accepted even if the curvature condition is still unmet. A failed search may retry conservative steepest descent even before curvature memory exists, and exhausting the declared budget still leaves the incumbent intact. Out-of-chart and nonfinite trials cannot replace the incumbent. Input-contract errors still propagate as errors, rather than being mistaken for evidence that a smaller pose step would fix malformed data. The returned parameters and objective identify the last accepted state even if the most recent evaluation failed or was rejected.
+
+Reusable prediction buffers can still contain that rejected trial's image. To inspect a final prediction, evaluate the returned pose explicitly after solving, and do not label whichever scratch image happens to remain as the recovered image. `step_tolerance`, `loss_stagnation` and budget exhaustion are distinct from `gradient_tolerance`, and all are distinct from successful geometric recovery.
+
+Log the objective at accepted poses, the norm of the gradient in scaled coordinates, the accepted step norm, and the number of forward and backward evaluations. Iteration count alone hides rejected proposals and line-search work. Record the data term separately from a prior so that apparent progress cannot be explained solely by a stronger preference for the initial pose.
+
+Stopping can combine a small accepted step, a small scaled gradient and a small actual objective change over successive accepted updates, with an evaluation budget as a separate termination reason. None of these quantities certifies physical recovery. They describe the progress of the optimiser on the chosen objective.
+
+## 6.7 Evaluate recovery independently
+
+Image agreement measures what the algorithm was asked to improve. A pose reference measures whether that improvement recovered the intended geometry.
+
+Suppose the reference and estimated transforms use the same object origin, world frame and physical calibration, with rotations $\mathbf{R}_{\mathrm{ref}},\widehat{\mathbf{R}}$ and translations $\mathbf{t}_{\mathrm{ref}},\widehat{\mathbf{t}}$. Their translation and rotation discrepancies are
+
+$$
+\begin{gathered}
+e_t=\|\widehat{\mathbf{t}}-\mathbf{t}_{\mathrm{ref}}\|,\\
+e_R=\arccos \left( \operatorname{clip} \left[ \frac{ \operatorname{tr}(\mathbf{R}_{\mathrm{ref}}^{\mathsf T}\widehat{\mathbf{R}})-1 }{2}, -1,1 \right] \right).
+\end{gathered}
+$$
+
+<EquationNote term="e_t">
+  Translation error at the declared object origin (mm).
+</EquationNote>
+
+<EquationNote term="e_R">Relative rotation angle (radians).</EquationNote>
+
+The errors in [equation (6.16)](#equation-6-16) have units of millimetres and radians. Clipping protects the inverse cosine from tiny floating-point excursions outside its domain. Translation error depends on the chosen object origin: changing that origin changes the translation accompanying a rotation error. Report the origin, particularly when comparing methods.
+
+For application-relevant object points $\mathbf{x}_m^O$, a root-mean-square target registration error is
+
+$$
+e_{\mathrm{TRE}} = \sqrt{ \frac{1}{M} \sum_{m=1}^{M} \left\| \widehat{\mathbf{R}}\mathbf{x}_m^O+\widehat{\mathbf{t}} - \left( \mathbf{R}_{\mathrm{ref}}\mathbf{x}_m^O+\mathbf{t}_{\mathrm{ref}} \right) \right\|^2 }.
+$$
+
+<EquationNote term="e_{\mathrm{TRE}}">
+  Root-mean-square displacement of the selected targets (mm).
+</EquationNote>
+
+<EquationNote term="\mathbf{x}_m^O">
+  Target location in object coordinates (mm).
+</EquationNote>
+
+Unlike separate parameter errors, [equation (6.17)](#equation-6-17) measures displacement of specified physical targets. It exposes the consequence of a small angular error far from the rotation origin. Do not rigidly realign the estimated targets to the reference before evaluating this quantity, because that would remove the error the registration was meant to measure.
+
+`dpt.validation.recovery.pose_error()` reports these quantities independently of the fitted image objective. It keeps origin displacement, rotation angle and target errors separate instead of adding millimetres to radians through an unexplained weight. The target set comes from the evaluation protocol, not from whichever points happened to align best.
+
+<Source
+  file="python/dpt/validation/recovery.py"
+  region="recovery-geometric-metrics"
+  caption="Measuring pose and withheld-landmark errors"
+/>
+
+The rotation calculation uses `atan2` of sine and cosine information from the relative rotation. It measures the same principal angle as the clipped inverse-cosine expression in equation (6.16), while retaining more useful information near zero from the antisymmetric entries. Scaled `hypot` evaluations avoid squaring large coordinates unnecessarily. These small CPU calculations consume the returned rigid transform and a declared landmark set, and they do not derive a reference pose from the objective being judged.
+
+A local example shows the role of target layout. Let $\mathbf{x}_m$ be reference target offsets from their centroid, expressed in world axes, so their mean is zero. Let $\delta\mathbf{t}$ be the displacement error at that centroid and $\delta\boldsymbol{\phi}$ a small world-frame rotation error. Then
+
+$$
+e_{\mathrm{TRE}}^2 \approx \|\delta\mathbf{t}\|^2 + \frac{1}{M}\sum_{m=1}^{M} \|\delta\boldsymbol{\phi}\times\mathbf{x}_m\|^2.
+$$
+
+<EquationNote term="\delta\mathbf{t}">
+  Displacement error at the reference-target centroid (mm).
+</EquationNote>
+
+<EquationNote term="\delta\boldsymbol{\phi}">
+  Small rotation error expressed in world axes (radians).
+</EquationNote>
+
+The cross term vanishes in [equation (6.18)](#equation-6-18) because the targets are centred. Rotation about an axis barely moves targets near that axis and strongly moves distant ones. A target set concentrated in a small region can therefore report a small error while clinically relevant locations elsewhere move substantially.
+
+Projected landmark error is useful for checking image alignment, but it measures a different quantity. Motion along a source ray may produce very little projected displacement. A low two-dimensional error cannot by itself bound the three-dimensional error of those landmarks.
+
+Reference uncertainty should accompany the reported result. A tracked reference inherits tracking and calibration errors, while manually identified landmarks inherit localisation errors. Their agreement with a reconstruction is informative only to the precision those procedures support.
+
+Keep the reference out of initialisation, hyperparameter choice and stopping when it is intended for final evaluation. Separate cases used to select those decisions from cases used to estimate recovery performance. For a capture study, report the starting-error distribution, success thresholds, number of trials and failures, alongside the distribution of final pose errors. Repeated noise realisations at one geometry answer a precision question, while independent geometries answer a different question about where recovery succeeds.
+
+`experiments/pose-recovery/run.py` exercises the assembled implementation from prescribed starting coordinates, with a fresh optimiser history for each start. It records the termination reason, accepted loss and pose, landmark errors and continuous-pixel reprojection error. Geometric thresholds are declared in its configuration before execution and evaluated separately from the optimiser's stopping condition.
+
+The driver's target is a noiseless expected image of an analytic quadratic field generated with the same projector and discretisation used by the fit. This checks that the implemented pieces compose consistently under an unusually accommodating measurement model. It contains neither anatomical data nor independent acquisition physics. A small recovered error on that target does not establish clinical accuracy or robustness to the mismatches considered next.
+
+## 6.8 When a lower loss is the wrong answer
+
+Suppose the true pose is $\mathbf{G}_*$, but the observed mean includes an image component absent from the renderer. In the fixed whitening coordinates of the Gaussian objective, write
+
+$$
+\mathbf{C}^{-1/2}\mathbf{y} = \mathbf{C}^{-1/2}\mathbf{f}(\mathbf{G}_*)+\mathbf{d}.
+$$
+
+<EquationNote term="\mathbf{d}">
+  Mean image mismatch after whitening.
+</EquationNote>
+
+The mismatch $\mathbf{d}$ in [equation (6.19)](#equation-6-19) might arise from scatter, an exposure error, deformation or miscalibration. Here it denotes a mean discrepancy, and measurement noise can be considered separately. A small scaled pose displacement changes the prediction by approximately $\mathbf{J}_u\Delta\mathbf{u}$.
+
+For a data-only least-squares fit with full-column-rank $\mathbf{J}_u$, the resulting first-order displacement is
+
+$$
+\Delta\mathbf{u}_{\mathrm{bias}} = \left(\mathbf{J}_u^{\mathsf T}\mathbf{J}_u\right)^{-1} \mathbf{J}_u^{\mathsf T}\mathbf{d}.
+$$
+
+<EquationNote term="\Delta\mathbf{u}_{\mathrm{bias}}">
+  First-order pose bias in dimensionless local coordinates.
+</EquationNote>
+
+In [equation (6.20)](#equation-6-20), the part of the mismatch that resembles a pose-induced image change drives the estimate away from the true pose. Weakly constrained directions can amplify that displacement. The formula is a local linearisation. Large shifts can leave the region in which its prediction is accurate.
+
+The mismatch left after this fit is
+
+$$
+\begin{gathered}
+\mathbf{d}-\mathbf{J}_u\Delta\mathbf{u}_{\mathrm{bias}} = \left(\mathbf{I}-\mathbf{P}_J\right)\mathbf{d},\\
+\mathbf{P}_J = \mathbf{J}_u \left(\mathbf{J}_u^{\mathsf T}\mathbf{J}_u\right)^{-1} \mathbf{J}_u^{\mathsf T}.
+\end{gathered}
+$$
+
+<EquationNote term="\mathbf{P}_J">
+  Orthogonal projector onto the pose Jacobian column space.
+</EquationNote>
+
+The projection in [equation (6.21)](#equation-6-21) separates the mismatch into components that do and do not resemble pose changes ([Figure](#figure-6-3)), explaining why residual inspection alone can miss a systematic pose error. If $\mathbf{d}=\mathbf{J}_u\mathbf{b}$ for a small displacement $\mathbf{b}$, the linear model fits the entire mismatch by moving the object through $\mathbf{b}$. The residual vanishes. The pose error remains.
+
+<RecordedFigure
+  id="figure-6-3"
+  title="The mismatch that a pose fit can hide"
+  description="The mismatch maps separate the component that a local pose change can absorb from the component that remains unexplained. Fitting away the first component reduces the image residual while introducing a pose error."
+/>
+
+A slightly displaced detector origin provides a concrete example. Over a restricted field of view, its image shift may closely resemble an object translation. Letting the object move can then produce excellent image agreement while assigning the movement to the wrong physical component. A calibrated detector position or an additional informative view can distinguish which component moved.
+
+When a fit improves the objective while worsening independent pose error, inspect which residual patterns the movement removed and which assumptions created them. Compare geometric calibration, represented anatomy and acquisition response before choosing a different optimisation algorithm. [Chapter 7](/chapters/same-pose-different-x-ray/#76-jointly-estimate-pose-and-nuisance-parameters) develops the acquisition terms that can share an image direction with pose, and what remains identifiable when we estimate them together.
+
+<Bibliography
+  keys={["gopalakrishnan2024diffpose", "otake2013", "liu1989lbfgs"]}
+/>

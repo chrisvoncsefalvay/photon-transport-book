@@ -1,0 +1,2467 @@
+[
+  {
+    "acceptance_outcomes": {
+      "accepted": 4
+    },
+    "accepted_attempts": [
+      {
+        "candidate": [
+          -2.4257286443082555
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 0,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.00012845883867601817,
+          -0.00012840560141702843
+        ]
+      },
+      {
+        "candidate": [
+          -2.2257286443082553
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 1,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.0001701155389134197,
+          -0.0001699246732483971
+        ]
+      },
+      {
+        "candidate": [
+          -2.1452719823618507
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 2,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -1.7769771405895947e-05,
+          -1.764988323286503e-05
+        ]
+      },
+      {
+        "candidate": [
+          -2.1480786399031255
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 3,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -3.2594315424747965e-08,
+          -2.789793405911567e-08
+        ]
+      }
+    ],
+    "accounting": {
+      "errors": [],
+      "ray_evaluations_recomputed": 30408704,
+      "unique_histories_recomputed": 26214400
+    },
+    "any_false_acceptance": "no_false_acceptance",
+    "any_insufficient_decrease": "no_false_acceptance",
+    "elapsed_seconds_contended": 0.6339568451512605,
+    "false_stop_classification": "no_false_acceptance",
+    "held_out_final_attempts": 1,
+    "independent_stationarity": "pass",
+    "ray_evaluations": 30408704,
+    "reason": "gradient_band",
+    "reference_gradient_interval": [
+      9.294396220639305e-07,
+      2.595711059944222e-06
+    ],
+    "reported_stationarity": true,
+    "run": "replicate-00",
+    "seed": 2026091501,
+    "termination_detail": "held_out_gradient_band",
+    "unique_histories": 26214400
+  },
+  {
+    "acceptance_outcomes": {
+      "accepted": 4
+    },
+    "accepted_attempts": [
+      {
+        "candidate": [
+          -2.4257286443082555
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 0,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.00012845883867601817,
+          -0.00012840560141702843
+        ]
+      },
+      {
+        "candidate": [
+          -2.2257286443082553
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 1,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.0001701155389134197,
+          -0.0001699246732483971
+        ]
+      },
+      {
+        "candidate": [
+          -2.145466938706154
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 2,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -1.777334815397683e-05,
+          -1.7653787479244846e-05
+        ]
+      },
+      {
+        "candidate": [
+          -2.1485885876616773
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 3,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -2.9181008844689827e-08,
+          -2.3963063978842108e-08
+        ]
+      }
+    ],
+    "accounting": {
+      "errors": [],
+      "ray_evaluations_recomputed": 30408704,
+      "unique_histories_recomputed": 26214400
+    },
+    "any_false_acceptance": "no_false_acceptance",
+    "any_insufficient_decrease": "no_false_acceptance",
+    "elapsed_seconds_contended": 0.7479807278141379,
+    "false_stop_classification": "no_false_acceptance",
+    "held_out_final_attempts": 1,
+    "independent_stationarity": "pass",
+    "ray_evaluations": 30408704,
+    "reason": "gradient_band",
+    "reference_gradient_interval": [
+      -2.3331515566381686e-06,
+      -6.69427269632834e-07
+    ],
+    "reported_stationarity": true,
+    "run": "replicate-01",
+    "seed": 2026196230,
+    "termination_detail": "held_out_gradient_band",
+    "unique_histories": 26214400
+  },
+  {
+    "acceptance_outcomes": {
+      "accepted": 4
+    },
+    "accepted_attempts": [
+      {
+        "candidate": [
+          -2.4257286443082555
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 0,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.00012845883867601817,
+          -0.00012840560141702843
+        ]
+      },
+      {
+        "candidate": [
+          -2.2257286443082553
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 1,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.0001701155389134197,
+          -0.0001699246732483971
+        ]
+      },
+      {
+        "candidate": [
+          -2.145757734126297
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 2,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -1.7778227483599647e-05,
+          -1.7659154947754668e-05
+        ]
+      },
+      {
+        "candidate": [
+          -2.148749232695727
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 3,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -2.362345749853329e-08,
+          -1.8626446880151026e-08
+        ]
+      }
+    ],
+    "accounting": {
+      "errors": [],
+      "ray_evaluations_recomputed": 30408704,
+      "unique_histories_recomputed": 26214400
+    },
+    "any_false_acceptance": "no_false_acceptance",
+    "any_insufficient_decrease": "no_false_acceptance",
+    "elapsed_seconds_contended": 0.630511999130249,
+    "false_stop_classification": "no_false_acceptance",
+    "held_out_final_attempts": 1,
+    "independent_stationarity": "pass",
+    "ray_evaluations": 30408704,
+    "reason": "gradient_band",
+    "reference_gradient_interval": [
+      -3.359907706346839e-06,
+      -1.6969852016760816e-06
+    ],
+    "reported_stationarity": true,
+    "run": "replicate-02",
+    "seed": 2026300959,
+    "termination_detail": "held_out_gradient_band",
+    "unique_histories": 26214400
+  },
+  {
+    "acceptance_outcomes": {
+      "accepted": 4
+    },
+    "accepted_attempts": [
+      {
+        "candidate": [
+          -2.4257286443082555
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 0,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.00012845883867601817,
+          -0.00012840560141702843
+        ]
+      },
+      {
+        "candidate": [
+          -2.2257286443082553
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 1,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.0001701155389134197,
+          -0.0001699246732483971
+        ]
+      },
+      {
+        "candidate": [
+          -2.1451086070094467
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 2,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -1.7766585060535218e-05,
+          -1.7646422293425638e-05
+        ]
+      },
+      {
+        "candidate": [
+          -2.1484466615637627
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 3,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -3.65767572892365e-08,
+          -3.0992896223911676e-08
+        ]
+      }
+    ],
+    "accounting": {
+      "errors": [],
+      "ray_evaluations_recomputed": 30408704,
+      "unique_histories_recomputed": 26214400
+    },
+    "any_false_acceptance": "no_false_acceptance",
+    "any_insufficient_decrease": "no_false_acceptance",
+    "elapsed_seconds_contended": 0.6991863469593227,
+    "false_stop_classification": "no_false_acceptance",
+    "held_out_final_attempts": 1,
+    "independent_stationarity": "pass",
+    "ray_evaluations": 30408704,
+    "reason": "gradient_band",
+    "reference_gradient_interval": [
+      -1.4256248262966993e-06,
+      2.388080665909826e-07
+    ],
+    "reported_stationarity": true,
+    "run": "replicate-03",
+    "seed": 2026405688,
+    "termination_detail": "held_out_gradient_band",
+    "unique_histories": 26214400
+  },
+  {
+    "acceptance_outcomes": {
+      "accepted": 4
+    },
+    "accepted_attempts": [
+      {
+        "candidate": [
+          -2.4257286443082555
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 0,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.00012845883867601817,
+          -0.00012840560141702843
+        ]
+      },
+      {
+        "candidate": [
+          -2.2257286443082553
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 1,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.0001701155389134197,
+          -0.0001699246732483971
+        ]
+      },
+      {
+        "candidate": [
+          -2.144423564704133
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 2,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -1.7751346261162863e-05,
+          -1.7630030642109847e-05
+        ]
+      },
+      {
+        "candidate": [
+          -2.1487301709763713
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 3,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -5.27789487845863e-08,
+          -4.557055402684715e-08
+        ]
+      }
+    ],
+    "accounting": {
+      "errors": [],
+      "ray_evaluations_recomputed": 30408704,
+      "unique_histories_recomputed": 26214400
+    },
+    "any_false_acceptance": "no_false_acceptance",
+    "any_insufficient_decrease": "no_false_acceptance",
+    "elapsed_seconds_contended": 0.6774696270003915,
+    "false_stop_classification": "no_false_acceptance",
+    "held_out_final_attempts": 1,
+    "independent_stationarity": "pass",
+    "ray_evaluations": 30408704,
+    "reason": "gradient_band",
+    "reference_gradient_interval": [
+      -3.2381013890515045e-06,
+      -1.5750837627021744e-06
+    ],
+    "reported_stationarity": true,
+    "run": "replicate-04",
+    "seed": 2026510417,
+    "termination_detail": "held_out_gradient_band",
+    "unique_histories": 26214400
+  },
+  {
+    "acceptance_outcomes": {
+      "accepted": 4
+    },
+    "accepted_attempts": [
+      {
+        "candidate": [
+          -2.4257286443082555
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 0,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.00012845883867601817,
+          -0.00012840560141702843
+        ]
+      },
+      {
+        "candidate": [
+          -2.2257286443082553
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 1,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.0001701155389134197,
+          -0.0001699246732483971
+        ]
+      },
+      {
+        "candidate": [
+          -2.144548270562906
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 2,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -1.7754346334244967e-05,
+          -1.7633240757638396e-05
+        ]
+      },
+      {
+        "candidate": [
+          -2.148962374086067
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 3,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -4.9030722833738396e-08,
+          -4.16463471681764e-08
+        ]
+      }
+    ],
+    "accounting": {
+      "errors": [],
+      "ray_evaluations_recomputed": 30408704,
+      "unique_histories_recomputed": 26214400
+    },
+    "any_false_acceptance": "no_false_acceptance",
+    "any_insufficient_decrease": "no_false_acceptance",
+    "elapsed_seconds_contended": 0.6647562358994037,
+    "false_stop_classification": "no_false_acceptance",
+    "held_out_final_attempts": 1,
+    "independent_stationarity": "pass",
+    "ray_evaluations": 30408704,
+    "reason": "gradient_band",
+    "reference_gradient_interval": [
+      -4.721428307707188e-06,
+      -3.059569131821966e-06
+    ],
+    "reported_stationarity": true,
+    "run": "replicate-05",
+    "seed": 2026615146,
+    "termination_detail": "held_out_gradient_band",
+    "unique_histories": 26214400
+  },
+  {
+    "acceptance_outcomes": {
+      "accepted": 4
+    },
+    "accepted_attempts": [
+      {
+        "candidate": [
+          -2.4257286443082555
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 0,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.00012845883867601817,
+          -0.00012840560141702843
+        ]
+      },
+      {
+        "candidate": [
+          -2.2257286443082553
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 1,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.0001701155389134197,
+          -0.0001699246732483971
+        ]
+      },
+      {
+        "candidate": [
+          -2.144422946969489
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 2,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -1.7751331149661047e-05,
+          -1.7630014489960646e-05
+        ]
+      },
+      {
+        "candidate": [
+          -2.148137559660303
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 3,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -5.2604875213866e-08,
+          -4.638183954503652e-08
+        ]
+      }
+    ],
+    "accounting": {
+      "errors": [],
+      "ray_evaluations_recomputed": 32505856,
+      "unique_histories_recomputed": 28311552
+    },
+    "any_false_acceptance": "no_false_acceptance",
+    "any_insufficient_decrease": "no_false_acceptance",
+    "elapsed_seconds_contended": 0.7429323801770806,
+    "false_stop_classification": "no_false_acceptance",
+    "held_out_final_attempts": 1,
+    "independent_stationarity": "pass",
+    "ray_evaluations": 32505856,
+    "reason": "gradient_band",
+    "reference_gradient_interval": [
+      5.522222335344399e-07,
+      2.2181992167574295e-06
+    ],
+    "reported_stationarity": true,
+    "run": "replicate-06",
+    "seed": 2026719875,
+    "termination_detail": "held_out_gradient_band",
+    "unique_histories": 28311552
+  },
+  {
+    "acceptance_outcomes": {
+      "accepted": 4
+    },
+    "accepted_attempts": [
+      {
+        "candidate": [
+          -2.4257286443082555
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 0,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.00012845883867601817,
+          -0.00012840560141702843
+        ]
+      },
+      {
+        "candidate": [
+          -2.2257286443082553
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 1,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.0001701155389134197,
+          -0.0001699246732483971
+        ]
+      },
+      {
+        "candidate": [
+          -2.1449263843748727
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 2,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -1.7762827715956932e-05,
+          -1.7642358518619423e-05
+        ]
+      },
+      {
+        "candidate": [
+          -2.148495669112863
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 3,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -4.064454944227475e-08,
+          -3.4672694368738486e-08
+        ]
+      }
+    ],
+    "accounting": {
+      "errors": [],
+      "ray_evaluations_recomputed": 30408704,
+      "unique_histories_recomputed": 26214400
+    },
+    "any_false_acceptance": "no_false_acceptance",
+    "any_insufficient_decrease": "no_false_acceptance",
+    "elapsed_seconds_contended": 0.6768569820560515,
+    "false_stop_classification": "no_false_acceptance",
+    "held_out_final_attempts": 1,
+    "independent_stationarity": "pass",
+    "ray_evaluations": 30408704,
+    "reason": "gradient_band",
+    "reference_gradient_interval": [
+      -1.739040481992756e-06,
+      -7.485229957652498e-08
+    ],
+    "reported_stationarity": true,
+    "run": "replicate-07",
+    "seed": 2026824604,
+    "termination_detail": "held_out_gradient_band",
+    "unique_histories": 26214400
+  },
+  {
+    "acceptance_outcomes": {
+      "accepted": 4
+    },
+    "accepted_attempts": [
+      {
+        "candidate": [
+          -2.4257286443082555
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 0,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.00012845883867601817,
+          -0.00012840560141702843
+        ]
+      },
+      {
+        "candidate": [
+          -2.2257286443082553
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 1,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.0001701155389134197,
+          -0.0001699246732483971
+        ]
+      },
+      {
+        "candidate": [
+          -2.145369467595927
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 2,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -1.777159057712033e-05,
+          -1.7651866188997408e-05
+        ]
+      },
+      {
+        "candidate": [
+          -2.148510901850492
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 3,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -3.113499638006324e-08,
+          -2.5882600958448666e-08
+        ]
+      }
+    ],
+    "accounting": {
+      "errors": [],
+      "ray_evaluations_recomputed": 30408704,
+      "unique_histories_recomputed": 26214400
+    },
+    "any_false_acceptance": "no_false_acceptance",
+    "any_insufficient_decrease": "no_false_acceptance",
+    "elapsed_seconds_contended": 0.6793525239918381,
+    "false_stop_classification": "no_false_acceptance",
+    "held_out_final_attempts": 1,
+    "independent_stationarity": "pass",
+    "ray_evaluations": 30408704,
+    "reason": "gradient_band",
+    "reference_gradient_interval": [
+      -1.8364482984648966e-06,
+      -1.7233617231149846e-07
+    ],
+    "reported_stationarity": true,
+    "run": "replicate-08",
+    "seed": 2026929333,
+    "termination_detail": "held_out_gradient_band",
+    "unique_histories": 26214400
+  },
+  {
+    "acceptance_outcomes": {
+      "accepted": 4
+    },
+    "accepted_attempts": [
+      {
+        "candidate": [
+          -2.4257286443082555
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 0,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.00012845883867601817,
+          -0.00012840560141702843
+        ]
+      },
+      {
+        "candidate": [
+          -2.2257286443082553
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 1,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.0001701155389134197,
+          -0.0001699246732483971
+        ]
+      },
+      {
+        "candidate": [
+          -2.1445340332598617
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 2,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -1.7754008913996196e-05,
+          -1.7632879361421245e-05
+        ]
+      },
+      {
+        "candidate": [
+          -2.1482569310421242
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 3,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -4.9959152813389467e-08,
+          -4.372438989607505e-08
+        ]
+      }
+    ],
+    "accounting": {
+      "errors": [],
+      "ray_evaluations_recomputed": 30408704,
+      "unique_histories_recomputed": 26214400
+    },
+    "any_false_acceptance": "no_false_acceptance",
+    "any_insufficient_decrease": "no_false_acceptance",
+    "elapsed_seconds_contended": 0.7068689898587763,
+    "false_stop_classification": "no_false_acceptance",
+    "held_out_final_attempts": 1,
+    "independent_stationarity": "pass",
+    "ray_evaluations": 30408704,
+    "reason": "gradient_band",
+    "reference_gradient_interval": [
+      -2.1181555273152506e-07,
+      1.4535649896570397e-06
+    ],
+    "reported_stationarity": true,
+    "run": "replicate-09",
+    "seed": 2027034062,
+    "termination_detail": "held_out_gradient_band",
+    "unique_histories": 26214400
+  },
+  {
+    "acceptance_outcomes": {
+      "accepted": 4
+    },
+    "accepted_attempts": [
+      {
+        "candidate": [
+          -2.4257286443082555
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 0,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.00012845883867601817,
+          -0.00012840560141702843
+        ]
+      },
+      {
+        "candidate": [
+          -2.2257286443082553
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 1,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.0001701155389134197,
+          -0.0001699246732483971
+        ]
+      },
+      {
+        "candidate": [
+          -2.1453509826127646
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 2,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -1.777125034270092e-05,
+          -1.765149490163692e-05
+        ]
+      },
+      {
+        "candidate": [
+          -2.1484723537956065
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 3,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -3.150817211750617e-08,
+          -2.6288875750071625e-08
+        ]
+      }
+    ],
+    "accounting": {
+      "errors": [],
+      "ray_evaluations_recomputed": 30408704,
+      "unique_histories_recomputed": 26214400
+    },
+    "any_false_acceptance": "no_false_acceptance",
+    "any_insufficient_decrease": "no_false_acceptance",
+    "elapsed_seconds_contended": 0.6523044460918754,
+    "false_stop_classification": "no_false_acceptance",
+    "held_out_final_attempts": 1,
+    "independent_stationarity": "pass",
+    "ray_evaluations": 30408704,
+    "reason": "gradient_band",
+    "reference_gradient_interval": [
+      -1.5899388860327802e-06,
+      7.436571377955919e-08
+    ],
+    "reported_stationarity": true,
+    "run": "replicate-10",
+    "seed": 2027138791,
+    "termination_detail": "held_out_gradient_band",
+    "unique_histories": 26214400
+  },
+  {
+    "acceptance_outcomes": {
+      "accepted": 4
+    },
+    "accepted_attempts": [
+      {
+        "candidate": [
+          -2.4257286443082555
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 0,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.00012845883867601817,
+          -0.00012840560141702843
+        ]
+      },
+      {
+        "candidate": [
+          -2.2257286443082553
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 1,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.0001701155389134197,
+          -0.0001699246732483971
+        ]
+      },
+      {
+        "candidate": [
+          -2.1450517912753213
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 2,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -1.7765436566580528e-05,
+          -1.76451782746163e-05
+        ]
+      },
+      {
+        "candidate": [
+          -2.1482855264939413
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 3,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -3.769918661852016e-08,
+          -3.2288064045367645e-08
+        ]
+      }
+    ],
+    "accounting": {
+      "errors": [],
+      "ray_evaluations_recomputed": 30408704,
+      "unique_histories_recomputed": 26214400
+    },
+    "any_false_acceptance": "no_false_acceptance",
+    "any_insufficient_decrease": "no_false_acceptance",
+    "elapsed_seconds_contended": 0.6507346727885306,
+    "false_stop_classification": "no_false_acceptance",
+    "held_out_final_attempts": 1,
+    "independent_stationarity": "pass",
+    "ray_evaluations": 30408704,
+    "reason": "gradient_band",
+    "reference_gradient_interval": [
+      -3.9480042413830546e-07,
+      1.270437265324371e-06
+    ],
+    "reported_stationarity": true,
+    "run": "replicate-11",
+    "seed": 2027243520,
+    "termination_detail": "held_out_gradient_band",
+    "unique_histories": 26214400
+  },
+  {
+    "acceptance_outcomes": {
+      "accepted": 4
+    },
+    "accepted_attempts": [
+      {
+        "candidate": [
+          -2.4257286443082555
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 0,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.00012845883867601817,
+          -0.00012840560141702843
+        ]
+      },
+      {
+        "candidate": [
+          -2.2257286443082553
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 1,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.0001701155389134197,
+          -0.0001699246732483971
+        ]
+      },
+      {
+        "candidate": [
+          -2.1451876268057837
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 2,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -1.776814772626323e-05,
+          -1.7648117788908328e-05
+        ]
+      },
+      {
+        "candidate": [
+          -2.1485686864630904
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 3,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -3.486275457407901e-08,
+          -2.920865818130979e-08
+        ]
+      }
+    ],
+    "accounting": {
+      "errors": [],
+      "ray_evaluations_recomputed": 30408704,
+      "unique_histories_recomputed": 26214400
+    },
+    "any_false_acceptance": "no_false_acceptance",
+    "any_insufficient_decrease": "no_false_acceptance",
+    "elapsed_seconds_contended": 0.6452970399986953,
+    "false_stop_classification": "no_false_acceptance",
+    "held_out_final_attempts": 1,
+    "independent_stationarity": "pass",
+    "ray_evaluations": 30408704,
+    "reason": "gradient_band",
+    "reference_gradient_interval": [
+      -2.2059194011811654e-06,
+      -5.420957660010219e-07
+    ],
+    "reported_stationarity": true,
+    "run": "replicate-12",
+    "seed": 2027348249,
+    "termination_detail": "held_out_gradient_band",
+    "unique_histories": 26214400
+  },
+  {
+    "acceptance_outcomes": {
+      "accepted": 4
+    },
+    "accepted_attempts": [
+      {
+        "candidate": [
+          -2.4257286443082555
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 0,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.00012845883867601817,
+          -0.00012840560141702843
+        ]
+      },
+      {
+        "candidate": [
+          -2.2257286443082553
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 1,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.0001701155389134197,
+          -0.0001699246732483971
+        ]
+      },
+      {
+        "candidate": [
+          -2.1456964290332996
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 2,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -1.7777244200542166e-05,
+          -1.7658068791282305e-05
+        ]
+      },
+      {
+        "candidate": [
+          -2.1480873351867826
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 3,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -2.4431085213726086e-08,
+          -2.0432979105287947e-08
+        ]
+      }
+    ],
+    "accounting": {
+      "errors": [],
+      "ray_evaluations_recomputed": 30408704,
+      "unique_histories_recomputed": 26214400
+    },
+    "any_false_acceptance": "no_false_acceptance",
+    "any_insufficient_decrease": "no_false_acceptance",
+    "elapsed_seconds_contended": 0.6832339658867568,
+    "false_stop_classification": "no_false_acceptance",
+    "held_out_final_attempts": 1,
+    "independent_stationarity": "pass",
+    "ray_evaluations": 30408704,
+    "reason": "gradient_band",
+    "reference_gradient_interval": [
+      8.737662886857726e-07,
+      2.5399942688718627e-06
+    ],
+    "reported_stationarity": true,
+    "run": "replicate-13",
+    "seed": 2027452978,
+    "termination_detail": "held_out_gradient_band",
+    "unique_histories": 26214400
+  },
+  {
+    "acceptance_outcomes": {
+      "accepted": 4
+    },
+    "accepted_attempts": [
+      {
+        "candidate": [
+          -2.4257286443082555
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 0,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.00012845883867601817,
+          -0.00012840560141702843
+        ]
+      },
+      {
+        "candidate": [
+          -2.2257286443082553
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 1,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.0001701155389134197,
+          -0.0001699246732483971
+        ]
+      },
+      {
+        "candidate": [
+          -2.1448862506806203
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 2,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -1.7761971341921903e-05,
+          -1.7641434632278294e-05
+        ]
+      },
+      {
+        "candidate": [
+          -2.148697989344208
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 3,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -4.1422335619058684e-08,
+          -3.5046371476446925e-08
+        ]
+      }
+    ],
+    "accounting": {
+      "errors": [],
+      "ray_evaluations_recomputed": 30408704,
+      "unique_histories_recomputed": 26214400
+    },
+    "any_false_acceptance": "no_false_acceptance",
+    "any_insufficient_decrease": "no_false_acceptance",
+    "elapsed_seconds_contended": 0.7158813891001046,
+    "false_stop_classification": "no_false_acceptance",
+    "held_out_final_attempts": 1,
+    "independent_stationarity": "pass",
+    "ray_evaluations": 30408704,
+    "reason": "gradient_band",
+    "reference_gradient_interval": [
+      -3.032441687328384e-06,
+      -1.3692634587877667e-06
+    ],
+    "reported_stationarity": true,
+    "run": "replicate-14",
+    "seed": 2027557707,
+    "termination_detail": "held_out_gradient_band",
+    "unique_histories": 26214400
+  },
+  {
+    "acceptance_outcomes": {
+      "accepted": 4
+    },
+    "accepted_attempts": [
+      {
+        "candidate": [
+          -2.4257286443082555
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 0,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.00012845883867601817,
+          -0.00012840560141702843
+        ]
+      },
+      {
+        "candidate": [
+          -2.2257286443082553
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 1,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.0001701155389134197,
+          -0.0001699246732483971
+        ]
+      },
+      {
+        "candidate": [
+          -2.1453869099675895
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 2,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -1.777190959870514e-05,
+          -1.765221451046332e-05
+        ]
+      },
+      {
+        "candidate": [
+          -2.1481873687679442
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 3,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -3.0507394345538915e-08,
+          -2.582295550707351e-08
+        ]
+      }
+    ],
+    "accounting": {
+      "errors": [],
+      "ray_evaluations_recomputed": 30408704,
+      "unique_histories_recomputed": 26214400
+    },
+    "any_false_acceptance": "no_false_acceptance",
+    "any_insufficient_decrease": "no_false_acceptance",
+    "elapsed_seconds_contended": 0.7674822441767901,
+    "false_stop_classification": "no_false_acceptance",
+    "held_out_final_attempts": 1,
+    "independent_stationarity": "pass",
+    "ray_evaluations": 30408704,
+    "reason": "gradient_band",
+    "reference_gradient_interval": [
+      2.3338525087973014e-07,
+      1.8991133419795633e-06
+    ],
+    "reported_stationarity": true,
+    "run": "replicate-15",
+    "seed": 2027662436,
+    "termination_detail": "held_out_gradient_band",
+    "unique_histories": 26214400
+  },
+  {
+    "acceptance_outcomes": {
+      "accepted": 4
+    },
+    "accepted_attempts": [
+      {
+        "candidate": [
+          -2.4257286443082555
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 0,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.00012845883867601817,
+          -0.00012840560141702843
+        ]
+      },
+      {
+        "candidate": [
+          -2.2257286443082553
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 1,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.0001701155389134197,
+          -0.0001699246732483971
+        ]
+      },
+      {
+        "candidate": [
+          -2.145696782812865
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 2,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -1.7777249944397305e-05,
+          -1.7658075128853753e-05
+        ]
+      },
+      {
+        "candidate": [
+          -2.1485213960174963
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 3,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -2.4923895623180266e-08,
+          -2.0203609585292538e-08
+        ]
+      }
+    ],
+    "accounting": {
+      "errors": [],
+      "ray_evaluations_recomputed": 30408704,
+      "unique_histories_recomputed": 26214400
+    },
+    "any_false_acceptance": "no_false_acceptance",
+    "any_insufficient_decrease": "no_false_acceptance",
+    "elapsed_seconds_contended": 0.7548551401123405,
+    "false_stop_classification": "no_false_acceptance",
+    "held_out_final_attempts": 1,
+    "independent_stationarity": "pass",
+    "ray_evaluations": 30408704,
+    "reason": "gradient_band",
+    "reference_gradient_interval": [
+      -1.9035520892658057e-06,
+      -2.394923583670748e-07
+    ],
+    "reported_stationarity": true,
+    "run": "replicate-16",
+    "seed": 2027767165,
+    "termination_detail": "held_out_gradient_band",
+    "unique_histories": 26214400
+  },
+  {
+    "acceptance_outcomes": {
+      "accepted": 4,
+      "ambiguous": 5
+    },
+    "accepted_attempts": [
+      {
+        "candidate": [
+          -2.4257286443082555
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 0,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.00012845883867601817,
+          -0.00012840560141702843
+        ]
+      },
+      {
+        "candidate": [
+          -2.2257286443082553
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 1,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.0001701155389134197,
+          -0.0001699246732483971
+        ]
+      },
+      {
+        "candidate": [
+          -2.1450422011885806
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 2,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -1.7765240651824315e-05,
+          -1.764496623434994e-05
+        ]
+      },
+      {
+        "candidate": [
+          -2.1488293235694726
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 3,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -3.7655749294373085e-08,
+          -3.1323688133792027e-08
+        ]
+      }
+    ],
+    "accounting": {
+      "errors": [],
+      "ray_evaluations_recomputed": 95420416,
+      "unique_histories_recomputed": 58720256
+    },
+    "any_false_acceptance": "no_false_acceptance",
+    "any_insufficient_decrease": "no_false_acceptance",
+    "elapsed_seconds_contended": 1.5734469059389085,
+    "false_stop_classification": "no_false_acceptance",
+    "held_out_final_attempts": 1,
+    "independent_stationarity": "pass",
+    "ray_evaluations": 95420416,
+    "reason": "gradient_band",
+    "reference_gradient_interval": [
+      -3.871620362685387e-06,
+      -2.20909748078315e-06
+    ],
+    "reported_stationarity": true,
+    "run": "replicate-17",
+    "seed": 2027871894,
+    "termination_detail": "held_out_gradient_band",
+    "unique_histories": 58720256
+  },
+  {
+    "acceptance_outcomes": {
+      "accepted": 4
+    },
+    "accepted_attempts": [
+      {
+        "candidate": [
+          -2.4257286443082555
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 0,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.00012845883867601817,
+          -0.00012840560141702843
+        ]
+      },
+      {
+        "candidate": [
+          -2.2257286443082553
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 1,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.0001701155389134197,
+          -0.0001699246732483971
+        ]
+      },
+      {
+        "candidate": [
+          -2.1452080672919394
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 2,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -1.7768545384113545e-05,
+          -1.7648549801448232e-05
+        ]
+      },
+      {
+        "candidate": [
+          -2.1485138365058987
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 3,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -3.445085062521909e-08,
+          -2.8922377087060945e-08
+        ]
+      }
+    ],
+    "accounting": {
+      "errors": [],
+      "ray_evaluations_recomputed": 30408704,
+      "unique_histories_recomputed": 26214400
+    },
+    "any_false_acceptance": "no_false_acceptance",
+    "any_insufficient_decrease": "no_false_acceptance",
+    "elapsed_seconds_contended": 0.6603657808154821,
+    "false_stop_classification": "no_false_acceptance",
+    "held_out_final_attempts": 1,
+    "independent_stationarity": "pass",
+    "ray_evaluations": 30408704,
+    "reason": "gradient_band",
+    "reference_gradient_interval": [
+      -1.8552138408699605e-06,
+      -1.91116366987054e-07
+    ],
+    "reported_stationarity": true,
+    "run": "replicate-18",
+    "seed": 2027976623,
+    "termination_detail": "held_out_gradient_band",
+    "unique_histories": 26214400
+  },
+  {
+    "acceptance_outcomes": {
+      "accepted": 4
+    },
+    "accepted_attempts": [
+      {
+        "candidate": [
+          -2.4257286443082555
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 0,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.00012845883867601817,
+          -0.00012840560141702843
+        ]
+      },
+      {
+        "candidate": [
+          -2.2257286443082553
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 1,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.0001701155389134197,
+          -0.0001699246732483971
+        ]
+      },
+      {
+        "candidate": [
+          -2.145078029125784
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 2,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -1.7765969539711987e-05,
+          -1.7645755363723727e-05
+        ]
+      },
+      {
+        "candidate": [
+          -2.1486020737969502
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 3,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -3.7203514566875064e-08,
+          -3.130963168791331e-08
+        ]
+      }
+    ],
+    "accounting": {
+      "errors": [],
+      "ray_evaluations_recomputed": 30408704,
+      "unique_histories_recomputed": 26214400
+    },
+    "any_false_acceptance": "no_false_acceptance",
+    "any_insufficient_decrease": "no_false_acceptance",
+    "elapsed_seconds_contended": 0.7104311489965767,
+    "false_stop_classification": "no_false_acceptance",
+    "held_out_final_attempts": 1,
+    "independent_stationarity": "pass",
+    "ray_evaluations": 30408704,
+    "reason": "gradient_band",
+    "reference_gradient_interval": [
+      -2.4193666708091025e-06,
+      -7.557097049115267e-07
+    ],
+    "reported_stationarity": true,
+    "run": "replicate-19",
+    "seed": 2028081352,
+    "termination_detail": "held_out_gradient_band",
+    "unique_histories": 26214400
+  },
+  {
+    "acceptance_outcomes": {
+      "accepted": 4
+    },
+    "accepted_attempts": [
+      {
+        "candidate": [
+          -2.4257286443082555
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 0,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.00012845883867601817,
+          -0.00012840560141702843
+        ]
+      },
+      {
+        "candidate": [
+          -2.2257286443082553
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 1,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.0001701155389134197,
+          -0.0001699246732483971
+        ]
+      },
+      {
+        "candidate": [
+          -2.1457550620526504
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 2,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -1.7778185130846998e-05,
+          -1.7659108111504905e-05
+        ]
+      },
+      {
+        "candidate": [
+          -2.148509055293567
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 3,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -2.389338119070884e-08,
+          -1.9291427436202222e-08
+        ]
+      }
+    ],
+    "accounting": {
+      "errors": [],
+      "ray_evaluations_recomputed": 30408704,
+      "unique_histories_recomputed": 26214400
+    },
+    "any_false_acceptance": "no_false_acceptance",
+    "any_insufficient_decrease": "no_false_acceptance",
+    "elapsed_seconds_contended": 0.6746128180529922,
+    "false_stop_classification": "no_false_acceptance",
+    "held_out_final_attempts": 1,
+    "independent_stationarity": "pass",
+    "ray_evaluations": 30408704,
+    "reason": "gradient_band",
+    "reference_gradient_interval": [
+      -1.8246404757246166e-06,
+      -1.6051912995299328e-07
+    ],
+    "reported_stationarity": true,
+    "run": "replicate-20",
+    "seed": 2028186081,
+    "termination_detail": "held_out_gradient_band",
+    "unique_histories": 26214400
+  },
+  {
+    "acceptance_outcomes": {
+      "accepted": 4
+    },
+    "accepted_attempts": [
+      {
+        "candidate": [
+          -2.4257286443082555
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 0,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.00012845883867601817,
+          -0.00012840560141702843
+        ]
+      },
+      {
+        "candidate": [
+          -2.2257286443082553
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 1,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.0001701155389134197,
+          -0.0001699246732483971
+        ]
+      },
+      {
+        "candidate": [
+          -2.1449336778189734
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 2,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -1.776298222576571e-05,
+          -1.764252529648104e-05
+        ]
+      },
+      {
+        "candidate": [
+          -2.148328570197131
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 3,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -4.040091696993667e-08,
+          -3.47194837070633e-08
+        ]
+      }
+    ],
+    "accounting": {
+      "errors": [],
+      "ray_evaluations_recomputed": 30408704,
+      "unique_histories_recomputed": 26214400
+    },
+    "any_false_acceptance": "no_false_acceptance",
+    "any_insufficient_decrease": "no_false_acceptance",
+    "elapsed_seconds_contended": 0.6577633421402425,
+    "false_stop_classification": "no_false_acceptance",
+    "held_out_final_attempts": 1,
+    "independent_stationarity": "pass",
+    "ray_evaluations": 30408704,
+    "reason": "gradient_band",
+    "reference_gradient_interval": [
+      -6.702113591433417e-07,
+      9.948113169287572e-07
+    ],
+    "reported_stationarity": true,
+    "run": "replicate-21",
+    "seed": 2028290810,
+    "termination_detail": "held_out_gradient_band",
+    "unique_histories": 26214400
+  },
+  {
+    "acceptance_outcomes": {
+      "accepted": 4
+    },
+    "accepted_attempts": [
+      {
+        "candidate": [
+          -2.4257286443082555
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 0,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.00012845883867601817,
+          -0.00012840560141702843
+        ]
+      },
+      {
+        "candidate": [
+          -2.2257286443082553
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 1,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.0001701155389134197,
+          -0.0001699246732483971
+        ]
+      },
+      {
+        "candidate": [
+          -2.1448099964367833
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 2,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -1.7760315539713735e-05,
+          -1.7639650533965714e-05
+        ]
+      },
+      {
+        "candidate": [
+          -2.1486668289854265
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 3,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -4.3245995472446553e-08,
+          -3.6793562878695784e-08
+        ]
+      }
+    ],
+    "accounting": {
+      "errors": [],
+      "ray_evaluations_recomputed": 30408704,
+      "unique_histories_recomputed": 26214400
+    },
+    "any_false_acceptance": "no_false_acceptance",
+    "any_insufficient_decrease": "no_false_acceptance",
+    "elapsed_seconds_contended": 0.7016075998544693,
+    "false_stop_classification": "no_false_acceptance",
+    "held_out_final_attempts": 1,
+    "independent_stationarity": "pass",
+    "ray_evaluations": 30408704,
+    "reason": "gradient_band",
+    "reference_gradient_interval": [
+      -2.833289600642367e-06,
+      -1.1699558550746495e-06
+    ],
+    "reported_stationarity": true,
+    "run": "replicate-22",
+    "seed": 2028395539,
+    "termination_detail": "held_out_gradient_band",
+    "unique_histories": 26214400
+  },
+  {
+    "acceptance_outcomes": {
+      "accepted": 4
+    },
+    "accepted_attempts": [
+      {
+        "candidate": [
+          -2.4257286443082555
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 0,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.00012845883867601817,
+          -0.00012840560141702843
+        ]
+      },
+      {
+        "candidate": [
+          -2.2257286443082553
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 1,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.0001701155389134197,
+          -0.0001699246732483971
+        ]
+      },
+      {
+        "candidate": [
+          -2.145672989159277
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 2,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -1.7776861839709672e-05,
+          -1.7657647092023445e-05
+        ]
+      },
+      {
+        "candidate": [
+          -2.1480988779679935
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 3,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -2.488167621351922e-08,
+          -2.08249991066335e-08
+        ]
+      }
+    ],
+    "accounting": {
+      "errors": [],
+      "ray_evaluations_recomputed": 30408704,
+      "unique_histories_recomputed": 26214400
+    },
+    "any_false_acceptance": "no_false_acceptance",
+    "any_insufficient_decrease": "no_false_acceptance",
+    "elapsed_seconds_contended": 0.6988851760979742,
+    "false_stop_classification": "no_false_acceptance",
+    "held_out_final_attempts": 1,
+    "independent_stationarity": "pass",
+    "ray_evaluations": 30408704,
+    "reason": "gradient_band",
+    "reference_gradient_interval": [
+      7.99863512693232e-07,
+      2.4660338051910566e-06
+    ],
+    "reported_stationarity": true,
+    "run": "replicate-23",
+    "seed": 2028500268,
+    "termination_detail": "held_out_gradient_band",
+    "unique_histories": 26214400
+  },
+  {
+    "acceptance_outcomes": {
+      "accepted": 4
+    },
+    "accepted_attempts": [
+      {
+        "candidate": [
+          -2.4257286443082555
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 0,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.00012845883867601817,
+          -0.00012840560141702843
+        ]
+      },
+      {
+        "candidate": [
+          -2.2257286443082553
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 1,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.0001701155389134197,
+          -0.0001699246732483971
+        ]
+      },
+      {
+        "candidate": [
+          -2.1458612524159686
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 2,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -1.777983282952823e-05,
+          -1.7660933960362994e-05
+        ]
+      },
+      {
+        "candidate": [
+          -2.148616046560191
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 3,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -2.2013734042914047e-08,
+          -1.7411912589368005e-08
+        ]
+      }
+    ],
+    "accounting": {
+      "errors": [],
+      "ray_evaluations_recomputed": 30408704,
+      "unique_histories_recomputed": 26214400
+    },
+    "any_false_acceptance": "no_false_acceptance",
+    "any_insufficient_decrease": "no_false_acceptance",
+    "elapsed_seconds_contended": 0.6697622470092028,
+    "false_stop_classification": "no_false_acceptance",
+    "held_out_final_attempts": 1,
+    "independent_stationarity": "pass",
+    "ray_evaluations": 30408704,
+    "reason": "gradient_band",
+    "reference_gradient_interval": [
+      -2.5086890544353573e-06,
+      -8.451018365972053e-07
+    ],
+    "reported_stationarity": true,
+    "run": "replicate-24",
+    "seed": 2028604997,
+    "termination_detail": "held_out_gradient_band",
+    "unique_histories": 26214400
+  },
+  {
+    "acceptance_outcomes": {
+      "accepted": 4
+    },
+    "accepted_attempts": [
+      {
+        "candidate": [
+          -2.4257286443082555
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 0,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.00012845883867601817,
+          -0.00012840560141702843
+        ]
+      },
+      {
+        "candidate": [
+          -2.2257286443082553
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 1,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.0001701155389134197,
+          -0.0001699246732483971
+        ]
+      },
+      {
+        "candidate": [
+          -2.1456542135362127
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 2,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -1.7776553008203555e-05,
+          -1.765730674796937e-05
+        ]
+      },
+      {
+        "candidate": [
+          -2.1486023047722296
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 3,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -2.565195560031564e-08,
+          -2.0725604211926184e-08
+        ]
+      }
+    ],
+    "accounting": {
+      "errors": [],
+      "ray_evaluations_recomputed": 30408704,
+      "unique_histories_recomputed": 26214400
+    },
+    "any_false_acceptance": "no_false_acceptance",
+    "any_insufficient_decrease": "no_false_acceptance",
+    "elapsed_seconds_contended": 0.6980602729599923,
+    "false_stop_classification": "no_false_acceptance",
+    "held_out_final_attempts": 1,
+    "independent_stationarity": "pass",
+    "ray_evaluations": 30408704,
+    "reason": "gradient_band",
+    "reference_gradient_interval": [
+      -2.4208432354321367e-06,
+      -7.57187422515938e-07
+    ],
+    "reported_stationarity": true,
+    "run": "replicate-25",
+    "seed": 2028709726,
+    "termination_detail": "held_out_gradient_band",
+    "unique_histories": 26214400
+  },
+  {
+    "acceptance_outcomes": {
+      "accepted": 4
+    },
+    "accepted_attempts": [
+      {
+        "candidate": [
+          -2.4257286443082555
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 0,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.00012845883867601817,
+          -0.00012840560141702843
+        ]
+      },
+      {
+        "candidate": [
+          -2.2257286443082553
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 1,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.0001701155389134197,
+          -0.0001699246732483971
+        ]
+      },
+      {
+        "candidate": [
+          -2.1447611942584497
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 2,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -1.7759236108022477e-05,
+          -1.7638488978304797e-05
+        ]
+      },
+      {
+        "candidate": [
+          -2.148385580260918
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 3,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -4.448354467467707e-08,
+          -3.841699604667755e-08
+        ]
+      }
+    ],
+    "accounting": {
+      "errors": [],
+      "ray_evaluations_recomputed": 30408704,
+      "unique_histories_recomputed": 26214400
+    },
+    "any_false_acceptance": "no_false_acceptance",
+    "any_insufficient_decrease": "no_false_acceptance",
+    "elapsed_seconds_contended": 0.6400614250451326,
+    "false_stop_classification": "no_false_acceptance",
+    "held_out_final_attempts": 1,
+    "independent_stationarity": "pass",
+    "ray_evaluations": 30408704,
+    "reason": "gradient_band",
+    "reference_gradient_interval": [
+      -1.034929944594476e-06,
+      6.298079860808226e-07
+    ],
+    "reported_stationarity": true,
+    "run": "replicate-26",
+    "seed": 2028814455,
+    "termination_detail": "held_out_gradient_band",
+    "unique_histories": 26214400
+  },
+  {
+    "acceptance_outcomes": {
+      "accepted": 4
+    },
+    "accepted_attempts": [
+      {
+        "candidate": [
+          -2.4257286443082555
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 0,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.00012845883867601817,
+          -0.00012840560141702843
+        ]
+      },
+      {
+        "candidate": [
+          -2.2257286443082553
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 1,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.0001701155389134197,
+          -0.0001699246732483971
+        ]
+      },
+      {
+        "candidate": [
+          -2.145603886003588
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 2,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -1.777571397865235e-05,
+          -1.7656383241174173e-05
+        ]
+      },
+      {
+        "candidate": [
+          -2.14798507433349
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 3,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -2.5823386775544706e-08,
+          -2.1840368477584774e-08
+        ]
+      }
+    ],
+    "accounting": {
+      "errors": [],
+      "ray_evaluations_recomputed": 32505856,
+      "unique_histories_recomputed": 28311552
+    },
+    "any_false_acceptance": "no_false_acceptance",
+    "any_insufficient_decrease": "no_false_acceptance",
+    "elapsed_seconds_contended": 0.7238642270676792,
+    "false_stop_classification": "no_false_acceptance",
+    "held_out_final_attempts": 1,
+    "independent_stationarity": "pass",
+    "ray_evaluations": 32505856,
+    "reason": "gradient_band",
+    "reference_gradient_interval": [
+      1.528604223696982e-06,
+      3.195343343735883e-06
+    ],
+    "reported_stationarity": true,
+    "run": "replicate-27",
+    "seed": 2028919184,
+    "termination_detail": "held_out_gradient_band",
+    "unique_histories": 28311552
+  },
+  {
+    "acceptance_outcomes": {
+      "accepted": 4
+    },
+    "accepted_attempts": [
+      {
+        "candidate": [
+          -2.4257286443082555
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 0,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.00012845883867601817,
+          -0.00012840560141702843
+        ]
+      },
+      {
+        "candidate": [
+          -2.2257286443082553
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 1,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.0001701155389134197,
+          -0.0001699246732483971
+        ]
+      },
+      {
+        "candidate": [
+          -2.1456362881563362
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 2,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -1.7776256040462978e-05,
+          -1.7656979693054937e-05
+        ]
+      },
+      {
+        "candidate": [
+          -2.148027758894735
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 3,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -2.535748793163943e-08,
+          -2.1357720229621826e-08
+        ]
+      }
+    ],
+    "accounting": {
+      "errors": [],
+      "ray_evaluations_recomputed": 30408704,
+      "unique_histories_recomputed": 26214400
+    },
+    "any_false_acceptance": "no_false_acceptance",
+    "any_insufficient_decrease": "no_false_acceptance",
+    "elapsed_seconds_contended": 0.7140594529919326,
+    "false_stop_classification": "no_false_acceptance",
+    "held_out_final_attempts": 1,
+    "independent_stationarity": "pass",
+    "ray_evaluations": 30408704,
+    "reason": "gradient_band",
+    "reference_gradient_interval": [
+      1.2552448039977956e-06,
+      2.921770555029628e-06
+    ],
+    "reported_stationarity": true,
+    "run": "replicate-28",
+    "seed": 2029023913,
+    "termination_detail": "held_out_gradient_band",
+    "unique_histories": 26214400
+  },
+  {
+    "acceptance_outcomes": {
+      "accepted": 4
+    },
+    "accepted_attempts": [
+      {
+        "candidate": [
+          -2.4257286443082555
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 0,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.00012845883867601817,
+          -0.00012840560141702843
+        ]
+      },
+      {
+        "candidate": [
+          -2.2257286443082553
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 1,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.0001701155389134197,
+          -0.0001699246732483971
+        ]
+      },
+      {
+        "candidate": [
+          -2.145486379797322
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 2,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -1.7773691377101688e-05,
+          -1.7654163350093855e-05
+        ]
+      },
+      {
+        "candidate": [
+          -2.148778553851843
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 3,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -2.8562548723925302e-08,
+          -2.3061290277336252e-08
+        ]
+      }
+    ],
+    "accounting": {
+      "errors": [],
+      "ray_evaluations_recomputed": 30408704,
+      "unique_histories_recomputed": 26214400
+    },
+    "any_false_acceptance": "no_false_acceptance",
+    "any_insufficient_decrease": "no_false_acceptance",
+    "elapsed_seconds_contended": 0.6506801110226661,
+    "false_stop_classification": "no_false_acceptance",
+    "held_out_final_attempts": 1,
+    "independent_stationarity": "pass",
+    "ray_evaluations": 30408704,
+    "reason": "gradient_band",
+    "reference_gradient_interval": [
+      -3.547259261470431e-06,
+      -1.8844830667989974e-06
+    ],
+    "reported_stationarity": true,
+    "run": "replicate-29",
+    "seed": 2029128642,
+    "termination_detail": "held_out_gradient_band",
+    "unique_histories": 26214400
+  },
+  {
+    "acceptance_outcomes": {
+      "accepted": 4
+    },
+    "accepted_attempts": [
+      {
+        "candidate": [
+          -2.4257286443082555
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 0,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.00012845883867601817,
+          -0.00012840560141702843
+        ]
+      },
+      {
+        "candidate": [
+          -2.2257286443082553
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 1,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.0001701155389134197,
+          -0.0001699246732483971
+        ]
+      },
+      {
+        "candidate": [
+          -2.1453895714361266
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 2,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -1.777195810437438e-05,
+          -1.765226748676111e-05
+        ]
+      },
+      {
+        "candidate": [
+          -2.1480195540956757
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 3,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -3.004550596847507e-08,
+          -2.5645141738394835e-08
+        ]
+      }
+    ],
+    "accounting": {
+      "errors": [],
+      "ray_evaluations_recomputed": 30408704,
+      "unique_histories_recomputed": 26214400
+    },
+    "any_false_acceptance": "no_false_acceptance",
+    "any_insufficient_decrease": "no_false_acceptance",
+    "elapsed_seconds_contended": 0.639995105098933,
+    "false_stop_classification": "no_false_acceptance",
+    "held_out_final_attempts": 1,
+    "independent_stationarity": "pass",
+    "ray_evaluations": 30408704,
+    "reason": "gradient_band",
+    "reference_gradient_interval": [
+      1.307787059611779e-06,
+      2.974353822647962e-06
+    ],
+    "reported_stationarity": true,
+    "run": "replicate-30",
+    "seed": 2029233371,
+    "termination_detail": "held_out_gradient_band",
+    "unique_histories": 26214400
+  },
+  {
+    "acceptance_outcomes": {
+      "accepted": 4
+    },
+    "accepted_attempts": [
+      {
+        "candidate": [
+          -2.4257286443082555
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 0,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.00012845883867601817,
+          -0.00012840560141702843
+        ]
+      },
+      {
+        "candidate": [
+          -2.2257286443082553
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 1,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -0.0001701155389134197,
+          -0.0001699246732483971
+        ]
+      },
+      {
+        "candidate": [
+          -2.1453032430483403
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 2,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -1.777036144406154e-05,
+          -1.765052579730601e-05
+        ]
+      },
+      {
+        "candidate": [
+          -2.1487737060704566
+        ],
+        "decrease_classification": "valid_decrease",
+        "iteration": 3,
+        "sufficient_decrease_classification": "valid_decrease",
+        "true_change_interval_conditional_on_reference": [
+          -3.220916193663038e-08,
+          -2.6408344576460575e-08
+        ]
+      }
+    ],
+    "accounting": {
+      "errors": [],
+      "ray_evaluations_recomputed": 30408704,
+      "unique_histories_recomputed": 26214400
+    },
+    "any_false_acceptance": "no_false_acceptance",
+    "any_insufficient_decrease": "no_false_acceptance",
+    "elapsed_seconds_contended": 0.7126243209932,
+    "false_stop_classification": "no_false_acceptance",
+    "held_out_final_attempts": 1,
+    "independent_stationarity": "pass",
+    "ray_evaluations": 30408704,
+    "reason": "gradient_band",
+    "reference_gradient_interval": [
+      -3.5162848338321845e-06,
+      -1.8534844498472186e-06
+    ],
+    "reported_stationarity": true,
+    "run": "replicate-31",
+    "seed": 2029338100,
+    "termination_detail": "held_out_gradient_band",
+    "unique_histories": 26214400
+  }
+]

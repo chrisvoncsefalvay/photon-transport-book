@@ -1,0 +1,98 @@
+[
+  {
+    "id": "world",
+    "label": "World frame W",
+    "definition": "Fixed physical reference frame shared by the declared source, detector and object poses. Its origin and basis are part of the acquisition specification.",
+    "handedness": "right",
+    "axes":
+      {
+        "x": "Declared first world axis.",
+        "y": "Declared second world axis, orthogonal to the first.",
+        "z": "Cross product of the first and second world axes.",
+      },
+    "relative_to": null,
+    "introduced_in": "/chapters/frames-geometry-motion/#31-naming-and-framing",
+    "source_keys": [],
+    "notes": "Manuscript §3.1, Table 3.1. Coordinates and translations are in mm. $W$ has no anatomical orientation by name alone. Choosing patient LPS or a detector-centred world requires an explicit coordinate conversion.",
+  },
+  {
+    "id": "object",
+    "label": "Object frame O",
+    "definition": "Physical frame attached to the rigid anatomy or volume, with a fixed declared origin and orthonormal basis in which the attenuation field is defined.",
+    "handedness": "right",
+    "axes":
+      {
+        "x": "Declared first physical object axis.",
+        "y": "Declared second physical object axis.",
+        "z": "Cross product of the first and second object axes.",
+      },
+    "relative_to": "world",
+    "introduced_in": "/chapters/frames-geometry-motion/#31-naming-and-framing",
+    "source_keys": [],
+    "notes": "Manuscript §3.1, Table 3.1, and §§3.4–3.6. $\\mathbf G_{WO}$ maps object coordinates in mm to world coordinates. $O$ is not the voxel-index lattice: Chapter 4 maps that lattice through sample origin, grid orientation and spacing. Right pose increments act in current $O$ axes about the object origin.",
+  },
+  {
+    "id": "source",
+    "label": "Source frame S",
+    "definition": "Physical frame attached to the ideal point source, with its origin at the focal point and calibrated orthonormal axes for source orientation when the emission model requires it.",
+    "handedness": "right",
+    "axes":
+      {
+        "x": "Calibrated first source axis.",
+        "y": "Calibrated second source axis.",
+        "z": "Cross product of the first and second calibrated source axes.",
+      },
+    "relative_to": "world",
+    "introduced_in": "/chapters/frames-geometry-motion/#31-naming-and-framing",
+    "source_keys": [],
+    "notes": "Manuscript §3.1, Table 3.1, and §3.4. $\\mathbf G_{WS}$ places the source in $W$ and its world focal-point position is $\\mathbf t_{WS}$. No universal source-axis alignment or source-to-detector normal direction is imposed.",
+  },
+  {
+    "id": "detector",
+    "label": "Detector frame D",
+    "definition": "Physical orthonormal frame of the detector plane, with origin at the geometric centre of the active rectangular detector.",
+    "handedness": "right",
+    "axes":
+      {
+        "x": "Increasing zero-based column index $i$.",
+        "y": "Increasing zero-based row index $j$.",
+        "z": "Cross product of increasing-column and increasing-row unit directions. Detector samples lie at $z=0$.",
+      },
+    "relative_to": "world",
+    "introduced_in": "/chapters/frames-geometry-motion/#31-naming-and-framing",
+    "source_keys": ["dicomPS33"],
+    "notes": "Manuscript §3.1, Table 3.1 and §3.3 establish the centred convention. DICOM is cited for the alternate first-pixel calibration and row/column attribute ordering, not for a detector-centred origin. Coordinates are mm, array order is [j,i], and $\\mathbf q_{ij}^D=((i-(N_c-1)/2)\\Delta_c,(j-(N_r-1)/2)\\Delta_r,0)$. In centred examples the source lies on the negative $z$ side. The general sign is calibrated. The principal point need not be the geometric centre.",
+  },
+  {
+    "id": "patient-lps",
+    "label": "Patient LPS coordinate convention",
+    "definition": "Patient-relative coordinate convention for a human patient, with positive directions towards the patient left, posterior and head. An actual origin must be supplied by the image or acquisition geometry.",
+    "handedness": "right",
+    "axes":
+      {
+        "x": "Towards the patient left.",
+        "y": "Towards the patient posterior.",
+        "z": "Towards the patient head (superior).",
+      },
+    "relative_to": null,
+    "introduced_in": "/appendix/x-ray-theory/#a2-anatomical-directions-and-projection-names",
+    "source_keys": ["dicomPS33"],
+    "notes": "Manuscript Appendix A.2 and A.12. Chapter 3.1 permits this choice for world coordinates but does not require it. Patient orientation is independent of the monitor, room and array order. Image Position (Patient) anchors the first pixel centre when available. AP/PA or C-arm view names alone do not supply a calibrated transform.",
+  },
+  {
+    "id": "scattering-direction-basis",
+    "label": "Local scattering direction basis",
+    "definition": "Local orthonormal direction basis constructed around the incoming unit photon direction to map sampled polar and azimuthal scattering angles into an outgoing direction.",
+    "handedness": "right",
+    "axes":
+      {
+        "x": "$\\mathbf e_1$: chosen unit vector perpendicular to incoming direction $\\boldsymbol\\omega$.",
+        "y": "$\\mathbf e_2 = \\boldsymbol\\omega\\times\\mathbf e_1$.",
+        "z": "Incoming unit photon direction $\\boldsymbol\\omega$.",
+      },
+    "relative_to": null,
+    "introduced_in": "/chapters/scattering-stochastic-transport/#93-scattering-angle-and-energy-change",
+    "source_keys": [],
+    "notes": "Manuscript §9.3, equation (9.8). This is a direction basis, not an additional acquisition pose: no spatial origin or translation is specified. Construct $\\mathbf e_1$ stably using a helper axis that is not nearly parallel to $\\boldsymbol\\omega$. The outgoing direction is $\\cos(\\vartheta)\\boldsymbol\\omega+\\sin(\\vartheta)(\\cos(\\varphi)\\mathbf e_1+\\sin(\\varphi)\\mathbf e_2)$.",
+  },
+]

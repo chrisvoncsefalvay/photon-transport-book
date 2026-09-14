@@ -1,0 +1,1174 @@
+{
+  "allowlist": [
+    {
+      "bytes": 3577,
+      "file": "case2_dense_r0_scalar_poisson/attenuation-axial-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_dense_r0_scalar_poisson, scalar attenuation at 80 kev, axial (z = 0 mm)",
+      "sha256": "8d884c4ec528bb2a9b1088007dfc6205000633e89de5a6f11ec356b3c4ad10c9"
+    },
+    {
+      "bytes": 1583,
+      "file": "case2_dense_r0_scalar_poisson/attenuation-axial.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Scalar Poisson, Broad dense, scalar attenuation at 80 kev, axial (z = 0 mm)",
+      "sha256": "fa6665cf2e1f02ddbb96b586c6df82ed0cc4c28c2cff2e6364a1c27341f135c6"
+    },
+    {
+      "bytes": 4658,
+      "file": "case2_dense_r0_scalar_poisson/attenuation-coronal-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_dense_r0_scalar_poisson, scalar attenuation at 80 kev, coronal (y = 0 mm)",
+      "sha256": "020ebb2e37857135378077f1a9773f4adf3f6eeaf1436a3d629a6ae0a1964e7f"
+    },
+    {
+      "bytes": 2067,
+      "file": "case2_dense_r0_scalar_poisson/attenuation-coronal.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Scalar Poisson, Broad dense, scalar attenuation at 80 kev, coronal (y = 0 mm)",
+      "sha256": "ac5fd31db615f1274282e89664c3ba6089388d2cac1bf002a7e154832a6f5ac8"
+    },
+    {
+      "bytes": 5102,
+      "file": "case2_dense_r0_scalar_poisson/attenuation-sagittal-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_dense_r0_scalar_poisson, scalar attenuation at 80 kev, sagittal (x = 0 mm)",
+      "sha256": "7a3f94d29e595a8a1ff77c315c93c9197c80978772c7496343d630842acb1f94"
+    },
+    {
+      "bytes": 2423,
+      "file": "case2_dense_r0_scalar_poisson/attenuation-sagittal.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Scalar Poisson, Broad dense, scalar attenuation at 80 kev, sagittal (x = 0 mm)",
+      "sha256": "be035009b7336cc52757ee76f80efe9cc8d1914b13e87d5e3a9ea39d9f13e9ae"
+    },
+    {
+      "bytes": 2473,
+      "file": "case2_dense_r0_scalar_poisson/withheld-prediction.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "case2_dense_r0_scalar_poisson, first whole withheld prediction, negative log over known open beam",
+      "sha256": "db850c600ddf7c6f35709b35500a33e4a6504c7155002347303dbe9786dc7620"
+    },
+    {
+      "bytes": 27249,
+      "file": "case2_dense_r0_scalar_poisson/withheld-residual.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "case2_dense_r0_scalar_poisson, first whole withheld observed minus predicted counts in predicted Poisson standard deviations",
+      "sha256": "702a6a7072fc33d9c4e3a12b14f6d42efc28f55cb07a9c2d587a066b0b0f6f1b"
+    },
+    {
+      "bytes": 3599,
+      "file": "case2_dense_r0_scalar_pwls/attenuation-axial-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_dense_r0_scalar_pwls, scalar attenuation at 80 kev, axial (z = 0 mm)",
+      "sha256": "e494aca0f3a2388e9a1ed3cf74cd6d6e65e64441d29c3eba48f3756566cbe376"
+    },
+    {
+      "bytes": 1663,
+      "file": "case2_dense_r0_scalar_pwls/attenuation-axial.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Scalar log-WLS, Broad dense, scalar attenuation at 80 kev, axial (z = 0 mm)",
+      "sha256": "9befbced582028709c006b62b5ddad0ccc92a9196813d83ed286507a35b62d77"
+    },
+    {
+      "bytes": 4686,
+      "file": "case2_dense_r0_scalar_pwls/attenuation-coronal-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_dense_r0_scalar_pwls, scalar attenuation at 80 kev, coronal (y = 0 mm)",
+      "sha256": "2f4f6e291f593bdce38fae5c7e8f4c4fd49458b930c536cf454618a3f6784512"
+    },
+    {
+      "bytes": 2153,
+      "file": "case2_dense_r0_scalar_pwls/attenuation-coronal.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Scalar log-WLS, Broad dense, scalar attenuation at 80 kev, coronal (y = 0 mm)",
+      "sha256": "19419e585391ec74ecaff5c1f7118edffd723372885dd396e973475704c4034a"
+    },
+    {
+      "bytes": 5016,
+      "file": "case2_dense_r0_scalar_pwls/attenuation-sagittal-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_dense_r0_scalar_pwls, scalar attenuation at 80 kev, sagittal (x = 0 mm)",
+      "sha256": "e7edd44f5c9324c3609f4f82d2e14ff0641112925ebf99acf7c9326c1c1549e2"
+    },
+    {
+      "bytes": 2511,
+      "file": "case2_dense_r0_scalar_pwls/attenuation-sagittal.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Scalar log-WLS, Broad dense, scalar attenuation at 80 kev, sagittal (x = 0 mm)",
+      "sha256": "358b09ee70faa2c1d5facefd277bf5078ca0764b06feca69dfdeb79f2687da0f"
+    },
+    {
+      "bytes": 2504,
+      "file": "case2_dense_r0_scalar_pwls/withheld-prediction.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "case2_dense_r0_scalar_pwls, first whole withheld prediction, negative log over known open beam",
+      "sha256": "027e00dea155a1c989da0375af2e39b4a9dc1fc637586ea1b101c066334e75e4"
+    },
+    {
+      "bytes": 27690,
+      "file": "case2_dense_r0_scalar_pwls/withheld-residual.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "case2_dense_r0_scalar_pwls, first whole withheld observed minus predicted counts in predicted Poisson standard deviations",
+      "sha256": "8600fa1ec4c5982bd6373e09ac206e9a928d1424751de0266d949b7fa8359e8a"
+    },
+    {
+      "bytes": 3820,
+      "file": "case2_dense_r0_spectral_euclidean/attenuation-axial-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_dense_r0_spectral_euclidean, derived attenuation at 80 kev, axial (z = 0 mm)",
+      "sha256": "2d51dd4a2b7487fb45827c979a7b0e8943923f997ba3fd7b8b9cedc18c69f59e"
+    },
+    {
+      "bytes": 1599,
+      "file": "case2_dense_r0_spectral_euclidean/attenuation-axial.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Spectral Euclidean, Broad dense, derived attenuation at 80 kev, axial (z = 0 mm)",
+      "sha256": "3d4cdc50367cbef9017c061a6ef5d07ab448a693558142a008bd0a8fa8ec8b1c"
+    },
+    {
+      "bytes": 5154,
+      "file": "case2_dense_r0_spectral_euclidean/attenuation-coronal-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_dense_r0_spectral_euclidean, derived attenuation at 80 kev, coronal (y = 0 mm)",
+      "sha256": "5d047f8c99f62dca8dde77fa7a160bf7b3d834d4bad0d4380133dd8622eb25ba"
+    },
+    {
+      "bytes": 1972,
+      "file": "case2_dense_r0_spectral_euclidean/attenuation-coronal.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Spectral Euclidean, Broad dense, derived attenuation at 80 kev, coronal (y = 0 mm)",
+      "sha256": "a39ebaafc35ead4fb7bf11cdbe555d18326afc2a10bf24361219fea0d238e642"
+    },
+    {
+      "bytes": 5358,
+      "file": "case2_dense_r0_spectral_euclidean/attenuation-sagittal-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_dense_r0_spectral_euclidean, derived attenuation at 80 kev, sagittal (x = 0 mm)",
+      "sha256": "2e62128449690d13ad805c48b3f2507837d08f541d3dcb04f3cbf775ef25630c"
+    },
+    {
+      "bytes": 2292,
+      "file": "case2_dense_r0_spectral_euclidean/attenuation-sagittal.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Spectral Euclidean, Broad dense, derived attenuation at 80 kev, sagittal (x = 0 mm)",
+      "sha256": "e0f75c5e32c704f509393df335d9545648a68be7878c5ad3fadf5e930e27bf53"
+    },
+    {
+      "bytes": 3232,
+      "file": "case2_dense_r0_spectral_euclidean/bone-axial-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_dense_r0_spectral_euclidean, bone fraction, axial (z = 0 mm)",
+      "sha256": "fd702adf901a2a25dfb44c0acb77c5e834c62b4cd2c5cd3326e3f69a48c8edf2"
+    },
+    {
+      "bytes": 1724,
+      "file": "case2_dense_r0_spectral_euclidean/bone-axial.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Spectral Euclidean, Broad dense, bone fraction, axial (z = 0 mm)",
+      "sha256": "f2aba4f20ed5aa95a7a682a8aa9f067da53c374701acca091795318f472d9ccb"
+    },
+    {
+      "bytes": 4922,
+      "file": "case2_dense_r0_spectral_euclidean/bone-coronal-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_dense_r0_spectral_euclidean, bone fraction, coronal (y = 0 mm)",
+      "sha256": "a8978d4d6f60db7b0872d4eb998d87e43a63ea03c245c4606f415ff9c4511a0f"
+    },
+    {
+      "bytes": 2467,
+      "file": "case2_dense_r0_spectral_euclidean/bone-coronal.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Spectral Euclidean, Broad dense, bone fraction, coronal (y = 0 mm)",
+      "sha256": "98c328ded9cecf720fdf19b48b96e4d527c142b1f876e247f8dc8c539c8d2869"
+    },
+    {
+      "bytes": 4450,
+      "file": "case2_dense_r0_spectral_euclidean/bone-sagittal-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_dense_r0_spectral_euclidean, bone fraction, sagittal (x = 0 mm)",
+      "sha256": "e48de557159dc542ef9238b98023b2ab0529675bc9c979ee3246ac6835d27d83"
+    },
+    {
+      "bytes": 2849,
+      "file": "case2_dense_r0_spectral_euclidean/bone-sagittal.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Spectral Euclidean, Broad dense, bone fraction, sagittal (x = 0 mm)",
+      "sha256": "b74c7213392368828f9fe3fe1687fb8c65eb2d36da42f1530e349db3c90c991c"
+    },
+    {
+      "bytes": 3465,
+      "file": "case2_dense_r0_spectral_euclidean/water-axial-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_dense_r0_spectral_euclidean, water fraction, axial (z = 0 mm)",
+      "sha256": "b776301810a4bee7a80aac04a43a938126a0e5b1fb531c731fb24be5dd14020f"
+    },
+    {
+      "bytes": 1739,
+      "file": "case2_dense_r0_spectral_euclidean/water-axial.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Spectral Euclidean, Broad dense, water fraction, axial (z = 0 mm)",
+      "sha256": "6e2e9491fe804c1a18264ea32e4399d479e702bdab6e98d7cb629dd4d2ca448d"
+    },
+    {
+      "bytes": 4811,
+      "file": "case2_dense_r0_spectral_euclidean/water-coronal-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_dense_r0_spectral_euclidean, water fraction, coronal (y = 0 mm)",
+      "sha256": "cd7f8b9cba9495bd593479f78483a0c529c40966633668a0704b23569b698c12"
+    },
+    {
+      "bytes": 2318,
+      "file": "case2_dense_r0_spectral_euclidean/water-coronal.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Spectral Euclidean, Broad dense, water fraction, coronal (y = 0 mm)",
+      "sha256": "73faf402d7e332d98dd5dcbc385b6f7f89a724b3437eb9978c5134b391dca0f8"
+    },
+    {
+      "bytes": 4558,
+      "file": "case2_dense_r0_spectral_euclidean/water-sagittal-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_dense_r0_spectral_euclidean, water fraction, sagittal (x = 0 mm)",
+      "sha256": "29f6e0e6c53c5dde9fe987bd36a24a06a797161ebc456eacd75b1edb097d348c"
+    },
+    {
+      "bytes": 2785,
+      "file": "case2_dense_r0_spectral_euclidean/water-sagittal.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Spectral Euclidean, Broad dense, water fraction, sagittal (x = 0 mm)",
+      "sha256": "0605c207aaaab8bf4085f9f1947b5d2c7ade04e079c8ef5ecfa0b380878c0cca"
+    },
+    {
+      "bytes": 3357,
+      "file": "case2_dense_r0_spectral_euclidean/withheld-prediction.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "case2_dense_r0_spectral_euclidean, first whole withheld prediction, negative log over known open beam",
+      "sha256": "442a825364e0becd712a7e067475db83bc8f2a52647824a9ba05c7d684cd8d2d"
+    },
+    {
+      "bytes": 25329,
+      "file": "case2_dense_r0_spectral_euclidean/withheld-residual.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "case2_dense_r0_spectral_euclidean, first whole withheld observed minus predicted counts in predicted Poisson standard deviations",
+      "sha256": "034d59d57f98914567140420c21ea7323a437e9cb83b934a4d82832d6b417b47"
+    },
+    {
+      "bytes": 3007,
+      "file": "case2_dense_r0_spectral_metric/attenuation-axial-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_dense_r0_spectral_metric, derived attenuation at 80 kev, axial (z = 0 mm)",
+      "sha256": "65d449624ae4ca260b0bc49d8238e40d245a3c2c28d98a6d5572faeeb7d48703"
+    },
+    {
+      "bytes": 1328,
+      "file": "case2_dense_r0_spectral_metric/attenuation-axial.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Spectral fixed metric, Broad dense, derived attenuation at 80 kev, axial (z = 0 mm)",
+      "sha256": "87c635c18e7d9ab7569638195d7b1d5ab4e363abdf977fa91dc071b4f48bd085"
+    },
+    {
+      "bytes": 4583,
+      "file": "case2_dense_r0_spectral_metric/attenuation-coronal-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_dense_r0_spectral_metric, derived attenuation at 80 kev, coronal (y = 0 mm)",
+      "sha256": "c6a038b90505965df8878e684b8f109b99f29f2da37f907cfab8697a9204e20d"
+    },
+    {
+      "bytes": 1826,
+      "file": "case2_dense_r0_spectral_metric/attenuation-coronal.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Spectral fixed metric, Broad dense, derived attenuation at 80 kev, coronal (y = 0 mm)",
+      "sha256": "a46a4b62e126b26137bc80434d5849030ee7189960c164d7ddf248aaf7a274a7"
+    },
+    {
+      "bytes": 5016,
+      "file": "case2_dense_r0_spectral_metric/attenuation-sagittal-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_dense_r0_spectral_metric, derived attenuation at 80 kev, sagittal (x = 0 mm)",
+      "sha256": "d099493bcba96dd6d782e762034964436d603747de49e7c388f424a395d8c5f7"
+    },
+    {
+      "bytes": 2149,
+      "file": "case2_dense_r0_spectral_metric/attenuation-sagittal.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Spectral fixed metric, Broad dense, derived attenuation at 80 kev, sagittal (x = 0 mm)",
+      "sha256": "2e853145c87301b72a24de6f7f26c5fb6a42103fa9ae1b9c91d7243a278eda66"
+    },
+    {
+      "bytes": 2568,
+      "file": "case2_dense_r0_spectral_metric/bone-axial-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_dense_r0_spectral_metric, bone fraction, axial (z = 0 mm)",
+      "sha256": "27ea746e3cfc2dff19a85ad476f9020d811960458dea3127abc7468f2d873966"
+    },
+    {
+      "bytes": 1356,
+      "file": "case2_dense_r0_spectral_metric/bone-axial.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Spectral fixed metric, Broad dense, bone fraction, axial (z = 0 mm)",
+      "sha256": "f5a78b40d6d68f2d3b6a9007ad72e53eecee23da2954ab5ef123fb65388e0d14"
+    },
+    {
+      "bytes": 4497,
+      "file": "case2_dense_r0_spectral_metric/bone-coronal-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_dense_r0_spectral_metric, bone fraction, coronal (y = 0 mm)",
+      "sha256": "4f474e16443cedac2db83030142f9402d13798bd902550693cd3579a6b55655e"
+    },
+    {
+      "bytes": 2236,
+      "file": "case2_dense_r0_spectral_metric/bone-coronal.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Spectral fixed metric, Broad dense, bone fraction, coronal (y = 0 mm)",
+      "sha256": "c890f461182a3e7a749da452357948a132e396d8604523bbefff86fee9f363e2"
+    },
+    {
+      "bytes": 4320,
+      "file": "case2_dense_r0_spectral_metric/bone-sagittal-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_dense_r0_spectral_metric, bone fraction, sagittal (x = 0 mm)",
+      "sha256": "1b161840c72d86c0b78415a0de8ee231e52fa6e5c189cadcbc67df274f48f056"
+    },
+    {
+      "bytes": 2746,
+      "file": "case2_dense_r0_spectral_metric/bone-sagittal.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Spectral fixed metric, Broad dense, bone fraction, sagittal (x = 0 mm)",
+      "sha256": "18086442650c454f8db02e9dddb434139cf988b895e37c8574d557a0f89120af"
+    },
+    {
+      "bytes": 3420,
+      "file": "case2_dense_r0_spectral_metric/water-axial-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_dense_r0_spectral_metric, water fraction, axial (z = 0 mm)",
+      "sha256": "45a6f8a33f2c228dcf9a21753d9100a3fe60c6f7c070e4df0ef876413f0a7ff7"
+    },
+    {
+      "bytes": 1642,
+      "file": "case2_dense_r0_spectral_metric/water-axial.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Spectral fixed metric, Broad dense, water fraction, axial (z = 0 mm)",
+      "sha256": "883439c049c3d4de7710577cfa3291981e2e2ae4a3d0b244900fe5677a590092"
+    },
+    {
+      "bytes": 4836,
+      "file": "case2_dense_r0_spectral_metric/water-coronal-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_dense_r0_spectral_metric, water fraction, coronal (y = 0 mm)",
+      "sha256": "5503390b900cdc10966946abc7b62ef9d3d9a7a8592c67f42f525e52a5e9b005"
+    },
+    {
+      "bytes": 2455,
+      "file": "case2_dense_r0_spectral_metric/water-coronal.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Spectral fixed metric, Broad dense, water fraction, coronal (y = 0 mm)",
+      "sha256": "fc19b423b7023920983a8ab6a639b0075d73748e5c683b27f75ec0f8e9143662"
+    },
+    {
+      "bytes": 4959,
+      "file": "case2_dense_r0_spectral_metric/water-sagittal-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_dense_r0_spectral_metric, water fraction, sagittal (x = 0 mm)",
+      "sha256": "9f03d37719b1cc585340102ba94a4b7c62e5701427ddd9d56f03cb9ab1445609"
+    },
+    {
+      "bytes": 3072,
+      "file": "case2_dense_r0_spectral_metric/water-sagittal.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Spectral fixed metric, Broad dense, water fraction, sagittal (x = 0 mm)",
+      "sha256": "c3ac1c995fae77b6ad2ee4926779d742833962b54f8b3d42ba0393ac8e458860"
+    },
+    {
+      "bytes": 3359,
+      "file": "case2_dense_r0_spectral_metric/withheld-prediction.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "case2_dense_r0_spectral_metric, first whole withheld prediction, negative log over known open beam",
+      "sha256": "fd274d36d14e157a24519ba8c046c55f3e68e9084679688db205c2591146a549"
+    },
+    {
+      "bytes": 25662,
+      "file": "case2_dense_r0_spectral_metric/withheld-residual.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "case2_dense_r0_spectral_metric, first whole withheld observed minus predicted counts in predicted Poisson standard deviations",
+      "sha256": "f8faa29db165f6e8026b12e99bd2683c5ed7edb6aecf97366600f285e86da8be"
+    },
+    {
+      "bytes": 4886,
+      "file": "case2_limited_r0_scalar_poisson/attenuation-axial-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_limited_r0_scalar_poisson, scalar attenuation at 80 kev, axial (z = 0 mm)",
+      "sha256": "27d0b64ea264e1eb567b24d84613d3b30929b942d2ccc3d4dac124c4ee8a9a37"
+    },
+    {
+      "bytes": 2150,
+      "file": "case2_limited_r0_scalar_poisson/attenuation-axial.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Scalar Poisson, Limited angle, scalar attenuation at 80 kev, axial (z = 0 mm)",
+      "sha256": "5437ee5b372a012d3f99bc59350a8b11e98c96908acd58047a56b638f58d6b5d"
+    },
+    {
+      "bytes": 5161,
+      "file": "case2_limited_r0_scalar_poisson/attenuation-coronal-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_limited_r0_scalar_poisson, scalar attenuation at 80 kev, coronal (y = 0 mm)",
+      "sha256": "0ba1798069d0cc43301c5cf95f5341aa5ed21e5a951b76bbbe7554c4cbb11752"
+    },
+    {
+      "bytes": 2564,
+      "file": "case2_limited_r0_scalar_poisson/attenuation-coronal.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Scalar Poisson, Limited angle, scalar attenuation at 80 kev, coronal (y = 0 mm)",
+      "sha256": "634fe649515e700518752062f99ece0ab552d34f72d6a37391c2796a9e94b4de"
+    },
+    {
+      "bytes": 5884,
+      "file": "case2_limited_r0_scalar_poisson/attenuation-sagittal-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_limited_r0_scalar_poisson, scalar attenuation at 80 kev, sagittal (x = 0 mm)",
+      "sha256": "a03516150c1dddc4530c317adac7ed7e10c1b4c896aa74e5e6356a18289aabf7"
+    },
+    {
+      "bytes": 2676,
+      "file": "case2_limited_r0_scalar_poisson/attenuation-sagittal.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Scalar Poisson, Limited angle, scalar attenuation at 80 kev, sagittal (x = 0 mm)",
+      "sha256": "3cd2f301c5879754af6e36d640cf9d2b265341d01da24ea0adea17058b1cacef"
+    },
+    {
+      "bytes": 2787,
+      "file": "case2_limited_r0_scalar_poisson/withheld-prediction.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "case2_limited_r0_scalar_poisson, first whole withheld prediction, negative log over known open beam",
+      "sha256": "69c22084f261b09bb2040224991a59dd647d9b28e4f218ced9192aa526feed3b"
+    },
+    {
+      "bytes": 28903,
+      "file": "case2_limited_r0_scalar_poisson/withheld-residual.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "case2_limited_r0_scalar_poisson, first whole withheld observed minus predicted counts in predicted Poisson standard deviations",
+      "sha256": "6b5f6c5177214a122325e43f22babeef1290b95ec13d788354f07ceff893780f"
+    },
+    {
+      "bytes": 4984,
+      "file": "case2_limited_r0_scalar_pwls/attenuation-axial-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_limited_r0_scalar_pwls, scalar attenuation at 80 kev, axial (z = 0 mm)",
+      "sha256": "b7766b9d98b13b7f62691c46aeddaebe889eea92c5888429bd6b09e0e93f00ed"
+    },
+    {
+      "bytes": 2274,
+      "file": "case2_limited_r0_scalar_pwls/attenuation-axial.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Scalar log-WLS, Limited angle, scalar attenuation at 80 kev, axial (z = 0 mm)",
+      "sha256": "ecdd482c50d757ca66931959fd7df86ad3e795d916420671a17e9c7641bb78dc"
+    },
+    {
+      "bytes": 5227,
+      "file": "case2_limited_r0_scalar_pwls/attenuation-coronal-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_limited_r0_scalar_pwls, scalar attenuation at 80 kev, coronal (y = 0 mm)",
+      "sha256": "30b2353283f19247d38b1aeca26edfe9b1a79348b3973b9c8add4edc2ff279e9"
+    },
+    {
+      "bytes": 2672,
+      "file": "case2_limited_r0_scalar_pwls/attenuation-coronal.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Scalar log-WLS, Limited angle, scalar attenuation at 80 kev, coronal (y = 0 mm)",
+      "sha256": "8e2ae4c0e1ac378fb1617339cd00f152df363e6db484f643557b8c9d8f6fda45"
+    },
+    {
+      "bytes": 5886,
+      "file": "case2_limited_r0_scalar_pwls/attenuation-sagittal-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_limited_r0_scalar_pwls, scalar attenuation at 80 kev, sagittal (x = 0 mm)",
+      "sha256": "6834406d3a65634700e544e31a5bba34868212c87576a0f2634251b108a121e3"
+    },
+    {
+      "bytes": 2758,
+      "file": "case2_limited_r0_scalar_pwls/attenuation-sagittal.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Scalar log-WLS, Limited angle, scalar attenuation at 80 kev, sagittal (x = 0 mm)",
+      "sha256": "53acae46b640cd182ef5b231a86bc76ab5ea7841c0be0885c5d786eaa0883c18"
+    },
+    {
+      "bytes": 2791,
+      "file": "case2_limited_r0_scalar_pwls/withheld-prediction.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "case2_limited_r0_scalar_pwls, first whole withheld prediction, negative log over known open beam",
+      "sha256": "a61baed0f7c1c7f400feb505d9b1915a2ee1aa1b3c4f84dd045c0579cdbefd32"
+    },
+    {
+      "bytes": 28945,
+      "file": "case2_limited_r0_scalar_pwls/withheld-residual.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "case2_limited_r0_scalar_pwls, first whole withheld observed minus predicted counts in predicted Poisson standard deviations",
+      "sha256": "fc0d0cda249a9476e9f3b146323d117cf1ad06f2115f48825a2caec7f0d744f2"
+    },
+    {
+      "bytes": 4028,
+      "file": "case2_limited_r0_spectral_metric/attenuation-axial-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_limited_r0_spectral_metric, derived attenuation at 80 kev, axial (z = 0 mm)",
+      "sha256": "e0bbc124b1a27f2a4bbac461d352f1e25dfdde692c0242344ebdf7a848c5ba7b"
+    },
+    {
+      "bytes": 1763,
+      "file": "case2_limited_r0_spectral_metric/attenuation-axial.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Spectral fixed metric, Limited angle, derived attenuation at 80 kev, axial (z = 0 mm)",
+      "sha256": "6e37519b70e9a2813794b98c9d95d05adfcab24c9abef10f991f6f188f0f58d2"
+    },
+    {
+      "bytes": 5081,
+      "file": "case2_limited_r0_spectral_metric/attenuation-coronal-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_limited_r0_spectral_metric, derived attenuation at 80 kev, coronal (y = 0 mm)",
+      "sha256": "254c5b74cbe98de65d68459ee979660c0ad5d51a727a66b3aa65605b56b0e700"
+    },
+    {
+      "bytes": 2200,
+      "file": "case2_limited_r0_spectral_metric/attenuation-coronal.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Spectral fixed metric, Limited angle, derived attenuation at 80 kev, coronal (y = 0 mm)",
+      "sha256": "542219dd0dd1f8ab2d20db3912d9a70f1004a4889eb16a36a542092977ade149"
+    },
+    {
+      "bytes": 5759,
+      "file": "case2_limited_r0_spectral_metric/attenuation-sagittal-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_limited_r0_spectral_metric, derived attenuation at 80 kev, sagittal (x = 0 mm)",
+      "sha256": "b8f8a477cf45a4a2b5ed59aa32d4cf1e25154acbff525a3c4edafb8bdd8158cb"
+    },
+    {
+      "bytes": 2412,
+      "file": "case2_limited_r0_spectral_metric/attenuation-sagittal.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Spectral fixed metric, Limited angle, derived attenuation at 80 kev, sagittal (x = 0 mm)",
+      "sha256": "0d881cb20acbc4d88f0128edee67ffff6646fca1cc020e06fb51f78918e484d6"
+    },
+    {
+      "bytes": 3092,
+      "file": "case2_limited_r0_spectral_metric/bone-axial-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_limited_r0_spectral_metric, bone fraction, axial (z = 0 mm)",
+      "sha256": "3fa3034e7db9b105252b5605a0da27c3cb0fa2e110175ac87f2a08319cc46985"
+    },
+    {
+      "bytes": 1752,
+      "file": "case2_limited_r0_spectral_metric/bone-axial.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Spectral fixed metric, Limited angle, bone fraction, axial (z = 0 mm)",
+      "sha256": "aec148f4fd1fef91456ddfdba654110d92d7d6a06701bf780c99e51cb7e84c43"
+    },
+    {
+      "bytes": 4422,
+      "file": "case2_limited_r0_spectral_metric/bone-coronal-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_limited_r0_spectral_metric, bone fraction, coronal (y = 0 mm)",
+      "sha256": "a538c8594621cf5d8a01a65eeefac9fb075fb58ab901153295d1c1076aec9899"
+    },
+    {
+      "bytes": 2545,
+      "file": "case2_limited_r0_spectral_metric/bone-coronal.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Spectral fixed metric, Limited angle, bone fraction, coronal (y = 0 mm)",
+      "sha256": "98af0479b2d39a6e90382e342423f857e0da9c9931fbc7eaec5fc3c786de56ad"
+    },
+    {
+      "bytes": 4694,
+      "file": "case2_limited_r0_spectral_metric/bone-sagittal-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_limited_r0_spectral_metric, bone fraction, sagittal (x = 0 mm)",
+      "sha256": "793c7caa1a1ecb2896312074f5d2dde022f25a53253448df97a141303cd9e9e2"
+    },
+    {
+      "bytes": 2956,
+      "file": "case2_limited_r0_spectral_metric/bone-sagittal.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Spectral fixed metric, Limited angle, bone fraction, sagittal (x = 0 mm)",
+      "sha256": "d4df445a46a2b4683ebc0e58bf59530d167550f20e89145b41e54e3f177b6a21"
+    },
+    {
+      "bytes": 4541,
+      "file": "case2_limited_r0_spectral_metric/water-axial-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_limited_r0_spectral_metric, water fraction, axial (z = 0 mm)",
+      "sha256": "b7f04b1b24765421bdd9b5befc2448a22bf20de49b79a62e4ab170dd3b6798b4"
+    },
+    {
+      "bytes": 2441,
+      "file": "case2_limited_r0_spectral_metric/water-axial.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Spectral fixed metric, Limited angle, water fraction, axial (z = 0 mm)",
+      "sha256": "8a4a69aa4406913a91fa07a8fc2b6a86f07b5449ad7a1e1dc3694cc70128a7e4"
+    },
+    {
+      "bytes": 5560,
+      "file": "case2_limited_r0_spectral_metric/water-coronal-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_limited_r0_spectral_metric, water fraction, coronal (y = 0 mm)",
+      "sha256": "6a6270a8b2b8ea045eddaf922af6ca0cf2c988f16bbd6a766ee23327eb66dc5e"
+    },
+    {
+      "bytes": 3063,
+      "file": "case2_limited_r0_spectral_metric/water-coronal.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Spectral fixed metric, Limited angle, water fraction, coronal (y = 0 mm)",
+      "sha256": "d6e2e9998a52a51b23c9ed5ad41b29fc4fbbb745bae7d8e08dcee75321ab7e1b"
+    },
+    {
+      "bytes": 5979,
+      "file": "case2_limited_r0_spectral_metric/water-sagittal-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_limited_r0_spectral_metric, water fraction, sagittal (x = 0 mm)",
+      "sha256": "0fa375fcc37ac770ecba54439a18caac488244367fa93ed9c4ad3d680f1a816a"
+    },
+    {
+      "bytes": 3428,
+      "file": "case2_limited_r0_spectral_metric/water-sagittal.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Spectral fixed metric, Limited angle, water fraction, sagittal (x = 0 mm)",
+      "sha256": "7b799d8cc38a054e91880f66cf0e16234fe824624e02ca55f91de4c519f4bc14"
+    },
+    {
+      "bytes": 3525,
+      "file": "case2_limited_r0_spectral_metric/withheld-prediction.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "case2_limited_r0_spectral_metric, first whole withheld prediction, negative log over known open beam",
+      "sha256": "4e3c2dcff92cb21281160bb1e3b5c32e2bfe09bab22070ed9262044143c7a182"
+    },
+    {
+      "bytes": 28214,
+      "file": "case2_limited_r0_spectral_metric/withheld-residual.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "case2_limited_r0_spectral_metric, first whole withheld observed minus predicted counts in predicted Poisson standard deviations",
+      "sha256": "8e1c3ed340d1f8a55195d501da06bf48218bd2ef321e8ba0807a73091746dbd9"
+    },
+    {
+      "bytes": 5159,
+      "file": "case2_sparse_r0_scalar_poisson/attenuation-axial-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_sparse_r0_scalar_poisson, scalar attenuation at 80 kev, axial (z = 0 mm)",
+      "sha256": "4aaa3e29d38ddcdf5c3a1b4bb90436c581483230a3036ba5bcabd68b2bc9b2a0"
+    },
+    {
+      "bytes": 2271,
+      "file": "case2_sparse_r0_scalar_poisson/attenuation-axial.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Scalar Poisson, Broad sparse, scalar attenuation at 80 kev, axial (z = 0 mm)",
+      "sha256": "f0556ff5f6eeaad8853ea58e77ad46c8f41d290280f48c6eb2cd13fce73ba91c"
+    },
+    {
+      "bytes": 5381,
+      "file": "case2_sparse_r0_scalar_poisson/attenuation-coronal-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_sparse_r0_scalar_poisson, scalar attenuation at 80 kev, coronal (y = 0 mm)",
+      "sha256": "dfbd3f735c3bd10fb219ca1251dd9545175814d1d67b5b4c630428c40a3e7746"
+    },
+    {
+      "bytes": 2537,
+      "file": "case2_sparse_r0_scalar_poisson/attenuation-coronal.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Scalar Poisson, Broad sparse, scalar attenuation at 80 kev, coronal (y = 0 mm)",
+      "sha256": "c5c59e3ea7ebbc24d815f97000048eb9664b6da27dd8ef767b3785c2dbf98132"
+    },
+    {
+      "bytes": 5433,
+      "file": "case2_sparse_r0_scalar_poisson/attenuation-sagittal-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_sparse_r0_scalar_poisson, scalar attenuation at 80 kev, sagittal (x = 0 mm)",
+      "sha256": "2519ffa334714e0f4ba55b727ca38198721ff88b3d2698a1dbf355393c14437d"
+    },
+    {
+      "bytes": 2683,
+      "file": "case2_sparse_r0_scalar_poisson/attenuation-sagittal.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Scalar Poisson, Broad sparse, scalar attenuation at 80 kev, sagittal (x = 0 mm)",
+      "sha256": "1e6b8fe516f7efaee5e562f61468ab80eaeceaeb517d22fca2ac4f1f1eb6c853"
+    },
+    {
+      "bytes": 2650,
+      "file": "case2_sparse_r0_scalar_poisson/withheld-prediction.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "case2_sparse_r0_scalar_poisson, first whole withheld prediction, negative log over known open beam",
+      "sha256": "24ea47b746545fcce63334fb9c1d006ec90406dfdc9b2f179ddc3810ebc45c40"
+    },
+    {
+      "bytes": 28419,
+      "file": "case2_sparse_r0_scalar_poisson/withheld-residual.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "case2_sparse_r0_scalar_poisson, first whole withheld observed minus predicted counts in predicted Poisson standard deviations",
+      "sha256": "c25ae7807fb5fa5ce1d8f99ed59a3801db8776ff01b35e3f193014c5e3a42870"
+    },
+    {
+      "bytes": 5243,
+      "file": "case2_sparse_r0_scalar_pwls/attenuation-axial-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_sparse_r0_scalar_pwls, scalar attenuation at 80 kev, axial (z = 0 mm)",
+      "sha256": "b3b25500e384351b420f67d8c6d71aa0a3ea9e587e71f55a116bc03fd5394497"
+    },
+    {
+      "bytes": 2337,
+      "file": "case2_sparse_r0_scalar_pwls/attenuation-axial.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Scalar log-WLS, Broad sparse, scalar attenuation at 80 kev, axial (z = 0 mm)",
+      "sha256": "2a5838c98703e75567ca7a18b93e8e9cfe0f49b5528d9dfef0b3b8af6d9af7fa"
+    },
+    {
+      "bytes": 5404,
+      "file": "case2_sparse_r0_scalar_pwls/attenuation-coronal-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_sparse_r0_scalar_pwls, scalar attenuation at 80 kev, coronal (y = 0 mm)",
+      "sha256": "446b5612e2fc80b8d1c3a844007855a726556fe25464454868d2a94f8d8f0fec"
+    },
+    {
+      "bytes": 2646,
+      "file": "case2_sparse_r0_scalar_pwls/attenuation-coronal.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Scalar log-WLS, Broad sparse, scalar attenuation at 80 kev, coronal (y = 0 mm)",
+      "sha256": "216f2d250dcf8eb30436f2b615be3b11400e9b3bf5dc89e437f5962f13278936"
+    },
+    {
+      "bytes": 5463,
+      "file": "case2_sparse_r0_scalar_pwls/attenuation-sagittal-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_sparse_r0_scalar_pwls, scalar attenuation at 80 kev, sagittal (x = 0 mm)",
+      "sha256": "b821d05fea4157dc0294629c3e188fa1c4e8c24c5d2e98f39c2a37c4dde56ae4"
+    },
+    {
+      "bytes": 2791,
+      "file": "case2_sparse_r0_scalar_pwls/attenuation-sagittal.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Scalar log-WLS, Broad sparse, scalar attenuation at 80 kev, sagittal (x = 0 mm)",
+      "sha256": "5e3a91799c7729d4d62006813bce6c0127fb9677f1d423b0d36ca5cc52434f94"
+    },
+    {
+      "bytes": 2734,
+      "file": "case2_sparse_r0_scalar_pwls/withheld-prediction.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "case2_sparse_r0_scalar_pwls, first whole withheld prediction, negative log over known open beam",
+      "sha256": "4cc322140434107c8fadc7b15697d54f64deb548e4d0f38dd44221b07cdbc2f1"
+    },
+    {
+      "bytes": 28458,
+      "file": "case2_sparse_r0_scalar_pwls/withheld-residual.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "case2_sparse_r0_scalar_pwls, first whole withheld observed minus predicted counts in predicted Poisson standard deviations",
+      "sha256": "c8c1f79428612b0db1756b21537b69e2deecf302f6b4382c8887ccffea6f90c3"
+    },
+    {
+      "bytes": 4394,
+      "file": "case2_sparse_r0_spectral_metric/attenuation-axial-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_sparse_r0_spectral_metric, derived attenuation at 80 kev, axial (z = 0 mm)",
+      "sha256": "0830d7b854b70ea0674603db0abae31df5456aa08907195fdd6b2fa2cf28a254"
+    },
+    {
+      "bytes": 1939,
+      "file": "case2_sparse_r0_spectral_metric/attenuation-axial.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Spectral fixed metric, Broad sparse, derived attenuation at 80 kev, axial (z = 0 mm)",
+      "sha256": "5287d88c3c438452dee06046fd20e1376195f3bb74992b28a3e60efde8e52985"
+    },
+    {
+      "bytes": 5367,
+      "file": "case2_sparse_r0_spectral_metric/attenuation-coronal-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_sparse_r0_spectral_metric, derived attenuation at 80 kev, coronal (y = 0 mm)",
+      "sha256": "cef48549b0430c942d4bc75bf81585f4ba70437ae30f7a86cf3a0fc015cdf729"
+    },
+    {
+      "bytes": 2278,
+      "file": "case2_sparse_r0_spectral_metric/attenuation-coronal.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Spectral fixed metric, Broad sparse, derived attenuation at 80 kev, coronal (y = 0 mm)",
+      "sha256": "962140d565c046139ddf92b0cce8724734d73d755d03742b5a19321db30e1880"
+    },
+    {
+      "bytes": 5379,
+      "file": "case2_sparse_r0_spectral_metric/attenuation-sagittal-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_sparse_r0_spectral_metric, derived attenuation at 80 kev, sagittal (x = 0 mm)",
+      "sha256": "7b4fcae08fbff0620c3899d4697c4dc2b1e8ba0554f5ad8afb06ce51e197e3a0"
+    },
+    {
+      "bytes": 2499,
+      "file": "case2_sparse_r0_spectral_metric/attenuation-sagittal.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Spectral fixed metric, Broad sparse, derived attenuation at 80 kev, sagittal (x = 0 mm)",
+      "sha256": "3e3f8a5a0a2fb4150e38b5dfc6f9e37cd00511463d245bfad05a93574c9a4308"
+    },
+    {
+      "bytes": 3588,
+      "file": "case2_sparse_r0_spectral_metric/bone-axial-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_sparse_r0_spectral_metric, bone fraction, axial (z = 0 mm)",
+      "sha256": "5e145250e4d052720ecd54b5442603332e292414ec5fff5cafb797f3a6acb71f"
+    },
+    {
+      "bytes": 2034,
+      "file": "case2_sparse_r0_spectral_metric/bone-axial.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Spectral fixed metric, Broad sparse, bone fraction, axial (z = 0 mm)",
+      "sha256": "da5aedd43fd7f821cd975bce6233156dc63138ca173d28d49431b32861996063"
+    },
+    {
+      "bytes": 4913,
+      "file": "case2_sparse_r0_spectral_metric/bone-coronal-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_sparse_r0_spectral_metric, bone fraction, coronal (y = 0 mm)",
+      "sha256": "89d6421d4ca6ac5cee0833bb7518b8e50d6cd112e86fb83d1054aebef57a2235"
+    },
+    {
+      "bytes": 2675,
+      "file": "case2_sparse_r0_spectral_metric/bone-coronal.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Spectral fixed metric, Broad sparse, bone fraction, coronal (y = 0 mm)",
+      "sha256": "98482be9b41c7e6e3ca89fa58093dc37d168250b6376abb8d32d137c0ab3fd1e"
+    },
+    {
+      "bytes": 4759,
+      "file": "case2_sparse_r0_spectral_metric/bone-sagittal-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_sparse_r0_spectral_metric, bone fraction, sagittal (x = 0 mm)",
+      "sha256": "909744f9b08de32ebb2026eea1eec7721db2e22050c83af80392a589ee459eee"
+    },
+    {
+      "bytes": 3063,
+      "file": "case2_sparse_r0_spectral_metric/bone-sagittal.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Spectral fixed metric, Broad sparse, bone fraction, sagittal (x = 0 mm)",
+      "sha256": "6464b5a20cd3d140845ac3dad7072febbc7552e7c1bd7efd8daeacbb909ad8d1"
+    },
+    {
+      "bytes": 5185,
+      "file": "case2_sparse_r0_spectral_metric/water-axial-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_sparse_r0_spectral_metric, water fraction, axial (z = 0 mm)",
+      "sha256": "ad5c44ce2d02ead6b4b03b1eac1905e8d71450a034dbaffcd82050d529822f23"
+    },
+    {
+      "bytes": 2750,
+      "file": "case2_sparse_r0_spectral_metric/water-axial.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Spectral fixed metric, Broad sparse, water fraction, axial (z = 0 mm)",
+      "sha256": "d317706ecf213a81a05195e2b87f829f6683fd3c73627f491191518dab0d7dbc"
+    },
+    {
+      "bytes": 6014,
+      "file": "case2_sparse_r0_spectral_metric/water-coronal-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_sparse_r0_spectral_metric, water fraction, coronal (y = 0 mm)",
+      "sha256": "acf50e2f18db3c0b4ec3b2ce1a8ba927a0c99efa760de67b7ea2fa3f158b5fe5"
+    },
+    {
+      "bytes": 3151,
+      "file": "case2_sparse_r0_spectral_metric/water-coronal.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Spectral fixed metric, Broad sparse, water fraction, coronal (y = 0 mm)",
+      "sha256": "5a4210fd98e3e9279c6d0e215e4f04368c54896973e766ac57acd3208a5694d1"
+    },
+    {
+      "bytes": 5823,
+      "file": "case2_sparse_r0_spectral_metric/water-sagittal-error.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Recovered minus assigned reference, case2_sparse_r0_spectral_metric, water fraction, sagittal (x = 0 mm)",
+      "sha256": "911b58f83b82e2b93465f7f80ff4c9b685b781f638f6fa975a1f71e1da9fc2f8"
+    },
+    {
+      "bytes": 3470,
+      "file": "case2_sparse_r0_spectral_metric/water-sagittal.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Spectral fixed metric, Broad sparse, water fraction, sagittal (x = 0 mm)",
+      "sha256": "c171c668628f04ec8ad03f5db3e9a33a11fc2b2dc104d370d3636ce99dfe4572"
+    },
+    {
+      "bytes": 3593,
+      "file": "case2_sparse_r0_spectral_metric/withheld-prediction.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "case2_sparse_r0_spectral_metric, first whole withheld prediction, negative log over known open beam",
+      "sha256": "052fe0d61cca262df9a34f870e27779747a18ec2982eeae62da5283d3fc95685"
+    },
+    {
+      "bytes": 28220,
+      "file": "case2_sparse_r0_spectral_metric/withheld-residual.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "case2_sparse_r0_spectral_metric, first whole withheld observed minus predicted counts in predicted Poisson standard deviations",
+      "sha256": "be3b30078b4878c58b33479520277649dc68ca8f763222dac8daaf62982a16b8"
+    },
+    {
+      "bytes": 921,
+      "file": "reference/scalar-attenuation-axial.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Assigned reference, scalar attenuation at 80 kev, axial (z = 0 mm)",
+      "sha256": "4307cbf999afdd6a74dd91d55eddc4927b19dd67d6f6c90967f8217663c8c5b0"
+    },
+    {
+      "bytes": 1794,
+      "file": "reference/scalar-attenuation-coronal.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Assigned reference, scalar attenuation at 80 kev, coronal (y = 0 mm)",
+      "sha256": "9033ae6fd6bb5e2b85239bdc397d38ed4ea614d92deca909bba28c07cacb3427"
+    },
+    {
+      "bytes": 1869,
+      "file": "reference/scalar-attenuation-sagittal.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Assigned reference, scalar attenuation at 80 kev, sagittal (x = 0 mm)",
+      "sha256": "30880e0e6473bf56fafebf9196e0bc52981a73d2754e7c07c1968bbcc0dfc875"
+    },
+    {
+      "bytes": 921,
+      "file": "reference/spectral-attenuation-axial.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Assigned reference, derived attenuation at 80 kev, axial (z = 0 mm)",
+      "sha256": "4307cbf999afdd6a74dd91d55eddc4927b19dd67d6f6c90967f8217663c8c5b0"
+    },
+    {
+      "bytes": 1794,
+      "file": "reference/spectral-attenuation-coronal.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Assigned reference, derived attenuation at 80 kev, coronal (y = 0 mm)",
+      "sha256": "9033ae6fd6bb5e2b85239bdc397d38ed4ea614d92deca909bba28c07cacb3427"
+    },
+    {
+      "bytes": 1869,
+      "file": "reference/spectral-attenuation-sagittal.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Assigned reference, derived attenuation at 80 kev, sagittal (x = 0 mm)",
+      "sha256": "30880e0e6473bf56fafebf9196e0bc52981a73d2754e7c07c1968bbcc0dfc875"
+    },
+    {
+      "bytes": 1064,
+      "file": "reference/spectral-bone-axial.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Assigned reference, bone fraction, axial (z = 0 mm)",
+      "sha256": "d64c6edbbe804940782ec66ee24b5a6b559e2da706e678aa28813051792c3054"
+    },
+    {
+      "bytes": 2198,
+      "file": "reference/spectral-bone-coronal.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Assigned reference, bone fraction, coronal (y = 0 mm)",
+      "sha256": "31fd2666590b8c03a5430e31e03d4ea3a055c26794def87ab40acda43d6d3438"
+    },
+    {
+      "bytes": 2309,
+      "file": "reference/spectral-bone-sagittal.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Assigned reference, bone fraction, sagittal (x = 0 mm)",
+      "sha256": "6483b1230cf5d0e61b3bb9468b2f3fc1d2327f182f1276af1a4548ae347946bd"
+    },
+    {
+      "bytes": 1058,
+      "file": "reference/spectral-water-axial.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Assigned reference, water fraction, axial (z = 0 mm)",
+      "sha256": "d923a1a9cfab7bc1e4c4f501e84b907bde55e30a32ee271ddf43151dc191633e"
+    },
+    {
+      "bytes": 2202,
+      "file": "reference/spectral-water-coronal.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Assigned reference, water fraction, coronal (y = 0 mm)",
+      "sha256": "77efb75b0e056ff9bc18c0e2fbb9324b0df5124dedbf1c1feb0225dfda43354f"
+    },
+    {
+      "bytes": 2278,
+      "file": "reference/spectral-water-sagittal.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Assigned reference, water fraction, sagittal (x = 0 mm)",
+      "sha256": "885f12d7d48c5a122292f4b767a60e88ebde3ee47e9831aa6f1e12d13cb623b9"
+    },
+    {
+      "bytes": 211297,
+      "file": "study.json",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "Allowlisted recorded outcomes and fixed native image displays",
+      "sha256": "2ba67d6a5523e3e86978410a58afa90729678dc7fcf811a1aa9d4048e2f223f8"
+    },
+    {
+      "bytes": 3195,
+      "file": "withheld/scalar-observation.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "First whole withheld scalar observation, negative log of count over known open beam",
+      "sha256": "af7bafc2cc6a70738ce8806d13bb4b8b580d9b3083c2f5f727a896e01f35aad5"
+    },
+    {
+      "bytes": 5024,
+      "file": "withheld/spectral-observation.png",
+      "licence": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA.",
+      "origin": "First whole withheld spectral observation, negative log of count over known open beam",
+      "sha256": "dafe3970f86f020ec0ad168de4338d1fa6f87ad527378e97b516437c6031fe37"
+    }
+  ],
+  "display_array_sha256": {
+    "acquisition/qualification/evaluation/case2/reference-fractions.npy": "cc200be7cb9720a248760ab0bf23824e31806334e2ce22e250860578902c7291",
+    "acquisition/qualification/evaluation/case2/reference-scalar.npy": "67f709062fe7492a7e088117abb802649263c04f89daa1edb7b440fe415ba3ab",
+    "acquisition/withheld/case2_r0/observations/scalar-view000.npy": "e3445b81b8eef94bcab46bf9d54149ea6ead913bebb1c37cf06d541509cc5ceb",
+    "acquisition/withheld/case2_r0/observations/spectral-view000.npy": "667337696ce826d89abc3ba7043adf153213267e6185d90d94101599f83a9541",
+    "evaluation/results/case2_dense_r0_scalar_poisson/withheld/predictions.npy": "1aa1bdff6959fec8c4a6638adb151ccbc1fdb0033e5426a75e705278c71748e0",
+    "evaluation/results/case2_dense_r0_scalar_pwls/withheld/predictions.npy": "b1d1481bb1e12e97990d51909d86d1ad0db32c07e91fd2e8cdc1cf3e29285649",
+    "evaluation/results/case2_dense_r0_spectral_euclidean/withheld/predictions.npy": "39b321dd09ac30cf5cc4c3a6f7c411cbb1b23327f338b48f816b2e5dd585a7dc",
+    "evaluation/results/case2_dense_r0_spectral_metric/withheld/predictions.npy": "850dc7c053cbf97d78ee0b77fd05e4b414a08c66eb7f92e5efa2082361973c92",
+    "evaluation/results/case2_limited_r0_scalar_poisson/withheld/predictions.npy": "b7d1d2e28543bca9b7ed5affb302c1e33fd48efa331f5c0167c4b57ead6acd9f",
+    "evaluation/results/case2_limited_r0_scalar_pwls/withheld/predictions.npy": "4b46fdc329f92269fb7051b5cb9cb37455eea5540ed3812905f6feec000f3780",
+    "evaluation/results/case2_limited_r0_spectral_metric/withheld/predictions.npy": "0af7343c86433d4793ad8b07f270a81178cef69bb4d17a725e1d12294e06200a",
+    "evaluation/results/case2_sparse_r0_scalar_poisson/withheld/predictions.npy": "75383b76f463dc2befcc3b1e6d1c7610a11e3afeb3f356d28e05f5bbf6d4a05d",
+    "evaluation/results/case2_sparse_r0_scalar_pwls/withheld/predictions.npy": "c50adc036337d68c4403bd191e96f23a6392e38318f52819ace9371804990ac3",
+    "evaluation/results/case2_sparse_r0_spectral_metric/withheld/predictions.npy": "ca261432160723a2af70c760e3cb16babac6a4aa00dcf65a3f51d0899d6bfbdd",
+    "fit/case2_dense_r0_scalar_poisson/fields.npy": "46d424896aa241db9e520418e30b86be3e4b40c3b96c681738cf6a245311d1da",
+    "fit/case2_dense_r0_scalar_pwls/fields.npy": "67c33966864d2d5e143c528c7803e1acc41884cf81b5e666328b7ac89fa15756",
+    "fit/case2_dense_r0_spectral_euclidean/fields.npy": "2ceaaed9db313d42bf96540538bb736fac2f84eaf4b1825468f8f5d9e6125538",
+    "fit/case2_dense_r0_spectral_metric/fields.npy": "a8a35b47254456471c7d7cfb251bab54871e7d4a248c4f2583292130c56f548d",
+    "fit/case2_limited_r0_scalar_poisson/fields.npy": "207ad914ffdcce47e3931c70e191f5d2fb39fd8f3e19d30ecfc3023c352458e3",
+    "fit/case2_limited_r0_scalar_pwls/fields.npy": "ab60a801bf3c197d69d5dfbf53cc994ce16281d5e574ebc649fea697f8fe9999",
+    "fit/case2_limited_r0_spectral_metric/fields.npy": "fa80c0a0f78b8f665f4681a0197acd0da091645565e7cec7fdcf013720eeff35",
+    "fit/case2_sparse_r0_scalar_poisson/fields.npy": "c9e9d7eafe66ee794d075fdf4a49fe6bd54fb7b6884a08d62fd4eac5b35388b1",
+    "fit/case2_sparse_r0_scalar_pwls/fields.npy": "6ed30583883189608a7efb21a2c53c5fd93a24729991dc0d43ca72352301eb1b",
+    "fit/case2_sparse_r0_spectral_metric/fields.npy": "b02f4f3b81483153a20434253d729d90ec550cb491fa5bc93e9d672e7f391007"
+  },
+  "generator": "tools/public/curate-reconstruction-comparison.py",
+  "generator_sha256": "f84944b0120e1c28161102564da9e3230701e44bfe7d2e7f7e580338cb5b4801",
+  "rendering": {
+    "intensity_colormap": "gray",
+    "matplotlib": "3.10.7",
+    "numpy": "2.5.3",
+    "pillow": "12.3.0",
+    "resampling": "physical zero interpolates adjacent stored planes, no in-plane resampling",
+    "scalar_coefficients_80kev_mm_inverse": [
+      0.018365660412653837,
+      0.04108010415565857
+    ],
+    "signed_colormap": "RdBu_r",
+    "vertical_orientation": "flip stored row order so positive in-plane second coordinate is up"
+  },
+  "rights": {
+    "changes": "Simulated observations, reconstructed fields and exact fixed display derivatives. No source CT or physical coefficient table is redistributed.",
+    "licence_url": "https://creativecommons.org/licenses/by/3.0/",
+    "source": "https://doi.org/10.7937/tcia.2019.tt7f4v7o",
+    "source_record_sha256": {
+      "case0/source-license-manifest.json": "7ad412f616577966c36cd5312ec62cfe3eb0fc368e0f86d7fb9ca64c11bf7074",
+      "case2/source-license-manifest.json": "baf518b81aaa1bd6ece3ea648999c2d34a16171f1f9c60bbc008f9879ae1f88d",
+      "physics/source-license-manifest.json": "d0614dc6cad8dfc30ace16f1e6c0ea5b4e2ac69f1c59cd9fa78b40bcb25f3378"
+    },
+    "statement": "CC BY 3.0. Derived from Rister et al., CT-ORG, TCIA."
+  },
+  "rights_record_precedes_payloads": true,
+  "schema_version": 1,
+  "source_sha256": {
+    "acquisition/run.json": "ef462f508a66ac5c878a5c23fd991469ea72d6d36a9ad5b18f482157f6f51491",
+    "evaluation/compared-output-freeze.json": "a3776bf088e3da019ffe08631498edc561b6a66e8d2949df6f33a471d4c9608b",
+    "evaluation/results/evaluation.json": "a2c655db8be0ab4db01de5608c1ca139f8f19fa4ecf70071e9b096902dfff7ea",
+    "evaluation/results/run.json": "e94c17e35e72cb2277018ddcaade6786328510e61a6db7dd2d263aaf107ee255",
+    "experiments/reconstruction-study/_comparison.py": "07accbc0a8523bf652d98e68e01c60687b72fea14684083c623011af732c1995",
+    "experiments/reconstruction-study/_comparison_io.py": "7f635121ad553db028c34a8b459c32b081b2d44f27333aaf1cf1db1c96ce0c10",
+    "experiments/reconstruction-study/_control_stationarity.py": "b17916b3e246cf146a0ffff73ca7548559349eec6df1b27550e41082686875ea",
+    "experiments/reconstruction-study/_cross_talk.py": "a8af27558d035d9b53b9e3d62c853cac24163f0366e3c29f57a2fb310b12fa62",
+    "experiments/reconstruction-study/_cross_talk_io.py": "ffdf37878f870e7f0402f8466ec7978529e51256f71ea559bf8f7e5a4c1c0929",
+    "experiments/reconstruction-study/_illustration.py": "3959369f4ce49a34ee5452b52d69c000091517fb148198a8b97be8eebe5cf47c",
+    "experiments/reconstruction-study/_resolution.py": "3dd9e225b30941b31eb8649a1f483fc0e765b229414ccdf9e53624cabee6e92e",
+    "experiments/reconstruction-study/_study.py": "afc04a025f09aa9bda2ba528211ffc9ef12905e3f886234ec1343e949f6edc24",
+    "experiments/reconstruction-study/acquire.py": "789aee18cf696cf1408db3204cdd012058c30881f387c22528653ba656e3e97a",
+    "experiments/reconstruction-study/baseline.py": "bee6d255ac3f51f34d0e4ee32d48922a37eb0349f8d87db23b2ca54a27551d45",
+    "experiments/reconstruction-study/comparison-config-v1.json": "6139a2a22712a9408a32e794b7d7d011bd6a9ef2b1301f8d10866916e6e03cfb",
+    "experiments/reconstruction-study/comparison_acquire.py": "845d6f348f862438fa6ddafd7e9c8847b530b142a2e283f0fe0dab5891a85c47",
+    "experiments/reconstruction-study/comparison_evaluate.py": "62cdc070b24f956d39046d6f207b46e28e34f410f0a18c51de6ca48391ad7428",
+    "experiments/reconstruction-study/comparison_run.py": "156928774a2c42dfa43569f4cdab787eb6592021e58e492fa02aae1a50c2df36",
+    "experiments/reconstruction-study/cross_talk_acquire.py": "9f4da4a4f135c8663e527d0b2daa6f5bbf90c832d1e7dd5f6797fe37e165158a",
+    "experiments/reconstruction-study/cross_talk_run.py": "4a058a08ddfee7902ad1541bc504f7e468717fc18f9372d8665006ca537245ab",
+    "experiments/reconstruction-study/evaluate_fields.py": "3216c9907a4f1ddb5ac831a73db26e51ab16d7744a8dc2c00ab8627763e23229",
+    "experiments/reconstruction-study/illustration.py": "7e3a9d024bd8465410049db3e9d02e1d96a634a897ae68da640947631f259752",
+    "experiments/reconstruction-study/pilot.py": "2e6b2c24ed286e3379e4ffca373c42a242a1ee74b4c523ecf8269607ae9a4ffb",
+    "experiments/reconstruction-study/primary64-config-v1.json": "035981d54aa0396db9db0d35f8387efc689af039c643f21e849b2eda9ee1a442",
+    "experiments/reconstruction-study/probe_acquisition.py": "e925147502aa0298d62f0e05c08316750b83582bdf5a75787b16e62671d34d37",
+    "experiments/reconstruction-study/profile_resolution.py": "2219152f6ac3190f52547c45e74faddcbbaead010069914d3033c9a63a548f11",
+    "experiments/reconstruction-study/resolution_data.py": "6f86d67f738e7db81ba2dff10139272c744314eb7cd80aa47289c8ca19d690dd",
+    "experiments/reconstruction-study/resolution_evaluate.py": "4f2aad5920fd63583c5bcb1bf822d90e6a9f36a70ad707be56a2be6edd4bf44d",
+    "experiments/reconstruction-study/resolution_run.py": "a77c8b41de3324afb1c06f522fab97b8263cb72fdf9628ad6c0238ec1a1a6cd2",
+    "experiments/spectral-reconstruction/prepare_anatomy.py": "8256c393316d4b63dbe0fcd1d8e130da5c0e46b782ea9394d39d830b79156091",
+    "experiments/spectral-reconstruction/prepare_case0.py": "5b0661ca6242ab3c108a07ea2e50e8db83e4aea775043c85335ffd057d500773",
+    "experiments/spectral-reconstruction/prepare_open_physics.py": "1337fd5da7fde8968beb9710959711cdae463bc4a01e066ff6f8504602c96565",
+    "experiments/spectral-reconstruction/prepare_vertebrae.py": "fd52a213c635a8d30423cf6d321c49b89cbd6af4644672407ef8f799f994a203",
+    "experiments/spectral-reconstruction/provision_inputs.py": "5a981276acb5ccc85be3eded2035b0c50538837e98aa827139e7b4825e62402f",
+    "experiments/spectral-reconstruction/run.py": "33a6afac58a0cf4a2304dd148352f85fecd62fce6d302ae276675c3974d086b8",
+    "fit/batch.json": "100fb2311f803ec0e5ea5d616d2070d89e2c9b5d7a5ab0e9962b62e8788509cd",
+    "fit/fitting-bindings.json": "760ba1a243b69ddbc0e2bf12910d022cbca504c848dc5944de58798a196ecdea",
+    "independent-curation-admission.json": "c6266b6a5009618573073cd23fdf41d55acb9b10bfccb9a5433311415b23042b",
+    "pyproject.toml": "6efe2a08e5249c29e43b979f6b51c71f5e7870184cfcf2513de16e0387b7a527",
+    "python/dpt/__init__.py": "b49463cb2a38593fee96faf24fe072222bf9ea9c801b63b82f5638a7754517b5",
+    "python/dpt/_gpu_preflight_kernel.py": "4b47f48d14c92a8ff2261dac7937601b68319374be01e616bf296467db4236ce",
+    "python/dpt/_reductions.py": "71ba7100e41466896b037a37e44551af5a7ceee077dc09d86dca67b32ca136c5",
+    "python/dpt/_runtime.py": "bd905bc89d8171f0c22e5ffa1590cb03853a7ecf79044d13a5abed392b762309",
+    "python/dpt/autodiff.py": "17dbb27f75d43cf118a44d472213a21a315730e6bc5f74181acde09c1bef6227",
+    "python/dpt/bootstrap.py": "13b58bb5c1703f6bed75c4b845dbe2d4c3b2a50141d637f4798145634ac7c03d",
+    "python/dpt/contracts.py": "d0409166afbc85cc5677a885e3e7cd9e6e24e8502b060df341a50cd12917e2f6",
+    "python/dpt/detector.py": "430e757429d7fec2206eefc4af72db4e903bb017c2ee798db191b3b9399ef246",
+    "python/dpt/examples/__init__.py": "0b87c9cdde6d427bbbb074ec35a92ae09210c36480f1d98734e3fbec5d41794a",
+    "python/dpt/examples/_common.py": "72610a3cddd86134e937751710084d7172759c136f0d624986cac5242dd03cee",
+    "python/dpt/examples/acquisition_design.py": "82c113871eba69a9b84c8b1bdac6398ab4ebc6b56db30005d9104145cf65aa0e",
+    "python/dpt/examples/reconstruction.py": "e6d9f55c17b2abbb3e9a6c091e692c9d4b8c34100355128807fd6c901193773e",
+    "python/dpt/examples/registration.py": "64a626bf459b9faf22891b3760d625db30479e5b30dae6de914caf198f58a601",
+    "python/dpt/experiments.py": "5ac4af4f49bac3ebaba708f92618b56872f2cc7c9840a4c1648a075e5f8304f0",
+    "python/dpt/geometry.py": "05805b9249a60b9da31b9a2d5890c26c79c36fa8d42b3a33d47f735c9afce841",
+    "python/dpt/gpu_check.py": "dfd2db8ae4032764dbdf674d00c4009f3afc0e49922e827027880bd0c3f35219",
+    "python/dpt/kernels/__init__.py": "39a47d684c71e510c32884da609914747235ea704a14e64b45720d004d171bfc",
+    "python/dpt/kernels/detector.py": "5ea6314bb2be68b06e574b03ba37f1608c237bf02332b32ae6290d3d053ecf26",
+    "python/dpt/kernels/geometry.py": "290692a6b5b6d9ed05084fd90a544d4f0db34fb25dcf57b591a8c0aafeb816b8",
+    "python/dpt/kernels/material_projection.py": "4042c29df85249eb917e96ac56b920d37e72e1fc39f70b78407c778ce704fc5f",
+    "python/dpt/kernels/material_reconstruction.py": "5c8ce58162cd602d360780f4f0d43de89c6ff19422020e90d6fb3183b5fc542b",
+    "python/dpt/kernels/objectives.py": "1d64ffe8ec6ae9519fef2da9e4deffc852740e51f40a963bd76035a0790e2047",
+    "python/dpt/kernels/projection.py": "b48f9e89107aa3ecc5768ec1fae7f4118e7eb6e946b5639e9cbbb941f7067b44",
+    "python/dpt/kernels/projection_checks.py": "a7484cd5f964b44d0fbed2a851120e9beadcaa30052251990282906e25607e1f",
+    "python/dpt/kernels/random.py": "935786f1e720b46d5e6b8cd6e60f000306718c30dc2c288869d8156b87e48b63",
+    "python/dpt/kernels/reductions.py": "7bef22d4288823eee6a71cbb9c71f934f81e511614e5858d59127ba47d624cd5",
+    "python/dpt/kernels/spectral.py": "a5235bf2809758315b33605be4c05d8ad8d432465a947c4826a8968983fdf9d6",
+    "python/dpt/kernels/transmission.py": "adfa3e500c96ba985f37545ead61c7cce5aa47cfe4792eb13d9c12d792147739",
+    "python/dpt/material_projection.py": "fe257055b40cf23bf0aa0dac80d60ff8a7382ce29b993fab7afded9fe3f9ffd0",
+    "python/dpt/material_reconstruction.py": "caa7e75532f204878d91907940fef650925dfd141d35c8a6aee41a5a3f28cb11",
+    "python/dpt/materials.py": "d712892fbda5f87010a52f2261584924007bbf856e4afc7c1bfcbe29192be936",
+    "python/dpt/objectives.py": "7f9e44033090c61f9f447958172fbfa977eceedabc3dd4d52df2d7f22e3f65fa",
+    "python/dpt/projection.py": "f542fda441168a9d4cdac850b1618e6d05fc63efd2a4e57a19be1612fafae83c",
+    "python/dpt/recovery.py": "8776da87f9cb6fd919db66080ab8435d110d1acf43c1f981ee2ed13968c07c47",
+    "python/dpt/registration.py": "6b862676c158da63b04a11930682ee945eaf6c2ec2394a3791929230bd8ec32e",
+    "python/dpt/spectral.py": "f55791e0d565a9bb365be426106026e857c3b3dc009ac30ce7ebe31f0c9ef535",
+    "python/dpt/spectral_inputs.py": "c05a99dadbfdbb00e963a5f2871df6c8b8882fadd2f2c885ac98440378f51e74",
+    "python/dpt/spectral_recovery.py": "9385f0bb91e522e3a4b9a797ba481861cbcba9ea677a4a18fb41fde331d583a5",
+    "python/dpt/statistics.py": "c029b203ceae457b2a7308b6908a9360ce6e1218f8d19aea52aa4aac154c368f",
+    "python/dpt/stochastic_models.py": "7577f29c7ce151258e162e79e29e6c6b32cfcd1095707226868d1ee610bf1fae",
+    "python/dpt/stochastic_recovery.py": "65736264d79aae216fb492212fa878ee0b93d0026aab6b1cc1ac8e972463630c",
+    "python/dpt/transmission.py": "5837deeeace08b277b2c0859254a41e413e6901dfbb9b8e8803076526b24ef68",
+    "python/dpt/transport/__init__.py": "7294a47c31ccc49cbc4959ee957af06b87cb954334e9a9a955a2946ea9a7c5ec",
+    "python/dpt/transport/_constants.py": "d05a25992b4a1214d7e624214d59f4d0c5ccca851e27acd0b730ddf87a6b06c0",
+    "python/dpt/transport/derivatives.py": "1b6e523fa668c2ea8451ddd4f65fdc4116b2e46fc3a9a4e6a539b88cfad28112",
+    "python/dpt/transport/estimators.py": "624b3d66f3a478db7fd4b6d2659c98f972f2d1c2a2b26afb69f0fba13e4071db",
+    "python/dpt/transport/experiments.py": "1424143aaf5ca4e05c6acb252a28d1e7ba4bc3ace61516432ba5e18044ab1182",
+    "python/dpt/transport/forward.py": "2f4572577fa639412f4e6d190eeaefa5ea5e42c0bc7354f3855d292c1c023da9",
+    "python/dpt/transport/inverse.py": "808100ab4db1e9a17a5a8343126ce00b702dcb81569ba5ce9ca4364be62b3d1e",
+    "python/dpt/transport/kernels.py": "2d47d20d38b03b837c673d96981bd4bb985bfe9ba88286bd28d29edf05744ad9",
+    "python/dpt/transport/model.py": "9e51231410e17f8cc195065e8c17c073107c76535ccf7787b1190dc6aa765052",
+    "python/dpt/transport/recovery_experiments.py": "2746b5bf548143649d17a7e247eb9f188e16143b4c81f918342e03a1c8b3212b",
+    "python/dpt/transport/recovery_kernels.py": "e0c06daa9683c0746250cc6c46ccde759078298b8ddbf72d8a3609f43516858c",
+    "python/dpt/transport/rng.py": "200ac1c50b6db76fead64e3d75cfed59c8099ca3d6aeba019243d911c20db4e9",
+    "python/dpt/transport/source.py": "79d908bb5721e4084c00861052ede608a417af643a75edb96733d1178a788f29",
+    "python/dpt/validation/__init__.py": "fc5a55cbf5e70192ca2345c4232659f4fa624814663ef1ce0ae28228935a0f73",
+    "python/dpt/validation/autodiff.py": "92a9a6475a2e2c876087d0ab121fa9a6f83117732726e4c78041bf2d8ef6a249",
+    "python/dpt/validation/book_illustrations.py": "40c1de218901a79e870c40c48755044fde6ddda5f383f7b0660d8b79569c1798",
+    "python/dpt/validation/detector.py": "653959e4a641344d5af8d6bfeeb665f3e3de5580d43db0825919f201d59073da",
+    "python/dpt/validation/identifiability.py": "160bcbf5fd3fd7b9d1807d1063deb01f092e9c660a153a4bb9b68344f6093115",
+    "python/dpt/validation/objectives.py": "f9af635fe9201f4238982171b21939257efa808c06ee17f05007797ac111f493",
+    "python/dpt/validation/projection.py": "8e9b382b86516d09261d6ca623f85ed66e25901c81b74def198e1c42485cb656",
+    "python/dpt/validation/recovery.py": "befa482ccc8cafccb45f480d6067ca7184eea87e81645865e4355bba61c6b70d",
+    "python/dpt/validation/spectral.py": "56f3f782738783b2f52a19616ca7b0d226208eb8ae4fac3c988ab3ce8813ab01",
+    "python/dpt/validation/transmission.py": "4917333d260c37350d077a8629dc66cc5dd5ccd565f44f3296a70e981f0c5e34",
+    "python/dpt/validation/transport.py": "2c5e396ffd01e79a1d95ae02aaef3ffd90cc232987686ea923c86945a7d5568c",
+    "python/dpt/validation/transport_weighted.py": "fd9ff5723ed9f6a7de8f7309158332ba51117e1134ff37310866f2ed9f20344c",
+    "python/dpt/volumes.py": "0f486f3451b3d19c35d40241af02d2a216812797a4555b49496fd4ff52807e4b",
+    "rights/case0/source-license-manifest.json": "7ad412f616577966c36cd5312ec62cfe3eb0fc368e0f86d7fb9ca64c11bf7074",
+    "rights/case2/source-license-manifest.json": "baf518b81aaa1bd6ece3ea648999c2d34a16171f1f9c60bbc008f9879ae1f88d",
+    "rights/physics/source-license-manifest.json": "d0614dc6cad8dfc30ace16f1e6c0ea5b4e2ac69f1c59cd9fa78b40bcb25f3378",
+    "src/lib/reconstruction-comparison.ts": "75a2bfb0b9436297aa9b45578f0318cccdef67cd1829b8e3063aea403137b4ca",
+    "tools/public/curate-reconstruction-comparison.py": "f84944b0120e1c28161102564da9e3230701e44bfe7d2e7f7e580338cb5b4801",
+    "uv.lock": "19130bcf32aad884cd30b21f1fa69708a1240c7e7ef3a5dd1c8eb49b484c2865"
+  }
+}

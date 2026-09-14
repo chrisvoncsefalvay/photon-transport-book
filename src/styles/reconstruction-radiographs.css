@@ -1,0 +1,255 @@
+dpt-reconstruction-radiographs {
+  display: block;
+  color: var(--ink);
+}
+
+dpt-reconstruction-radiographs [hidden] {
+  display: none;
+}
+
+.reconstruction-radiograph-channels section + section {
+  margin-top: 1.5rem;
+}
+
+.reconstruction-radiograph-channels h3 {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  margin: 0;
+  padding: 1.1rem 1.5rem 0.8rem;
+  color: var(--ink);
+  font: 500 var(--size-0) / 1.4 var(--font-prose);
+}
+
+.reconstruction-radiograph-channels h3 span {
+  color: var(--ink-muted);
+  font: 400 var(--size--1) / 1.5 var(--font-ui);
+}
+
+dpt-reconstruction-radiographs[data-radiograph-ready="true"]
+  .reconstruction-radiograph-channels
+  h3,
+.reconstruction-radiograph-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+dpt-reconstruction-radiographs[data-radiograph-ready="true"]
+  .reconstruction-radiograph-channels
+  section {
+  margin-top: 0;
+}
+
+.reconstruction-radiograph-panels {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(0.6rem, 1.8vw, 1.5rem);
+  padding: clamp(0.75rem, 2vw, 1.4rem);
+  background: var(--paper-inset);
+  color: var(--ink);
+}
+
+.reconstruction-radiograph-panel h4 {
+  min-height: 2.8em;
+  margin: 0 0 0.6rem;
+  color: inherit;
+  font: 500 var(--size--1) / 1.4 var(--font-ui);
+}
+
+.reconstruction-radiograph-panel > div {
+  overflow: hidden;
+  background: var(--paper-inset);
+}
+
+.reconstruction-radiograph-panel img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  object-fit: fill;
+}
+
+.reconstruction-radiograph-panel .reconstruction-radiograph-window {
+  margin: 0.55rem 0 0;
+  color: var(--ink-muted);
+  font: 400 0.72rem / 1.45 var(--font-ui);
+  font-variant-numeric: tabular-nums;
+}
+
+dpt-reconstruction-radiographs[data-acquired="true"]
+  .reconstruction-radiograph-panels {
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+dpt-reconstruction-radiographs[data-acquired="true"]
+  .reconstruction-radiograph-panel
+  h4 {
+  min-height: 0;
+}
+
+.reconstruction-radiograph-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.65rem 1.25rem;
+  padding: 1rem clamp(0.75rem, 2vw, 1.4rem);
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink-muted);
+  font: 400 var(--size--1) / 1.5 var(--font-ui);
+}
+
+.reconstruction-radiograph-selector {
+  flex: 0 1 30rem;
+  min-width: 0;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.reconstruction-radiograph-track {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(var(--channel-count), minmax(0, 1fr));
+  padding: 0.2rem;
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius-medium);
+  background: var(--paper-inset);
+}
+
+.reconstruction-radiograph-track::before {
+  position: absolute;
+  inset: 0.2rem auto 0.2rem 0.2rem;
+  width: calc((100% - 0.4rem) / var(--channel-count));
+  border-radius: var(--radius-small);
+  background: var(--paper-raised);
+  box-shadow: inset 0 0 0 1px var(--rule-strong);
+  content: "";
+  transform: translateX(calc(var(--selected-channel, 0) * 100%));
+  transition: transform var(--motion-short) var(--motion-ease);
+}
+
+.reconstruction-radiograph-track label {
+  position: relative;
+  display: grid;
+  min-width: 0;
+  color: var(--ink-muted);
+  cursor: pointer;
+}
+
+.reconstruction-radiograph-track input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.reconstruction-radiograph-track label span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  padding: 0.45rem 0.35rem;
+  border-radius: var(--radius-small);
+  text-align: center;
+}
+
+.reconstruction-radiograph-track input:checked + span {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.reconstruction-radiograph-track input:focus-visible + span {
+  outline: 2px solid var(--accent);
+  outline-offset: -4px;
+}
+
+.reconstruction-radiograph-data summary:focus-visible,
+.reconstruction-radiograph-clipping summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reconstruction-radiograph-track::before {
+    transition: none;
+  }
+}
+
+.reconstruction-radiograph-reading,
+.reconstruction-radiograph-data {
+  margin: 1rem 1.5rem;
+  color: var(--ink-muted);
+  font-size: var(--size--1);
+}
+
+.reconstruction-radiograph-clipping {
+  margin: 0.6rem 1.5rem;
+  color: var(--ink-muted);
+  font: 400 var(--size--1) / 1.5 var(--font-ui);
+}
+
+.reconstruction-radiograph-clipping p,
+.reconstruction-radiograph-clipping ul {
+  margin: 0.65rem 0;
+}
+
+.reconstruction-radiograph-data summary,
+.reconstruction-radiograph-clipping summary {
+  width: fit-content;
+  cursor: pointer;
+  color: var(--accent);
+}
+
+@media (max-width: 700px) {
+  .reconstruction-radiograph-panels {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .reconstruction-radiograph-panel h4 {
+    font-size: 0.73rem;
+  }
+}
+
+@media print {
+  dpt-reconstruction-radiographs[data-radiograph-ready="true"]
+    .reconstruction-radiograph-channels
+    h3 {
+    position: static;
+    width: auto;
+    height: auto;
+    padding: 1.1rem 1.5rem 0.8rem;
+    overflow: visible;
+    clip-path: none;
+    white-space: normal;
+  }
+
+  dpt-reconstruction-radiographs [data-radiograph-channel][hidden] {
+    display: block;
+  }
+
+  .reconstruction-radiograph-controls,
+  .reconstruction-radiograph-clipping,
+  .reconstruction-radiograph-data {
+    display: none;
+  }
+
+  .reconstruction-radiograph-channels section {
+    break-inside: avoid;
+  }
+
+  .reconstruction-radiograph-panels {
+    print-color-adjust: exact;
+  }
+}

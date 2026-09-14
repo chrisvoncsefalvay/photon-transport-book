@@ -1,0 +1,398 @@
+---
+import "katex/dist/katex.min.css";
+import "../styles/global.css";
+import GitHubMark from "../components/navigation/GitHubMark.astro";
+import PageCitation from "../components/citations/PageCitation.astro";
+import {
+  AUTHOR_NAME,
+  AUTHOR_URL,
+  BOOK_DESCRIPTION,
+  BOOK_TITLE,
+  SITE_LANGUAGE,
+  SITE_NAME,
+  SOCIAL_IMAGE,
+  createSiteMetadata,
+  serializeStructuredData,
+} from "../lib/site-metadata";
+import {
+  loadBookCitation,
+  createPageCitation,
+} from "../../tools/public/page-citation.mjs";
+
+interface Props {
+  title?: string;
+  description?: string;
+  eyebrow?: string;
+  citation?: {
+    title: string;
+    chapterNumber?: string;
+    part: "chapter" | "appendix" | "page" | "book";
+  };
+}
+
+const {
+  title = BOOK_TITLE,
+  description = BOOK_DESCRIPTION,
+  eyebrow,
+  citation,
+} = Astro.props;
+const metadata = createSiteMetadata({
+  pathname: Astro.url.pathname,
+  title,
+  description,
+});
+const bookCitation = await loadBookCitation();
+const editionVersion = `v${bookCitation.version}`;
+const pageCitation = createPageCitation(bookCitation, {
+  title,
+  part: Astro.url.pathname === "/" ? "book" : "page",
+  ...citation,
+  pathname: Astro.url.pathname,
+});
+const hasHeaderPanel = Astro.slots.has("header-panel");
+---
+
+<!doctype html>
+<html
+  lang={SITE_LANGUAGE}
+  prefix="og: https://ogp.me/ns# book: https://ogp.me/ns/book# article: https://ogp.me/ns/article#"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={metadata.description} />
+    <meta name="author" content={AUTHOR_NAME} />
+    <meta name="robots" content={metadata.robots} />
+    <meta property="og:title" content={metadata.title} />
+    <meta property="og:description" content={metadata.description} />
+    <meta property="og:type" content={metadata.openGraphType} />
+    <meta property="og:url" content={metadata.canonical} />
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:locale" content="en_GB" />
+    <meta property="og:image" content={SOCIAL_IMAGE.url} />
+    <meta property="og:image:secure_url" content={SOCIAL_IMAGE.url} />
+    <meta property="og:image:type" content={SOCIAL_IMAGE.type} />
+    <meta property="og:image:width" content={String(SOCIAL_IMAGE.width)} />
+    <meta property="og:image:height" content={String(SOCIAL_IMAGE.height)} />
+    <meta property="og:image:alt" content={SOCIAL_IMAGE.alt} />
+    {
+      metadata.openGraphType === "book" && (
+        <meta property="book:author" content={AUTHOR_URL} />
+      )
+    }
+    {
+      metadata.openGraphType === "article" && (
+        <meta property="article:author" content={AUTHOR_URL} />
+      )
+    }
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={metadata.title} />
+    <meta name="twitter:description" content={metadata.description} />
+    <meta name="twitter:image" content={SOCIAL_IMAGE.url} />
+    <meta name="twitter:image:alt" content={SOCIAL_IMAGE.alt} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" sizes="any" />
+    <link rel="canonical" href={metadata.canonical} />
+    <link rel="author" href={AUTHOR_URL} />
+    <title>{metadata.title}</title>
+    {
+      metadata.structuredData && (
+        <script
+          type="application/ld+json"
+          is:inline
+          set:html={serializeStructuredData(metadata.structuredData)}
+        />
+      )
+    }
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to the text</a>
+    <div
+      class:list={[
+        "site-header-region",
+        hasHeaderPanel && "site-header-region--collapsible",
+      ]}
+      data-site-header
+      data-scroll-hidden="false"
+    >
+      <header
+        class:list={[
+          "site-header",
+          hasHeaderPanel && "site-header--with-panel",
+        ]}
+      >
+        {
+          hasHeaderPanel ? (
+            <button
+              class="site-header__toc-trigger"
+              type="button"
+              aria-controls="site-header-contents"
+              aria-expanded="false"
+            >
+              <span class="site-header__toc-label">
+                On this page <span aria-hidden="true">+</span>
+              </span>
+            </button>
+          ) : (
+            eyebrow && <span class="site-header__context">{eyebrow}</span>
+          )
+        }
+        <nav aria-label="Primary navigation">
+          <a href="/#contents">Contents</a>
+          <a href="/appendix/x-ray-theory/">Appendix</a>
+          <a
+            href="/notation/"
+            aria-current={Astro.url.pathname === "/notation/"
+              ? "page"
+              : undefined}>Notation</a
+          >
+          <a
+            href="/about/"
+            aria-current={Astro.url.pathname === "/about/" ? "page" : undefined}
+            >About</a
+          >
+          <a
+            class="site-header__github"
+            href="https://github.com/chrisvoncsefalvay/photon-transport-book"
+            aria-label="Public-edition repository on GitHub"
+            title="Public-edition repository on GitHub"
+          >
+            <GitHubMark />
+          </a>
+        </nav>
+      </header>
+      {
+        hasHeaderPanel && (
+          <div class="site-header__drawer" id="site-header-contents" hidden>
+            <slot name="header-panel" />
+          </div>
+        )
+      }
+    </div>
+    <main id="main-content" tabindex="-1">
+      <slot />
+    </main>
+    <div class="site-footer-region">
+      <slot name="footer-navigation" />
+      <footer class="site-footer">
+        <span class="site-footer__impressum">
+          <span>Differentiable Photon Transport · Volume I: Foundations</span>
+          <span>by CHRIS VON CSEFALVAY</span>
+        </span>
+        <div class="site-footer__edition">
+          <span>{editionVersion}</span>
+          <div class="site-footer__links">
+            <a
+              href="/acknowledgements/"
+              aria-current={Astro.url.pathname === "/acknowledgements/"
+                ? "page"
+                : undefined}>Acknowledgements</a
+            >
+            <PageCitation citation={pageCitation} />
+          </div>
+        </div>
+      </footer>
+    </div>
+    <script>
+      const headerRegions = document.querySelectorAll<HTMLElement>(
+        ".site-header-region--collapsible:not([data-header-ready])",
+      );
+
+      for (const region of headerRegions) {
+        region.dataset.headerReady = "true";
+        const trigger = region.querySelector<HTMLButtonElement>(
+          ".site-header__toc-trigger",
+        );
+        const drawer = region.querySelector<HTMLElement>(
+          ".site-header__drawer",
+        );
+        if (!trigger || !drawer) continue;
+
+        // Keep native fragment scrolling clear of the sticky header, including
+        // its two-row mobile layout. The closed bar, not the drawer, sets the
+        // reading offset, so opening the contents never displaces a target.
+        const header = region.querySelector<HTMLElement>(".site-header");
+        if (header) {
+          const updateAnchorClearance = () => {
+            document.documentElement.style.setProperty(
+              "--anchor-header-clearance",
+              `${header.offsetHeight}px`,
+            );
+          };
+          updateAnchorClearance();
+          new ResizeObserver(updateAnchorClearance).observe(header);
+        }
+
+        let previousScrollY = window.scrollY;
+        let framePending = false;
+        let drawerAnimation: Animation | undefined;
+        const reducedMotion = window.matchMedia(
+          "(prefers-reduced-motion: reduce)",
+        );
+
+        const setOpen = (open: boolean, animate = true) => {
+          const previousHeight = drawer.getBoundingClientRect().height;
+          const previousOpacity = drawer.hidden
+            ? "0"
+            : getComputedStyle(drawer).opacity;
+          drawerAnimation?.cancel();
+          if (open && region.dataset.open !== "true") {
+            // Open at the current reading position, then let the whole pane
+            // move with the document so every link remains reachable.
+            region.style.setProperty(
+              "--contents-open-offset",
+              `${window.scrollY}px`,
+            );
+          }
+          region.dataset.open = String(open);
+          region.dataset.scrollHidden = "false";
+          trigger.setAttribute("aria-expanded", String(open));
+          trigger.querySelector<HTMLElement>("[aria-hidden]")!.textContent =
+            open ? "−" : "+";
+          drawer.inert = !open;
+          if (!animate || reducedMotion.matches) {
+            drawer.hidden = !open;
+            return;
+          }
+
+          drawer.hidden = false;
+          const nextHeight = open ? drawer.getBoundingClientRect().height : 0;
+          const animation = drawer.animate(
+            [
+              { height: `${previousHeight}px`, opacity: previousOpacity },
+              { height: `${nextHeight}px`, opacity: open ? "1" : "0" },
+            ],
+            { duration: 360, easing: "cubic-bezier(0.22, 1, 0.36, 1)" },
+          );
+          drawerAnimation = animation;
+          animation.onfinish = () => {
+            if (drawerAnimation !== animation) return;
+            drawer.hidden = !open;
+            drawerAnimation = undefined;
+          };
+        };
+
+        const updateHeaderVisibility = () => {
+          const currentScrollY = window.scrollY;
+          const delta = currentScrollY - previousScrollY;
+
+          if (
+            region.dataset.open === "true" ||
+            currentScrollY <= 48 ||
+            delta < -4
+          ) {
+            region.dataset.scrollHidden = "false";
+          } else if (delta > 4) {
+            region.dataset.scrollHidden = "true";
+          }
+
+          previousScrollY = currentScrollY;
+          framePending = false;
+        };
+
+        trigger.addEventListener("click", () => {
+          setOpen(region.dataset.open !== "true");
+        });
+
+        drawer.addEventListener("click", (event) => {
+          if (!(event.target instanceof Element)) return;
+          if (!event.target.closest("a[href]")) return;
+          // Close before native anchor scrolling measures the destination.
+          // Move focus out of the now-inert drawer without scrolling the page.
+          trigger.focus({ preventScroll: true });
+          setOpen(false, false);
+        });
+
+        document.addEventListener("pointerdown", (event) => {
+          if (
+            event.target instanceof Node &&
+            !region.contains(event.target) &&
+            region.dataset.open === "true"
+          ) {
+            setOpen(false);
+          }
+        });
+
+        reducedMotion.addEventListener("change", () => {
+          if (reducedMotion.matches)
+            setOpen(region.dataset.open === "true", false);
+        });
+
+        window.addEventListener(
+          "scroll",
+          () => {
+            if (!framePending) {
+              window.requestAnimationFrame(updateHeaderVisibility);
+              framePending = true;
+            }
+          },
+          { passive: true },
+        );
+
+        window.addEventListener("keydown", (event) => {
+          if (event.key === "Escape" && region.dataset.open === "true") {
+            setOpen(false);
+            trigger.focus();
+          }
+        });
+      }
+
+      // Let the browser own scroll animation, fragment history and interruption
+      // by wheel/touch input. Only add a focus destination for non-focusable
+      // headings, so keyboard readers land where the anchor has taken them.
+      const focusFragment = (hash: string) => {
+        if (!hash || hash === "#") return;
+        let id: string;
+        try {
+          id = decodeURIComponent(hash.slice(1));
+        } catch {
+          return;
+        }
+        const target = document.getElementById(id);
+        if (!(target instanceof HTMLElement)) return;
+        const temporaryTabIndex =
+          !target.hasAttribute("tabindex") && target.tabIndex < 0;
+        if (temporaryTabIndex) {
+          target.tabIndex = -1;
+          target.addEventListener(
+            "blur",
+            () => target.removeAttribute("tabindex"),
+            { once: true },
+          );
+        }
+        target.focus({ preventScroll: true });
+      };
+
+      document.addEventListener("click", (event) => {
+        if (
+          event.defaultPrevented ||
+          event.button !== 0 ||
+          event.metaKey ||
+          event.ctrlKey ||
+          event.shiftKey ||
+          event.altKey ||
+          !(event.target instanceof Element)
+        )
+          return;
+        const link = event.target.closest<HTMLAnchorElement>("a[href]");
+        if (
+          !link ||
+          link.hasAttribute("download") ||
+          (link.target && link.target !== "_self")
+        )
+          return;
+        const destination = new URL(link.href);
+        if (
+          destination.origin !== location.origin ||
+          destination.pathname !== location.pathname ||
+          destination.search !== location.search ||
+          !destination.hash
+        )
+          return;
+        window.requestAnimationFrame(() => focusFragment(destination.hash));
+      });
+
+      window.addEventListener("hashchange", () => focusFragment(location.hash));
+    </script>
+  </body>
+</html>

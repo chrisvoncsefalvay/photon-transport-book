@@ -1,0 +1,707 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {
+      "id": "vertebrae",
+      "title": "What the spectral reconstruction predicts",
+      "kind": "ct-derived-simulation",
+      "view_zero_based": 4,
+      "role": "whole withheld view",
+      "extent_uv_mm": [
+        -192.0,
+        192.0,
+        -192.0,
+        192.0
+      ],
+      "extent_convention": "Full detector cell-face extent in centred detector coordinates",
+      "aspect": 1.0,
+      "channels": [
+        {
+          "id": "0",
+          "label": "20\u201355 keV",
+          "open_beam": 106087.640625,
+          "panels": [
+            {
+              "id": "channel-0-observed",
+              "label": "Simulated observation",
+              "file": "vertebrae/channel-0-observed.png",
+              "sha256": "e0feadad501a93e60b8e363169729d89e712761ae40aa02df89cd3ac091e5eb2",
+              "bytes": 5802,
+              "width": 96,
+              "height": 96,
+              "alt": "Simulated observation",
+              "limits": [
+                0.0,
+                8.0
+              ],
+              "palette": "gray",
+              "masked_pixels": 0,
+              "low_clipped_pixels": 1555,
+              "high_clipped_pixels": 1
+            },
+            {
+              "id": "channel-0-expected",
+              "label": "Generating expectation",
+              "file": "vertebrae/channel-0-expected.png",
+              "sha256": "adb7ac5a5736aa1d70a79778268c242b18cd58672e00153a4aae46fb7a003bcf",
+              "bytes": 5148,
+              "width": 96,
+              "height": 96,
+              "alt": "Generating expectation",
+              "limits": [
+                0.0,
+                8.0
+              ],
+              "palette": "gray",
+              "masked_pixels": 0,
+              "low_clipped_pixels": 3119,
+              "high_clipped_pixels": 0
+            },
+            {
+              "id": "channel-0-predicted",
+              "label": "Withheld-view prediction",
+              "file": "vertebrae/channel-0-predicted.png",
+              "sha256": "8211e5448d20f28af4ee92efee75121731bb6386c770e9ce89e8928e5904270e",
+              "bytes": 4846,
+              "width": 96,
+              "height": 96,
+              "alt": "Withheld-view prediction",
+              "limits": [
+                0.0,
+                8.0
+              ],
+              "palette": "gray",
+              "masked_pixels": 0,
+              "low_clipped_pixels": 3119,
+              "high_clipped_pixels": 0
+            },
+            {
+              "id": "channel-0-residual",
+              "label": "Observation \u2212 prediction (Poisson scaled)",
+              "file": "vertebrae/channel-0-residual.png",
+              "sha256": "ae53785562eb423732dc8c002fce94cf5c1bc96800805395852077ffa9edfd04",
+              "bytes": 28897,
+              "width": 96,
+              "height": 96,
+              "alt": "Observation \u2212 prediction (Poisson scaled)",
+              "limits": [
+                -5.0,
+                5.0
+              ],
+              "palette": "RdBu_r",
+              "masked_pixels": 0,
+              "low_clipped_pixels": 27,
+              "high_clipped_pixels": 75
+            }
+          ]
+        },
+        {
+          "id": "1",
+          "label": "55\u201380 keV",
+          "open_beam": 68761.546875,
+          "panels": [
+            {
+              "id": "channel-1-observed",
+              "label": "Simulated observation",
+              "file": "vertebrae/channel-1-observed.png",
+              "sha256": "1f4ed19edf87c05e2bf36eaa1b577889c3467b38fa8cf85471ffe1033c2dd17a",
+              "bytes": 5365,
+              "width": 96,
+              "height": 96,
+              "alt": "Simulated observation",
+              "limits": [
+                0.0,
+                5.5
+              ],
+              "palette": "gray",
+              "masked_pixels": 0,
+              "low_clipped_pixels": 1550,
+              "high_clipped_pixels": 0
+            },
+            {
+              "id": "channel-1-expected",
+              "label": "Generating expectation",
+              "file": "vertebrae/channel-1-expected.png",
+              "sha256": "a032ed3d3c435c2c21172081ad583c1be4c053580e4e1fa754cdce473f88dffd",
+              "bytes": 4841,
+              "width": 96,
+              "height": 96,
+              "alt": "Generating expectation",
+              "limits": [
+                0.0,
+                5.5
+              ],
+              "palette": "gray",
+              "masked_pixels": 0,
+              "low_clipped_pixels": 3119,
+              "high_clipped_pixels": 0
+            },
+            {
+              "id": "channel-1-predicted",
+              "label": "Withheld-view prediction",
+              "file": "vertebrae/channel-1-predicted.png",
+              "sha256": "e2079d48ad55c7c2ba3f53c3017d935521367d30db70d85292f132a093cac1b3",
+              "bytes": 4449,
+              "width": 96,
+              "height": 96,
+              "alt": "Withheld-view prediction",
+              "limits": [
+                0.0,
+                5.5
+              ],
+              "palette": "gray",
+              "masked_pixels": 0,
+              "low_clipped_pixels": 3119,
+              "high_clipped_pixels": 0
+            },
+            {
+              "id": "channel-1-residual",
+              "label": "Observation \u2212 prediction (Poisson scaled)",
+              "file": "vertebrae/channel-1-residual.png",
+              "sha256": "31e72221756388d31f88610d8c0a6c51225b1d2e5d9bca31b3cb0bd3f1657ae8",
+              "bytes": 28473,
+              "width": 96,
+              "height": 96,
+              "alt": "Observation \u2212 prediction (Poisson scaled)",
+              "limits": [
+                -5.0,
+                5.0
+              ],
+              "palette": "RdBu_r",
+              "masked_pixels": 0,
+              "low_clipped_pixels": 43,
+              "high_clipped_pixels": 26
+            }
+          ]
+        },
+        {
+          "id": "2",
+          "label": "80\u2013120 keV",
+          "open_beam": 25150.806640625,
+          "panels": [
+            {
+              "id": "channel-2-observed",
+              "label": "Simulated observation",
+              "file": "vertebrae/channel-2-observed.png",
+              "sha256": "32510917ea0c6a5bd0c8ede7b8275bdfa4b19b853902de320f4fcce46109297c",
+              "bytes": 5901,
+              "width": 96,
+              "height": 96,
+              "alt": "Simulated observation",
+              "limits": [
+                0.0,
+                4.0
+              ],
+              "palette": "gray",
+              "masked_pixels": 0,
+              "low_clipped_pixels": 1588,
+              "high_clipped_pixels": 16
+            },
+            {
+              "id": "channel-2-expected",
+              "label": "Generating expectation",
+              "file": "vertebrae/channel-2-expected.png",
+              "sha256": "122ce5fbbee0b3acdc349de474bf3752b04241364797b6c18894b8c8a91e3935",
+              "bytes": 4456,
+              "width": 96,
+              "height": 96,
+              "alt": "Generating expectation",
+              "limits": [
+                0.0,
+                4.0
+              ],
+              "palette": "gray",
+              "masked_pixels": 0,
+              "low_clipped_pixels": 3119,
+              "high_clipped_pixels": 8
+            },
+            {
+              "id": "channel-2-predicted",
+              "label": "Withheld-view prediction",
+              "file": "vertebrae/channel-2-predicted.png",
+              "sha256": "4068f4a172a8509d60cb6dee76076843b99f1668a8a4068f11e5eafcb32f6bb2",
+              "bytes": 4166,
+              "width": 96,
+              "height": 96,
+              "alt": "Withheld-view prediction",
+              "limits": [
+                0.0,
+                4.0
+              ],
+              "palette": "gray",
+              "masked_pixels": 0,
+              "low_clipped_pixels": 3119,
+              "high_clipped_pixels": 0
+            },
+            {
+              "id": "channel-2-residual",
+              "label": "Observation \u2212 prediction (Poisson scaled)",
+              "file": "vertebrae/channel-2-residual.png",
+              "sha256": "96092fb784c7b05d88024127c9826059563bb54488d10f90fa2440829c914732",
+              "bytes": 28183,
+              "width": 96,
+              "height": 96,
+              "alt": "Observation \u2212 prediction (Poisson scaled)",
+              "limits": [
+                -5.0,
+                5.0
+              ],
+              "palette": "RdBu_r",
+              "masked_pixels": 0,
+              "low_clipped_pixels": 3,
+              "high_clipped_pixels": 0
+            }
+          ]
+        }
+      ],
+      "input_views": [
+        {
+          "id": "input-view-0",
+          "label": "Fitting view 1",
+          "file": "vertebrae/input-view-0.png",
+          "sha256": "091cdabf198f0808bed919b8d55cad8562b9f2819c085d34a4f2dfe3d2e474f4",
+          "bytes": 5181,
+          "width": 96,
+          "height": 96,
+          "alt": "Fitting view 1",
+          "limits": [
+            0.0,
+            8.0
+          ],
+          "palette": "gray",
+          "masked_pixels": 0,
+          "low_clipped_pixels": 2061,
+          "high_clipped_pixels": 0,
+          "view_zero_based": 0,
+          "channel": "20\u201355 keV"
+        },
+        {
+          "id": "input-view-16",
+          "label": "Fitting view 17",
+          "file": "vertebrae/input-view-16.png",
+          "sha256": "d12c41ada1113a08854280f25f3c969fb8622715c964332f15d53ddf3deb74db",
+          "bytes": 5928,
+          "width": 96,
+          "height": 96,
+          "alt": "Fitting view 17",
+          "limits": [
+            0.0,
+            8.0
+          ],
+          "palette": "gray",
+          "masked_pixels": 0,
+          "low_clipped_pixels": 1685,
+          "high_clipped_pixels": 0,
+          "view_zero_based": 16,
+          "channel": "20\u201355 keV"
+        },
+        {
+          "id": "input-view-32",
+          "label": "Fitting view 33",
+          "file": "vertebrae/input-view-32.png",
+          "sha256": "9f03ded35788fd88bbb29bbf50c39e76c909c73b17ef9b3629de060b4938af5b",
+          "bytes": 5997,
+          "width": 96,
+          "height": 96,
+          "alt": "Fitting view 33",
+          "limits": [
+            0.0,
+            8.0
+          ],
+          "palette": "gray",
+          "masked_pixels": 0,
+          "low_clipped_pixels": 1688,
+          "high_clipped_pixels": 2,
+          "view_zero_based": 32,
+          "channel": "20\u201355 keV"
+        }
+      ],
+      "licence": "CC BY 3.0; derived from Rister et al., CT-ORG, TCIA",
+      "source_url": "https://doi.org/10.7937/tcia.2019.tt7f4v7o",
+      "observation_display": "-log((counts+0.5)/open_beam);0.5 is a display-only continuity correction",
+      "residual_display": "(observed-predicted)/sqrt(max(predicted,1)); limits[-5,5]",
+      "qualification": "Assigned CT-derived material phantom with simulated independent Poisson channels; finite-budget reconstruction, not measured patient composition.",
+      "projection_rig": {
+        "coordinate_frame": "Centred object XYZ in mm, shared with the recorded surfaces",
+        "pose_kind": "Known acquisition poses, fixed during material reconstruction",
+        "texture_coordinates": "Native bottom-origin UV; upload PNG with exactly one vertical flip",
+        "display": "RGB identifies views; windowed radiograph projection is a display cue only",
+        "views": [
+          {
+            "view_zero_based": 0,
+            "label": "Fitting view 1",
+            "colour_rgb": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "source_mm": [
+              0.0,
+              -965.9258262890684,
+              -258.81904510252076
+            ],
+            "detector_corners_mm": [
+              [
+                -192.0,
+                532.6561698042182,
+                -56.048236096240736
+              ],
+              [
+                192.0,
+                532.6561698042182,
+                -56.048236096240736
+              ],
+              [
+                192.0,
+                433.26965648485015,
+                314.86728119876153
+              ],
+              [
+                -192.0,
+                433.26965648485015,
+                314.86728119876153
+              ]
+            ],
+            "source_detector_distance_mm": 1500.0,
+            "uv_matrix_rows": [
+              [
+                3.90625,
+                0.4829629131445341,
+                0.12940952255126037,
+                500.0
+              ],
+              [
+                0.0,
+                -0.5280489817871876,
+                3.9025572814929337,
+                500.0
+              ],
+              [
+                0.0,
+                0.9659258262890682,
+                0.25881904510252074,
+                1000.0
+              ]
+            ],
+            "image": {
+              "id": "input-view-0",
+              "label": "Fitting view 1",
+              "file": "vertebrae/input-view-0.png",
+              "sha256": "091cdabf198f0808bed919b8d55cad8562b9f2819c085d34a4f2dfe3d2e474f4",
+              "bytes": 5181,
+              "width": 96,
+              "height": 96,
+              "alt": "Fitting view 1",
+              "limits": [
+                0.0,
+                8.0
+              ],
+              "palette": "gray",
+              "masked_pixels": 0,
+              "low_clipped_pixels": 2061,
+              "high_clipped_pixels": 0,
+              "view_zero_based": 0,
+              "channel": "20\u201355 keV"
+            }
+          },
+          {
+            "view_zero_based": 16,
+            "label": "Fitting view 17",
+            "colour_rgb": [
+              0.0,
+              1.0,
+              0.0
+            ],
+            "source_mm": [
+              -866.0254037844387,
+              482.96291314453396,
+              129.40952255126032
+            ],
+            "detector_corners_mm": [
+              [
+                529.0127018922193,
+                -31.17706959492385,
+                -207.1268972590647
+              ],
+              [
+                337.0127018922194,
+                -352.39933023024213,
+                -293.1981425871979
+              ],
+              [
+                337.0127018922194,
+                -451.7858435496101,
+                77.71737470780437
+              ],
+              [
+                529.0127018922193,
+                -130.56358291429183,
+                163.78862003593756
+              ]
+            ],
+            "source_detector_distance_mm": 1500.0,
+            "uv_matrix_rows": [
+              [
+                -1.52011229810778,
+                -3.509123268048079,
+                -0.940266745814745,
+                499.99999999999955
+              ],
+              [
+                0.4330127018922195,
+                -1.2524933515039889,
+                3.708442997666043,
+                500.00000000000017
+              ],
+              [
+                0.8660254037844388,
+                -0.482962913144534,
+                -0.12940952255126034,
+                1000.0
+              ]
+            ],
+            "image": {
+              "id": "input-view-16",
+              "label": "Fitting view 17",
+              "file": "vertebrae/input-view-16.png",
+              "sha256": "d12c41ada1113a08854280f25f3c969fb8622715c964332f15d53ddf3deb74db",
+              "bytes": 5928,
+              "width": 96,
+              "height": 96,
+              "alt": "Fitting view 17",
+              "limits": [
+                0.0,
+                8.0
+              ],
+              "palette": "gray",
+              "masked_pixels": 0,
+              "low_clipped_pixels": 1685,
+              "high_clipped_pixels": 0,
+              "view_zero_based": 16,
+              "channel": "20\u201355 keV"
+            }
+          },
+          {
+            "view_zero_based": 32,
+            "label": "Fitting view 33",
+            "colour_rgb": [
+              0.0,
+              0.0,
+              1.0
+            ],
+            "source_mm": [
+              866.0254037844384,
+              482.9629131445346,
+              129.4095225512605
+            ],
+            "detector_corners_mm": [
+              [
+                -337.0127018922191,
+                -352.39933023024236,
+                -293.1981425871979
+              ],
+              [
+                -529.0127018922193,
+                -31.177069594924248,
+                -207.12689725906478
+              ],
+              [
+                -529.0127018922193,
+                -130.56358291429223,
+                163.78862003593747
+              ],
+              [
+                -337.0127018922191,
+                -451.7858435496103,
+                77.71737470780437
+              ]
+            ],
+            "source_detector_distance_mm": 1500.0,
+            "uv_matrix_rows": [
+              [
+                -2.3861377018922205,
+                3.026160354903544,
+                0.8108572232634842,
+                499.9999999999993
+              ],
+              [
+                -0.4330127018922192,
+                -1.252493351503989,
+                3.708442997666043,
+                500.0
+              ],
+              [
+                -0.8660254037844384,
+                -0.4829629131445346,
+                -0.12940952255126048,
+                1000.0
+              ]
+            ],
+            "image": {
+              "id": "input-view-32",
+              "label": "Fitting view 33",
+              "file": "vertebrae/input-view-32.png",
+              "sha256": "9f03ded35788fd88bbb29bbf50c39e76c909c73b17ef9b3629de060b4938af5b",
+              "bytes": 5997,
+              "width": 96,
+              "height": 96,
+              "alt": "Fitting view 33",
+              "limits": [
+                0.0,
+                8.0
+              ],
+              "palette": "gray",
+              "masked_pixels": 0,
+              "low_clipped_pixels": 1688,
+              "high_clipped_pixels": 2,
+              "view_zero_based": 32,
+              "channel": "20\u201355 keV"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "hap",
+      "title": "The acquired phantom radiographs",
+      "kind": "acquired-phantom",
+      "view_zero_based": 1,
+      "role": "fitting view; not a withheld evaluation",
+      "extent_uv_mm": [
+        -0.1,
+        206.3,
+        0.0,
+        50.400000000000006
+      ],
+      "extent_convention": "Native pixel-zero-centre coordinates; the extent spans sampled-cell spacing, not the physical pixel aperture",
+      "aspect": 4.095238095238095,
+      "channels": [
+        {
+          "id": "0",
+          "label": "Low (Total \u2212 High)",
+          "panels": [
+            {
+              "id": "channel-0-observed",
+              "label": "Acquired observation",
+              "file": "hap/channel-0-observed.png",
+              "sha256": "841c82f7c46a76b7f4e0fb1bd599de73494a6d61ea1ab9fa264e388c73e7cd60",
+              "bytes": 16072,
+              "width": 258,
+              "height": 63,
+              "alt": "Acquired observation",
+              "limits": [
+                0.0,
+                2.5
+              ],
+              "palette": "gray",
+              "masked_pixels": 671,
+              "low_clipped_pixels": 4692,
+              "high_clipped_pixels": 0
+            },
+            {
+              "id": "channel-0-predicted",
+              "label": "Fitted prediction",
+              "file": "hap/channel-0-predicted.png",
+              "sha256": "43ce00feaf2bc1f2bc8438bdf9d684b99c7b340bbb74b9e514a03ae6613293f1",
+              "bytes": 11753,
+              "width": 258,
+              "height": 63,
+              "alt": "Fitted prediction",
+              "limits": [
+                0.0,
+                2.5
+              ],
+              "palette": "gray",
+              "masked_pixels": 671,
+              "low_clipped_pixels": 344,
+              "high_clipped_pixels": 0
+            },
+            {
+              "id": "channel-0-residual",
+              "label": "Prediction \u2212 observation (normalised transmission)",
+              "file": "hap/channel-0-residual.png",
+              "sha256": "fe54c23b7604d5768f8feff13f002222ebe51f90d76cc36b3365b2cfa34d7e26",
+              "bytes": 44566,
+              "width": 258,
+              "height": 63,
+              "alt": "Prediction \u2212 observation (normalised transmission)",
+              "limits": [
+                -0.15,
+                0.15
+              ],
+              "palette": "RdBu_r",
+              "masked_pixels": 671,
+              "low_clipped_pixels": 0,
+              "high_clipped_pixels": 0
+            }
+          ]
+        },
+        {
+          "id": "1",
+          "label": "High",
+          "panels": [
+            {
+              "id": "channel-1-observed",
+              "label": "Acquired observation",
+              "file": "hap/channel-1-observed.png",
+              "sha256": "de8b2c3ebd1461035285bad8b8a63726290cacab828cbb786f267312a3536bb2",
+              "bytes": 14431,
+              "width": 258,
+              "height": 63,
+              "alt": "Acquired observation",
+              "limits": [
+                0.0,
+                2.5
+              ],
+              "palette": "gray",
+              "masked_pixels": 671,
+              "low_clipped_pixels": 2620,
+              "high_clipped_pixels": 0
+            },
+            {
+              "id": "channel-1-predicted",
+              "label": "Fitted prediction",
+              "file": "hap/channel-1-predicted.png",
+              "sha256": "43b6521d6e3b02247f9d3dcdd424f16f328f2710ff09ef08ef07172803480679",
+              "bytes": 7412,
+              "width": 258,
+              "height": 63,
+              "alt": "Fitted prediction",
+              "limits": [
+                0.0,
+                2.5
+              ],
+              "palette": "gray",
+              "masked_pixels": 671,
+              "low_clipped_pixels": 249,
+              "high_clipped_pixels": 0
+            },
+            {
+              "id": "channel-1-residual",
+              "label": "Prediction \u2212 observation (normalised transmission)",
+              "file": "hap/channel-1-residual.png",
+              "sha256": "4fa4dce026f0273f1af6f6db0b891134cd560d250df2ae45de1835f07170cf92",
+              "bytes": 43934,
+              "width": 258,
+              "height": 63,
+              "alt": "Prediction \u2212 observation (normalised transmission)",
+              "limits": [
+                -0.15,
+                0.15
+              ],
+              "palette": "RdBu_r",
+              "masked_pixels": 671,
+              "low_clipped_pixels": 0,
+              "high_clipped_pixels": 0
+            }
+          ]
+        }
+      ],
+      "licence": "CC BY 4.0; derived from Zhou et al., calibration phantom release",
+      "source_url": "https://doi.org/10.5281/zenodo.17328375",
+      "observation_display": "-log(max(transmission,1e-6)); limits[0,2.5]; masked pixels purple",
+      "residual_display": "predicted minus observed normalised transmission; limits[-0.15,0.15]",
+      "qualification": "Acquired cumulative Total/High observations; displayed Low is their difference. The fitted effective response fails a reserved calibration criterion. The shown frame was used for fitting."
+    }
+  ]
+}

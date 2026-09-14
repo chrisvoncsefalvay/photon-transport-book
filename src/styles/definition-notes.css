@@ -1,0 +1,327 @@
+definition-notes {
+  display: contents;
+}
+
+.defined-term {
+  background: none;
+  border: 0;
+  border-bottom: 1px dotted
+    color-mix(in srgb, var(--technical) 45%, transparent);
+  border-radius: 0;
+  color: inherit;
+  cursor: help;
+  display: inline;
+  font: inherit;
+  line-height: inherit;
+  padding: 0;
+  text-align: inherit;
+}
+
+.defined-term:is(:hover, :focus-visible),
+[data-definition-key]:not(button):hover {
+  background: color-mix(in srgb, var(--technical) 9%, transparent);
+}
+
+[data-definition-key]:not(button) {
+  cursor: help;
+}
+
+.definition-sidenote {
+  background: var(--paper);
+  border: 1px solid var(--rule-strong);
+  border-top: 2px solid var(--technical);
+  bottom: 1rem;
+  box-shadow: 0 0.3rem 1.5rem #18171317;
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  left: max(1rem, calc((100vw - 34rem) / 2));
+  line-height: 1.55;
+  max-height: min(55dvh, 36rem);
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 0 1rem 1rem;
+  position: fixed;
+  width: min(34rem, calc(100vw - 2rem));
+  z-index: 80;
+}
+
+.definition-sidenote[hidden],
+.notation-index [hidden] {
+  display: none !important;
+}
+
+.definition-sidenote__toolbar {
+  align-items: center;
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink-muted);
+  display: flex;
+  font-size: 0.68rem;
+  gap: 0.75rem;
+  justify-content: space-between;
+  padding-block: 0.4rem;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.definition-sidenote__toolbar button {
+  background: none;
+  border: 0;
+  color: var(--technical);
+  cursor: pointer;
+  font: inherit;
+  min-height: 2rem;
+  padding: 0.2rem;
+}
+
+.definition-sidenote__entry + .definition-sidenote__entry {
+  border-top: 1px solid var(--rule);
+  margin-top: 1rem;
+  padding-top: 0.65rem;
+}
+
+.definition-sidenote h3 {
+  font-family: var(--font-ui);
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.4;
+  margin: 0.65rem 0 0;
+}
+
+.definition-sidenote p {
+  margin: 0.55rem 0;
+}
+.definition-sidenote__domain,
+.definition-sidenote__qualification,
+.definition-sidenote__units {
+  color: var(--ink-muted);
+}
+.definition-sidenote__domain {
+  font-size: 0.68rem;
+  margin-top: 0.25rem !important;
+}
+.definition-sidenote__multiple {
+  color: var(--technical);
+  font-weight: 600;
+}
+.definition-sidenote__sources {
+  list-style: none;
+  margin: 0.65rem 0;
+  padding: 0;
+}
+.definition-sidenote__sources li + li {
+  margin-top: 0.3rem;
+}
+.definition-sidenote a {
+  color: var(--technical);
+  overflow-wrap: anywhere;
+  text-underline-offset: 0.16em;
+}
+.definition-sidenote__reference {
+  display: inline-block;
+  font-size: 0.68rem;
+  margin-top: 0.75rem;
+}
+.definition-sr-only {
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+.notation-index {
+  margin-inline: auto;
+  max-width: calc(var(--measure-wide) + 2 * var(--page-gutter));
+  padding: var(--space-8) var(--page-gutter);
+}
+.notation-index header > p:not(.eyebrow) {
+  max-width: var(--measure-prose);
+  margin-block: 1.25rem;
+}
+.notation-index h1 {
+  margin-top: 0.6rem;
+}
+.notation-index nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.5rem;
+  font-family: var(--font-ui);
+  font-size: 0.8rem;
+}
+.notation-index a {
+  color: var(--technical);
+  text-underline-offset: 0.18em;
+}
+.notation-filters {
+  align-items: end;
+  border-block: 1px solid var(--rule-strong);
+  display: grid;
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  gap: 0.8rem;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1.3fr) auto;
+  margin-block: 2rem;
+  padding-block: 1rem;
+}
+.notation-filters label {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+}
+.notation-filters :is(input, select, button) {
+  background: var(--paper);
+  border: 1px solid var(--rule-strong);
+  border-radius: 2px;
+  color: var(--ink);
+  font: inherit;
+  min-height: 2.5rem;
+  min-width: 0;
+  padding: 0.4rem 0.5rem;
+  width: 100%;
+}
+.notation-filters button {
+  cursor: pointer;
+}
+.notation-filters p {
+  color: var(--ink-muted);
+  grid-column: 1 / -1;
+  margin: 0;
+}
+.notation-section {
+  margin-top: 3rem;
+  scroll-margin-top: 6rem;
+}
+.notation-section h2 {
+  margin-bottom: 1rem;
+}
+.notation-table-scroll {
+  overflow-x: auto;
+}
+.notation-index table {
+  border-collapse: collapse;
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  line-height: 1.6;
+  min-width: 42rem;
+  width: 100%;
+}
+.notation-index caption {
+  color: var(--ink-muted);
+  padding: 0.6rem 0 0.8rem;
+  text-align: left;
+}
+.notation-table-number {
+  color: var(--accent);
+  font-weight: 600;
+  margin-right: 0.6rem;
+}
+.notation-index th,
+.notation-index td {
+  border-block-end: 1px solid var(--rule);
+  padding: 1rem 0.9rem;
+  text-align: left;
+  vertical-align: top;
+}
+.notation-index thead th {
+  border-block: 1px solid var(--rule-strong);
+  color: var(--ink-muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+.notation-index tbody th {
+  font-weight: 400;
+  width: 23%;
+}
+.notation-index td:last-child {
+  width: 24%;
+}
+.notation-index tbody tr {
+  scroll-margin-top: 6rem;
+}
+.notation-index tbody tr:target {
+  background: var(--accent-soft);
+}
+.notation-index td p {
+  margin: 0;
+}
+.notation-index td p + p {
+  margin-top: 0.75rem;
+}
+.notation-entry-link {
+  font-weight: 600;
+}
+.notation-spoken,
+.notation-aliases,
+.notation-domain {
+  color: var(--ink-muted);
+  display: block;
+  font-size: 0.7rem;
+  margin-top: 0.65rem;
+}
+.notation-qualification {
+  color: var(--ink-muted);
+}
+.notation-sources {
+  font-size: 0.7rem;
+  list-style: none;
+  margin: 0.7rem 0 0;
+  padding: 0;
+}
+.notation-sources li + li {
+  margin-top: 0.5rem;
+}
+.notation-axes {
+  display: grid;
+  gap: 0.4rem 0.7rem;
+  grid-template-columns: auto 1fr;
+  margin-block: 0.75rem;
+}
+.notation-axes dd {
+  margin: 0;
+}
+
+@media (min-width: 86rem) {
+  .definition-sidenote {
+    bottom: auto;
+    left: var(--definition-left);
+    max-height: calc(100dvh - 8rem);
+    top: var(--definition-top, 6rem);
+    width: 13rem;
+  }
+}
+
+@media (max-width: 48rem) {
+  .notation-filters {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .notation-filters label:first-child {
+    grid-column: 1 / -1;
+  }
+  .notation-filters button {
+    width: fit-content;
+  }
+}
+
+@media print {
+  .definition-sidenote,
+  .notation-filters {
+    display: none !important;
+  }
+  .defined-term {
+    border: 0;
+  }
+  .notation-table-scroll {
+    overflow: visible;
+  }
+  .notation-index table {
+    min-width: 0;
+    font-size: 9pt;
+  }
+  .notation-index [data-notation-entry][hidden] {
+    display: table-row !important;
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Differentiable Photon Transport terminology registry",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "id",
+      "term",
+      "definition",
+      "aliases",
+      "avoid",
+      "domain",
+      "source_keys",
+      "notes"
+    ],
+    "properties": {
+      "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+      "term": { "type": "string", "minLength": 1 },
+      "definition": { "type": "string", "minLength": 1 },
+      "aliases": {
+        "type": "array",
+        "items": { "type": "string" },
+        "uniqueItems": true
+      },
+      "avoid": {
+        "type": "array",
+        "items": { "type": "string" },
+        "uniqueItems": true
+      },
+      "domain": { "type": "string", "minLength": 1 },
+      "source_keys": {
+        "type": "array",
+        "items": { "type": "string" },
+        "uniqueItems": true
+      },
+      "notes": { "type": ["string", "null"] },
+      "bootstrap": { "type": "boolean" }
+    }
+  }
+}

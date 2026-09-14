@@ -1,0 +1,394 @@
+---
+import "../../styles/application-results.css";
+
+interface Props {
+  example: "registration" | "reconstruction";
+  id: string;
+}
+const { example, id } = Astro.props;
+const base = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/generated/worked-examples/${example}/`;
+const stages =
+  example === "registration"
+    ? [
+        ["initial", "Initial prediction"],
+        ["observed", "Observed counts"],
+        ["final", "Recovered prediction"],
+      ]
+    : [
+        ["reference", "Assigned reference"],
+        ["initial", "Uniform start"],
+        ["update100", "Update 100"],
+        ["final", "Stationary field"],
+        ["error", "Signed final error"],
+      ];
+const edge = example === "registration" ? "512" : "74.44";
+---
+
+<worked-raster data-kind={example} data-arrays={`${base}arrays.json`}>
+  {
+    example === "reconstruction" && (
+      <div
+        class="application-case-select native-raster__controls"
+        data-ready
+        hidden
+      >
+        <label>
+          Noise replicate{" "}
+          <select data-control="replicate">
+            <>
+              <option value="0">0</option>
+              <option value="1">1</option>
+            </>
+          </select>
+        </label>
+        <label>
+          Material{" "}
+          <select data-control="material">
+            <>
+              <option value="0">Water</option>
+              <option value="1">Bone</option>
+            </>
+          </select>
+        </label>
+        <label class="native-raster__slice">
+          Slice{" "}
+          <>
+            <input
+              type="range"
+              data-control="z"
+              min="-90"
+              max="90"
+              step="6"
+              value="0"
+              aria-label="Physical z plane in millimetres"
+            />
+            <output data-slice-label>z = 0 mm</output>
+          </>
+        </label>
+      </div>
+    )
+  }
+  <p class="application-source" data-load-status role="status">
+    Loading recorded arrays…
+  </p>
+  <div
+    class="application-radiograph-view native-raster__panels"
+    data-ready
+    hidden
+  >
+    {
+      stages.map(([state, title]) => (
+        <section
+          class="native-raster__panel"
+          aria-labelledby={`${id}-${state}-label`}
+        >
+          <h4 id={`${id}-${state}-label`}>{title}</h4>
+          <div class="native-raster__axes">
+            <>
+              <span class="native-raster__y">
+                {example === "registration" ? "v" : "y"} (mm)
+              </span>
+              <span class="native-raster__top">+{edge}</span>
+              <span class="native-raster__bottom">−{edge}</span>
+            </>
+            <div class="native-raster__canvas">
+              <canvas
+                data-state={state}
+                data-label={title}
+                tabindex="0"
+                role="img"
+                aria-label={`${title}; recorded numerical samples`}
+                width="128"
+                height="128"
+              >
+                {title}: download the recorded arrays below.
+              </canvas>
+              <span
+                data-cursor
+                class="native-raster__cursor"
+                hidden
+                aria-hidden="true"
+              />
+            </div>
+            <>
+              <span class="native-raster__left">−{edge}</span>
+              <span class="native-raster__right">+{edge}</span>
+              <span class="native-raster__x">
+                {example === "registration" ? "u" : "x"} (mm)
+              </span>
+            </>
+          </div>
+        </section>
+      ))
+    }
+  </div>
+  <div
+    class:list={[
+      "application-reading native-raster__legends",
+      { "native-raster__legends--registration": example === "registration" },
+    ]}
+    data-ready
+    hidden
+  >
+    {
+      example === "registration" ? (
+        <>
+          <label class="application-case-select native-raster__controls native-raster__view">
+            Detector view{" "}
+            <select data-control="view">
+              <>
+                <option value="a180">0°</option>
+                <option value="a270">90°</option>
+              </>
+            </select>
+          </label>
+          <div>
+            <>
+              <span>Display: log₁₀(1 + counts)</span>
+              <div class="native-raster__scale is-counts" />
+              <div class="native-raster__scale-labels">
+                <>
+                  <span>0</span>
+                  <span>log₁₀(10001)</span>
+                </>
+              </div>
+            </>
+          </div>
+        </>
+      ) : (
+        <>
+          <div>
+            <>
+              <span>Volume fraction</span>
+              <div class="native-raster__scale is-fraction" />
+              <div class="native-raster__scale-labels">
+                <>
+                  <span>0</span>
+                  <span>1</span>
+                </>
+              </div>
+            </>
+          </div>
+          <div>
+            <>
+              <span>Recovered − reference</span>
+              <div class="native-raster__scale is-error" />
+              <div class="native-raster__scale-labels">
+                <>
+                  <span>≤ −0.1</span>
+                  <span>0</span>
+                  <span>≥ +0.1</span>
+                </>
+              </div>
+            </>
+          </div>
+        </>
+      )
+    }
+  </div>
+  <p class="application-source native-raster__inspection" data-ready hidden>
+    <output data-inspection aria-live="off"></output>
+  </p>
+  <noscript
+    ><p class="application-reading">
+      Enable JavaScript to inspect the recorded fields, or download their
+      numerical values below.
+    </p></noscript
+  >
+  <details class="application-details native-raster__details">
+    <summary>Display and array data</summary>
+    <p class="native-raster__reading">
+      {
+        example === "registration"
+          ? "Both views retain all 128 × 128 detector samples. The same logarithmic count window is used for each panel; displayed pixels are not smoothed."
+          : "The same fraction and signed-error windows apply to both replicates and materials. The initial plane is z = 0 mm, halfway between two recorded sample planes. Moving the slice interpolates only between adjacent planes; no reconstruction is run in the page."
+      }
+    </p>
+    <div class="native-raster__data">
+      <a href={`${base}arrays.json`} download>Download recorded arrays</a>
+      <a href={`${base}arrays-provenance.json`}>Array provenance</a>
+    </div>
+  </details>
+</worked-raster>
+
+<script>
+  import { WorkedRaster } from "../../lib/worked-raster";
+  if (!customElements.get("worked-raster"))
+    customElements.define("worked-raster", WorkedRaster);
+</script>
+<style>
+  worked-raster {
+    display: block;
+    font-family: var(--font-ui);
+    line-height: 1.5;
+    min-width: 0;
+  }
+  [hidden] {
+    display: none !important;
+  }
+  .native-raster__controls {
+    gap: 0.6rem 1.5rem;
+  }
+  label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  input {
+    accent-color: var(--technical);
+    width: clamp(6rem, 16vw, 13rem);
+    min-height: 2.75rem;
+    min-width: 0;
+  }
+  .native-raster__slice output {
+    min-width: 5.5rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .native-raster__panels {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+    gap: 1rem;
+  }
+  .native-raster__panel {
+    min-width: 0;
+  }
+  h4 {
+    font-family: var(--font-ui);
+    font-size: 0.8rem;
+    font-weight: 500;
+    line-height: 1.4;
+    margin: 0 0 0.6rem;
+  }
+  .native-raster__axes {
+    --raster-left-gutter: 2.5rem;
+    --raster-tick-gap: 0.4rem;
+    position: relative;
+    padding: 0 0.3rem 2.9rem var(--raster-left-gutter);
+    font-size: 0.66rem;
+  }
+  .native-raster__canvas {
+    position: relative;
+  }
+  canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    image-rendering: pixelated;
+    outline: 1px solid var(--rule-strong);
+  }
+  canvas:focus-visible,
+  select:focus-visible,
+  input:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+  .native-raster__y {
+    position: absolute;
+    left: -0.25rem;
+    top: 42%;
+    transform: rotate(-90deg);
+  }
+  .native-raster__top,
+  .native-raster__bottom {
+    position: absolute;
+    right: calc(100% - var(--raster-left-gutter) + var(--raster-tick-gap));
+    text-align: right;
+    white-space: nowrap;
+  }
+  .native-raster__top {
+    top: -0.4rem;
+  }
+  .native-raster__bottom {
+    bottom: 2.6rem;
+  }
+  .native-raster__left,
+  .native-raster__right {
+    position: absolute;
+    bottom: 1.5rem;
+  }
+  .native-raster__left {
+    left: var(--raster-left-gutter);
+  }
+  .native-raster__right {
+    right: 0.3rem;
+  }
+  .native-raster__x {
+    position: absolute;
+    bottom: 0.2rem;
+    left: 55%;
+  }
+  .native-raster__cursor {
+    position: absolute;
+    width: 0.5rem;
+    height: 0.5rem;
+    border: 1px solid white;
+    box-shadow: 0 0 0 1px black;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+  .native-raster__legends {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 1.5rem;
+    font-size: 0.75rem;
+  }
+  .native-raster__legends--registration {
+    align-items: center;
+    justify-content: center;
+  }
+  .native-raster__view {
+    gap: 0.5rem;
+    margin: 0;
+  }
+  .native-raster__legends > div {
+    width: 14rem;
+    max-width: 100%;
+  }
+  .native-raster__scale {
+    height: 0.6rem;
+    margin-block: 0.4rem;
+    border: 1px solid var(--rule-strong);
+  }
+  .is-counts {
+    background: linear-gradient(to right, #000, #fff);
+  }
+  .is-fraction {
+    background: linear-gradient(to right, var(--paper), var(--technical));
+  }
+  .is-error {
+    background: linear-gradient(
+      to right,
+      var(--technical),
+      var(--paper),
+      var(--accent)
+    );
+  }
+  .native-raster__scale-labels {
+    display: flex;
+    justify-content: space-between;
+    font-variant-numeric: tabular-nums;
+  }
+  .native-raster__reading {
+    margin: 0.35rem 0 0.75rem;
+    color: var(--ink-muted);
+  }
+  .native-raster__data {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 1.5rem;
+    padding-block: 0.35rem 0.65rem;
+  }
+  .native-raster__inspection {
+    min-height: 3em;
+    font-variant-numeric: tabular-nums;
+  }
+  @media print {
+    .native-raster__controls,
+    .native-raster__inspection {
+      display: none;
+    }
+    .native-raster__panels {
+      break-inside: avoid;
+    }
+  }
+</style>

@@ -1,0 +1,166 @@
+.transmission-plots {
+  container-type: inline-size;
+  padding: clamp(0.65rem, 2vw, 1.5rem);
+  background: var(--paper-inset);
+  color: var(--ink);
+  font-family: var(--font-ui);
+}
+.transmission-plots__context,
+.transmission-plots__method {
+  margin: 0 !important;
+  color: var(--ink-muted);
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+.transmission-plots__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.75rem;
+  margin-block: 1.25rem;
+}
+.transmission-plot {
+  min-width: 0;
+}
+.transmission-plot h4 {
+  font-family: var(--font-ui);
+  font-size: 1.15rem;
+  font-weight: 500;
+  margin: 0 0 0.5rem;
+}
+.transmission-plot__canvas {
+  min-height: 252px;
+}
+.transmission-plot svg {
+  display: block;
+  width: 100%;
+  overflow: visible;
+}
+.transmission-plot svg text {
+  fill: var(--ink-muted);
+  font: 11px var(--font-ui);
+}
+.transmission-plot__gridline {
+  stroke: var(--rule);
+  stroke-width: 0.6;
+}
+.transmission-plot__axis {
+  stroke: var(--rule-strong);
+}
+.transmission-plot [data-style="primary"] {
+  --series: var(--accent);
+}
+.transmission-plot [data-style="reference"] {
+  --series: var(--technical);
+}
+.transmission-plot [data-style="diagnostic"] {
+  --series: var(--ink-faint);
+}
+.transmission-plot__line {
+  stroke: var(--series);
+  stroke-width: 1.4;
+  fill: none;
+}
+.transmission-plot__line[data-style="reference"] {
+  stroke-dasharray: 2 4;
+}
+.transmission-plot__line[data-style="diagnostic"] {
+  stroke-dasharray: 6 3;
+}
+.transmission-plot__point {
+  fill: var(--series);
+}
+.transmission-plot__point[data-style="reference"] {
+  fill: var(--paper-inset);
+  stroke: var(--series);
+  stroke-width: 1;
+}
+.transmission-plot__cursor {
+  stroke: var(--ink-muted);
+  stroke-dasharray: 3 4;
+  pointer-events: none;
+}
+.transmission-plot__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.8rem;
+  list-style: none;
+  padding: 0 !important;
+  margin: 0.5rem 0 !important;
+  font-size: 0.72rem;
+  line-height: 1.5;
+}
+.transmission-plot__legend li {
+  margin: 0 !important;
+}
+.transmission-plot__legend li::before {
+  content: "";
+  display: inline-block;
+  width: 1rem;
+  border-top: 2px solid var(--series);
+  margin-right: 0.3rem;
+  vertical-align: middle;
+}
+.transmission-plot__legend li[data-style="reference"]::before {
+  border-top-style: dotted;
+}
+.transmission-plot__legend li[data-style="diagnostic"]::before {
+  border-top-style: dashed;
+}
+.transmission-plot__scrubber {
+  display: grid;
+  gap: 0.3rem;
+  font-size: 0.72rem;
+  color: var(--ink-muted);
+}
+.transmission-plot__scrubber[hidden] {
+  display: none;
+}
+.transmission-plot__scrubber input {
+  width: 100%;
+  accent-color: var(--accent);
+}
+.transmission-plot__readout {
+  display: block;
+  margin-block: 0.5rem;
+  min-height: 3rem;
+  font: 0.7rem/1.6 var(--font-code);
+  overflow-wrap: anywhere;
+  white-space: pre-line;
+}
+.transmission-plot__note {
+  margin: 0 !important;
+  color: var(--ink-muted);
+  font-size: 0.73rem;
+  line-height: 1.5;
+}
+
+@container (min-width: 40rem) {
+  .transmission-plots__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .transmission-plots__grid[data-kind="sweep"] {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.transmission-plot__details {
+  margin-block-start: 0.5rem;
+  font-size: 0.73rem;
+}
+.transmission-plot__details summary {
+  cursor: pointer;
+  color: var(--accent);
+}
+.transmission-plot__details[hidden] {
+  display: none;
+}
+
+@media print {
+  .transmission-plot__details:not([hidden])::details-content {
+    content-visibility: visible;
+    display: block;
+  }
+  .transmission-plot__details:not([hidden]) > :not(summary) {
+    display: block !important;
+  }
+}

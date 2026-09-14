@@ -1,0 +1,438 @@
+---
+import { createHash } from "node:crypto";
+import recorded from "../../../public/generated/introduction-pose-sensitivity/data.json";
+import FigurePlate from "./FigurePlate.astro";
+
+interface Props {
+  id: string;
+}
+const { id } = Astro.props;
+import Citation from "../citations/Citation.astro";
+import {
+  assetUrl as rawAssetUrl,
+  formatValue,
+  parameterLabel,
+  posesForParameter,
+  validateData,
+  type Parameter,
+} from "../../lib/pose-sensitivity/data";
+import "../../styles/pose-sensitivity.css";
+const data = validateData(recorded);
+const assetVersion = createHash("sha256")
+  .update(JSON.stringify(recorded))
+  .digest("hex")
+  .slice(0, 12);
+const assetUrl = (file: string) => `${rawAssetUrl(file)}?v=${assetVersion}`;
+const axes = ["x", "y", "z"] as const;
+const groups = [
+  {
+    label: "Translation",
+    unit: `${data.signal_unit}/mm`,
+    limit: data.reference.translation_limit,
+    channels: data.sensitivities.slice(0, 3),
+  },
+  {
+    label: "Rotation",
+    unit: `${data.signal_unit}/rad`,
+    limit: data.reference.rotation_limit,
+    channels: data.sensitivities.slice(3),
+  },
+];
+const initialRow = Math.floor(data.height / 2),
+  initialColumn = Math.floor(data.width / 2);
+const recordedRange = (parameters: Parameter[], unit: string): string => {
+  const grids = parameters.map((parameter) =>
+    posesForParameter(data, parameter).map((pose) => pose.value),
+  );
+  const values = grids[0]!;
+  if (!grids.every((grid) => JSON.stringify(grid) === JSON.stringify(values)))
+    return "the coordinate-specific ranges in the figure metadata";
+  const intervals = values
+    .slice(1)
+    .map((value, index) => value - values[index]!);
+  const step = intervals[0];
+  const uniform =
+    step !== undefined &&
+    intervals.every(
+      (interval) => Math.abs(interval - step) <= Math.abs(step) * 1e-9,
+    );
+  return `${formatValue(values[0]!)} to ${formatValue(values[values.length - 1]!)} ${unit}${uniform ? ` in ${formatValue(step)} ${unit} increments` : " at the recorded samples"}`;
+};
+const translationRange = recordedRange(
+  groups[0]!.channels.map(({ id }) => id),
+  "mm",
+);
+const rotationRange = recordedRange(
+  groups[1]!.channels.map(({ id }) => id),
+  "rad",
+);
+---
+
+<FigurePlate
+  {id}
+  title="A projection and its six pose sensitivities"
+  description="The six signed sensitivity images show where a small pose change increases or decreases expected counts for the synthetic pelvis in a fixed AP beam. Their different spatial patterns reveal which image features constrain each pose coordinate."
+  width="full"
+>
+  <dpt-pose-sensitivity
+    class="pose-sensitivity"
+    data-record={JSON.stringify(data)}
+  >
+    <div class="ps-overview">
+      <section
+        class="ps-anatomy"
+        aria-label="Pelvic anatomy and AP acquisition geometry"
+      >
+        <div class="ps-viewport" data-pose-viewport>
+          <canvas
+            data-pose-canvas
+            hidden
+            tabindex="0"
+            aria-label="Move the pelvis using the axis handles. T selects translation, R rotation. X, Y or Z selects an axis. Arrow keys step through poses. Home restores the reference pose."
+            aria-describedby="ps-transform-help"></canvas>
+          <div class="ps-scene-key" aria-hidden="true">
+            <strong>Pelvic anatomy</strong>
+            <span>x right · y anterior · z superior (RAS)</span>
+          </div>
+          <p class="ps-scene-status" data-scene-status role="status">
+            The 3D anatomy loads as this figure comes into view. The recorded
+            images are available below.
+          </p>
+          <div class="ps-view-tools" role="group" aria-label="Pelvis movement">
+            <button
+              type="button"
+              data-transform-mode="translate"
+              aria-pressed="true"
+              title="Translate the pelvis (T)"
+              disabled>Translate</button
+            >
+            <button
+              type="button"
+              data-transform-mode="rotate"
+              aria-pressed="false"
+              title="Rotate the pelvis (R)"
+              disabled>Rotate</button
+            >
+            <button
+              type="button"
+              data-reference-pose
+              title="Restore the reference pose (Home)"
+              disabled>Reset</button
+            >
+          </div>
+        </div>
+        <dl class="ps-pose-values" aria-label="Displayed pelvis pose">
+          {
+            data.sensitivities.map((channel, index) => (
+              <div>
+                <dt>
+                  {index < 3 ? "t" : "ω"}
+                  <sub>{axes[index % 3]}</sub>
+                </dt>
+                <dd>
+                  <output
+                    data-pose-value={channel.id}
+                    aria-label={parameterLabel(channel.id)}
+                  >
+                    0 {index < 3 ? "mm" : "rad"}
+                  </output>
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
+        <span
+          class="ps-sr-only"
+          id="ps-transform-help"
+          data-transform-status
+          aria-live="polite"
+          >Drag an axis handle. Each move uses one recorded coordinate. The
+          other coordinates return to zero.</span
+        >
+      </section>
+      <section class="ps-projection" aria-labelledby="ps-projection-title">
+        <div class="ps-panel-heading">
+          <h3 id="ps-projection-title">Rendered projection</h3>
+          <label
+            class="ps-delta-toggle"
+            title="Show current minus previous displayed projection"
+          >
+            <input
+              type="checkbox"
+              data-delta-toggle
+              disabled
+              aria-label="Show difference from the previous displayed frame"
+            /> Δ
+          </label>
+        </div>
+        <button
+          type="button"
+          class="ps-image"
+          data-image-channel="0"
+          disabled
+          aria-label="Inspect the recorded projection pixel. Arrow keys move between detector pixels."
+        >
+          <img
+            data-projection-image
+            src={assetUrl(data.reference.projection)}
+            alt={`${data.signal_label} from the synthetic pelvic CT at the reference pose.`}
+            width={data.width}
+            height={data.height}
+            loading="lazy"
+            decoding="async"
+          />
+          <canvas
+            data-delta-image
+            width={data.width}
+            height={data.height}
+            hidden
+            aria-label="Signed difference from the previous displayed projection"
+          ></canvas>
+          <span class="ps-crosshair" aria-hidden="true"></span>
+        </button>
+        {
+          data.reference.display && (
+            <p class="ps-display-note" data-projection-display>
+              Logarithmic count display · 0–
+              {formatValue(data.reference.display.projection_max)}{" "}
+              {data.signal_unit}
+            </p>
+          )
+        }
+        <p class="ps-display-note ps-delta-scale" data-delta-scale hidden></p>
+        <p class="ps-projection-pose" data-current-pose>Reference pose</p>
+      </section>
+    </div>
+
+    <div class="ps-analysis">
+      <div class="ps-sensitivity-panels">
+        <div class="ps-groups">
+          {
+            groups.map((group) => (
+              <section
+                class="ps-family"
+                aria-label={`${group.label} sensitivities at the reference pose`}
+              >
+                <div class="ps-family-heading">
+                  <>
+                    <h4>{group.label}</h4>
+                    <span class="ps-unit">{group.unit}</span>
+                  </>
+                </div>
+                <div class="ps-maps">
+                  {group.channels.map((channel) => (
+                    <section class="ps-map">
+                      <h5>
+                        <a
+                          href={assetUrl(channel.image)}
+                          target="_blank"
+                          rel="noopener"
+                          title={`Open full-size ${parameterLabel(channel.id).toLowerCase()} sensitivity image`}
+                        >
+                          {parameterLabel(channel.id)}
+                        </a>
+                      </h5>
+                      <button
+                        type="button"
+                        class="ps-image"
+                        data-image-channel={
+                          data.sensitivities.indexOf(channel) + 1
+                        }
+                        aria-label={`Inspect ${parameterLabel(channel.id).toLowerCase()} sensitivity. Arrow keys move between detector pixels.`}
+                        disabled
+                      >
+                        <img
+                          src={assetUrl(channel.image)}
+                          alt={`Signed ${parameterLabel(channel.id).toLowerCase()} sensitivity at the reference pose. Blue is negative, and rust is positive. Units: ${channel.unit}.`}
+                          width={data.width}
+                          height={data.height}
+                          loading="lazy"
+                          decoding="async"
+                        />
+                        <span class="ps-crosshair" aria-hidden="true" />
+                      </button>
+                    </section>
+                  ))}
+                </div>
+                <div
+                  class="ps-colour-scale"
+                  role="img"
+                  aria-label={`${group.label} scale: minus ${formatValue(group.limit)} to plus ${formatValue(group.limit)} ${group.unit}, with zero at the centre.`}
+                >
+                  <>
+                    <span aria-hidden="true" />
+                    <div aria-hidden="true">
+                      <>
+                        <span>−{formatValue(group.limit)}</span>
+                        <span>0</span>
+                        <span>+{formatValue(group.limit)}</span>
+                      </>
+                    </div>
+                  </>
+                </div>
+                {data.reference.display && (
+                  <p class="ps-scale-note">Symmetric asinh colour scale</p>
+                )}
+              </section>
+            ))
+          }
+        </div>
+        <p class="ps-reference-note" data-reference-note>
+          The six derivatives are evaluated at the reference pose, including
+          when a perturbed projection is selected.
+        </p>
+      </div>
+      <section class="ps-inspector" aria-label="Detector pixel values">
+        <div class="ps-pixel-inputs">
+          <label
+            >Column <input
+              type="number"
+              data-pixel-column
+              min="0"
+              max={data.width - 1}
+              value={initialColumn}
+              step="1"
+              disabled
+            /></label
+          ><label
+            >Row <input
+              type="number"
+              data-pixel-row
+              min="0"
+              max={data.height - 1}
+              value={initialRow}
+              step="1"
+              disabled
+            /></label
+          ><span class="ps-unit">zero-based detector indices</span>
+        </div>
+        <dl class="ps-values">
+          <div>
+            <dt>
+              <span data-projection-value-label>Projection</span>
+              <small>{data.signal_unit}</small>
+            </dt><dd data-pixel-value="0">—</dd>
+          </div>{
+            data.sensitivities.map((channel, index) => (
+              <div>
+                <>
+                  <dt>
+                    {index < 3 ? "t" : "ω"}
+                    <sub>{axes[index % 3]}</sub> <small>{channel.unit}</small>
+                  </dt>
+                  <dd data-pixel-value={index + 1}>—</dd>
+                </>
+              </div>
+            ))
+          }
+        </dl>
+        <p class="ps-data-status" data-data-status>
+          Pixel values load from the recorded execution data.
+        </p>
+        <p class="ps-data-status" data-fd-status>
+          Independent finite-difference check status loads alongside the
+          recorded samples.
+        </p>
+        <span class="ps-sr-only" data-pixel-announcement aria-live="polite"
+        ></span>
+      </section>
+    </div>
+    <details class="ps-method">
+      <summary>What is shown, and where the data came from</summary>
+      <p>
+        The CT was generated using MAISI <Citation keys={["zhao2026maisi"]} /> and
+        the bone mask was enhanced for visual clarity.
+      </p>
+      <p>
+        The illustrative 80 keV water-equivalent model converts synthetic CT
+        values to attenuation with <code
+          >μ = 0.01837 × max(0, 1 + HU/1000) mm⁻¹</code
+        >. A primary-only cone beam and ideal count response use 1000 expected
+        open-beam counts per pixel. The source is 750 mm anterior to the sacral
+        pivot and the detector is 450 mm posterior to it. Scatter and spectral
+        effects are omitted. The pivot and RAS coordinates are fixed across all
+        recorded poses. Rotational derivatives use radians.
+      </p>
+      {
+        data.reference.display && (
+          <p>
+            Display transforms preserve the stored values used by the pixel
+            inspector. The grey level is{" "}
+            <code>
+              log1p(F) / log1p({data.reference.display.projection_max})
+            </code>
+            . For a family limit <code>L</code>, the signed colour coordinate is{" "}
+            <code>
+              asinh(J / ({data.reference.display.asinh_softening_fraction} L)) /
+              asinh(
+              {formatValue(1 / data.reference.display.asinh_softening_fraction)}
+              )
+            </code>
+            . The translation and rotation limits are separate. No values are
+            clipped.
+          </p>
+        )
+      }
+      <p>
+        Drag an arrow to translate the pelvis or a ring to rotate it. Movements
+        snap to the recorded poses. Translations span {translationRange}, and
+        rotations span {rotationRange}. Each move uses one coordinate at a time,
+        while the other coordinates return to zero. The camera stays fixed.
+        Image right is model right and the top is superior. The full CT supplies
+        the projection. The 3D view shows its pelvic bone surfaces.
+      </p>
+      <p>
+        The Δ toggle subtracts the previous displayed projection from the
+        current one, in counts. Its blue–rust colour scale is symmetric about
+        zero, with limits set by the largest absolute difference in that pair.
+        Before the first movement, the difference is zero. The pixel inspector
+        reports the displayed counts or difference. The six derivatives stay at
+        the reference pose. Switching the toggle does not change the comparison
+        frame.
+      </p>
+      <p>
+        Projection and sensitivity colours use the recorded display scales. The
+        browser selects recorded projections, subtracts their stored counts in Δ
+        mode and transforms the supplied surfaces. It does not calculate photon
+        transport. <a href={assetUrl(data.provenance.url)}
+          >{data.provenance.label}</a
+        >. Bone-label source: <a href="https://doi.org/10.5281/zenodo.10047292"
+          >TotalSegmentator v2, CC BY 4.0</a
+        >.
+      </p>
+      <p>
+        Downloads: <a href={assetUrl("panel.png")}>static figure</a> · <a
+          href={assetUrl("data.json")}>figure metadata</a
+        > · <a href={assetUrl(data.reference.channels_f32)}
+          >recorded float32 values</a
+        >.
+      </p>
+    </details>
+    <noscript>
+      <style is:inline>
+        .pose-sensitivity .ps-anatomy,
+        .pose-sensitivity .ps-delta-toggle,
+        .pose-sensitivity .ps-inspector {
+          display: none;
+        }
+        .pose-sensitivity .ps-analysis {
+          display: block;
+        }
+        .pose-sensitivity .ps-overview {
+          display: block;
+          max-width: 40rem;
+          margin-inline: auto;
+        }
+      </style>
+      <p class="ps-no-script">
+        The seven recorded images and their scales remain available without
+        JavaScript. Open an image title to inspect the full-size sensitivity
+        map.
+      </p>
+    </noscript>
+  </dpt-pose-sensitivity>
+</FigurePlate>
+<script>
+  import { mountPoseSensitivityElements } from "../../lib/pose-sensitivity/element";
+  mountPoseSensitivityElements();
+</script>

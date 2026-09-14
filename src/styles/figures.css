@@ -1,0 +1,268 @@
+.figure-plate {
+  margin-block: var(--space-8);
+  scroll-margin-top: 6rem;
+}
+
+.figure-plate__surface {
+  background: var(--paper-inset);
+  border: 1px solid var(--rule);
+  box-shadow: var(--shadow-plate);
+  min-height: 14rem;
+}
+
+/* Static plots supply their own aspect ratio; reserve canvas height only for islands. */
+.figure-plate__surface:has(> img),
+.figure-plate__surface:has(> a > img) {
+  min-height: 0;
+}
+
+.figure-plate__caption {
+  background: var(--paper-inset);
+  border: 1px solid var(--rule);
+  border-block-start: 0;
+  display: grid;
+  font-family: var(--font-ui);
+  font-size: var(--size--1);
+  gap: var(--space-1);
+  line-height: 1.45;
+  padding: var(--space-4);
+}
+
+.figure-plate__number {
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+.figure-plate__caption strong {
+  font-family: var(--font-display);
+  font-size: var(--size-1);
+  font-weight: 500;
+}
+
+.figure-plate__caption > span:last-child:not(.figure-plate__number) {
+  color: var(--ink-muted);
+}
+
+.interactive-figure {
+  display: block;
+}
+
+.interactive-figure__frame {
+  background:
+    linear-gradient(var(--rule) 1px, transparent 1px),
+    linear-gradient(90deg, var(--rule) 1px, transparent 1px), var(--paper-inset);
+  background-size: 2.5rem 2.5rem;
+  height: clamp(18rem, 48vw, 32rem);
+  isolation: isolate;
+  overflow: hidden;
+  position: relative;
+}
+
+.interactive-figure--compact .interactive-figure__frame {
+  height: clamp(14rem, 38vw, 23rem);
+}
+
+.interactive-figure--tall .interactive-figure__frame {
+  height: clamp(24rem, 60vw, 42rem);
+}
+
+.interactive-figure canvas,
+.interactive-figure__fallback {
+  height: 100%;
+  inset: 0;
+  position: absolute;
+  width: 100%;
+}
+
+.interactive-figure__fallback {
+  color: var(--technical);
+}
+
+.interactive-figure canvas[hidden],
+.interactive-figure__fallback[hidden],
+.interactive-figure__controls[hidden] {
+  display: none;
+}
+
+.interactive-figure canvas {
+  cursor: grab;
+  touch-action: pan-y;
+}
+
+.interactive-figure[data-dragging="true"] canvas {
+  cursor: grabbing;
+}
+
+.interactive-figure canvas:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -4px;
+}
+
+.interactive-figure__controls {
+  bottom: var(--space-3);
+  font-family: var(--font-ui);
+  position: absolute;
+  right: var(--space-3);
+  z-index: 2;
+}
+
+.interactive-figure__buttons {
+  display: flex;
+  gap: 2px;
+}
+
+.interactive-figure__buttons button {
+  background: color-mix(in srgb, var(--paper-raised) 72%, transparent);
+  border: 1px solid color-mix(in srgb, var(--rule) 70%, transparent);
+  color: var(--technical);
+  cursor: pointer;
+  font-size: 1.15rem;
+  line-height: 1;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0;
+}
+
+.interactive-figure__buttons button:is(:hover, :focus-visible) {
+  background: var(--paper-raised);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.interactive-figure__fallback line,
+.interactive-figure__fallback path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.interactive-figure__fallback circle {
+  fill: var(--accent);
+}
+
+.interactive-figure__fallback text {
+  fill: var(--ink-muted);
+  font-family: var(--font-code);
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.interactive-figure__status {
+  background: color-mix(in srgb, var(--paper-raised) 88%, transparent);
+  bottom: var(--space-3);
+  color: var(--ink-muted);
+  font-family: var(--font-ui);
+  font-size: 0.7rem;
+  left: var(--space-3);
+  line-height: 1;
+  margin: 0;
+  padding: var(--space-2) var(--space-3);
+  position: absolute;
+  z-index: 2;
+}
+
+.interactive-figure__instructions,
+.interactive-figure__status:not([data-figure-error="true"]) {
+  clip-path: inset(50%);
+  height: 1px;
+  margin: 0;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+.margin-note {
+  border-block-start: 1px solid var(--accent);
+  color: var(--ink-muted);
+  font-family: var(--font-ui);
+  font-size: var(--size--1);
+  line-height: 1.5;
+  margin-block: var(--space-6);
+  padding-block-start: var(--space-3);
+}
+
+.margin-note p {
+  margin: 0;
+}
+
+.equation-note {
+  align-items: baseline;
+  border-inline-start: 2px solid var(--technical);
+  display: grid;
+  grid-template-columns: 4.25rem minmax(0, 1fr);
+  font-family: var(--font-ui);
+  font-size: var(--size--1);
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-4);
+  transition:
+    background-color 420ms var(--motion-ease),
+    border-color 420ms var(--motion-ease);
+}
+
+.equation-note[role="button"] {
+  cursor: pointer;
+}
+
+/* Astro may emit the component script after the first note. */
+.equation-note + .equation-note,
+.equation-note + script + .equation-note {
+  margin-block-start: var(--space-1);
+}
+
+.equation-note__symbol {
+  color: var(--notation-colour, var(--technical));
+  font-weight: normal;
+}
+
+.equation-note__definition p {
+  margin: 0;
+}
+
+.equation-note:is(:hover, :focus-visible),
+.equation-note[data-notation-locked="true"] {
+  background: color-mix(in srgb, var(--notation-colour) 6%, transparent);
+  border-inline-start-color: var(--notation-colour);
+}
+
+[data-notation-symbol] {
+  border-radius: 0.12em;
+  box-decoration-break: clone;
+  background-color: transparent;
+  box-shadow: 0 0 0 0.06em transparent;
+  transition:
+    background-color 420ms var(--motion-ease),
+    box-shadow 420ms var(--motion-ease),
+    color 420ms var(--motion-ease);
+}
+
+[data-notation-symbol][data-notation-preview="true"] {
+  background: color-mix(in srgb, var(--notation-colour) 13%, transparent);
+  box-shadow: 0 0 0 0.06em
+    color-mix(in srgb, var(--notation-colour) 20%, transparent);
+}
+
+[data-notation-symbol][data-notation-locked="true"] {
+  background: color-mix(in srgb, var(--notation-colour) 22%, transparent);
+  box-shadow: 0 0 0 0.06em
+    color-mix(in srgb, var(--notation-colour) 48%, transparent);
+}
+
+@media (min-width: 86rem) {
+  .margin-note {
+    left: calc(100% + 2.5rem);
+    margin: 0;
+    position: absolute;
+    width: 13rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .equation-note,
+  [data-notation-symbol] {
+    transition: none;
+  }
+}

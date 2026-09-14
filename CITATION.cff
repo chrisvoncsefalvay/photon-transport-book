@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: "Please cite the released edition and the specific source commit used for computational results."
+title: "Differentiable Photon Transport — Volume I: Foundations"
+type: software
+authors:
+  - family-names: von Csefalvay
+    given-names: Chris
+repository-code: "https://github.com/chrisvoncsefalvay/photon-transport-book"
+license: CC-BY-NC-4.0
+version: 0.0.0-bootstrap
+date-released: 2026-09-07
+url: "https://photontransport.com/"

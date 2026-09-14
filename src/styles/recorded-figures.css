@@ -1,0 +1,44 @@
+.recorded-figure {
+  padding: clamp(0.8rem, 2.5vw, 2rem);
+  min-width: 0;
+}
+.recorded-figure .recorded-panels {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.8rem;
+  align-items: start;
+}
+.recorded-figure .recorded-data {
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  color: var(--ink-muted);
+  margin-top: 1.5rem;
+  line-height: 1.6;
+}
+.recorded-data summary {
+  width: fit-content;
+  cursor: pointer;
+  padding-block: 0.35rem;
+}
+.recorded-data summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+.recorded-data p {
+  margin: 0.5rem 0;
+}
+.recorded-data ul {
+  margin: 0.5rem 0 0;
+  padding-inline-start: 1.3rem;
+}
+.recorded-data li {
+  margin: 0.15rem 0;
+}
+.recorded-data a {
+  overflow-wrap: anywhere;
+}
+@media (max-width: 700px) {
+  .recorded-figure .recorded-panels {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

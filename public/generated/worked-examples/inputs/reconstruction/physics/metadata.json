@@ -1,0 +1,479 @@
+{
+  "schema_version": 1,
+  "created_utc": "2026-09-13T02:45:13.889616+00:00",
+  "model_id": "xraylib-icrp-spekpy120-al25-v1",
+  "kind": "new_open_simulated_spectral_acquisition",
+  "materials": [
+    {
+      "id": "water",
+      "reference_name": "Water, Liquid",
+      "density_g_cm3": 1.0,
+      "element_mass_fractions": [
+        {
+          "atomic_number": 1,
+          "fraction": 0.111894
+        },
+        {
+          "atomic_number": 8,
+          "fraction": 0.888106
+        }
+      ],
+      "element_count": 2,
+      "composition_interpretation": "Fixed xraylib reference compound; not patient composition."
+    },
+    {
+      "id": "cortical_bone",
+      "reference_name": "Bone, Cortical (ICRP)",
+      "density_g_cm3": 1.85,
+      "element_mass_fractions": [
+        {
+          "atomic_number": 1,
+          "fraction": 0.047234
+        },
+        {
+          "atomic_number": 6,
+          "fraction": 0.14433
+        },
+        {
+          "atomic_number": 7,
+          "fraction": 0.04199
+        },
+        {
+          "atomic_number": 8,
+          "fraction": 0.446096
+        },
+        {
+          "atomic_number": 12,
+          "fraction": 0.0022
+        },
+        {
+          "atomic_number": 15,
+          "fraction": 0.10497
+        },
+        {
+          "atomic_number": 16,
+          "fraction": 0.00315
+        },
+        {
+          "atomic_number": 20,
+          "fraction": 0.20993
+        },
+        {
+          "atomic_number": 30,
+          "fraction": 0.0001
+        }
+      ],
+      "element_count": 9,
+      "composition_interpretation": "Fixed xraylib reference compound; not patient composition."
+    }
+  ],
+  "acquisition": {
+    "generator": "SpekPy",
+    "generator_version": "2.5.4",
+    "generator_constructor": {
+      "kvp": 120.0,
+      "th": 12.0,
+      "dk": 1.0,
+      "physics": "casim",
+      "mu_data_source": "pene",
+      "x": 0.0,
+      "y": 0.0,
+      "z": 100.0,
+      "mas": 1.0,
+      "brem": true,
+      "char": true,
+      "obli": true,
+      "targ": "W",
+      "shift": 0.0,
+      "trans": false
+    },
+    "filtration": [
+      {
+        "material": "Al",
+        "thickness_mm": 2.5,
+        "density_g_cm3": 2.699,
+        "implementation": "exp(-xraylib.CS_Total(13,E)*density/10*thickness_mm)"
+      }
+    ],
+    "thresholds_kev": [
+      20.0,
+      55.0,
+      80.0,
+      120.0
+    ],
+    "channel_selection": "Fixed before generation; no optimisation.",
+    "response": "Ideal disjoint photon-count channels, unit quantum efficiency, lower-inclusive upper-exclusive boundaries.",
+    "retained_energy_interval_kev": [
+      20,
+      120
+    ],
+    "energy_bin_width_kev": 1.0,
+    "incident_photons_per_ray_per_exposure_in_retained_interval": 200000.0,
+    "channel_open_beam_expected_counts": [
+      106278.70464024905,
+      68639.04547677895,
+      25082.249882972043
+    ],
+    "excluded_below_20kev_filtered_fluence_fraction": 0.005368973657707916,
+    "detector_acceptance": "Uniform per-pixel detector-plane fluence; no second area or inverse-square factor.",
+    "exposure": 1.0,
+    "gain": 1.0,
+    "offset": 0.0
+  },
+  "coefficients_provenance": [
+    {
+      "source": "https://files.pythonhosted.org/packages/06/22/437d6051b1557615bdbe2b6a52e8659248eff7f42abff888c3b51c00439e/xraylib-4.3.0.tar.gz",
+      "sha256": "328bdccff6b7ea511757d6eb22ab7983de13b41e70369a0967e2c543c2bfed1e",
+      "rights": "BSD-3-Clause; retain original notices in license_all.txt and compound-data headers",
+      "description": "xraylib 4.3.0 CS_Total_CP('Water, Liquid'); nominal density 1.0 g/cm^3; direct energy evaluation in keV, cm^2/g to mm^-1."
+    },
+    {
+      "source": "https://files.pythonhosted.org/packages/06/22/437d6051b1557615bdbe2b6a52e8659248eff7f42abff888c3b51c00439e/xraylib-4.3.0.tar.gz",
+      "sha256": "328bdccff6b7ea511757d6eb22ab7983de13b41e70369a0967e2c543c2bfed1e",
+      "rights": "BSD-3-Clause; retain original notices in license_all.txt and compound-data headers",
+      "description": "xraylib 4.3.0 CS_Total_CP('Bone, Cortical (ICRP)'); nominal density 1.85 g/cm^3; direct energy evaluation in keV, cm^2/g to mm^-1."
+    }
+  ],
+  "spectrum_provenance": {
+    "source": "source-spectrum.csv; https://pypi.org/project/spekpy/2.5.4/",
+    "sha256": "8c86de0d936aa77efeecc0314135584d3a753ab950a74efa4d58d5c0949128e3",
+    "rights": "Generated spectrum; retain SpekPy MIT and xraylib BSD notices.",
+    "description": "SpekPy casim W 120 kVp, 12 degrees, PENELOPE attenuation; explicit xraylib Al 2.5 mm filtration; 200000 photons per pixel/exposure."
+  },
+  "response_provenance": {
+    "source": "acquisition-definition.json",
+    "sha256": "75f0e8077f82d093d9838dfcf3a3cb42787b2a58f87d891b3d1c9ac2f45194f1",
+    "rights": "Project-authored ideal response model.",
+    "description": "Ideal disjoint photon-count channels, unit quantum efficiency, lower-inclusive upper-exclusive boundaries."
+  },
+  "spectral_spec": {
+    "materials": 2,
+    "energies": 100,
+    "coefficients_provenance": [
+      {
+        "source": "https://files.pythonhosted.org/packages/06/22/437d6051b1557615bdbe2b6a52e8659248eff7f42abff888c3b51c00439e/xraylib-4.3.0.tar.gz",
+        "sha256": "328bdccff6b7ea511757d6eb22ab7983de13b41e70369a0967e2c543c2bfed1e",
+        "rights": "BSD-3-Clause; retain original notices in license_all.txt and compound-data headers",
+        "description": "xraylib 4.3.0 CS_Total_CP('Water, Liquid'); nominal density 1.0 g/cm^3; direct energy evaluation in keV, cm^2/g to mm^-1."
+      },
+      {
+        "source": "https://files.pythonhosted.org/packages/06/22/437d6051b1557615bdbe2b6a52e8659248eff7f42abff888c3b51c00439e/xraylib-4.3.0.tar.gz",
+        "sha256": "328bdccff6b7ea511757d6eb22ab7983de13b41e70369a0967e2c543c2bfed1e",
+        "rights": "BSD-3-Clause; retain original notices in license_all.txt and compound-data headers",
+        "description": "xraylib 4.3.0 CS_Total_CP('Bone, Cortical (ICRP)'); nominal density 1.85 g/cm^3; direct energy evaluation in keV, cm^2/g to mm^-1."
+      }
+    ],
+    "spectrum_provenance": {
+      "source": "source-spectrum.csv; https://pypi.org/project/spekpy/2.5.4/",
+      "sha256": "8c86de0d936aa77efeecc0314135584d3a753ab950a74efa4d58d5c0949128e3",
+      "rights": "Generated spectrum; retain SpekPy MIT and xraylib BSD notices.",
+      "description": "SpekPy casim W 120 kVp, 12 degrees, PENELOPE attenuation; explicit xraylib Al 2.5 mm filtration; 200000 photons per pixel/exposure."
+    },
+    "response_provenance": {
+      "source": "acquisition-definition.json",
+      "sha256": "75f0e8077f82d093d9838dfcf3a3cb42787b2a58f87d891b3d1c9ac2f45194f1",
+      "rights": "Project-authored ideal response model.",
+      "description": "Ideal disjoint photon-count channels, unit quantum efficiency, lower-inclusive upper-exclusive boundaries."
+    },
+    "output_unit": "counts",
+    "input_description": "Fixed-density xraylib Water, Liquid (1 g/cm^3) and Bone, Cortical (ICRP) (1.85 g/cm^3) volume fractions; nonnegative sum at most one, remainder vacuum. Material paths in mm; prescribed ideal detector-plane photon fluence.",
+    "shared_weights": true,
+    "shared_response": true,
+    "active_paths": true,
+    "active_weights": false,
+    "active_response": false,
+    "active_coefficients": false,
+    "reduction_groups": 64
+  },
+  "physics_npz_sha256": "2e853d80dba2dbd5c33f49be8354c164d6c625d1f520105cdab1cd99db51dbd5",
+  "packages": [
+    {
+      "name": "xraylib",
+      "version": "4.3.0",
+      "filename": "xraylib-4.3.0.tar.gz",
+      "bytes": 13206051,
+      "sha256": "328bdccff6b7ea511757d6eb22ab7983de13b41e70369a0967e2c543c2bfed1e",
+      "download_url": "https://files.pythonhosted.org/packages/06/22/437d6051b1557615bdbe2b6a52e8659248eff7f42abff888c3b51c00439e/xraylib-4.3.0.tar.gz",
+      "metadata_url": "https://pypi.org/pypi/xraylib/4.3.0/json",
+      "licence": "BSD-3-Clause; retain original notices in license_all.txt and compound-data headers",
+      "citation": "https://doi.org/10.1016/j.sab.2011.09.011",
+      "intake": "verified local cache"
+    },
+    {
+      "name": "spekpy",
+      "version": "2.5.4",
+      "filename": "spekpy-2.5.4-py3-none-any.whl",
+      "bytes": 164180893,
+      "sha256": "2f01e805721281b5a3e332500db577cedaf71bde0f0d3838745b915e6f1c258a",
+      "download_url": "https://files.pythonhosted.org/packages/b6/ea/cbac7c7bbcec2438c3b4641cfbd11f2452d226812fdd49b404b4977367d5/spekpy-2.5.4-py3-none-any.whl",
+      "metadata_url": "https://pypi.org/pypi/spekpy/2.5.4/json",
+      "licence": "MIT; copyright 2019 Robert Bujila and Gavin Poludniowski",
+      "citation": "https://doi.org/10.1002/mp.14945",
+      "intake": "verified local cache"
+    }
+  ],
+  "notices": [
+    {
+      "file": "sources/xraylib-license_all.txt",
+      "sha256": "dc793dac39e5a3744b935b14e4658c4d880ba799d39f24a9a1424b32120ca8fb"
+    },
+    {
+      "file": "sources/xraylib-license_tom.txt",
+      "sha256": "44876ed58d712ea7ab03c6d9fb1257c6de59d554bfa852a66ae21501e143b6cd"
+    },
+    {
+      "file": "sources/xraylib-license_teemu.txt",
+      "sha256": "f03bb70e17d4f835f8d1ffc2987a1c1b0d2b1fd7583f41eed8d66d7c16f6100c"
+    },
+    {
+      "file": "sources/xraylib-xraylib-nist-compounds-internal.h",
+      "sha256": "7c12109d79c9f5dc1e1410ee629d560ba47d807e3e94e2fa5bace46d60b1a492"
+    },
+    {
+      "file": "sources/spekpy-licence.txt",
+      "sha256": "4bae86705c9e6e211656dfd74604813b3a3f175f5c4c43a34781ba1619b5b675"
+    }
+  ],
+  "unit_conversion": "mu_mm_inv = xraylib total mass attenuation [cm^2/g] * density [g/cm^3] / 10",
+  "interpolation": "Direct xraylib CS_Total_CP evaluation at native spectrum centres; xraylib handles its tabulated energy interpolation.",
+  "energy_integration": "SpekPy diff=False is already integrated per bin; filtration then retained-bin renormalisation; no second width factor.",
+  "arrays": {
+    "energies_kev": {
+      "shape": [
+        100
+      ],
+      "dtype": "float32"
+    },
+    "mu_mm_inv": {
+      "shape": [
+        2,
+        100
+      ],
+      "dtype": "float32"
+    },
+    "incident_weights": {
+      "shape": [
+        100
+      ],
+      "dtype": "float32"
+    },
+    "weights": {
+      "shape": [
+        3,
+        100
+      ],
+      "dtype": "float32"
+    },
+    "response": {
+      "shape": [
+        3,
+        100
+      ],
+      "dtype": "float32"
+    }
+  },
+  "validation": {
+    "material_checks": {
+      "elemental_mixture_max_absolute_cm2_g": [
+        1.1102230246251565e-16,
+        4.440892098500626e-16
+      ],
+      "reference_80kev_mm_inv": [
+        0.018365660412653837,
+        0.04108010415565857
+      ],
+      "unit_check": "1 cm path: exp(-kappa*rho) equals exp(-mu_mm_inv*10)",
+      "status": "passed"
+    },
+    "float32_export_path_checks": [
+      {
+        "water_bone_paths_mm": [
+          0,
+          0
+        ],
+        "expected_counts": [
+          106278.70446777344,
+          68639.04553222656,
+          25082.249814987183
+        ],
+        "rank": 2,
+        "condition_number": 19.22868286446048,
+        "singular_values_per_mm": [
+          56.48111850895684,
+          2.9373368372177158
+        ],
+        "poisson_whitened_path_jacobian": [
+          [
+            -10.029513749096683,
+            -53.232861993383985
+          ],
+          [
+            -5.254613475296197,
+            -13.983425606397422
+          ],
+          [
+            -2.772350241792263,
+            -5.7950731954425665
+          ]
+        ],
+        "finite_difference_step_mm": 0.001,
+        "finite_difference": "passed"
+      },
+      {
+        "water_bone_paths_mm": [
+          100,
+          5
+        ],
+        "expected_counts": [
+          3950.761068808692,
+          7123.7626386663,
+          3636.5980256774365
+        ],
+        "rank": 2,
+        "condition_number": 14.165171932931983,
+        "singular_values_per_mm": [
+          8.389953786961215,
+          0.5922945253813532
+        ],
+        "poisson_whitened_path_jacobian": [
+          [
+            -1.568044592680195,
+            -6.310797732614319
+          ],
+          [
+            -1.6841751128218982,
+            -4.437392683210587
+          ],
+          [
+            -1.053331537166315,
+            -2.195631691037751
+          ]
+        ],
+        "finite_difference_step_mm": 0.001,
+        "finite_difference": "passed"
+      },
+      {
+        "water_bone_paths_mm": [
+          200,
+          10
+        ],
+        "expected_counts": [
+          220.18995180151208,
+          750.0259994823696,
+          529.7763621671837
+        ],
+        "rank": 2,
+        "condition_number": 15.102673215159886,
+        "singular_values_per_mm": [
+          2.2236872578384532,
+          0.14723799066289417
+        ],
+        "poisson_whitened_path_jacobian": [
+          [
+            -0.35181835983410037,
+            -1.296532269364428
+          ],
+          [
+            -0.5436337214586092,
+            -1.417755076268113
+          ],
+          [
+            -0.401142244570206,
+            -0.8337924100027269
+          ]
+        ],
+        "finite_difference_step_mm": 0.001,
+        "finite_difference": "passed"
+      },
+      {
+        "water_bone_paths_mm": [
+          300,
+          20
+        ],
+        "expected_counts": [
+          9.295454893638784,
+          62.12268601971296,
+          64.76854745909993
+        ],
+        "rank": 2,
+        "condition_number": 17.32481974819493,
+        "singular_values_per_mm": [
+          0.5926984581128342,
+          0.03421094514848198
+        ],
+        "poisson_whitened_path_jacobian": [
+          [
+            -0.0701732374369486,
+            -0.2446377736320291
+          ],
+          [
+            -0.15541827928335303,
+            -0.40000758580974094
+          ],
+          [
+            -0.13988400295467485,
+            -0.28976107908742
+          ]
+        ],
+        "finite_difference_step_mm": 0.001,
+        "finite_difference": "passed"
+      },
+      {
+        "water_bone_paths_mm": [
+          400,
+          40
+        ],
+        "expected_counts": [
+          0.20270918319846826,
+          3.2069986278902194,
+          5.576662248357041
+        ],
+        "rank": 2,
+        "condition_number": 21.128972803544247,
+        "singular_values_per_mm": [
+          0.13799439765095717,
+          0.006531050938160586
+        ],
+        "poisson_whitened_path_jacobian": [
+          [
+            -0.010149291206886471,
+            -0.033975611027170005
+          ],
+          [
+            -0.03499030218688249,
+            -0.08841744334689289
+          ],
+          [
+            -0.04090001888006007,
+            -0.08433849105370557
+          ]
+        ],
+        "finite_difference_step_mm": 0.001,
+        "finite_difference": "passed"
+      }
+    ],
+    "nonunit_energy_width": "dk=2: integrated bins equal density times 2",
+    "channel_partition": "exactly one channel per retained centre"
+  },
+  "limitations": [
+    "NEW ICRP bone/density and spectrum recipe; does not reproduce the historical NIST ICRU-44 result.",
+    "Anatomical assigned fractions are simulation truth, not measured patient composition.",
+    "Generated spectrum and ideal unit-efficiency response; no measured scanner calibration.",
+    "Primary-only attenuation; no scatter, blur, charge sharing, pileup, read noise or detector response tails.",
+    "Sub-20 keV fluence removed and retained interval renormalised; no heel, bow-tie or detector-plane fluence variation.",
+    "Local two-path rank/conditioning is not global tomographic uniqueness or proof of optimisation convergence."
+  ],
+  "environment": {
+    "python": "3.12.3",
+    "numpy": "2.5.3",
+    "scipy": "1.18.1",
+    "spekpy": "2.5.4",
+    "xraylib": "4.3.0"
+  },
+  "source_sha256": {
+    "prepare_open_physics.py": "1337fd5da7fde8968beb9710959711cdae463bc4a01e066ff6f8504602c96565",
+    "provision_inputs.py": "5a981276acb5ccc85be3eded2035b0c50538837e98aa827139e7b4825e62402f"
+  },
+  "source_license_manifest_sha256": "d0614dc6cad8dfc30ace16f1e6c0ea5b4e2ac69f1c59cd9fa78b40bcb25f3378",
+  "installed_distributions_sha256": "0f380eed856825f588933457c34ae3844459868e40c3680f1797d012599372dd"
+}

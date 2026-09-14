@@ -1,0 +1,40 @@
+{
+  "source": "https://doi.org/10.7937/tcia.2019.tt7f4v7o",
+  "rights": "CC BY 3.0; Rister et al., CT-ORG, TCIA; assigned-material display derivatives",
+  "source_file_sha256": {
+    "volume-2.nii.gz": "ca702e58f0fb736ff4bc407aac0c4b698b8689f3f7e0281da32a546a87ae8a40",
+    "labels-2.nii.gz": "c5951c1065f517c9e8e794aec0a921ae0ebaa2198d4b38f0ed492bc7aca74e8f"
+  },
+  "execution_record_sha256": "4cc8747a2f220acd16e76395dbc7787e7933d8d528f55b6c78e4916f3f6c01f6",
+  "child_records_sha256": {
+    "acquisition/run.json": "964d8e270a358daa853cf510c6873c64d7a31d6227c1a98cc3a4c59de571cc8a",
+    "evaluation-rep0/run.json": "e727adb1d17e7d95ede12011baa5d5bf3832510e4bd107d059c68382379c4bdb",
+    "evaluation-rep1/run.json": "24740133146b41a1f7215779778e04097ea19abdeef9e532a356e270ea6d8b89",
+    "fit-rep0/run.json": "833fe68a4c31e30edc9dd37f192faa95ff70e79ac1c54f6dfbe9fef5cb073985",
+    "fit-rep1/run.json": "79be912b9e152cf35c11d8bdbefb08fa3d6efc6993fcfbaf768b7bc040a69fac"
+  },
+  "curator_sha256": "2a2375011e8f78ff32b53088548798a0003ebc71459e93d35e4f3a7d0a0da504",
+  "display": {
+    "plane": "object-frame z=0 mm; equal interpolation of sample planes 7 and 8",
+    "fraction_window": [
+      0,
+      1
+    ],
+    "signed_error_window": [
+      -0.1,
+      0.1
+    ],
+    "pixel_interpolation": "nearest for displaying the recorded coarse plane"
+  },
+  "output_sha256": {
+    "convergence.pdf": "8c5c89ba5a2ba981b9774309678b1db545a245d4b463c79528096e827163ecb1",
+    "convergence.png": "e5f6cbad9e6df66bafbabaf1b74b2def091691d2403a187b30232d0e5b68a5fb",
+    "data.json": "247ccec804c511669d0fa54d064a429ff639cbff74fc750cdf40c80203048d40",
+    "fields.npz": "354c894386ec6c62e36f35be06afbb410005e5109db7cf5ee630c67c1386725a",
+    "materials-rep0.pdf": "15c89e2c4d5f3f1ae9e18dce057a9cb0a06692cfb266b02cc865c0dd4f91d839",
+    "materials-rep0.png": "554284d70bfc0c0c5b1e0072b261c2d49d03b1ed376904d1dc48476851080135",
+    "materials-rep1.pdf": "4f4a394dfc19472e5cad2bf990a4e0dca6afb39766ccee59d2af8b3721294be1",
+    "materials-rep1.png": "d9bf537c5bb74af66baf3cca437e985b5440bff1217faff64ba8e67b61a347b1",
+    "study.json": "f0b4d42eced7a98cf90d96c3191772813b2aead012b21822d23be164415084e8"
+  }
+}

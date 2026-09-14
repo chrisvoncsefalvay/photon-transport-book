@@ -1,0 +1,541 @@
+.exact-illustrations {
+  padding: clamp(0.8rem, 2.5vw, 2rem);
+  min-width: 0;
+  font-family: var(--font-ui);
+}
+.exact-illustrations p {
+  margin: 0;
+}
+.exact-illustrations h4 {
+  margin: 0 0 0.6rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 1.5;
+}
+.exact-premise {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.6rem 1.4rem;
+  padding-bottom: 1.5rem;
+  font-size: 0.8rem;
+  color: var(--ink-muted);
+  line-height: 1.6;
+}
+.exact-panels {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 1.8rem;
+}
+.exact-panels > *,
+.exact-mismatch-cases > * {
+  min-width: 0;
+}
+.exact-chart-readings {
+  grid-template-columns: minmax(0, 1.4fr) minmax(13rem, 1fr);
+  align-items: center;
+}
+.exact-note {
+  padding-top: 1rem;
+  font-size: 0.77rem;
+  line-height: 1.7;
+  color: var(--ink-muted);
+}
+.exact-equation {
+  font-size: 0.95rem;
+  padding-top: 1.2rem;
+}
+.exact-equation-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem 0.35rem;
+  align-items: baseline;
+}
+.exact-readings {
+  display: grid;
+  gap: 1.4rem;
+}
+.exact-readings > section {
+  border-top: 1px solid var(--rule);
+  padding-top: 0.8rem;
+}
+.exact-reading-title {
+  color: var(--ink-muted);
+  font-size: 0.82rem;
+  padding-bottom: 0.35rem;
+}
+.exact-value {
+  color: var(--accent);
+  font-family: var(--font-prose);
+  font-size: clamp(1.4rem, 2.5vw, 1.9rem);
+  font-variant-numeric: tabular-nums;
+}
+.exact-facts {
+  margin: 0.8rem 0 0;
+  display: grid;
+  gap: 0.65rem;
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+.exact-facts > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.2rem 0.7rem;
+}
+.exact-facts dt {
+  color: var(--ink-muted);
+}
+.exact-facts dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+.exact-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.8rem;
+  margin-top: 1.4rem;
+}
+.exact-summary > p {
+  border-top: 1px solid var(--rule);
+  padding-top: 0.8rem;
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.78rem;
+  color: var(--ink-muted);
+}
+.exact-summary strong {
+  color: var(--accent);
+  font-family: var(--font-prose);
+  font-size: 1.6rem;
+  font-weight: 400;
+}
+.exact-summary-label {
+  font-size: 0.75rem;
+  color: var(--ink-muted);
+}
+.exact-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.exact-svg text {
+  font-family: var(--font-ui);
+  fill: var(--ink);
+}
+.exact-svg path,
+.exact-svg line,
+.exact-svg circle {
+  vector-effect: non-scaling-stroke;
+}
+.exact-axis {
+  fill: none;
+  stroke: var(--ink-muted);
+  stroke-width: 1;
+}
+.exact-grid {
+  fill: none;
+  stroke: var(--rule);
+  stroke-width: 0.6;
+}
+.exact-tick {
+  font-size: 13px;
+  fill: var(--ink-muted);
+}
+.exact-axis-label {
+  font-size: 13px;
+}
+.exact-line {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.8;
+  stroke-linejoin: round;
+}
+.exact-ink {
+  stroke: var(--ink);
+}
+.exact-technical {
+  stroke: var(--technical);
+}
+.exact-accent {
+  stroke: var(--accent);
+}
+.exact-dashed {
+  stroke-dasharray: 6 4;
+}
+.exact-material {
+  stroke: var(--rule-strong);
+  stroke-width: 1;
+}
+.material-a {
+  fill: color-mix(in srgb, var(--technical) 20%, var(--paper-inset));
+}
+.material-b {
+  fill: color-mix(in srgb, var(--accent) 20%, var(--paper-inset));
+}
+.exact-material-label {
+  font-size: 16px;
+  font-weight: 500;
+}
+.exact-boundary {
+  stroke: var(--rule-strong);
+  stroke-dasharray: 3 4;
+}
+.exact-key {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  gap: 0.45rem 1rem;
+  margin: 0.8rem 0 0;
+  padding: 0;
+  font-size: 0.75rem;
+  color: var(--ink-muted);
+  line-height: 1.5;
+}
+.exact-key li {
+  display: inline-flex;
+  gap: 0.45rem;
+  align-items: center;
+  margin: 0;
+}
+.exact-key i {
+  display: inline-block;
+  flex: none;
+  width: 1.4rem;
+  border-top: 2px solid var(--ink);
+}
+.exact-key .technical {
+  border-color: var(--technical);
+}
+.exact-key .accent {
+  border-color: var(--accent);
+}
+.exact-key .dashed {
+  border-top-style: dashed;
+}
+.exact-scatter-control {
+  display: block;
+}
+.exact-control-row {
+  max-width: 30rem;
+  margin: 0 auto 1.7rem;
+}
+.exact-control-row label {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.8rem;
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+}
+.exact-control-row strong {
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+.exact-control-row input {
+  display: block;
+  width: 100%;
+  min-height: 2rem;
+  accent-color: var(--accent);
+}
+.exact-control-row input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+.exact-control-limits {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--ink-muted);
+}
+.exact-scatter-readings {
+  border-top: 1px solid var(--rule);
+  padding-top: 1rem;
+}
+.exact-signal-bar {
+  display: flex;
+  height: 1rem;
+  margin-top: 1.1rem;
+  border: 1px solid var(--rule-strong);
+}
+.exact-signal-bar > span {
+  flex-basis: 0;
+  min-width: 0;
+}
+.exact-signal-bar .primary-part {
+  background: var(--technical);
+}
+.exact-signal-bar .scatter-part {
+  background: repeating-linear-gradient(
+    135deg,
+    var(--accent) 0,
+    var(--accent) 4px,
+    transparent 4px,
+    transparent 7px
+  );
+}
+ol.exact-chain {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 1.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.exact-stage {
+  position: relative;
+  min-width: 0;
+  border-top: 2px solid var(--rule-strong);
+  padding-top: 0.8rem;
+}
+.exact-stage:not(:last-child)::after {
+  content: "→";
+  position: absolute;
+  right: -1.1rem;
+  top: 2.5rem;
+  color: var(--ink-muted);
+}
+.exact-stage.is-comparison {
+  border-top-color: var(--accent);
+}
+.exact-stage-heading {
+  display: flex;
+  gap: 0.4rem;
+  align-items: baseline;
+  font-size: 0.88rem;
+}
+.exact-stage-heading > span {
+  font-size: 0.73rem;
+  color: var(--ink-muted);
+}
+.exact-stage-heading strong {
+  font-weight: 600;
+}
+.exact-stage-formula {
+  padding-top: 0.8rem;
+  font-size: 0.76rem;
+  min-height: 2.7rem;
+}
+.exact-stage-units {
+  padding-top: 0.3rem;
+  color: var(--technical);
+  font-size: 0.75rem;
+  min-height: 2.5rem;
+  line-height: 1.5;
+}
+.exact-stage-statistics {
+  color: var(--ink-muted);
+  font-size: 0.74rem;
+  line-height: 1.65;
+  min-height: 6.4rem;
+  padding-top: 0.4rem;
+}
+.exact-stage-change {
+  border-top: 1px solid var(--rule);
+  padding-top: 0.7rem;
+  font-size: 0.76rem;
+  line-height: 1.65;
+}
+.exact-stage-change > span {
+  display: block;
+  color: var(--ink-muted);
+  font-size: 0.68rem;
+  margin-bottom: 0.3rem;
+}
+.exact-comparison-badge {
+  font-size: 0.69rem;
+  color: var(--accent);
+  line-height: 1.5;
+  padding-top: 0.8rem;
+}
+.exact-comparison {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 2rem minmax(0, 1.1fr) 2rem minmax(
+      0,
+      1fr
+    );
+  gap: 0.8rem;
+  border-block: 1px solid var(--rule);
+  padding-block: 1.2rem;
+  margin-top: 1.5rem;
+  align-items: center;
+}
+.exact-comparison > p {
+  display: grid;
+  gap: 0.4rem;
+  min-width: 0;
+  justify-items: center;
+  text-align: center;
+  font-size: 0.8rem;
+  line-height: 1.6;
+}
+.exact-comparison strong {
+  font-weight: 500;
+}
+.exact-discrepancy {
+  border: 1px solid var(--rule-strong);
+  padding: 0.8rem;
+  color: var(--accent);
+}
+.exact-comparison-arrow {
+  width: 100%;
+  height: auto;
+  fill: none;
+  stroke: var(--technical);
+  stroke-width: 1.4;
+}
+.exact-comparison-arrow.is-reverse {
+  transform: rotate(180deg);
+}
+.exact-discrepancy > span:first-child {
+  font-size: 0.73rem;
+}
+.exact-mismatch-cases {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.7rem;
+}
+.exact-mismatch > .exact-key {
+  justify-content: center;
+}
+.exact-mismatch > .exact-equation {
+  text-align: center;
+}
+.exact-case-equation {
+  font-size: 0.83rem;
+}
+.exact-subspace {
+  fill: none;
+  stroke: var(--technical);
+  stroke-opacity: 0.5;
+  stroke-width: 3;
+}
+.exact-perpendicular {
+  stroke: var(--ink-muted);
+  stroke-dasharray: 3 4;
+  stroke-width: 1.2;
+}
+.exact-fit-component {
+  stroke-width: 4;
+}
+.exact-right-angle {
+  fill: none;
+  stroke: var(--ink-muted);
+  stroke-width: 1;
+}
+.exact-origin {
+  fill: var(--ink);
+}
+.exact-vector-label {
+  font-size: 14px;
+}
+.exact-svg .exact-residual-label {
+  fill: var(--accent);
+}
+.exact-arrow-ink {
+  fill: var(--ink);
+}
+.exact-arrow-technical {
+  fill: var(--technical);
+}
+.exact-arrow-accent {
+  fill: var(--accent);
+}
+@media (max-width: 1100px) {
+  ol.exact-chain {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+  }
+  .exact-stage {
+    display: grid;
+    grid-template-columns: minmax(7rem, 0.8fr) minmax(0, 1.6fr);
+    gap: 0.5rem 1.3rem;
+  }
+  .exact-stage-heading {
+    grid-column: 1;
+  }
+  .exact-stage-formula {
+    grid-column: 1;
+    padding-top: 0;
+    min-height: 0;
+  }
+  .exact-stage-units {
+    grid-column: 1;
+    padding-top: 0;
+    min-height: 0;
+  }
+  .exact-stage-statistics {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    min-height: 0;
+    padding-top: 0;
+  }
+  .exact-stage-change {
+    grid-column: 2;
+    grid-row: 3 / span 2;
+  }
+  .exact-comparison-badge {
+    grid-column: 1;
+  }
+  .exact-stage:not(:last-child)::after {
+    content: "↓";
+    right: auto;
+    left: 0;
+    top: auto;
+    bottom: -1.45rem;
+  }
+}
+@media (max-width: 900px) {
+  .exact-mismatch-cases {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .exact-mismatch-cases > section {
+    width: 100%;
+    max-width: 26rem;
+    margin-inline: auto;
+  }
+}
+@media (max-width: 700px) {
+  .exact-panels,
+  .exact-chart-readings {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .exact-premise {
+    font-size: 0.74rem;
+  }
+  .exact-equation {
+    font-size: 0.8rem;
+  }
+  .exact-comparison {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    gap: 0.5rem;
+  }
+  .exact-comparison-arrow {
+    width: 2rem;
+    transform: rotate(90deg);
+  }
+  .exact-comparison-arrow.is-reverse {
+    transform: rotate(-90deg);
+  }
+  .exact-summary {
+    gap: 1rem;
+  }
+  .exact-summary strong {
+    font-size: 1.3rem;
+  }
+}
+@media (max-width: 520px) {
+  .exact-tick,
+  .exact-axis-label {
+    font-size: 15px;
+  }
+  ol.exact-chain {
+    gap: 1.7rem;
+  }
+  .exact-stage {
+    column-gap: 0.8rem;
+  }
+}

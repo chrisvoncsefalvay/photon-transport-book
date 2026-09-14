@@ -1,0 +1,11 @@
+{
+  "source": "https://doi.org/10.7937/tcia.2019.tt7f4v7o",
+  "rights": "CC BY 3.0; Rister et al., CT-ORG, TCIA",
+  "source_files": {
+    "volume-2.nii.gz": "ca702e58f0fb736ff4bc407aac0c4b698b8689f3f7e0281da32a546a87ae8a40",
+    "labels-2.nii.gz": "c5951c1065f517c9e8e794aec0a921ae0ebaa2198d4b38f0ed492bc7aca74e8f"
+  },
+  "changes": "Original recorded case-2 crop and assigned water/bone material fractions, conservatively averaged 12x12x12 to a 16-cubed matched generating/inverse basis.",
+  "role": "Acquisition generation and independent post-fit evaluation only; never a fitting input.",
+  "original_rights_record_sha256": "baf518b81aaa1bd6ece3ea648999c2d34a16171f1f9c60bbc008f9879ae1f88d"
+}

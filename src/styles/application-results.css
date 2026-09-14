@@ -1,0 +1,243 @@
+.application-results {
+  display: block;
+  min-width: 0;
+}
+.application-results h3,
+.application-results h4,
+.application-results h5 {
+  font-family: var(--font-ui);
+  font-weight: 500;
+}
+.application-case-select {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.6rem 1rem;
+  margin: 1.25rem 1.5rem;
+  font-family: var(--font-ui);
+  font-size: var(--size--1);
+}
+.application-case-select select,
+.application-view-select select {
+  max-width: 100%;
+  min-height: 2.75rem;
+  border: 1px solid var(--rule);
+  border-radius: 0;
+  background: var(--paper);
+  color: var(--ink);
+  padding: 0.45rem 0.7rem;
+  font: inherit;
+}
+.application-view-select {
+  display: flex;
+  margin: 1rem 1.5rem 0.6rem;
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+}
+.application-results[data-views-ready]
+  [data-registration-view]
+  .application-radiograph-view
+  > h4 {
+  display: none;
+}
+.application-results [hidden] {
+  display: none;
+}
+.application-result-heading {
+  margin: 1.3rem 1.5rem 0.8rem;
+}
+.application-result-heading h3 {
+  margin: 0 0 0.35rem;
+  font-size: 1rem;
+}
+.application-result-heading p {
+  margin: 0;
+  color: var(--ink-muted);
+  font-family: var(--font-ui);
+  font-size: var(--size--1);
+}
+.application-radiograph-view {
+  margin: 1rem 1.5rem;
+}
+.application-radiograph-view > h4 {
+  margin: 0 0 0.6rem;
+  font-size: 0.85rem;
+}
+.application-radiograph-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+}
+.application-radiograph-row.has-three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.application-radiograph-panel {
+  min-width: 0;
+}
+.application-radiograph-panel h5 {
+  margin: 0 0 0.5rem;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+.application-image {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: #0a0b0c;
+}
+.application-image.has-excluded,
+.application-mask-key {
+  background: repeating-linear-gradient(
+    135deg,
+    #443948 0 5px,
+    #302934 5px 10px
+  );
+}
+.application-image img {
+  display: block;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+}
+.application-fit-strip {
+  position: absolute;
+  inset-block: 0;
+  pointer-events: none;
+  border-inline: 1px solid var(--accent);
+  box-sizing: border-box;
+}
+.application-mask-key {
+  display: inline-block;
+  width: 1.2rem;
+  height: 0.85rem;
+  vertical-align: middle;
+  margin-inline-end: 0.3rem;
+}
+.application-radiograph-panel p {
+  margin: 0.45rem 0 0;
+  font-family: var(--font-ui);
+  color: var(--ink-muted);
+  font-size: 0.7rem;
+  line-height: 1.45;
+}
+.application-reading,
+.application-source {
+  margin: 1rem 1.5rem;
+  font-size: var(--size--1);
+}
+.application-source {
+  color: var(--ink-muted);
+}
+.application-plots {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2rem;
+  padding: 1.5rem;
+}
+.application-plots.single {
+  grid-template-columns: 1fr;
+}
+.application-details {
+  margin: 1.2rem 1.5rem;
+  font-size: var(--size--1);
+}
+.application-details summary {
+  cursor: pointer;
+  padding-block: 0.65rem;
+}
+.application-table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+}
+.application-results table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+.application-results th,
+.application-results td {
+  text-align: left;
+  padding: 0.65rem 0.6rem;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+}
+.application-results th {
+  font-weight: 500;
+}
+.application-results td {
+  white-space: nowrap;
+}
+.application-result-tables {
+  margin: 1rem 1.5rem;
+}
+.application-decision-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+.application-results :focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+@media (max-width: 680px) {
+  .application-plots,
+  .application-decision-grid {
+    grid-template-columns: 1fr;
+  }
+  .application-radiograph-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .application-radiograph-row.has-three {
+    gap: 0.5rem;
+  }
+  .application-radiograph-row.has-three h5 {
+    min-height: 2.8em;
+  }
+  .application-radiograph-panel h5 {
+    font-size: 0.72rem;
+  }
+  .application-radiograph-panel p {
+    font-size: 0.64rem;
+  }
+  .application-radiograph-view,
+  .application-reading,
+  .application-source,
+  .application-details,
+  .application-result-heading,
+  .application-result-tables,
+  .application-case-select,
+  .application-view-select {
+    margin-inline: 1rem;
+  }
+  .application-plots {
+    padding: 1rem;
+  }
+}
+@media print {
+  .application-results [data-application-case][hidden],
+  .application-results [data-registration-view][hidden],
+  .application-results[data-views-ready]
+    [data-registration-view]
+    .application-radiograph-view
+    > h4 {
+    display: block;
+  }
+  .application-case-select,
+  .application-view-select {
+    display: none;
+  }
+  .application-image {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+  .application-radiograph-view,
+  .application-result-heading {
+    break-inside: avoid;
+  }
+  .application-table-scroll {
+    overflow: visible;
+  }
+}

@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "generator": "tools/public/curate-introduction-study.py",
+  "generator_sha256": "0c05bf5361321253a8f504c9fcc6faea72bf392f970c99b582511953857d5515",
+  "helper_sha256": "8bcbee171edaa702f1a79b4ecbcb864a900a3b2a27b33ac5b0e2558747437557",
+  "rights_record_precedes_payloads": true,
+  "complete_file_inventory": [
+    "ct.png",
+    "reconstruction.png",
+    "study.json",
+    "provenance.json"
+  ],
+  "rights": {
+    "licence": "CC BY 3.0; derived from Rister et al., CT-ORG, TCIA",
+    "url": "https://creativecommons.org/licenses/by/3.0/",
+    "sources": [
+      {
+        "title": "Rister et al., CT-ORG (2019), case 2 acquired CT and bone labels",
+        "url": "https://doi.org/10.7937/tcia.2019.tt7f4v7o",
+        "licence": "CC BY 3.0; derived from Rister et al., CT-ORG, TCIA",
+        "source_sha256": "ca702e58f0fb736ff4bc407aac0c4b698b8689f3f7e0281da32a546a87ae8a40",
+        "label_source_sha256": "c5951c1065f517c9e8e794aec0a921ae0ebaa2198d4b38f0ed492bc7aca74e8f"
+      },
+      {
+        "title": "SpekPy 2.5.4 spectrum generator",
+        "url": "https://pypi.org/project/spekpy/2.5.4/",
+        "licence": "MIT; software not bundled in this data package",
+        "source_sha256": "2f01e805721281b5a3e332500db577cedaf71bde0f0d3838745b915e6f1c258a"
+      },
+      {
+        "title": "Hubbell and Seltzer, NIST SRD126; water coefficient source used for simulation",
+        "url": "https://doi.org/10.18434/T4D01F",
+        "licence": "SRD copyright reserved; source and derived attenuation tables excluded",
+        "source_sha256": "19a80f2609b6aa4a3ff057d57ad1e17001eeaa5932553c15c66522e673c3f76f"
+      },
+      {
+        "title": "NIST SRD126 ICRU-44 cortical bone coefficient source used for simulation",
+        "url": "https://physics.nist.gov/PhysRefData/XrayMassCoef/ComTab/bone.html",
+        "licence": "SRD copyright reserved; source and derived attenuation tables excluded",
+        "source_sha256": "1df054fa5e8eef770a2fbcd8fd6a28f68b6c1f426d65cfa41d55ebf68041144a"
+      }
+    ]
+  },
+  "scope": "Two rendered PNGs and selected display metadata; no raw CT, masks, fields, meshes, attenuation tables or run records",
+  "changes": "Native CT grayscale mapping and new exact-triangle raster rendering; existing radiograph referenced without copying",
+  "inputs": {
+    "curation-helper": "8bcbee171edaa702f1a79b4ecbcb864a900a3b2a27b33ac5b0e2558747437557",
+    "completed-run": "fab471b81eb132b798ef62cd958a02e35f2a8a06d85d52d808bb2bc682f4e869",
+    "original-figure-receipt": "e86f08ce4d6e38c72842fe7845a757f15a71645c4ce6dee97f24f7812a630bc8",
+    "anatomy-receipt": "b604e4dc2d5dac018d69f06ca734c490dec04c9d92a9361d2560f11b83203966",
+    "source-rights-receipt": "a646ea09866566e69d4e7236ee6143df7927fc7db511d9719ee0ba59b63932f4",
+    "original-renderer": "74bab096030777582919dd7c067e6b2346bc8868f9581e08a9cb9cc3306bc0df",
+    "acquisition-receipt": "4dffa5c7f0bea90bd4980d4e90749be53b76f50c6896ccfde1ad1be9ce37a7b0",
+    "solver-report": "a1c4776fda1b55693435d770f9ce06dc1c658795c23090b8925c4c86946b0d7f",
+    "recovered-fractions": "3fc304853c35d6e352be6cc0738073518f94dc1d2078b0a41ed4c6ebed281394",
+    "accepted-public-study": "9e45151567fa0dea8cdbed589c33ee41170c09db54c4b9da376471bed8ff093d",
+    "native-ct-context": "078253c142c33bab7662a97f8637c0fa5cda2f69e340bb0108083577ddfb3546",
+    "recorded-recovered-mesh": "78ccd99c2fe277e4dfdbe961a27064f20144835fbab5a125a2cf4c210aca21f4",
+    "accepted-mesh-positions": "de8ed0bfe64855366a411c6f698c696d0a97d45560be4bf320af5817ef4a90be",
+    "accepted-mesh-indices": "bd0e98521d2441543618d2b9eb6a6f12801b82c9dc40e506e4129f7f8917c1c8",
+    "accepted-radiograph-study": "64a1e772493d2bec8593a78251296c66dc7d725075ba4c551ffcdce56dd0c9e8",
+    "existing-radiograph": "091cdabf198f0808bed919b8d55cad8562b9f2819c085d34a4f2dfe3d2e474f4"
+  },
+  "external_references": [
+    {
+      "sha256": "091cdabf198f0808bed919b8d55cad8562b9f2819c085d34a4f2dfe3d2e474f4",
+      "bytes": 5181,
+      "width": 96,
+      "height": 96,
+      "file": "generated/reconstruction-radiographs/vertebrae/input-view-0.png",
+      "alt": "Simulated fitting radiograph 1 of the assigned phantom, 20\u201355 keV channel."
+    }
+  ],
+  "rendering_versions": {
+    "matplotlib": "3.11.2",
+    "numpy": "2.5.3",
+    "Pillow": "12.3.0"
+  },
+  "allowlist": [
+    {
+      "file": "ct.png",
+      "sha256": "4401196ff4a883a62fd29f213f6d722bf056001afc079df14e6fdbe09de99312",
+      "bytes": 31918,
+      "origin": "Exact native CT coronal samples, original recorded HU window, lower origin; no resampling",
+      "licence": "CC BY 3.0; derived from Rister et al., CT-ORG, TCIA"
+    },
+    {
+      "file": "reconstruction.png",
+      "sha256": "b1ff21d0612a81a56df7425e93f97e788864bb305c0a8983c1963c141fe4208d",
+      "bytes": 72364,
+      "origin": "New white-on-paper rendering of exact recorded recovered triangles at the accepted camera",
+      "licence": "CC BY 3.0; derived from Rister et al., CT-ORG, TCIA"
+    },
+    {
+      "file": "study.json",
+      "sha256": "f6ea5184ff90410e9bc403ee82b25bf06d492696b523e99f9baa1c0929d5b741",
+      "bytes": 6782,
+      "origin": "Positive allowlist of recorded study/display metadata",
+      "licence": "CC BY 3.0; derived from Rister et al., CT-ORG, TCIA"
+    }
+  ]
+}

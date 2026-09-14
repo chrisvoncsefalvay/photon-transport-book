@@ -1,0 +1,254 @@
+---
+import FigurePlate from "./FigurePlate.astro";
+import RadiographStudy from "./RadiographStudy.astro";
+import Citation from "../citations/Citation.astro";
+import local from "../../../public/generated/radiographs/local-poses.json";
+import "../../styles/radiographs.css";
+interface Props {
+  kind: "local-pose" | "formation";
+  id: string;
+  title: string;
+  description: string;
+  rotationStudyId?: string;
+}
+const { kind, id, title, description, rotationStudyId } = Astro.props;
+const url = (file: string) => `/generated/radiographs/${file}`;
+const group = local.groups[5]!;
+const frame = group.frames[group.initial]!;
+---
+
+<FigurePlate {id} {title} {description} width="full">
+  <div class="radiograph-figure">
+    {
+      kind === "local-pose" && rotationStudyId && (
+        <h3 class="radiograph-motion-heading">
+          a. Small translations and rotations
+        </h3>
+      )
+    }
+    {
+      kind === "local-pose" ? (
+        <recorded-radiograph-player
+          data-groups={JSON.stringify(local.groups)}
+          data-base="/generated/radiographs/"
+        >
+          <div class="radiograph-pair">
+            <section>
+              <>
+                <h3>Recorded projection</h3>
+                <div
+                  class="radiograph-image"
+                  style={`--image-aspect:${local.aspect}`}
+                >
+                  <img
+                    data-frame-image
+                    src={url(frame.image)}
+                    alt="Primary projection of the synthetic pelvis at its reference pose. Higher optical depth is lighter."
+                    width={local.width}
+                    height={local.height}
+                    loading="lazy"
+                  />
+                </div>
+              </>
+            </section>
+            <section>
+              <>
+                <h3>Change from the reference</h3>
+                <div
+                  class="radiograph-image"
+                  style={`--image-aspect:${local.aspect}`}
+                >
+                  <img
+                    data-frame-difference
+                    src={url(frame.difference)}
+                    alt="Absolute count difference from the reference. The reference frame is black because the difference is zero."
+                    width={local.width}
+                    height={local.height}
+                    loading="lazy"
+                  />
+                </div>
+              </>
+            </section>
+          </div>
+          <div class="radiograph-controls">
+            <label>
+              Move the pelvis
+              <select data-axis disabled>
+                {local.groups.map((g) => (
+                  <option value={g.id} selected={g.id === group.id}>
+                    {g.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label class="radiograph-scrubber">
+              Recorded pose{" "}
+              <>
+                <output data-value>0 rad</output>
+                <input
+                  data-frame
+                  type="range"
+                  min="0"
+                  max={group.frames.length - 1}
+                  value={group.initial}
+                  step="1"
+                  disabled
+                />
+              </>
+            </label>
+            <div class="radiograph-buttons">
+              <>
+                <button data-play type="button" disabled>
+                  Play poses
+                </button>
+                <button data-reset type="button" disabled>
+                  Reference pose
+                </button>
+              </>
+            </div>
+          </div>
+          <p class="radiograph-reading" data-status role="status">
+            Reference pose. Each step selects a separately calculated
+            projection.
+          </p>
+          <noscript>
+            <p>
+              The reference image is shown above. Enable JavaScript to select
+              the other recorded poses.
+            </p>
+          </noscript>
+        </recorded-radiograph-player>
+      ) : (
+        <div class="radiograph-pair">
+          <section>
+            <>
+              <h3>Expected detector counts</h3>
+              <div
+                class="radiograph-image"
+                style={`--image-aspect:${local.aspect}`}
+              >
+                <img
+                  src={url(local.formation.counts)}
+                  alt="Linear expected-count image: rays through the body are dark and the open beam is bright."
+                  width={local.width}
+                  height={local.height}
+                  loading="lazy"
+                />
+              </div>
+              <p class="radiograph-scale">Black: 0 · white: 1,000 counts</p>
+            </>
+          </section>
+          <section>
+            <>
+              <h3>Optical depth</h3>
+              <div
+                class="radiograph-image"
+                style={`--image-aspect:${local.aspect}`}
+              >
+                <img
+                  src={url(local.formation.depth)}
+                  alt="The same calculated projection displayed as optical depth. The pelvis and spine are bright."
+                  width={local.width}
+                  height={local.height}
+                  loading="lazy"
+                />
+              </div>
+              <p class="radiograph-scale">Black: L ≤ 2 · white: L ≥ 5.3</p>
+            </>
+          </section>
+        </div>
+      )
+    }
+    {
+      kind === "local-pose" && (
+        <p class="radiograph-note">
+          Synthetic MAISI CT
+          <sup>
+            <a
+              id={`${id}-maisi-reference`}
+              href={`#${id}-maisi-note`}
+              data-footnote-ref
+              aria-label="MAISI version, generation method and reference"
+            >
+              †
+            </a>
+          </sup>
+        </p>
+      )
+    }
+    <details class="radiograph-data">
+      <summary>Image model and data</summary>
+      <p id={`${id}-maisi-note`} role="note" tabindex="-1" data-maisi-footnote>
+        {kind === "formation" && "Synthetic MAISI CT. "}
+        MAISI-v2, rectified flow (<code>rflow-ct</code>), generated with 30
+        inference steps using NV-Generate-CTMR revision <code>61c4ec709b84</code
+        >. <Citation keys={["zhao2026maisi"]} />
+        {
+          kind === "local-pose" && (
+            <a
+              href={`#${id}-maisi-reference`}
+              data-footnote-backlink
+              aria-label="Back to the synthetic CT label"
+            >
+              ↩
+            </a>
+          )
+        }
+      </p>
+      <p>
+        The archived 480 × 256 calculation uses 1,000 incident photons per pixel
+        and an illustrative water-equivalent conversion at 80 keV. Scatter,
+        spectral response and detector noise are absent. This is a simulated
+        radiograph, not a patient acquisition.
+      </p>
+      <p>
+        The radiographic display maps optical depth from 2 to 5.3 to
+        black–white, with the same window for every pose. Pixels outside that
+        interval saturate only in the display. The difference image shows
+        absolute change in expected counts with a fixed asinh scale, where white
+        is {local.display.difference_limit_counts.toFixed(1)} counts. It does not
+        show the sign of the change.
+      </p>
+      <p>
+        Translations use 0.5 mm steps about the reference, and rotations use
+        0.01 rad steps about the fixed sacral pivot. Playback traverses the
+        recorded poses and reverses at the ends. The time per frame is a display
+        choice.
+      </p>
+      <p>
+        <a href={url("local-poses.json")}>Pose matrices and display metadata</a> ·
+        <a href={url("provenance.json")}>Calculation provenance</a> · <a
+          href="/generated/introduction-pose-sensitivity/validation.json"
+          >Original numerical checks</a
+        >
+      </p>
+    </details>
+    {
+      kind === "local-pose" && rotationStudyId && (
+        <div class="radiograph-motion-study">
+          <RadiographStudy
+            kind="yaw"
+            id={rotationStudyId}
+            title="b. Rotation through thirty degrees"
+            description=""
+            embedded
+          />
+        </div>
+      )
+    }
+  </div>
+</FigurePlate>
+<style>
+  .radiograph-figure .radiograph-motion-heading {
+    margin-bottom: 1.4rem;
+    font-weight: 600;
+  }
+  .radiograph-motion-study {
+    margin-top: 1.8rem;
+    padding-top: 1.8rem;
+    border-top: 1px solid var(--rule);
+  }
+</style>
+<script>
+  import "../../lib/radiograph-player";
+</script>

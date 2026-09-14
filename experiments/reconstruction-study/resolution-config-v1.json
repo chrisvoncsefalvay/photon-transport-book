@@ -1,0 +1,163 @@
+{
+  "schema_version": 1,
+  "role": "seven prescribed development outcomes; no final observations",
+  "physics_model_id": "xraylib-icrp-spekpy120-al25-v1",
+  "case": 2,
+  "source_sha256": {
+    "volume-2.nii.gz": "ca702e58f0fb736ff4bc407aac0c4b698b8689f3f7e0281da32a546a87ae8a40",
+    "labels-2.nii.gz": "c5951c1065f517c9e8e794aec0a921ae0ebaa2198d4b38f0ed492bc7aca74e8f"
+  },
+  "native_crop_xyz": [
+    [160, 352],
+    [48, 240],
+    [256, 448]
+  ],
+  "native_shape_zyx": [192, 192, 192],
+  "native_spacing_mm_xyz": [0.775390625, 0.775390625, 1.0],
+  "pilot_inverse_shape_zyx": [32, 32, 32],
+  "detector_shape_hw": [96, 96],
+  "detector_pitch_mm": 4.0,
+  "source_isocentre_mm": 1000.0,
+  "source_detector_mm": 1500.0,
+  "tilts_degrees": [-15.0, 0.0, 15.0],
+  "dense_views_per_ring": 48,
+  "probe_views": [
+    {
+      "tilt_degrees": 0.0,
+      "yaw_degrees": 0.0
+    },
+    {
+      "tilt_degrees": -15.0,
+      "yaw_degrees": 90.0
+    },
+    {
+      "tilt_degrees": 15.0,
+      "yaw_degrees": 180.0
+    }
+  ],
+  "probe_samples": [1024, 2048],
+  "independent_probe_rows": [0, 32, 63, 95],
+  "independent_probe_columns": [0, 19, 38, 57, 76, 95],
+  "incident_photons_per_ray": 200000.0,
+  "sampling_gate_photons_per_ray": 800000.0,
+  "sampling_p95_poisson_sd_max": 0.05,
+  "sampling_max_poisson_sd_max": 0.2,
+  "scalar_coefficients_80kev_mm_inverse": [
+    0.018365660412653837, 0.04108010415565857
+  ],
+  "pilot_methods": [
+    "scalar_poisson",
+    "scalar_pwls",
+    "spectral_metric",
+    "spectral_euclidean"
+  ],
+  "pilot_inverse_samples": 512,
+  "pilot_steps": 20,
+  "pilot_soft_seconds_per_fit": 120.0,
+  "scalar_initial_and_mapping_step_mm_inverse_squared": 1e-8,
+  "spectral_initial_step": 1e-6,
+  "spectral_maximum_step": 1.0,
+  "spectral_mapping_step": 1e-6,
+  "fraction_regularisation_mm_inverse": 0.1,
+  "relative_mapping_tolerance": 0.0001,
+  "maximum_mapped_fraction_displacement": 1e-5,
+  "maximum_mapped_scalar_displacement_water_ratio": 1e-5,
+  "metric": "new physical Fisher at water200mm/bone10mm, determinant normalised to1",
+  "noise_root_seed": 2026091251,
+  "noise_roles": {
+    "scalar": 1,
+    "spectral": 2
+  },
+  "checkpoint_steps": [0, 1, 5, 10, 20],
+  "final_or_larger_study_authorised": false,
+  "scalar_initial_trial_step_mm_inverse_squared": 3.125e-10,
+  "outcomes": [
+    {
+      "id": "case2_dense48_scalar_poisson",
+      "shape_zyx": [48, 48, 48],
+      "regime": "dense",
+      "views": 144,
+      "method": "scalar_poisson",
+      "maximum_accepted_updates": 20,
+      "soft_solve_seconds": 120.0
+    },
+    {
+      "id": "case2_dense48_scalar_pwls",
+      "shape_zyx": [48, 48, 48],
+      "regime": "dense",
+      "views": 144,
+      "method": "scalar_pwls",
+      "maximum_accepted_updates": 20,
+      "soft_solve_seconds": 120.0
+    },
+    {
+      "id": "case2_dense48_spectral_metric",
+      "shape_zyx": [48, 48, 48],
+      "regime": "dense",
+      "views": 144,
+      "method": "spectral_metric",
+      "maximum_accepted_updates": 20,
+      "soft_solve_seconds": 120.0
+    },
+    {
+      "id": "case2_dense48_spectral_euclidean",
+      "shape_zyx": [48, 48, 48],
+      "regime": "dense",
+      "views": 144,
+      "method": "spectral_euclidean",
+      "maximum_accepted_updates": 20,
+      "soft_solve_seconds": 120.0
+    },
+    {
+      "id": "case2_dense64_spectral_metric",
+      "shape_zyx": [64, 64, 64],
+      "regime": "dense",
+      "views": 144,
+      "method": "spectral_metric",
+      "maximum_accepted_updates": 20,
+      "soft_solve_seconds": 120.0
+    },
+    {
+      "id": "case2_sparse48_spectral_metric",
+      "shape_zyx": [48, 48, 48],
+      "regime": "sparse",
+      "views": 36,
+      "method": "spectral_metric",
+      "maximum_accepted_updates": 20,
+      "soft_solve_seconds": 120.0
+    },
+    {
+      "id": "case2_limited48_spectral_metric",
+      "shape_zyx": [48, 48, 48],
+      "regime": "limited",
+      "views": 36,
+      "method": "spectral_metric",
+      "maximum_accepted_updates": 20,
+      "soft_solve_seconds": 120.0
+    }
+  ],
+  "stage_soft_seconds": 1800.0,
+  "total_soft_fit_seconds": 840.0,
+  "new_noise_phase_id": 2,
+  "new_noise_regime_ids": {
+    "sparse": 1,
+    "limited": 2
+  },
+  "samples_native": [1024, 2048],
+  "samples_inverse": [512, 1024],
+  "sampling_failure_policy": "fail and retain; no automatic candidate increase",
+  "source_amendments": {
+    "python/dpt/examples/acquisition_design.py": {
+      "observation": "fae8b7c208b3b29a39428afbfa1a6adc422621104d2d1d3c73b2bc511d9e08c2",
+      "current": "82c113871eba69a9b84c8b1bdac6398ab4ebc6b56db30005d9104145cf65aa0e"
+    },
+    "python/dpt/examples/reconstruction.py": {
+      "observation": "5bdb385fc03c8badc63a9838efa884a9c295f881edb510b4e15519f3db7feb07",
+      "current": "e6d9f55c17b2abbb3e9a6c091e692c9d4b8c34100355128807fd6c901193773e"
+    },
+    "python/dpt/examples/registration.py": {
+      "observation": "db66efb8fb6c4a16f13c998251cb416874fd2791eead3c8839058bdbd6969fe7",
+      "current": "64a626bf459b9faf22891b3760d625db30479e5b30dae6de914caf198f58a601"
+    }
+  }
+}

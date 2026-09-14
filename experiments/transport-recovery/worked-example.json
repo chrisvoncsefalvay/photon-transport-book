@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "protocol_id": "stochastic-amplitude-tutorial-20260914-v2",
+  "seed_base": 2026091501,
+  "seed_stride": 104729,
+  "repetitions": 32,
+  "designated_tutorial_replicate": 0,
+  "reference_seed": 419003,
+  "configuration": {
+    "sampling_multiplier": 16,
+    "policy": {
+      "iterations": 100,
+      "replicates": 8,
+      "initial_batch": 65536,
+      "maximum_batch": 1048576,
+      "unique_history_budget": 256000000,
+      "initial_radius": 0.1,
+      "minimum_radius": 1e-7,
+      "maximum_radius": 1.0,
+      "acceptance_fraction": 0.1,
+      "standard_error_multiplier": 2.0,
+      "gradient_tolerance": 1e-5,
+      "relative_gradient_uncertainty": 0.5,
+      "proposal": "quadratic",
+      "numerical_gradient_allowance": 1e-12,
+      "final_validation_batch": 1048576,
+      "damping_relative": 1e-12,
+      "rank_tolerance": 1e-10,
+      "radius_growth_agreement": 0.75
+    },
+    "workspace_max_histories": 1048576,
+    "reference_batch": 1048576,
+    "reference_replicates": 256,
+    "physical_spec": {
+      "grid": {
+        "origin_mm": [-0.5, -0.5, 0.0],
+        "spacing_mm": [1.0, 1.0, 1.0],
+        "shape": [1, 1, 1],
+        "materials": 1
+      },
+      "detector": {
+        "lower_xy_mm": [-2.0, -2.0],
+        "spacing_xy_mm": [4.0, 4.0],
+        "shape": [1, 1],
+        "z_mm": 2.0
+      },
+      "energy_kev": 80.0,
+      "coefficient_provenance": "declared isotropic scattering cube for recovery validation",
+      "coefficient_energies_kev": [],
+      "scattering_law": "isotropic-elastic",
+      "scoring": "photon-count",
+      "max_angle_trials": 4096,
+      "max_events": 4096,
+      "max_crossings": 65536,
+      "block_dim": 128,
+      "estimator": "continuous-absorption"
+    },
+    "source": {
+      "lower_mm": [0.0, 0.0, -1.0],
+      "extent_xy_mm": [0.0, 0.0],
+      "direction": [0.0, 0.0, 1.0],
+      "weight": 1.0
+    },
+    "material_ids": [0],
+    "absorption_mm_inverse": [0.3],
+    "scattering_mm_inverse": [0.1],
+    "active_parameters": ["log-source-amplitude"],
+    "base_density": [1.0],
+    "pixel_weights": [1.0],
+    "observation": 0.08,
+    "initial_amplitude": 0.08
+  }
+}

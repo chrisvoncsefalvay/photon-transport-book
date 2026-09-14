@@ -1,0 +1,484 @@
+---
+import { existsSync, readFileSync } from "node:fs";
+import FigurePlate from "./FigurePlate.astro";
+import {
+  parseMaterialResponse,
+  responseNumber,
+  responseStatus,
+} from "../../lib/material-response-data";
+import "../../styles/material-response-figure.css";
+
+interface Props {
+  id: string;
+  data?: unknown;
+}
+const { id } = Astro.props;
+const source = new URL(
+  "../../../public/generated/material-response/study.json",
+  import.meta.url,
+);
+const supplied =
+  Astro.props.data ??
+  (existsSync(source) ? JSON.parse(readFileSync(source, "utf8")) : null);
+const data = supplied === null ? null : parseMaterialResponse(supplied);
+const base = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/generated/material-response/`;
+const materials = ["water", "bone"] as const;
+const capital = (value: string) => value[0]!.toUpperCase() + value.slice(1);
+---
+
+<FigurePlate
+  {id}
+  title="Material cross-talk"
+  description="The response matrices and maps compare water and bone injections with their paired control fits. Diagonal gains measure recovery of the injected material, while off-diagonal gains and corresponding maps reveal leakage into the other recovered field."
+  width="full"
+>
+  <div
+    class="material-response"
+    data-material-response={data ? data.review_status : "unavailable"}
+  >
+    {
+      data ? (
+        <>
+          <p class="material-response-reading">
+            Each matrix has recovered water and bone as rows, and injected water
+            and bone as columns. Gains are dimensionless. The injected change is
+            0.025 in volume fraction within the prescribed pattern.
+          </p>
+          <div class="material-response-matrices">
+            {data.replicates.map((replicate) => (
+              <section aria-labelledby={`${id}-rep${replicate.replicate}`}>
+                <h3 id={`${id}-rep${replicate.replicate}`}>
+                  Replicate {replicate.replicate}
+                </h3>
+                {replicate.matrix ? (
+                  <table>
+                    <caption>
+                      Recorded response gain, replicate {replicate.replicate}
+                    </caption>
+                    <thead>
+                      <tr>
+                        <th scope="col">
+                          Recovered ↓<br />
+                          Injected →
+                        </th>
+                        <th scope="col">Water</th>
+                        <th scope="col">Bone</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {materials.map((material, m) => (
+                        <tr>
+                          <th scope="row">{capital(material)}</th>
+                          {materials.map((_, j) => (
+                            <td>{responseNumber(replicate.matrix![m]![j]!)}</td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                ) : (
+                  <p class="material-response-unavailable">
+                    Response matrix unavailable.{" "}
+                    {data.review_status === "retained_failed"
+                      ? "The failed evaluation record is retained without admitting numerical response values."
+                      : "All three prescribed fits must have accepted evaluations."}{" "}
+                    Recorded response state: {responseStatus(replicate.status)}.
+                  </p>
+                )}
+              </section>
+            ))}
+            <section aria-labelledby={`${id}-range`}>
+              <h3 id={`${id}-range`}>Two-replicate range</h3>
+              {data.summary.available ? (
+                <table>
+                  <caption>
+                    Descriptive minimum to maximum across both replicates
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">
+                        Recovered ↓<br />
+                        Injected →
+                      </th>
+                      <th scope="col">Water</th>
+                      <th scope="col">Bone</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {materials.map((material, m) => (
+                      <tr>
+                        <th scope="row">{capital(material)}</th>
+                        {materials.map((_, j) => (
+                          <td>
+                            {responseNumber(data.summary.minimum![m]![j]!)} to{" "}
+                            {responseNumber(data.summary.maximum![m]![j]!)}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <p class="material-response-unavailable">
+                  Unavailable until both prescribed matrices are admitted.
+                </p>
+              )}
+              <p class="material-response-note">
+                Minimum and maximum across the two replicates.
+              </p>
+            </section>
+          </div>
+          <details class="material-response-details">
+            <summary>All six fit outcomes</summary>
+            <div
+              class="material-response-statuses"
+              tabindex="0"
+              role="region"
+              aria-label="All six recorded fitting and evaluation outcomes"
+            >
+              <table>
+                <caption>
+                  All six outcomes. Evaluation:{" "}
+                  {responseStatus(data.evaluation_status)}.
+                </caption>
+                <thead>
+                  <tr>
+                    <>
+                      <th scope="col">Replicate</th>
+                      <th scope="col">Input change</th>
+                      <th scope="col">Fit / evaluation</th>
+                      <th scope="col">Stop reason</th>
+                      <th scope="col">Updates</th>
+                      <th scope="col">Stationarity test</th>
+                      <th scope="col">Prediction checks</th>
+                    </>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.outcomes.map((outcome) => (
+                    <tr>
+                      <td>{outcome.replicate}</td>
+                      <th scope="row">
+                        {outcome.scenario === "control"
+                          ? "Diluted control"
+                          : `${capital(outcome.scenario)} injection`}
+                      </th>
+                      <td>
+                        {responseStatus(outcome.fit_status)}
+                        <small>
+                          {responseStatus(outcome.evaluation_status)}
+                        </small>
+                      </td>
+                      <td>{responseStatus(outcome.termination)}</td>
+                      <td>{responseNumber(outcome.accepted_steps)}</td>
+                      <td>
+                        {outcome.stationarity_passed === null
+                          ? "Not recorded"
+                          : outcome.stationarity_passed
+                            ? "Passed"
+                            : "Not passed"}
+                        {outcome.fit_status !== "completed" &&
+                          outcome.stationarity_passed !== null && (
+                            <small>Recorded before fit failure</small>
+                          )}
+                      </td>
+                      <td>
+                        {outcome.hard_correctness_passed === null
+                          ? "Not completed"
+                          : outcome.hard_correctness_passed
+                            ? "Passed"
+                            : "Failed"}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p class="material-response-reading">
+              Each replicate uses the control fit's absolute stopping threshold.
+              Shared Poisson components couple scenarios within each replicate.
+            </p>
+          </details>
+          <details class="material-response-details" open>
+            <summary>
+              Signed response maps at the fixed physical centre planes
+            </summary>
+            <p>
+              Blue −0.05 · pale 0 · red +0.05, in volume-fraction units. Each
+              map is the injected fit minus its paired control. Coronal Y=0 is
+              the default view. Clipping affects colour only.
+            </p>
+            {data.replicates.map((replicate) => (
+              <section>
+                <h3>Replicate {replicate.replicate}</h3>
+                {replicate.maps.length ? (
+                  replicate.maps.map((plane) => (
+                    <details
+                      class="material-response-plane"
+                      open={plane.plane === "coronal"}
+                    >
+                      <summary>
+                        {capital(plane.plane)} {plane.normal.toUpperCase()}=0 mm
+                      </summary>
+                      <p>
+                        {plane.horizontal.toUpperCase()} increases to the right
+                        and {plane.vertical.toUpperCase()} upwards. Full
+                        cell-face extent:{" "}
+                        {responseNumber(
+                          plane.extent_mm[1] - plane.extent_mm[0],
+                        )}{" "}
+                        ×{" "}
+                        {responseNumber(
+                          plane.extent_mm[3] - plane.extent_mm[2],
+                        )}{" "}
+                        mm. The two adjacent centre slices are averaged, with no
+                        in-plane resampling.
+                      </p>
+                      <div class="material-response-panels">
+                        {plane.panels.map((panel) => (
+                          <div class="material-response-panel">
+                            <h4>
+                              {capital(panel.recovered)} response
+                              <br />
+                              <span>{capital(panel.injected)} injection</span>
+                            </h4>
+                            <img
+                              src={`${base}${panel.file}`}
+                              width={panel.width}
+                              height={panel.height}
+                              style={`aspect-ratio:${(plane.extent_mm[1] - plane.extent_mm[0]) / (plane.extent_mm[3] - plane.extent_mm[2])}`}
+                              alt={`Signed recovered ${panel.recovered} fraction change after ${panel.injected} injection, replicate ${replicate.replicate}, ${plane.plane} ${plane.normal.toUpperCase()}=0 mm. Blue is negative and red is positive, with the fixed −0.05 to +0.05 fraction window.`}
+                              loading="lazy"
+                              decoding="async"
+                            />
+                            <p>
+                              {panel.clipping.below} below the window,{" "}
+                              {panel.clipping.above} above, of{" "}
+                              {panel.clipping.samples} displayed samples.
+                            </p>
+                            <a href={`${base}${panel.samples.file}`} download>
+                              Exact plane values
+                            </a>
+                          </div>
+                        ))}
+                      </div>
+                    </details>
+                  ))
+                ) : (
+                  <p>No response maps admitted for this replicate.</p>
+                )}
+              </section>
+            ))}
+          </details>
+          <details class="material-response-details">
+            <summary>
+              Complete fields, outside-pattern errors and recorded stopping
+              values
+            </summary>
+            <p>
+              Whole-cell outside errors use cells whose averaged pattern is
+              zero. The separate fraction-weighted integral includes
+              partial-volume cells and does not localise response within a
+              voxel. All metrics use the complete arrays.
+            </p>
+            {data.replicates.map((replicate) => (
+              <section>
+                <h3>Replicate {replicate.replicate}</h3>
+                {replicate.outside_metrics && (
+                  <>
+                    <div
+                      class="material-response-statuses"
+                      tabindex="0"
+                      role="region"
+                      aria-label={`Outside-pattern response integrals, replicate ${replicate.replicate}`}
+                    >
+                      <table>
+                        <caption>
+                          Outside-pattern response integrals in mm³
+                        </caption>
+                        <thead>
+                          <tr>
+                            <th scope="col">Injected → recovered</th>
+                            <th scope="col">Whole-cell signed</th>
+                            <th scope="col">Whole-cell absolute</th>
+                            <th scope="col">Fraction-weighted signed</th>
+                            <th scope="col">Fraction-weighted absolute</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {materials.flatMap((injected, j) =>
+                            materials.map((recovered, m) => (
+                              <tr>
+                                <th scope="row">
+                                  {capital(injected)} → {recovered}
+                                </th>
+                                <td>
+                                  {responseNumber(
+                                    replicate.outside_metrics!
+                                      .outside_whole_cells
+                                      .signed_integral_jm_mm3[j]![m]!,
+                                  )}
+                                </td>
+                                <td>
+                                  {responseNumber(
+                                    replicate.outside_metrics!
+                                      .outside_whole_cells
+                                      .absolute_integral_jm_mm3[j]![m]!,
+                                  )}
+                                </td>
+                                <td>
+                                  {responseNumber(
+                                    replicate.outside_metrics!
+                                      .outside_fraction_weighted
+                                      .signed_integral_jm_mm3[j]![m]!,
+                                  )}
+                                </td>
+                                <td>
+                                  {responseNumber(
+                                    replicate.outside_metrics!
+                                      .outside_fraction_weighted
+                                      .absolute_integral_jm_mm3[j]![m]!,
+                                  )}
+                                </td>
+                              </tr>
+                            )),
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                    <p>
+                      Whole-cell outside volume:{" "}
+                      {responseNumber(
+                        replicate.outside_metrics.outside_whole_cells
+                          .volume_mm3,
+                      )}{" "}
+                      mm³ in{" "}
+                      {replicate.outside_metrics.outside_whole_cells.cell_count}{" "}
+                      cells. Fraction-weighted outside volume:{" "}
+                      {responseNumber(
+                        replicate.outside_metrics.outside_fraction_weighted
+                          .volume_mm3,
+                      )}{" "}
+                      mm³.
+                    </p>
+                  </>
+                )}
+                {replicate.outside && (
+                  <p>
+                    <a href={`${base}${replicate.outside.file}`}>
+                      Outside-pattern signed and absolute response integrals
+                    </a>{" "}
+                    (mm³, ordered injected material then recovered material).
+                  </p>
+                )}
+                {replicate.arrays.map((array) => (
+                  <p>
+                    <a href={`${base}${array.file}`} download>
+                      Exact {array.role} component difference arrays
+                    </a>
+                    .{" "}
+                    {materials.map((injected, j) =>
+                      materials.map((recovered, m) => (
+                        <span>
+                          {capital(injected)} → {recovered}:{" "}
+                          {array.clipping_jm[j]![m]!.below} below and{" "}
+                          {array.clipping_jm[j]![m]!.above} above its fixed
+                          display window, of 32,768 cells.{" "}
+                        </span>
+                      )),
+                    )}
+                  </p>
+                ))}
+              </section>
+            ))}
+            <ul>
+              {data.outcomes.map((outcome) => (
+                <li>
+                  <strong>
+                    Replicate {outcome.replicate}, {outcome.scenario}.
+                  </strong>{" "}
+                  Final Euclidean mapping{" "}
+                  {responseNumber(outcome.final_mapping)}, fixed absolute
+                  threshold {responseNumber(outcome.absolute_threshold)},
+                  recorded solve time {responseNumber(outcome.solve_seconds)} s.
+                  {outcome.metrics && (
+                    <>
+                      {" "}
+                      <a href={`${base}${outcome.metrics.file}`}>
+                        Full-domain metrics and independent prediction checks
+                      </a>
+                      .
+                    </>
+                  )}
+                  {outcome.fields.length > 0 && (
+                    <ul>
+                      {outcome.fields.map((field) => (
+                        <li>
+                          <a href={`${base}${field.file}`} download>
+                            {responseStatus(field.role)}
+                          </a>
+                          , exact {field.dtype} values on the recorded 32³ grid.
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </li>
+              ))}
+            </ul>
+            {data.summary.available && (
+              <p>
+                Descriptive mean, recovered rows and injected columns:
+                water→water {responseNumber(data.summary.mean![0][0])},
+                bone→water {responseNumber(data.summary.mean![0][1])},
+                water→bone {responseNumber(data.summary.mean![1][0])}, bone→bone{" "}
+                {responseNumber(data.summary.mean![1][1])}.
+              </p>
+            )}
+          </details>
+          <details class="material-response-details">
+            <summary>Method and source data</summary>
+            <p>
+              The assigned CT-derived material phantom is diluted by 0.9 before
+              the separate 0.025 water or bone injection. The prescribed 15 mm
+              ball is centred at (25, 0, 0) mm. Its sampled native-centre
+              assignment and exact 6³ block averages remain fixed.
+            </p>
+            <ul>
+              {data.limitations.map((limitation) => (
+                <li>{limitation}</li>
+              ))}
+            </ul>
+            <p>
+              <a href={data.source_url}>CT-ORG source and attribution</a>.{" "}
+              {data.licence}.{" "}
+              <a href={`${base}study.json`}>Complete figure data</a>.
+            </p>
+            <dl class="material-response-identities">
+              <>
+                <dt>Independent review SHA-256</dt>
+                <dd>
+                  <code>{data.source.review_sha256}</code>
+                </dd>
+                <dt>Six-fit freeze SHA-256</dt>
+                <dd>
+                  <code>{data.source.six_fit_freeze_sha256}</code>
+                </dd>
+                <dt>Execution source revision</dt>
+                <dd>
+                  <code>{data.source.source_commit}</code>
+                </dd>
+              </>
+            </dl>
+          </details>
+        </>
+      ) : (
+        <p class="material-response-empty">
+          The six-fit material-response probe has no independently admitted
+          display record yet. Matrices, maps and stopping outcomes will appear
+          here only after the immutable acquisition, fitting freeze and
+          evaluation records have been checked.
+        </p>
+      )
+    }
+  </div>
+</FigurePlate>

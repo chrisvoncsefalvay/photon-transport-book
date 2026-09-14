@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "id": "book-figures-transport",
+  "chapter": "chapters-4-10",
+  "experiment": "archived-figure-rollouts",
+  "source_commit": "dba22055a71c9e7d59205c5019df2108fdc623dd",
+  "generator": "tools/public/import-figure-rollouts.mjs",
+  "mode": "stochastic-independent-realisations",
+  "stochastic": true,
+  "seeds": [
+    73129
+  ],
+  "created_at": "2026-09-11T10:47:42Z",
+  "parameters": {
+    "group": "transport",
+    "provenance": "/generated/figure-rollouts/provenance.json",
+    "independence_scope": "Independent batches within each case; shared seed and overlapping history identifiers couple different cases."
+  },
+  "notes": "source_commit identifies the curation checkout, not the archived producer. Producer source digests, configurations and actual run times are preserved in provenance.json. Input payloads are byte-identical to the verified archive.",
+  "outputs": [
+    "public/generated/figure-rollouts/absorption-0.1-4096.json",
+    "public/generated/figure-rollouts/absorption-0.1-16384.json",
+    "public/generated/figure-rollouts/absorption-0.1-65536.json",
+    "public/generated/figure-rollouts/absorption-1-4096.json",
+    "public/generated/figure-rollouts/absorption-1-16384.json",
+    "public/generated/figure-rollouts/absorption-1-65536.json",
+    "public/generated/figure-rollouts/absorption-3-4096.json",
+    "public/generated/figure-rollouts/absorption-3-16384.json",
+    "public/generated/figure-rollouts/absorption-3-65536.json",
+    "public/generated/figure-rollouts/absorption-6-4096.json",
+    "public/generated/figure-rollouts/absorption-6-16384.json",
+    "public/generated/figure-rollouts/absorption-6-65536.json",
+    "public/generated/figure-rollouts/absorption-uncertainty.json"
+  ],
+  "output_digests": {
+    "public/generated/figure-rollouts/absorption-0.1-4096.json": "08762326a79d5b455582fbd3b354c397816fdeccef4b0a15bd21d0e0659111f5",
+    "public/generated/figure-rollouts/absorption-0.1-16384.json": "6a182d58ef902bd71b72f7d1366d295d5007b4e5184c9aca45de32b309890cf4",
+    "public/generated/figure-rollouts/absorption-0.1-65536.json": "d24704153fc5e7681d7498e33fd98680329fd8e9e0e1ae46c17553e5463c737e",
+    "public/generated/figure-rollouts/absorption-1-4096.json": "cdc14252c95c68aae1b204b3a2eb09707aa9d1e9944b2025300759a7a3d7d6db",
+    "public/generated/figure-rollouts/absorption-1-16384.json": "0d6860317c870be1cd9e0cd5b442e2933fa3c3e8165f5bbd348b5223670a3072",
+    "public/generated/figure-rollouts/absorption-1-65536.json": "6eecd4c281f1c89bf941c0e32904389771c17190d091f1cbfff79e8c77673136",
+    "public/generated/figure-rollouts/absorption-3-4096.json": "d753ce9b4d7d9d410400c6d9ff2cd5a1b1baf775abb1c414e72767f6f2b05c16",
+    "public/generated/figure-rollouts/absorption-3-16384.json": "c3e002f7d7bc86141ba6a7133dd04342029b293374dadd9accd638b394b9fd8e",
+    "public/generated/figure-rollouts/absorption-3-65536.json": "c00f2d6945a7fcf1033ea5e43e77e6197f830fa5f5e04d226330575cd8a25e59",
+    "public/generated/figure-rollouts/absorption-6-4096.json": "f67b286ff1dd1041dbb3e0655d97178bbbbe88b0887ae419f2e0f3b95f9f0730",
+    "public/generated/figure-rollouts/absorption-6-16384.json": "d85aa3ede18636be80d57d2c8aee6e28dda12b29694472a5f8579018716a6c9f",
+    "public/generated/figure-rollouts/absorption-6-65536.json": "a86ad5d7b3b4c9a448a235bbfe71272791e11efea43059a5b24c5dd36e895b2f",
+    "public/generated/figure-rollouts/absorption-uncertainty.json": "359658fa15ddd70bc18c928af87365692749a5b8b71f89b251b9462a24ac4398"
+  },
+  "source_digests": {
+    "tools/public/import-figure-rollouts.mjs": "51946c2bb03f145bc0db9e15c7b6d44a1b008b445c811eb55b679896171638b9"
+  }
+}

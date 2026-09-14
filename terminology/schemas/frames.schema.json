@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Differentiable Photon Transport coordinate-frame registry",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "id",
+      "label",
+      "definition",
+      "handedness",
+      "axes",
+      "relative_to",
+      "introduced_in",
+      "source_keys",
+      "notes"
+    ],
+    "properties": {
+      "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+      "label": { "type": "string", "minLength": 1 },
+      "definition": { "type": "string", "minLength": 1 },
+      "handedness": {
+        "type": ["string", "null"],
+        "enum": ["right", "left", null]
+      },
+      "axes": {
+        "type": "object",
+        "additionalProperties": { "type": "string" }
+      },
+      "relative_to": { "type": ["string", "null"] },
+      "introduced_in": { "type": ["string", "null"] },
+      "source_keys": {
+        "type": "array",
+        "items": { "type": "string" },
+        "uniqueItems": true
+      },
+      "notes": { "type": ["string", "null"] },
+      "bootstrap": { "type": "boolean" }
+    }
+  }
+}

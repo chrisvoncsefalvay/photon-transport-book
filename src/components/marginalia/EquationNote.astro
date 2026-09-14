@@ -1,0 +1,26 @@
+---
+import { renderToString } from "katex";
+
+interface Props {
+  /** A TeX symbol, including its subscripts: e.g. n_{0,p}. */
+  term: string;
+}
+
+const { term } = Astro.props;
+const symbol = renderToString(term, {
+  throwOnError: true,
+  strict: "error",
+  output: "htmlAndMathml",
+});
+---
+
+<aside class="equation-note" data-equation-term={term}>
+  <strong class="equation-note__symbol" set:html={symbol} />
+  <div class="equation-note__definition"><slot /></div>
+</aside>
+
+<script>
+  import { initialiseEquationNotes } from "../../lib/equation-notes";
+
+  initialiseEquationNotes();
+</script>

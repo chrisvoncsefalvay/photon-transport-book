@@ -1,0 +1,151 @@
+---
+import "../../styles/carm.css";
+import FigurePlate from "./FigurePlate.astro";
+
+interface Props {
+  id: string;
+}
+const { id } = Astro.props;
+import heart from "../../assets/icons/lucide/heart.svg?raw";
+import beam from "../../assets/icons/lucide/line-dot-right-horizontal.svg?raw";
+import plane from "../../assets/icons/lucide/layer-arrow-down.svg?raw";
+import axes from "../../assets/icons/lucide/axis-3d.svg?raw";
+import zoomOut from "../../assets/icons/lucide/zoom-out.svg?raw";
+import zoomIn from "../../assets/icons/lucide/zoom-in.svg?raw";
+import cameraReset from "../../assets/icons/lucide/rotate-ccw.svg?raw";
+import centre from "../../assets/icons/lucide/focus.svg?raw";
+import reset from "../../assets/icons/lucide/undo-2.svg?raw";
+
+// Original Lucide SVGs; versioned upstream ISC notices are retained beside the icons.
+const buttons = [
+  {
+    id: "heart",
+    label: "Use cardiac terminology",
+    icon: heart,
+    pressed: false,
+  },
+  { id: "beam", label: "Hide central ray", icon: beam, pressed: true },
+  {
+    id: "slice-plane",
+    label: "Hide imaging plane",
+    icon: plane,
+    pressed: true,
+  },
+  {
+    id: "reference-axes",
+    label: "Show reference axes",
+    icon: axes,
+    pressed: false,
+  },
+  { id: "zoom-out", label: "Zoom out", icon: zoomOut },
+  { id: "zoom-in", label: "Zoom in", icon: zoomIn },
+  { id: "camera-reset", label: "Reset camera", icon: cameraReset },
+  { id: "centre", label: "Centre on body", icon: centre },
+  { id: "reset", label: "Reset positioning", icon: reset },
+];
+const decorative = (svg: string) =>
+  svg.replace("<svg", '<svg aria-hidden="true" focusable="false"');
+---
+
+<FigurePlate
+  {id}
+  title="C-arm positioning"
+  description="The C-arm’s translations, rotation and swing change the beam’s position and direction around a supine patient. The picture plane stays perpendicular to the central ray."
+  width="full"
+>
+  <dpt-carm-figure
+    data-carm-root
+    class="carm-figure"
+    role="group"
+    aria-label="Interactive C-arm positioning around a supine body"
+  >
+    <div class="viewport" data-carm-id="viewport">
+      <canvas
+        data-carm-id="scene"
+        tabindex="0"
+        aria-label="C-arm and supine body. Drag to orbit, and pinch or scroll to zoom. Arrow keys orbit, plus and minus zoom, Home resets the camera."
+      ></canvas>
+      <div class="hud hud-left">
+        <label class="hud-title">
+          Reference frame
+          <select data-carm-id="reference">
+            <option value="world">World</option>
+            <option value="patient">Patient</option>
+            <option value="detector">Detector</option>
+          </select>
+        </label>
+        <p class="hud-caption" data-carm-id="pose-target">
+          Isocentre pose · metres/degrees
+        </p>
+        <dl class="pose-readout">
+          <div>
+            <dt data-carm-id="position-label">Position</dt>
+            <dd data-carm-id="position">—</dd>
+          </div>
+          <div>
+            <dt data-carm-id="orientation-label">XYZ Euler</dt>
+            <dd data-carm-id="euler">—</dd>
+          </div>
+        </dl>
+        <p class="axis-key" data-carm-id="axis-key">
+          X left · Y anterior · Z caudal
+        </p>
+        <p class="axis-key" data-carm-id="reference-origin"></p>
+      </div>
+      <div class="hud hud-right">
+        <p class="hud-title">C-arm joint angles</p>
+        <p class="clinical-angle" data-carm-id="oblique">
+          Rotation <span>0.0°</span>
+        </p>
+        <p class="clinical-angle" data-carm-id="cranial">
+          Swing <span>0.0°</span>
+        </p>
+        <p class="hud-caption" data-carm-id="centering">Body at isocentre</p>
+      </div>
+      <p class="loading" data-carm-id="status" role="status">
+        Interactive positioning loads as the figure comes into view.
+      </p>
+      <div
+        class="view-toolbar"
+        role="group"
+        aria-label="View, positioning and terminology"
+      >
+        {
+          buttons.map(({ id, label, icon, pressed }) => (
+            <button
+              data-carm-id={id}
+              type="button"
+              aria-label={label}
+              title={label}
+              aria-pressed={pressed}
+              disabled
+            >
+              <Fragment set:html={decorative(icon)} />
+              {id === "heart" && (
+                <span data-carm-id="mode-label">Everyday</span>
+              )}
+            </button>
+          ))
+        }
+      </div>
+      <span class="view-hint">Drag to orbit · Scroll to zoom</span>
+      <noscript
+        ><p class="loading">
+          Enable JavaScript to position the C-arm.
+        </p></noscript
+      >
+    </div>
+    <div
+      class="controls"
+      data-carm-id="controls"
+      role="group"
+      aria-label="C-arm joints"
+    >
+    </div>
+  </dpt-carm-figure>
+</FigurePlate>
+
+<script>
+  import { mountCArmFigureElements } from "../../lib/carm/element";
+  mountCArmFigureElements();
+</script>

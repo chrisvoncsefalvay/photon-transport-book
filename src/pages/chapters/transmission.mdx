@@ -1,0 +1,864 @@
+---
+layout: ../../layouts/ChapterLayout.astro
+title: From photon survival to the transmission law
+status: Draft
+scope: Each layer of material removes a fraction of the surviving primary photons. This local rule gives us the transmission law and tells us how the detector signal responds to changes along a ray.
+chapterNumber: "02"
+---
+
+import Citation from "../../components/citations/Citation.astro";
+import Bibliography from "../../components/citations/Bibliography.astro";
+import MarginNote from "../../components/marginalia/MarginNote.astro";
+import EquationNote from "../../components/marginalia/EquationNote.astro";
+import Source from "../../components/source/Source.astro";
+import FigurePlate from "../../components/figures/FigurePlate.astro";
+import TransmissionPlot from "../../components/figures/TransmissionPlot.astro";
+import RadiographFigure from "../../components/figures/RadiographFigure.astro";
+import ExactIllustrations from "../../components/figures/ExactIllustrations.astro";
+import SelectedRayFigure from "../../components/figures/SelectedRayFigure.astro";
+import TransmissionAveragingFigure from "../../components/figures/TransmissionAveragingFigure.astro";
+import Provenance from "../../components/Provenance.astro";
+import transmissionRun from "../../../public/generated/transmission-contract/run.json";
+
+Suppose our estimated pose puts the edge of a bone slightly to the left of where it appears in an X-ray. Moving the model changes which source-to-detector paths cross the bone, and how far they travel through it. Along some paths, bone replaces soft tissue, while along others, the reverse happens. To use that movement in registration, we need to predict the [resulting change in detector signal](/chapters/introduction/#13-what-a-sensitivity-image-tells-us).
+
+Each extra layer removes a fraction of the photons that would otherwise reach the detector without interacting. The resulting change in expected count is smaller as the attenuation of the path increases. Two equal changes in thickness can therefore produce very different changes in a pixel, even for the same added material and photon energy. A derivative with respect to motion must account for the attenuation along the whole path.
+
+We can derive that dependence by following a photon through a short stretch of material. The attenuation coefficient specifies its local probability of an interaction per unit distance, conditional on survival so far. Applying this rule successively gives survival through the whole object. For a homogeneous material, it gives transmission as a function of thickness, and for several materials, it tells us how their contributions combine. The exponential attenuation law follows from this local rule.
+
+Moving the object changes the paths through the material while leaving its attenuation coefficients fixed.
+
+## 2.1 From incident photons to a transmission image
+
+Let us choose one detector pixel, indexed by $p$, and follow a single straight path to it from a point source. We assume the object is stationary during the exposure and every photon has the same specified energy $E$. Our ideal detector counts each photon reaching the pixel once, with no electronic noise, saturation or mixing between pixels. A physical pixel has finite area, so representing it by one ray is a spatial approximation.
+
+<SelectedRayFigure id="figure-selected-ray" />
+
+A photon contributes to the **primary** signal only if it traverses the object without an interaction. Both absorption and scattering remove it from that contribution, even if a scattered photon eventually reaches the detector somewhere else. Primary attenuation therefore uses the total coefficient for removal from the uncollided beam. <Citation keys={["dance2014"]} />
+
+Let $n_{0,p}$ be the expected number of photons that would reach the ideal pixel during the exposure if the object were absent. This is an open-beam quantity defined at the detector. Source output, source-to-detector distance and the pixel's geometric acceptance have already been included in it. Multiplying by another inverse-square factor would count that geometry twice.
+
+If $T_p$ is the probability that one of these photons survives the object without interacting, the expected primary count is
+
+$$
+\lambda_p=n_{0,p}T_p.
+$$
+
+<EquationNote term="λ_p">Expected primary count.</EquationNote>
+
+<EquationNote term="n_{0,p}">
+  Expected photons at this pixel in the absence of the object.
+</EquationNote>
+
+<EquationNote term="T_p">
+  Probability of a photon surviving without interacting.
+</EquationNote>
+
+An expected count can be fractional, although the realised count $N_p$ is an integer. The deterministic renderer predicts $\lambda_p$ or $T_p$, depending on which quantity we compare with data. It can calculate either expectation directly, without sampling photons.
+
+To compare that deterministic prediction with a realised count, we also need a model of the count's fluctuations around its mean. The following calculation supplies the observation model used by the likelihood in [section 2.5](#a-noisy-logarithm); it does not add random sampling to the renderer.
+
+Conditional on exactly $m$ incident photons, assume independent survival events with the same probability $T_p$. Then
+
+$$
+N_p\mid N_{0,p}=m
+\sim\operatorname{Binomial}(m,T_p),
+\qquad
+\mathbb E[N_p\mid N_{0,p}=m]=mT_p.
+$$
+
+<EquationNote term="N_p">Observed primary photon count.</EquationNote>
+
+<EquationNote term="N_{0,p}">
+  Incident photon count for this exposure.
+</EquationNote>
+
+<EquationNote term="m">
+  The fixed incident count on which we condition.
+</EquationNote>
+
+If the incident count is instead Poisson with mean $n_{0,p}$, the probability-generating function of the surviving count is
+
+$$
+\begin{aligned}
+\mathbb E[z^{N_p}]
+&=\mathbb E[(1-T_p+T_pz)^{N_{0,p}}]\\
+&=\exp\!\left[n_{0,p}T_p(z-1)\right].
+\end{aligned}
+$$
+
+This is the generating function of a Poisson distribution, giving
+
+$$
+N_p\sim\operatorname{Poisson}(\lambda_p),
+\qquad
+\mathbb E[N_p]=\operatorname{Var}(N_p)=\lambda_p.
+$$
+
+This Poisson result applies to the ideal photon count under the source and survival assumptions above. It does not generally describe the signal from a detector that integrates randomly deposited energy rather than counting arriving photons. <Citation keys={["dance2014"]} /> [Appendix A.9](/appendix/x-ray-theory/#a9-what-a-detector-measures) explains the distinction.
+
+The incident count $N_{0,p}$ also belongs to the exposure being modelled, not to a separate flat-field calibration. A flat-field image can help estimate the open-beam mean $n_{0,p}$, but it brings its own measurement uncertainty.
+
+## 2.2 Attenuation coefficients and units
+
+At a fixed energy, the linear attenuation coefficient $\mu(\mathbf x,E)$ specifies the local interaction probability per unit path length for a photon that has survived to $\mathbf x$. More precisely, along a path parameterised by physical distance $s$, the conditional probability of an interaction in a short interval is
+
+$$
+\Pr\!\left(\text{interaction in }[s,s+\Delta s]
+\mid\text{survival to }s\right)
+=\mu(s,E)\,\Delta s+o(\Delta s).
+$$
+
+<EquationNote term="μ">Linear attenuation coefficient (mm⁻¹).</EquationNote>
+
+<EquationNote term="s">Physical distance along the path (mm).</EquationNote>
+
+<EquationNote term="E">Photon energy (keV).</EquationNote>
+
+<EquationNote term="Δs">
+  A short increment of physical path length (mm).
+</EquationNote>
+
+The remainder divided by $\Delta s$ tends to zero as the interval shrinks. Treating $\mu\Delta s$ as an exact interaction probability for an arbitrarily thick segment would eventually produce probabilities larger than one, which is a fairly decisive hint that the approximation has expired.
+
+[We use $L_p$ to denote **optical depth**](/appendix/x-ray-theory/#a5-attenuation-along-a-ray). Despite its letter, $L_p$ is dimensionless. We will use $d$ for the physical length of a homogeneous segment and $s$ for distance along a path. With that, we can now formulate the _dramatis personae_ of photon transmission. [Table 2.1](#table-2-1) collects the quantities and their units so that physical length and optical depth remain distinct.
+
+<div className="prose-table" role="region" aria-label="Transmission quantities and units" tabIndex={0}>
+
+| Quantity               | Meaning                                   | Units used here         |
+| ---------------------- | ----------------------------------------- | ----------------------- |
+| $E$                    | Photon energy                             | $\mathrm{keV}$          |
+| $s$, $d$               | Physical path distance or segment length  | $\mathrm{mm}$           |
+| $\mu$                  | Linear attenuation coefficient            | $\mathrm{mm^{-1}}$      |
+| $\rho$                 | Mass density                              | $\mathrm{g\,cm^{-3}}$   |
+| $\mu/\rho$             | Mass attenuation coefficient              | $\mathrm{cm^2\,g^{-1}}$ |
+| $L_p$                  | Integrated attenuation, or optical depth  | Dimensionless           |
+| $T_p$                  | Primary survival probability              | Dimensionless           |
+| $n_{0,p}$, $\lambda_p$ | Expected open-beam and transmitted counts | Photons per exposure    |
+
+</div>
+
+Physical tables often provide the mass attenuation coefficient. Multiplication by the material density gives the linear coefficient:
+
+$$
+\mu=\rho\left(\frac{\mu}{\rho}\right).
+$$
+
+<EquationNote term="ρ">Material mass density (g cm⁻³).</EquationNote>
+
+<EquationNote term="\frac{μ}{ρ}">
+  Mass attenuation coefficient (cm² g⁻¹).
+</EquationNote>
+
+With the units in the table, the product is in $\mathrm{cm^{-1}}$. Conversion to inverse millimetres divides the numerical value by ten. The density convention and length conversion must both be explicit before the coefficient enters an array.
+
+For example, the [NIST liquid-water table](https://physics.nist.gov/PhysRefData/XrayMassCoef/ComTab/water.html) gives $\mu/\rho=0.2059\ \mathrm{cm^2\,g^{-1}}$ at $0.060\ \mathrm{MeV}$, or $60\ \mathrm{keV}$. At an assumed density of $1.0\ \mathrm{g\,cm^{-3}}$,
+
+$$
+\mu=0.2059\ \mathrm{cm^{-1}}
+=0.02059\ \mathrm{mm^{-1}}.
+$$
+
+This is a helpful figure, and anyone in synthetic radiography ought to know it if roused from sleep at 3am. The neighbouring NIST column contains the mass **energy-absorption** coefficient, $\mu_{\mathrm{en}}/\rho$. It concerns energy absorption and is not interchangeable with the total mass attenuation coefficient used for primary survival. The attenuation total includes scattering interactions as well as absorption. <Citation keys={["hubbell1995"]} />
+
+For a non-negative coefficient with a finite integral along the path, optical depth is non-negative and transmission is strictly positive. Zero transmission occurs as an infinite-optical-depth limit, although finite-precision arithmetic can return zero much earlier.
+
+<MarginNote label="CT values are not attenuation coefficients">
+  A CT array needs explicit conversion or calibration before its values can be used as attenuation coefficients at the chosen energy. Hounsfield units express reconstructed attenuation relative to water; they are not inverse lengths. In particular, zero HU denotes water, not zero attenuation.
+
+First establish whether the stored voxel values are already in HU or require the image metadata's rescaling. That rescaling recovers CT values, not a monoenergetic attenuation field. Conventional CT values depend on the acquisition spectrum and reconstruction, so multiplying by a water coefficient at an arbitrary energy does not generally recover the correct coefficient for every material.
+
+The renderer therefore needs a stated material model or an appropriate calibration that maps those values to $\mu(\mathbf x,E)$, with inverse-length units matching the ray geometry. Otherwise, the exponential will faithfully evaluate a quantity that had no business entering it. [Appendix A.11](/appendix/x-ray-theory/#a11-ct-values-and-hounsfield-units) explains the conversion problem and its assumptions.
+
+</MarginNote>
+
+## 2.3 The homogeneous path
+
+Consider a homogeneous material with constant coefficient $\mu$ at the chosen energy. Suppress the pixel and energy indices while following a photon through it. Let $T(s)$ denote survival through a distance $s$, with $T(0)=1$.
+
+A photon survives to $s+\Delta s$ if it survives to $s$ and then survives the next interval. The local interaction law gives
+
+$$
+T(s+\Delta s)
+=T(s)\left[1-\mu\Delta s+o(\Delta s)\right].
+$$
+
+Subtract $T(s)$, divide by $\Delta s$ and take the limit:
+
+$$
+\frac{\mathrm dT}{\mathrm ds}=-\mu T,
+\qquad T(0)=1.
+$$
+
+Solving this initial-value problem yields the Beer–Lambert transmission law,
+
+$$
+T(d)=e^{-\mu d},
+\qquad
+L=\mu d,
+\qquad
+\lambda=n_0e^{-\mu d}.
+$$
+
+<EquationNote term="d">
+  Distance travelled through the homogeneous material (mm).
+</EquationNote>
+
+<EquationNote term="L">
+  Optical depth, a dimensionless measure of accumulated attenuation.
+</EquationNote>
+
+Each additional millimetre removes a fraction of the photons still in the primary beam. As the beam weakens, the absolute number removed by the next millimetre falls. A layer of thickness $\Delta d$ multiplies the incoming primary population by $e^{-\mu\Delta d}$, whatever attenuation preceded it.
+
+In particular,
+
+$$
+\frac{T(d+\Delta d)}{T(d)}=e^{-\mu\Delta d}.
+$$
+
+For a monoenergetic homogeneous material with $\mu>0$, the half-value thickness is $d_{1/2}=\ln(2)/\mu$. Each such thickness halves the surviving primary signal, so the second half-value thickness is the same as the first. A spectrum that changes with depth need not have that property.
+
+Substituting the water coefficient above and an open-beam mean of $10{,}000$ photons gives the analytic values in [Table 2.2](#table-2-2).
+
+<div className="prose-table" role="region" aria-label="Analytic monoenergetic water slab transmission" tabIndex={0}>
+
+| Water thickness    | Optical depth $L$ | Transmission $T$ | Expected primary count $\lambda$ |
+| ------------------ | ----------------- | ---------------- | -------------------------------- |
+| $0\ \mathrm{mm}$   | $0$               | $1$              | $10{,}000$                       |
+| $50\ \mathrm{mm}$  | $1.0295$          | $0.357186$       | $3571.86$                        |
+| $100\ \mathrm{mm}$ | $2.059$           | $0.127581$       | $1275.81$                        |
+| $200\ \mathrm{mm}$ | $4.118$           | $0.0162770$      | $162.770$                        |
+
+</div>
+
+At fixed energy and density, adding one millimetre multiplies transmission by $e^{-0.02059}\approx0.979621$. The fractional decrease is about $2.04\%$ of the photons entering that extra millimetre. It is not $2.04\%$ of the original open beam on every step.
+
+The sensitivities are also available exactly:
+
+$$
+\frac{\partial T}{\partial d}=-\mu T,
+\qquad
+\frac{\partial T}{\partial\mu}=-dT.
+$$
+
+The thickness derivative has units of inverse length, while the coefficient derivative has units of length. Both give exact references for checking an implementation. At fixed $n_0$, the corresponding count derivatives acquire a factor of $n_0$.
+
+<ExactIllustrations
+  kind="water-slopes"
+  id="figure-water-slopes"
+  title="Equal thickness removes an equal fraction"
+  description="The transmission curve and its tangents show that the same extra thickness removes fewer photons from an already weakened beam. The fraction removed by each extra millimetre stays constant, while the magnitude of the thickness derivative decreases with the surviving signal."
+/>
+
+A single transmission value determines the product $\mu d$. If both attenuation and thickness are unknown, every positive pair with the same product gives the same prediction. Infinitesimally,
+
+$$
+\delta L=d\,\delta\mu+\mu\,\delta d.
+$$
+
+A perturbation satisfying $d\,\delta\mu+\mu\,\delta d=0$ leaves the prediction unchanged to first order. For $c>0$, the replacement $(\mu,d)\mapsto(c\mu,d/c)$ leaves it unchanged exactly. An optimiser cannot recover two independently unknown quantities from information that only constrains their product. Additional information must come from the geometry, material knowledge or further measurements.
+
+## 2.4 Heterogeneous paths and optical depth
+
+A path through an object rarely stays in one homogeneous material. Let $\mathbf x_p(s)$ describe the path in the coordinates of the attenuation field, with $s$ measured as arc length. We assume $\mu(\mathbf x_p(s),E)$ is non-negative and integrable along the finite path. The same local survival argument now gives
+
+$$
+\frac{\mathrm dT_p(s)}{\mathrm ds}
+=-\mu(\mathbf x_p(s),E)T_p(s).
+$$
+
+<EquationNote term="\mathbf{x}_p">
+  Position along the path for pixel p, in attenuation-field coordinates (mm).
+</EquationNote>
+
+Integrating from the source-side endpoint to the detector-side endpoint yields
+
+$$
+L_p(E)=\int_{\ell_p}\mu(\mathbf x,E)\,\mathrm ds,
+\qquad
+T_p(E)=\exp[-L_p(E)].
+$$
+
+<EquationNote term="L_p">
+  Optical depth along the path for pixel p.
+</EquationNote>
+
+<EquationNote term="\ell_p">
+  The source-to-detector path for pixel p.
+</EquationNote>
+
+Integrability is enough for this solution in the almost-everywhere sense. Material interfaces can produce jumps in $\mu$ without producing jumps in accumulated optical depth or survival. Vacuum segments contribute zero if we assign them $\mu=0$.
+
+For piecewise-constant material segments, the integral is an exact finite sum for that representation:
+
+$$
+L_p=\sum_{j=1}^{M}\mu_j\ell_{pj},
+\qquad
+T_p=\prod_{j=1}^{M}e^{-\mu_j\ell_{pj}}.
+$$
+
+<EquationNote term="μ_j">
+  Linear attenuation coefficient in segment j (mm⁻¹).
+</EquationNote>
+
+<EquationNote term="\ell_{pj}">
+  Length of segment j traversed by path p (mm).
+</EquationNote>
+
+<EquationNote term="M">
+  Number of material segments along the path.
+</EquationNote>
+
+Here $\ell_{pj}$ is the physical length of segment $j$ traversed by path $p$. For example, choose a $40\ \mathrm{mm}$ segment with $\mu_1=0.02\ \mathrm{mm^{-1}}$ followed by a $10\ \mathrm{mm}$ segment with $\mu_2=0.05\ \mathrm{mm^{-1}}$. The resulting optical depth and transmission are
+
+$$
+L=0.02\times40+0.05\times10=1.3,
+\qquad
+T=e^{-1.3}\approx0.272532.
+$$
+
+Reversing these two segments leaves the primary transmission unchanged: their optical-depth contributions add in either order.
+
+<ExactIllustrations
+  kind="layers"
+  id="figure-layer-order"
+  title="Layer order changes the path, not the final transmission"
+  description="Reordering the material segments changes where the primary beam loses intensity along the path. The total optical depth and final transmission stay the same because the same material lengths are traversed."
+/>
+
+A ray need not be parameterised by arc length in the implementation. For a regular curve $\mathbf x(t)$,
+
+$$
+\mathrm ds=\left\|\frac{\mathrm d\mathbf x}{\mathrm dt}\right\|\mathrm dt,
+\qquad
+L=\int_{t_a}^{t_b}
+\mu(\mathbf x(t),E)
+\left\|\frac{\mathrm d\mathbf x}{\mathrm dt}\right\|\,\mathrm dt.
+$$
+
+For the straight segment from $\mathbf a$ to $\mathbf b$, write
+
+$$
+\begin{aligned}
+\mathbf x(t)&=\mathbf a+t(\mathbf b-\mathbf a),\qquad 0\leq t\leq1,\\
+L&=\|\mathbf b-\mathbf a\|
+\int_0^1\mu\!\left(\mathbf a+t(\mathbf b-\mathbf a),E\right)\,\mathrm dt.
+\end{aligned}
+$$
+
+<EquationNote term="\mathbf{a}">
+  Source-side endpoint of the straight segment (mm).
+</EquationNote>
+
+<EquationNote term="\mathbf{b}">
+  Detector-side endpoint of the straight segment (mm).
+</EquationNote>
+
+<EquationNote term="t">
+  Dimensionless position parameter, from zero at the start to one at the end.
+</EquationNote>
+
+The factor $\|\mathbf b-\mathbf a\|$ supplies physical length. If it is omitted, a homogeneous field would produce the same optical depth for a one-millimetre path and a one-metre path.
+
+<MarginNote label="Ray parameters and physical thickness">
+  A ray parameter that happens to range from zero to one does not make the
+  object one unit thick.
+</MarginNote>
+
+Gopalakrishnan and Golland's DiffDRR computes intersections between a ray and the voxel planes, orders them along the ray, and weights each voxel value by the physical distance between successive intersections. For our piecewise-constant attenuation field, these distances supply the $\ell_{pj}$ in the exact sum. <Citation keys={["gopalakrishnan2023diffdrr"]} />
+
+For a sampled field, quadrature approximates the integral as
+
+$$
+L_p^{(h)}=\sum_j w_{pj}\,\mu(\mathbf x_{pj},E),
+\qquad
+T_p^{(h)}=e^{-L_p^{(h)}},
+$$
+
+where each weight $w_{pj}$ includes physical distance. Non-negative weights preserve non-negative optical depth when the sampled coefficients are non-negative. Whether the approximation converges to the intended integral depends on the field representation, sample positions, boundary handling and refinement rule, and [Chapter 4](/chapters/volumes-line-integrals/) examines those choices.
+
+<EquationNote term="w_{pj}">
+  Quadrature weight, including physical path distance (mm).
+</EquationNote>
+
+<EquationNote term="\mathbf{x}_{pj}">
+  Position of quadrature sample j on path p (mm).
+</EquationNote>
+
+<EquationNote term="L_p^{(h)}">
+  Optical depth computed with the chosen quadrature resolution.
+</EquationNote>
+
+Suppose the optical-depth error is $\varepsilon_L=L_p^{(h)}-L_p$. The resulting relative transmission error is exactly
+
+$$
+\frac{T_p^{(h)}-T_p}{T_p}
+=e^{-\varepsilon_L}-1
+=-\varepsilon_L+O(\varepsilon_L^2).
+$$
+
+Thus a small absolute error in optical depth becomes a comparable relative error in transmission. When the true transmission is tiny, an absolute image-error criterion alone can conceal a substantial relative error.
+
+Segments along one history multiply their survival probabilities, whereas alternative histories contributing to a measurement add their expected signals. If a pixel averages paths with normalised non-negative weights $\alpha_i$, its transmission is
+
+$$
+\overline T_p=\sum_i\alpha_i e^{-L_{pi}},
+\qquad
+\sum_i\alpha_i=1.
+$$
+
+<EquationNote term="α_i">
+  Normalised, non-negative weight of path i in the pixel average.
+</EquationNote>
+
+<EquationNote term="L_{pi}">
+  Optical depth of contributing path i for pixel p.
+</EquationNote>
+
+<EquationNote term="\overline{T}_p">
+  Mean transmission over the paths contributing to pixel p.
+</EquationNote>
+
+Averaging optical depths first would instead give $\exp(-\sum_i\alpha_iL_{pi})$, which generally differs from the mean transmission. For two equally weighted paths with optical depths zero and two, averaging transmissions gives $(1+e^{-2})/2\approx0.567668$, whereas exponentiating the mean optical depth gives $e^{-1}\approx0.367879$.
+
+<TransmissionAveragingFigure id="figure-transmission-averaging" />
+
+## 2.5 From transmission to log projections
+
+If we know the expected primary count and the open-beam mean, with $n_{0,p}>0$, normalisation removes the exposure scale:
+
+$$
+T_p=\frac{\lambda_p}{n_{0,p}}.
+$$
+
+The attraction of the logarithm is that it exposes the additive quantity accumulated along the ray. For the fixed segment lengths in section 2.4, that quantity is linear in the attenuation coefficients. Taking the negative natural logarithm of the expected transmission recovers optical depth,
+
+$$
+-\ln T_p=L_p.
+$$
+
+The normalised ratio gives the logarithm a dimensionless argument. Without the open-beam reference, $-\ln\lambda_p$ still depends on exposure. Recovering optical depth also requires the monoenergetic, representative-path model: spectral or spatial averaging takes place before the logarithm, as the preceding example showed. [Appendix A.6](/appendix/x-ray-theory/#a6-why-a-clinical-exposure-is-not-generally-a-single-line-integral) develops this limitation for clinical acquisitions.
+
+A simple linear detector adds calibration terms. Let $g_p>0$ be a fixed mean output per arriving photon and $b_p$ an additive mean electronic offset. Under a spatially local response model,
+
+$$
+\begin{aligned}
+\bar y_p&=g_pn_{0,p}e^{-L_p}+b_p,\\
+\bar y_{0,p}&=g_pn_{0,p}+b_p.
+\end{aligned}
+$$
+
+<EquationNote term="g_p">
+  Mean detector output per arriving photon.
+</EquationNote>
+
+<EquationNote term="b_p">
+  Mean additive electronic offset at pixel p.
+</EquationNote>
+
+<EquationNote term="\bar{y}_p">
+  Expected detector output with the object present.
+</EquationNote>
+
+<EquationNote term="\bar{y}_{0,p}">
+  Expected open-beam detector output.
+</EquationNote>
+
+If gain, offset and open-beam exposure are matched, then
+
+$$
+\frac{\bar y_p-b_p}{\bar y_{0,p}-b_p}=e^{-L_p}.
+$$
+
+A dark calibration estimates the electronic offset, while a flat-field exposure estimates the open-beam response. The cancellation above holds for the matched expected signals. Calibration errors remain in the corrected signal, and changes in gain or source output between calibration and acquisition prevent exact cancellation.
+
+An unmodelled additive contribution behaves differently from a gain. Suppose $s_p\geq0$ is an additional mean signal in count-equivalent units, and the normalisation still uses $n_{0,p}$. Then
+
+$$
+\begin{aligned}
+T_p^{\mathrm{app}}&=e^{-L_p}+\frac{s_p}{n_{0,p}},\\
+L_p^{\mathrm{app}}&=-\ln T_p^{\mathrm{app}}\leq L_p.
+\end{aligned}
+$$
+
+<EquationNote term="s_p">
+  Additional mean signal in count-equivalent units.
+</EquationNote>
+
+The apparent optical depth is reduced. If the additional contribution pushes the ratio above one, the apparent optical depth becomes negative. Scatter can contribute such a signal in a linear detector domain, but a dark frame does not measure object-generated scatter.
+
+<RadiographFigure
+  kind="formation"
+  id="figure-radiograph-domains"
+  title="One projection, two display domains"
+  description="The same recorded primary projection is displayed as linear expected counts and as optical depth. Taking the negative logarithm of open-beam-normalised counts changes the visible contrast and comparison domain without changing the underlying projection."
+/>
+
+### A noisy logarithm
+
+With the ideal count model and a known, positive open-beam mean, the ratio $N_p/n_{0,p}$ is unbiased for $T_p$. Taking its negative logarithm does not give an unbiased measurement of $L_p$. Zero counts are an immediate problem:
+
+$$
+\Pr(N_p=0)=e^{-\lambda_p}>0
+$$
+
+for any finite $\lambda_p$. At zero counts the logarithm is undefined. Defining $-\ln0=+\infty$ would make its expectation infinite.
+
+At high counts, on observations near a positive mean where a local linear approximation is appropriate,
+
+$$
+\delta\widehat L_p\approx-\frac{\delta N_p}{\lambda_p},
+\qquad
+\operatorname{Var}_{\mathrm{local}}(\widehat L_p)
+\approx\frac{1}{\lambda_p}.
+$$
+
+<EquationNote term="\widehat{L}_p">
+  Optical depth estimated from the observed count.
+</EquationNote>
+
+This approximation excludes zero-count observations. A noisy estimated denominator adds calibration uncertainty as well.
+
+Replacing zero counts by a floor produces a finite array. Both this replacement and adding a pseudocount change the statistical properties of the data.
+
+Compare predicted and observed counts directly. For a realised count $N_p$, the Poisson negative log likelihood, up to terms independent of $L_p$, is
+
+$$
+\mathcal J_p(L_p)
+=n_{0,p}e^{-L_p}+N_pL_p.
+$$
+
+<EquationNote term="\mathcal{J}_p">
+  Poisson negative log likelihood, up to terms independent of optical depth.
+</EquationNote>
+
+This follows by substituting $\ln\lambda_p=\ln n_{0,p}-L_p$ into $\lambda_p-N_p\ln\lambda_p$. It never takes a logarithm of the observed count and remains defined when $N_p=0$. Its first two derivatives are
+
+$$
+\frac{\mathrm d\mathcal J_p}{\mathrm dL_p}=N_p-\lambda_p,
+\qquad
+\frac{\mathrm d^2\mathcal J_p}{\mathrm dL_p^2}=\lambda_p.
+$$
+
+For a zero-count observation, this objective decreases as $L_p$ increases and approaches its infimum only as $L_p\to\infty$. Shared image structure or additional information must constrain the estimate. With $N_p>0$, the unconstrained single-pixel optimum is $-\ln(N_p/n_{0,p})$, and restricting $L_p\geq0$ moves that optimum to zero if $N_p>n_{0,p}$.
+
+This likelihood follows from the ideal counting model in [section 2.1](#21-from-incident-photons-to-a-transmission-image). An energy-integrating or heavily processed image needs a statistical model for that detector output. The choice of comparison domain is part of [section 6.2](/chapters/recovering-pose/#62-what-should-the-images-agree-on) on registration objectives.
+
+## 2.6 Evaluating transmission numerically
+
+In [the library outlined in section 1.7](/chapters/introduction/#17-from-transmission-to-transport), transmission sits between path integration and comparison with the observed image. It converts an array of optical depths into the requested primary-signal quantities and supplies derivatives with respect to its declared active inputs. Here we supply optical depths directly, using slabs and numerical test cases whose answers we can establish independently. [Chapter 4](/chapters/volumes-line-integrals/#46-a-gpu-projection-operator) will produce those inputs by integrating through a volume.
+
+The slab cases let us check behaviour near zero attenuation and in nearly opaque paths before we have rays to construct or a volume to sample. We will use the same transmission operation when those inputs come from the renderer.
+
+For a collection of pixels, the deterministic operations are
+
+$$
+T_p=e^{-L_p},
+\qquad
+\lambda_p=n_{0,p}T_p,
+\qquad
+\ln T_p=-L_p.
+$$
+
+Compute log transmission directly from $L_p$. Taking an exponential and then its logarithm introduces rounding error and can fail after underflow. [Table 2.3](#table-2-3) specifies the input, output and numerical contract for this operation.
+
+<div className="prose-table" role="region" aria-label="What's what in the transmission contract" tabIndex={0}>
+
+| Item                   | Required meaning or behaviour                                                                                             |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Optical depth          | Finite, non-negative, dimensionless $L_p$ for each pixel.                                                                 |
+| Open-beam mean         | Finite, non-negative $n_{0,p}$, with explicit scalar or per-pixel broadcasting.                                           |
+| Outputs                | Dimensionless $T_p$, expected count $\lambda_p$, and log transmission if required. No random sampling.                    |
+| Zero open-beam mean    | Return zero expected count. An observed normalised transmission is unavailable for that pixel.                            |
+| Invalid physical input | Report negative optical depth, negative mean or non-finite input, and do not silently clip it into the allowed domain.    |
+| Numerical policy       | State storage and accumulation precision, exponential accuracy mode and any treatment of subnormal values.                |
+| Derivative meaning     | Differentiate the declared deterministic map with acquisition parameters fixed, unless they are explicitly active inputs. |
+
+</div>
+
+A non-negative parameterisation may be appropriate when optimising an attenuation field. Hidden clipping inside the forward operation would change the function and introduce its own derivative convention at the clipping boundary.
+
+### One operator, several useful outputs
+
+The transmission operator, `dpt.transmission.transmit`, receives `L`, the optical-depth array produced by the path integrator. The `n0` argument supplies illumination when counts are wanted, and the `out_` arguments name the quantities the caller will consume. A count-domain registration objective will use `out_counts`, and a sensitivity calculation will also need the reverse operation developed below.
+
+Its inputs are contiguous, one-dimensional CUDA arrays with binary32 storage, and the caller flattens the detector image and supplies each destination. Omitting `out_T` avoids storing a transmission image that the next operation does not need. The removed-primary fraction is a fourth, independently selectable output.
+
+<Source
+  file="python/dpt/transmission.py"
+  region="transmission-contract"
+  caption="Inputs and output buffers for transmission"
+/>
+
+`TransmissionSpec` fixes the representation of the open beam: a Python scalar, a one-element device array or one device value per pixel. A Python scalar is explicitly rounded to binary32 and treated as fixed. A device array may be declared active when its derivative is required. This prevents an accidental broadcast from silently changing an image-sized calibration problem into a single exposure parameter, or vice versa.
+
+Each output approximates its declared real-valued quantity independently. We do not require machine equality between `out_counts` and the product of `n0` with the rounded `out_T`, or between `out_removed` and one minus `out_T`. Those apparently helpful consistency checks would require the more informative output to inherit the rounding damage of the less informative one. The weak- and strong-attenuation cases below show why. The plots draw recorded CUDA samples in the browser. Move over a curve or use its sample slider to inspect the stored values. The slider selects an existing sample rather than evaluating another optical depth.
+
+<FigurePlate
+  id="figure-2-1"
+  title="Three outputs of the same transmission operator"
+  description="The recorded CUDA outputs show transmission and expected counts decreasing exponentially with optical depth, while log transmission remains linear. Rounding can erase attenuation information from one output while another still preserves it."
+  width="full"
+>
+  <TransmissionPlot kind="sweep" />
+</FigurePlate>
+
+### Weak attenuation
+
+When $L$ is small, the fraction removed from the primary beam is
+
+$$
+1-T=1-e^{-L}=L-\frac{L^2}{2}+O(L^3).
+$$
+
+Subtracting an already rounded value of $e^{-L}$ from one can lose most of the significant digits in this small difference. A numerically preferable evaluation is
+
+$$
+1-T=-\operatorname{expm1}(-L),
+$$
+
+where $\operatorname{expm1}(x)$ evaluates $e^x-1$ accurately near zero. Similarly, if transmission is supplied through a small decrement $\delta=1-T$, then
+
+$$
+L=-\operatorname{log1p}(-\delta),\qquad 0\leq\delta<1.
+$$
+
+<EquationNote term="δ">
+  The transmission decrement: the fraction removed from the primary beam.
+</EquationNote>
+
+CUDA provides the device functions `expm1f` and `log1pf` for these expressions. We bind them directly through Warp's native-function mechanism. The ellipses below are declarations whose bodies are the supplied CUDA strings. They do not invoke Python once per pixel. <Citation keys={["cuda130MathSingle"]} />
+
+<Source
+  file="python/dpt/kernels/transmission.py"
+  region="transmission-weak-attenuation"
+  caption="CUDA functions for small attenuation decrements"
+/>
+
+The inverse takes the decrement itself as its input. If a previous calculation rounded transmission to one and then formed the decrement by subtraction, the lost bits have already gone. `log1p` has no administrative procedure for requesting their return. Similarly, a decrement rounded to one cannot identify a finite optical depth: the inverse API rejects that endpoint instead of inventing a large finite answer.
+
+<FigurePlate
+  id="figure-2-2"
+  title="Keeping weak attenuation visible"
+  description="For sufficiently weak attenuation, subtracting the stored transmission from one rounds the removed fraction to zero. Computing it directly preserves that small loss (left), while the inverse calculation remains accurate for the tested decrements (right)."
+  width="full"
+>
+  <TransmissionPlot kind="weak" />
+</FigurePlate>
+
+The removed-primary fraction includes photons that scattered out of the uncollided history. It is not an absorbed-energy fraction or a dose estimate.
+
+### Strong attenuation
+
+For large $L$, the exponential can underflow to zero even while optical depth and log transmission $-L$ remain representable. Keeping log transmission allows comparisons in that domain without introducing a tiny transmission floor.
+
+An absolute error of $10^{-8}$ is excellent for a transmission near one and disastrous for a transmission near $10^{-12}$. A validation criterion must say which regime it covers. Relative error is useful for positive, representable reference values, while behaviour near underflow needs a separate check. The underflow threshold depends on the numeric type, treatment of subnormal values and mathematical implementation.
+
+Storage precision and intermediate precision need separate decisions. Consider the mathematical stress input $L=110$ with an open-beam mean near $10^{30}$. Transmission is below the binary32 subnormal range, but the expected count is approximately $1.69\times10^{-18}$ and remains representable. Multiplying the open beam by a transmission value already stored as zero destroys that count. This is a test of numerical range, not a claim about a plausible clinical exposure.
+
+Our arrays remain binary32. The kernel keeps the exponential factor in a binary64 register until the requested products have been formed, then rounds each output independently. For $L\leq64$, it evaluates the ordinary binary32 exponential and promotes the result. Above that cutover it evaluates the exponential in binary64 from the exactly promoted input. At the cutover the binary32 exponential is still normal: promotion preserves its available precision, while the wider exponent range protects later products. The value 64 is an implementation boundary, with neighbouring representable inputs tested on both sides, and it has no physical significance.
+
+<Source
+  file="python/dpt/kernels/transmission.py"
+  region="transmission-evaluate"
+  caption="Evaluating log transmission and the exponential factor"
+/>
+
+The kernel forms `count` directly from `factor`. The wider temporary lives within the kernel, so there is no hidden binary64 image to allocate, write and reread. Log transmission takes a different path altogether: unary negation of the input, preserving the sign of zero as well as every finite magnitude. It does not depend on the exponential's range.
+
+<FigurePlate
+  id="figure-2-3"
+  title="A representable count after transmission has rounded to zero"
+  description="In this numerical stress test with extreme illumination, stored transmission reaches zero while the expected count is still representable. Forming counts before rounding the exponential preserves values that multiplication by the stored transmission would lose."
+  width="full"
+>
+  <TransmissionPlot kind="tail" />
+</FigurePlate>
+
+The kernel disables fast mathematics and permits fused multiply-add contraction. FMA rounds a multiply-add once, whereas separate instructions round its product first. Flush-to-zero and approximate intrinsics are different choices that can change the small-value behaviour. NVIDIA's floating-point guide describes those distinctions. Our tests cover the selected settings rather than assuming that the word CUDA guarantees a particular elementary-function accuracy. <Citation keys={["nvidia130FloatingPoint"]} />
+
+### Fusing the work that is actually requested
+
+Each CUDA thread handles one pixel, computing and writing only the outputs the caller requests. Those choices are fixed in the output mask when the kernel specialisation is created, allowing `wp.static` to remove the unused branches at compile time. A counts-only call therefore leaves transmission unstored and skips log transmission; a log-only call skips the exponential altogether. Array length and illumination values, by contrast, remain runtime inputs: changing the exposure does not require recompilation.
+
+<Source
+  file="python/dpt/kernels/transmission.py"
+  region="transmission-forward"
+  caption="Writing the requested transmission outputs"
+/>
+
+This fusion saves launches and repeated image traffic, neither of which is desirable if we want matters to proceed at pace. With a per-pixel beam and all four outputs, the pointwise forward operation requests two binary32 reads and four writes: 24 bytes per pixel before cache effects and transaction overhead. A transmission-only call needs one read and one write, or 8 bytes per pixel. These are traffic counts from the source, not measured DRAM bandwidth. Validation scans and scalar reductions have their own traffic and must be accounted for separately.
+
+We also avoid adding shared-memory staging to a pointwise calculation with no cross-pixel reuse. It would introduce storage and synchronisation without reducing the compulsory image reads. The branch at the precision cutover is different: pixels can take different arithmetic paths, so mixed ordinary and extreme inputs belong in profiling workloads. We check the numerical results and repeat the device measurements after changing either arithmetic path.
+
+Differentiating with respect to optical depth and the open-beam mean gives
+
+$$
+\frac{\partial T_p}{\partial L_p}=-T_p,
+\qquad
+\frac{\partial\lambda_p}{\partial L_p}=-\lambda_p,
+\qquad
+\frac{\partial\lambda_p}{\partial n_{0,p}}=T_p.
+$$
+
+At fixed open-beam mean and positive $\lambda_p$, a small optical-depth change $\delta L_p$ changes the expected count by approximately $-\lambda_p\delta L_p$. Under the ideal Poisson model, the count standard deviation is $\sqrt{\lambda_p}$, so the size of that predicted change relative to the counting fluctuations is approximately $\sqrt{\lambda_p}|\delta L_p|$. This ratio shrinks as attenuation increases, consistent with the falling Poisson curvature $\lambda_p$. Rescaling the objective can enlarge its numerical gradients, but it does not improve this local signal-to-noise ratio.
+
+### A backward pass that preserves the same range
+
+An optimiser rarely asks for an isolated derivative at one pixel. It supplies a cotangent for each requested output: the derivative of its scalar objective with respect to that output. Write these incoming weights as $\bar T$, $\bar\lambda$, $\bar\ell$ and $\bar r$ for transmission, counts, log transmission and removed fraction. The optical-depth contribution is $\bar L=(\bar r-\bar T)e^{-L}-\bar\lambda n_0e^{-L}-\bar\ell$. This is a vector–Jacobian product (VJP): it combines the objective's weights with the local derivatives without ever constructing a dense Jacobian.
+
+<Source
+  file="python/dpt/kernels/transmission.py"
+  region="transmission-vjp"
+  caption="Transmission gradients recomputed from the original inputs"
+/>
+
+The derivative is that of the declared smooth real-valued map, evaluated approximately at the supplied floating-point inputs. It is not the derivative of a staircase of rounded storage values. Differentiating that staircase would produce zero almost everywhere and be singular at its jumps, which is a poor basis for moving a bone into place.
+
+Reusing rounded forward outputs is especially dangerous here. A large incoming weight can make $\bar T e^{-L}$ representable even when stored transmission is zero. A small open-beam mean and a large count cotangent can similarly produce a useful product after stored counts have underflowed. For removed fraction, `1 - stored_removed` can already be zero. The VJP therefore recomputes the factor from the original optical depth and forms weighted products in binary64 registers. It also computes the open-beam derivative directly: dividing counts by the open beam would fail at the perfectly valid input $n_0=0$.
+
+There is one local open-beam derivative per pixel when the beam is an active image. When the active beam is a single shared device value, its gradient instead sums $\bar\lambda_p e^{-L_p}$ over all pixels. The implementation forms binary64 partial sums in tiles of 256 pixels and reduces those partials through a fixed tree. The tree allocation, later reduction levels and final cast use the shared reduction code also used by projection and objectives, while the first stage retains this operator's range-sensitive products. This avoids sending every thread to contend for the same global scalar. It also avoids retaining a full-sized array of binary64 contributions: only the much smaller tree of partials is persistent. A separate reduction pass rereads optical depth and count cotangents. That cost is explicit, and the reduction must finish before its scalar result can be used.
+
+<Source
+  file="python/dpt/kernels/transmission.py"
+  region="transmission-beam-reduction"
+  caption="Reducing the shared open-beam gradient"
+/>
+
+The inverse helper follows the same rule: its VJP uses the original decrement and evaluates $\bar\delta=\bar L/(1-\delta)$. As $\delta$ approaches one, this derivative grows. That is the inverse problem's conditioning, not an invitation to clamp the denominator. A final gradient that cannot be represented in binary32 sets a numerical error flag, and the checked completion boundary raises `GradientRangeError`. A legitimate forward underflow and an unusable overflowing gradient are different outcomes.
+
+### Owning storage, streams and reverse execution
+
+`prepare_transmission` binds a workspace to one CUDA stream and allocates its persistent diagnostics and any required scalar-reduction scratch. The caller allocates inputs, destinations and, for taped execution, gradient buffers. These buffers must remain alive until the stream has finished using them. Original inputs must also remain unmodified until backward completes, because recomputation deliberately reads them again. Two concurrent operations need separate workspaces or explicit serialisation: sharing an object in Python does not order GPU execution.
+
+The default checked call validates shape, dtype, device, capacity and actual memory-range overlap, then scans device values before launching numerical writes. It rejects unsupported layouts, so the caller must explicitly prepare contiguous inputs. An invalid depth is still invalid when illumination is zero: multiplying it by zero would conceal an upstream error. Failure diagnosis may copy the offending input back to identify its index, while a successful checked call only needs the small status result on the host.
+
+Inside a composition whose current inputs are already guaranteed valid, `validate=False` omits the content scan and its synchronisation. Metadata checks remain. This boundary is useful for a warmed CUDA graph or a device-resident optimisation loop, but it transfers responsibility for the current values to the caller. Mutating an array after checking it does not preserve a certificate of good behaviour. Compilation and allocation must happen before graph capture, and graph replay then reuses the same buffers and launch structure.
+
+Passing a tape explicitly records the library's custom first-order backward callback through Warp's `Tape.record_func`. Warp provides this hook for custom reverse work and tracks the participating arrays, while our adapter supplies the VJP and its buffer-consumption rules. <Citation keys={["warp117Tape"]} /> A shared input can influence the objective through several downstream operations, so its cotangent must add their contributions rather than overwrite an earlier one. Our adapter therefore accumulates input cotangents. It consumes ordinary output cotangents after all local contributions have been read, while explicitly retained gradients remain available. Before an independent reverse pass, `tape.zero()` clears the previous derivative sums so they are not included in the new calculation.
+
+After backward, `workspace.check_status()` waits for the owning stream and reports gradient-range failure before the optimiser accepts the result.
+
+Cross-stream producers and consumers require explicit events and waits. Internal stream scopes disable Warp's automatic entry synchronisation: once ownership is established, inserting another event and wait into every call would add ordering work without supplying a missing dependency.
+
+A VJP recorded on an enclosing tape is rejected: this operator supports first derivatives, and silently returning zero for a second derivative would be an especially unhelpful form of optimism.
+
+Supporting second derivatives would require another defined and independently verified differentiation boundary. [Chapter 5](/chapters/differentiating-projection/) develops the broader derivative execution problem once transmission is composed with geometry and integration.
+
+## 2.7 Checks before adding geometry
+
+The transmission law gives us reference cases whose answers can be derived independently of a renderer. [Table 2.4](#table-2-4) pairs each case with a common footgun in modelling transmission.
+
+<div className="prose-table" role="region" aria-label="Analytic transmission checks" tabIndex={0}>
+
+| Case                               | Reference result                                | What it can detect                                          |
+| ---------------------------------- | ----------------------------------------------- | ----------------------------------------------------------- |
+| Empty path or zero attenuation     | $L=0$, $T=1$, $\lambda=n_0$                     | Incorrect initial values or path handling.                  |
+| Homogeneous segment                | $L=\mu d$, $T=e^{-\mu d}$                       | Unit errors and an incorrect exponent sign.                 |
+| Split a homogeneous segment        | $\mu d=\mu d_1+\mu d_2$ when $d_1+d_2=d$        | Segment weights that fail to preserve length.               |
+| Fixed layered path                 | $L=\sum_j\mu_j\ell_j$                           | Incorrect material association or missing segments.         |
+| Convert the length unit            | $\mu_{\rm cm}d_{\rm cm}=\mu_{\rm mm}d_{\rm mm}$ | Coefficients and distances expressed in different units.    |
+| Add a non-negative segment         | $T_{\rm extended}\leq T_{\rm original}$         | Sign mistakes or unphysical numerical behaviour.            |
+| Finite zero-attenuation derivative | $\partial T/\partial L=-1$ at $L=0$             | A backward rule that incorrectly vanishes in an empty path. |
+
+</div>
+
+A varying coefficient adds a check that a constant slab cannot provide. Prescribe
+
+$$
+\mu(s)=a+bs,\qquad 0\leq s\leq d,
+$$
+
+with $a$ in inverse length, $b$ in inverse length squared, and coefficients chosen so that $\mu(s)\geq0$ throughout the interval. Direct integration gives
+
+<EquationNote term="a">
+  Attenuation coefficient at the start of the test path (mm⁻¹).
+</EquationNote>
+
+<EquationNote term="b">
+  Rate of change of attenuation coefficient along the test path (mm⁻²).
+</EquationNote>
+
+$$
+L=ad+\frac12bd^2,
+\qquad
+T=\exp\!\left(-ad-\frac12bd^2\right).
+$$
+
+Evaluate the polynomial antiderivative from the specified parameters to obtain an independent reference for the sampled path integral. Calling the same quadrature through another wrapper would repeat its errors.
+
+<MarginNote label="Independent unit-conversion checks">
+  Generating both expected and computed values from one erroneous unit
+  conversion would make the test reassuring and useless.
+</MarginNote>
+
+Derivative checks can use the closed-form slab sensitivities from [section 2.3](#23-the-homogeneous-path). For a positive interior optical depth $L$ and a step satisfying $0<h<L$, compare the analytic derivative with the central difference
+
+$$
+\frac{T(L+h)-T(L-h)}{2h}.
+$$
+
+<EquationNote term="h">
+  Positive step in optical depth for the finite-difference check.
+</EquationNote>
+
+For this smooth function, truncation error decreases quadratically with $h$ until floating-point effects become significant. Check a range of steps. At the boundary $L=0$, a centred perturbation would leave the physical input domain, so use a suitable one-sided check or explicitly test an agreed mathematical extension.
+
+### An oracle that does not repeat the kernel
+
+The test reference converts each supplied binary32 value into its exact decimal value before evaluating the mathematics at high precision. Comparing a GPU input rounded from a decimal literal with the unrounded literal would charge input quantisation to the kernel. The reference uses independent scalar `Decimal` expressions and explicit binary32 rounding, and it never calls the CUDA helper to obtain the expected answer. Increasing reference precision checks that the oracle itself has settled.
+
+<Source
+  file="python/dpt/validation/transmission.py"
+  region="transmission-reference-cases"
+  caption="Closed-form reference paths"
+/>
+
+These fixtures validate transmission at known optical depths. The ray integrator must independently recover those depths from the geometry and material field.
+
+For normal outputs, the value tests use a budget of four binary32 units in the last place (ULPs) for transmission, removed fraction and the inverse, and eight for expected counts. A ULP measures spacing between neighbouring representable values at the result's magnitude. Subnormal results have their own one-ULP budget, and exact cases such as log negation are checked directly. The budgets are acceptance criteria, not statements that every value reaches the limit. Each independently requested output is compared with its own correctly rounded reference.
+
+VJPs need a different error scale. Two large weighted contributions can nearly cancel, leaving a small correct gradient. Dividing the error by that residual would make the apparent relative error arbitrarily large. We instead scale the acceptance bound by the magnitudes of the contributing terms, with explicit rounding allowances, and scalar beam gradients also account for the reduction depth. The tests include cancellation, zero illumination, extreme weights and subnormal inputs.
+
+<Source
+  file="python/dpt/validation/transmission.py"
+  region="transmission-directional-check"
+  caption="Checking transmission derivatives across step sizes"
+/>
+
+The finite-difference helper accepts a callback to the actual GPU operator. It checks that perturbed inputs remain distinct after binary32 rounding and retains every admissible step. At an interior point, agreement should improve over a range of steps before storage rounding dominates, while at zero, the helper uses a second-order one-sided stencil. Selecting only the smallest step would often select the least informative comparison. Agreement with both the independent analytic VJP and the directional sweep checks different failure modes.
+
+### Execution is part of correctness
+
+A formula test cannot detect every GPU integration error. We therefore also need empty batches, lengths that leave a partial tile, and a scalar reduction large enough to require several levels. Reusing a large workspace for a smaller batch must not include stale partial sums. Output masks, fixed and active beam representations, overlapping array views, non-default streams and graph replay each exercise a distinct part of the contract. Tape tests compose transmission with surrounding kernels so that missing contributions or incorrectly consumed cotangents become observable.
+
+Device timing begins after compilation and warm-up. Checked-call timing includes the validation scan and status synchronisation, while CUDA-event batches measure the warmed stream interval, including gaps while the host submits work. Isolated per-kernel durations come from the profiler. Forward and backward measurements record requested outputs, pixel count, beam representation, precision settings, scratch size and launch structure. A short runtime without that context cannot tell us whether an optimisation removed work, hid a transfer or simply measured a smaller problem. Memory and synchronisation tools complement numerical tests, but a clean run in either category does not replace the other.
+
+<Source
+  file="experiments/transmission-contract/run.py"
+  region="transmission-experiment"
+  caption="Running and validating the transmission operator"
+/>
+
+To form an image, every detector pixel needs the correct path through the object. [Chapter 3](/chapters/frames-geometry-motion/) fixes the coordinate conventions for those paths and for moving the object while leaving its material attenuation coefficients unchanged.
+
+<Bibliography
+  keys={[
+    "dance2014",
+    "hubbell1995",
+    "gopalakrishnan2023diffdrr",
+    "cuda130MathSingle",
+    "nvidia130FloatingPoint",
+    "warp117Tape",
+  ]}
+/>
+
+<Provenance
+  status="generated"
+  sourceCommit={transmissionRun.source_commit.slice(0, 12)}
+  updated={transmissionRun.finished_utc.slice(0, 10)}
+>
+  Transmission plates are generated from the canonical CUDA library. The linked
+  run record identifies source and environment, while the validation data
+  distinguish numerical stress inputs from physical measurement data.
+</Provenance>

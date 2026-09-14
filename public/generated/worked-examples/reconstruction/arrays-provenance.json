@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "kind": "reconstruction",
+  "source": "https://doi.org/10.7937/tcia.2019.tt7f4v7o",
+  "rights": "CC BY 3.0; Rister et al., CT-ORG, TCIA; assigned-material derivatives",
+  "source_file_sha256": {
+    "volume-2.nii.gz": "ca702e58f0fb736ff4bc407aac0c4b698b8689f3f7e0281da32a546a87ae8a40",
+    "labels-2.nii.gz": "c5951c1065f517c9e8e794aec0a921ae0ebaa2198d4b38f0ed492bc7aca74e8f"
+  },
+  "execution_records_sha256": {
+    "acquisition/run.json": "964d8e270a358daa853cf510c6873c64d7a31d6227c1a98cc3a4c59de571cc8a",
+    "evaluation-rep0/run.json": "e727adb1d17e7d95ede12011baa5d5bf3832510e4bd107d059c68382379c4bdb",
+    "evaluation-rep1/run.json": "24740133146b41a1f7215779778e04097ea19abdeef9e532a356e270ea6d8b89",
+    "fit-rep0/run.json": "833fe68a4c31e30edc9dd37f192faa95ff70e79ac1c54f6dfbe9fef5cb073985",
+    "fit-rep1/run.json": "79be912b9e152cf35c11d8bdbefb08fa3d6efc6993fcfbaf768b7bc040a69fac",
+    "run.json": "4cc8747a2f220acd16e76395dbc7787e7933d8d528f55b6c78e4916f3f6c01f6"
+  },
+  "verified_record_count": 6,
+  "verified_source_and_output_hash_count": 1490,
+  "input_sha256": {
+    "acquisition/evaluation/reference-fractions.npy": "5c8bd82c378f28830d9daf7af6338f6c631dfb9b4dba2b4a2fbd6a0e3d323c90",
+    "fit-rep0/checkpoints/fields-0000.npy": "307f733a67b9d34322df5b31106a0172ed27220b1990e238f7740a4480d74b55",
+    "fit-rep0/fields.npy": "b7189c01ff735405f7c8ef1c9a0cfef43141b3863f90372b46978001467591df",
+    "fit-rep0/checkpoints/fields-0100.npy": "a53f00c515b9e2897331a0d80cb6b5f7ef590a548b366885b609e6d609830c21",
+    "fit-rep1/checkpoints/fields-0000.npy": "307f733a67b9d34322df5b31106a0172ed27220b1990e238f7740a4480d74b55",
+    "fit-rep1/fields.npy": "1a25c06de162d0da56368f7bed92d842953c3f1194e01993f3a44c72b1ca771f",
+    "fit-rep1/checkpoints/fields-0100.npy": "fd977dbbade5429caabc3b7782b57a8bae002a263b341ed97b53263d167b6ed5"
+  },
+  "curated_input_sha256": {
+    "fields.npz": "354c894386ec6c62e36f35be06afbb410005e5109db7cf5ee630c67c1386725a",
+    "provenance.json": "c240ede578ab4d1f2a7511e09b8650e33efee1697b744e51d2784d4bf5228321"
+  },
+  "exporter": {
+    "file": "tools/public/export-worked-example-arrays.py",
+    "sha256": "3bbfdd25ab951053a803f59b12c726ea405cf55af5efe43d062295d076380831"
+  },
+  "output_sha256": {
+    "arrays.json": "36d16aea6ea0852db5d5cdea771aec93ebef239810237b1cf4ba760d1eb740c8"
+  },
+  "verification": {
+    "array_count": 7,
+    "value_count": 57344,
+    "json_roundtrip": "bit-for-bit equality at each recorded dtype",
+    "processing": "C-order flattening only; all recorded numerical values retained"
+  }
+}

@@ -1,0 +1,3914 @@
+[
+  {
+    "name": "xraylib",
+    "version": "4.3.0",
+    "wheel_record_verified_files": [
+      {
+        "file": "_xraylib.cpython-312-aarch64-linux-gnu.so",
+        "bytes": 18415376,
+        "sha256": "f012d995a90a54fcfd801509d05f3f492ea329814077c581c255f1d0bda3df92"
+      },
+      {
+        "file": "xraylib-4.3.0.dist-info/INSTALLER",
+        "bytes": 2,
+        "sha256": "e6184ce10e266134fdcfa401e8f1a95005bcd4f18d16b62b757323e2833fe9a9"
+      },
+      {
+        "file": "xraylib-4.3.0.dist-info/METADATA",
+        "bytes": 1905,
+        "sha256": "207c85b0b16495f33ed96c222d6d055a79e96433bf6db8a9bde17edfed865544"
+      },
+      {
+        "file": "xraylib-4.3.0.dist-info/REQUESTED",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "file": "xraylib-4.3.0.dist-info/WHEEL",
+        "bytes": 179,
+        "sha256": "ca17f00658529c30653b83b5d5205382602aca7e441cbd9b6e6e3b57943b2908"
+      },
+      {
+        "file": "xraylib-4.3.0.dist-info/sboms/auditwheel.cdx.json",
+        "bytes": 1538,
+        "sha256": "8077dcf56cca65b7508ca7efe884d911ea40acf681348d41f77cc96e3ee50bd9"
+      },
+      {
+        "file": "xraylib.libs/libgomp-a49a47f9.so.1.0.0",
+        "bytes": 343345,
+        "sha256": "43642df04bdf20f9b4122d336ef3e2e6a486c536e614159ac0e981a901d54537"
+      },
+      {
+        "file": "xraylib.py",
+        "bytes": 114603,
+        "sha256": "f5b7bb7016e6e2600693da9d30f83e3a501a5963c714bb85466819c76d4270e2"
+      },
+      {
+        "file": "xraylib_np.cpython-312-aarch64-linux-gnu.so",
+        "bytes": 18681105,
+        "sha256": "db4deb1778479d0182f5387f643b83a74a2f4e8b35ae650c37d78e05af45c482"
+      }
+    ]
+  },
+  {
+    "name": "spekpy",
+    "version": "2.5.4",
+    "wheel_record_verified_files": [
+      {
+        "file": "spekpy-2.5.4.dist-info/INSTALLER",
+        "bytes": 2,
+        "sha256": "e6184ce10e266134fdcfa401e8f1a95005bcd4f18d16b62b757323e2833fe9a9"
+      },
+      {
+        "file": "spekpy-2.5.4.dist-info/METADATA",
+        "bytes": 11726,
+        "sha256": "2a2cf15ee8ec6ce3ebc1b5ab4f1252683e9b76266a09a979bd84111fc888a607"
+      },
+      {
+        "file": "spekpy-2.5.4.dist-info/REQUESTED",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "file": "spekpy-2.5.4.dist-info/WHEEL",
+        "bytes": 87,
+        "sha256": "41c708c5adba6e097513ab8ccb9f1d7865a2fb469e22491a9e01dcc64da459fc"
+      },
+      {
+        "file": "spekpy/DataTables.py",
+        "bytes": 18536,
+        "sha256": "c2ec49be4d96d953592b018e4360328fb53814e08698639a9867715f5482bf4f"
+      },
+      {
+        "file": "spekpy/IO.py",
+        "bytes": 12255,
+        "sha256": "6f6a54ade168abb5e461a5435e9bf587f9b2fc3ef2e9a4ff677347f81c02cb4a"
+      },
+      {
+        "file": "spekpy/SpekAniso.py",
+        "bytes": 48902,
+        "sha256": "41826543acb7e569103b9fe87f2dda317cd82b08273c9cdfb22fed19625516f7"
+      },
+      {
+        "file": "spekpy/SpekConstants.py",
+        "bytes": 3846,
+        "sha256": "9fff3fe9ed2f2a6b4a7d5acdee1c4a60c68fe5dac2a88148b0c7bb12a521014e"
+      },
+      {
+        "file": "spekpy/SpekHelpers.py",
+        "bytes": 2128,
+        "sha256": "d9eed7c079d04e1515834ed578873bae6d5dc8d683b661b51a9c7236639c723b"
+      },
+      {
+        "file": "spekpy/SpekModel.py",
+        "bytes": 19853,
+        "sha256": "1204b7a5695b86dee1013e2288c383dbebfe614cde862163b34b07e1f73315b4"
+      },
+      {
+        "file": "spekpy/SpekPy.py",
+        "bytes": 40003,
+        "sha256": "9c5825256f6382a887c622ae29b3358f2f3569077c0559d1b8e3938a99cc7486"
+      },
+      {
+        "file": "spekpy/SpekState.py",
+        "bytes": 16628,
+        "sha256": "f7d5449270d7dabbc2749b7367e972f81aeb0199a8f843782b889efd715267ac"
+      },
+      {
+        "file": "spekpy/SpekTools.py",
+        "bytes": 33249,
+        "sha256": "c1399610a82848b7d9e9496f9f4b9dda3c9ed7a959c1378688fc732b2a3da8ba"
+      },
+      {
+        "file": "spekpy/__init__.py",
+        "bytes": 49,
+        "sha256": "257ed9d92437571d107d45beb74fdbdf4a057b2ab5bbb1590d3f43fb0da47df5"
+      },
+      {
+        "file": "spekpy/data/matl_def/1,2-Dichlorobenzene.comp",
+        "bytes": 556,
+        "sha256": "7d4650f53b59131e53216c7adaa79e2508c45244af3208e33f2f6974a4130389"
+      },
+      {
+        "file": "spekpy/data/matl_def/1,2-Dichloroethane.comp",
+        "bytes": 550,
+        "sha256": "79f804fce32a4535e64e20d60fe32166b15aacbfa82ca492014d5d65ae665240"
+      },
+      {
+        "file": "spekpy/data/matl_def/1,3-Butadiene (Liquid).comp",
+        "bytes": 482,
+        "sha256": "dad48aedb0b52ae3d057bd233c100a02da147010a92c47ac30590d5dc3b5aa8f"
+      },
+      {
+        "file": "spekpy/data/matl_def/1,3-Butadiene.comp",
+        "bytes": 476,
+        "sha256": "2d88dcace540ab9e64c35fdb99ff37976b9ae6bac3b9bdac598541db27f79b10"
+      },
+      {
+        "file": "spekpy/data/matl_def/1-Butene (Liquid).comp",
+        "bytes": 481,
+        "sha256": "3bda8e2768090ac95556797db6f8c3ae2bc27404dd35d3d0a414ca8e4ed27795"
+      },
+      {
+        "file": "spekpy/data/matl_def/1-Butene.comp",
+        "bytes": 474,
+        "sha256": "97c89b0cab4e39c0ba5467da615f6d1d9eb30e5ba4b973cf9adda97aa47714cf"
+      },
+      {
+        "file": "spekpy/data/matl_def/A-150 Tissue-Equivalent Gas.comp",
+        "bytes": 780,
+        "sha256": "99547745bb12979af51384b04b6a9ecfedd4fb34e195095f9f5e381921519afd"
+      },
+      {
+        "file": "spekpy/data/matl_def/A-150 Tissue-Equivalent Plastic.comp",
+        "bytes": 783,
+        "sha256": "b605258e7b5e83d8c62e47c2996211a52fda53255a37b63f92bb6cb4b45f1f0e"
+      },
+      {
+        "file": "spekpy/data/matl_def/Ac.comp",
+        "bytes": 356,
+        "sha256": "87bc6236239d04e1f503fab79a9c446eb56c252cd533a0636bee9eb5157e78cb"
+      },
+      {
+        "file": "spekpy/data/matl_def/Acetone.comp",
+        "bytes": 540,
+        "sha256": "cfea03d4ace4ab2c71e2642ae509f14d6f9d8ece01428aaecd900675fbed85ee"
+      },
+      {
+        "file": "spekpy/data/matl_def/Acetylene.comp",
+        "bytes": 476,
+        "sha256": "5a7387a8c5fe1285590cd9e9f73a348da685c483466371e4b4b1dea4593c84cc"
+      },
+      {
+        "file": "spekpy/data/matl_def/Adenine.comp",
+        "bytes": 537,
+        "sha256": "17c43bbcc6aa9ea231288938f7b3fe289fb7e06afa35dbf988dfd3cf53eff070"
+      },
+      {
+        "file": "spekpy/data/matl_def/Adipose Tissue (ICRP).comp",
+        "bytes": 1278,
+        "sha256": "2f1962514b4206200d9188a59e7ed3ff8186273c42c22e55180124be49efd8e7"
+      },
+      {
+        "file": "spekpy/data/matl_def/Adipose Tissue (ICRU).comp",
+        "bytes": 832,
+        "sha256": "8388fdf651ceabe63dc56899aececd0c6506fda8834aef1cda8d563da7dab252"
+      },
+      {
+        "file": "spekpy/data/matl_def/Adipose Tissue Substitute (AP-L2, Aqueous).comp",
+        "bytes": 1081,
+        "sha256": "a425ce8abfdb1a6bb61a84c21677b7dbf0f645d7b217dc9feed73dc8c1ae73ce"
+      },
+      {
+        "file": "spekpy/data/matl_def/Adipose Tissue Substitute (AP-SF1, Epoxy-based).comp",
+        "bytes": 1096,
+        "sha256": "bd56d5c1702205d1d33476ff50c63470d221ee350ce99a834af19da42ab2605c"
+      },
+      {
+        "file": "spekpy/data/matl_def/Adipose Tissue Substitute (AP6, Epoxy-based).comp",
+        "bytes": 799,
+        "sha256": "75bfab6e9cc3b4f698ef9053539ebe8a86a1123ce8d306a4545277ac2f21ac54"
+      },
+      {
+        "file": "spekpy/data/matl_def/Ag.comp",
+        "bytes": 356,
+        "sha256": "ed3c1ef7edaa787eb0a2c2321df9990a54e7bb164498fc32642d1bdda9da1513"
+      },
+      {
+        "file": "spekpy/data/matl_def/Air Dry (Near Sea Level).comp",
+        "bytes": 638,
+        "sha256": "e886f94b66b3d66b22463976abc70f4ebb5da2b3b76cbab8e4a685816b84550d"
+      },
+      {
+        "file": "spekpy/data/matl_def/Air-Equivalent Plastic (C-552).comp",
+        "bytes": 707,
+        "sha256": "1d2c880fb107388d125bbdcde5c6b81e147bd7cc71a9340dcde209269049592f"
+      },
+      {
+        "file": "spekpy/data/matl_def/Air.comp",
+        "bytes": 624,
+        "sha256": "1815692f58fcb402f04cdb5c1d00bc070e46613909f99f6f2d62f32618ccc1d3"
+      },
+      {
+        "file": "spekpy/data/matl_def/Al.comp",
+        "bytes": 355,
+        "sha256": "b18d31a0521c06541a759aeeb2ee38acd2c894fa3c3fd35503f49414c8d4e0e9"
+      },
+      {
+        "file": "spekpy/data/matl_def/Alanine.comp",
+        "bytes": 611,
+        "sha256": "3f7f004ff201a8bdddf7389b553aa87414ee6e8032906b77a3df371008ea5608"
+      },
+      {
+        "file": "spekpy/data/matl_def/Aluminum Alloy (Type 1100).comp",
+        "bytes": 623,
+        "sha256": "adef22e868d23f5b0d2ca19f05adcf92e2869b7f1bfbd347bc2c8125334fc19a"
+      },
+      {
+        "file": "spekpy/data/matl_def/Aluminum Alloy (Type 2014).comp",
+        "bytes": 695,
+        "sha256": "768b86e8f7eceede32c08e61022ff473e2d68329f4b660edd57c733210361b0a"
+      },
+      {
+        "file": "spekpy/data/matl_def/Aluminum Alloy (Type 6061).comp",
+        "bytes": 696,
+        "sha256": "fcba4fcbd5f85cade9d72874b12dfa3a5c6dd4c8a5dc63b919a1b4b4e848fbe3"
+      },
+      {
+        "file": "spekpy/data/matl_def/Aluminum Oxide.comp",
+        "bytes": 473,
+        "sha256": "00b6d9454c014395ad252a091613ef3688ecbd25cf96a1db90f8de1ce3a991a1"
+      },
+      {
+        "file": "spekpy/data/matl_def/Amber.comp",
+        "bytes": 534,
+        "sha256": "b5b23004c711500ede647b1af0766774a1c72d055de65c4c641a04fb03e31233"
+      },
+      {
+        "file": "spekpy/data/matl_def/Ammonia.comp",
+        "bytes": 475,
+        "sha256": "6addb0bc2db09ad8e1d12662edcecc16b43952d2fa8f3926cbc1a6293a8a363e"
+      },
+      {
+        "file": "spekpy/data/matl_def/Ammonium Formate.comp",
+        "bytes": 620,
+        "sha256": "d7468004ac4429123696887904201c74879908db36ed4b37d0dc478817e54ff8"
+      },
+      {
+        "file": "spekpy/data/matl_def/Aniline.comp",
+        "bytes": 539,
+        "sha256": "259b8095c896a75276139f6249587d5213192391dd022c938526b49bd9060f44"
+      },
+      {
+        "file": "spekpy/data/matl_def/Anthracene.comp",
+        "bytes": 467,
+        "sha256": "b86ddea0dafeaed356918f826b6d31b91cdc4c0789481ad29876ad35294b1edf"
+      },
+      {
+        "file": "spekpy/data/matl_def/Ar.comp",
+        "bytes": 359,
+        "sha256": "931695bf3d2a21b101d12d5679c7158075b7599394c18c9c8054abf54e1caf42"
+      },
+      {
+        "file": "spekpy/data/matl_def/As.comp",
+        "bytes": 356,
+        "sha256": "e673a184a3c68bd8d70ceff6a76cb6a3a51644b541cb2353fc67334222b6b6cd"
+      },
+      {
+        "file": "spekpy/data/matl_def/At.comp",
+        "bytes": 356,
+        "sha256": "dd2f3ef172430718ca4d014b6ccaab302dee22bef5ae5bc9d3f750d6e5a35334"
+      },
+      {
+        "file": "spekpy/data/matl_def/Au.comp",
+        "bytes": 356,
+        "sha256": "b041502f68dbda96d1f9d319540f2ffdd55e9faaba33bcd6bf418532109cc83f"
+      },
+      {
+        "file": "spekpy/data/matl_def/B.comp",
+        "bytes": 354,
+        "sha256": "145dc5d72ef687b4dd2e155fe5a11c692627630fc98c848c33d2a61d8d9fab2e"
+      },
+      {
+        "file": "spekpy/data/matl_def/Ba.comp",
+        "bytes": 355,
+        "sha256": "def89e81ce39e7bbd346a6b8e68a091c142f1fc6339ffee8d853ff90fe6c0acb"
+      },
+      {
+        "file": "spekpy/data/matl_def/Bakelite.comp",
+        "bytes": 539,
+        "sha256": "54ae52bed044a865c0cdc02cab1164697cb184c9b81813f04017aed489a58093"
+      },
+      {
+        "file": "spekpy/data/matl_def/Barium Fluoride.comp",
+        "bytes": 477,
+        "sha256": "02975184ecb6af06277191b68e2567360d88bfba58bc3cc234def98d1b362080"
+      },
+      {
+        "file": "spekpy/data/matl_def/Barium Sulfate.comp",
+        "bytes": 545,
+        "sha256": "3cc64318b01bd34785536618d7c27ce0aba5902338b7a244887cc54698213037"
+      },
+      {
+        "file": "spekpy/data/matl_def/Be.comp",
+        "bytes": 355,
+        "sha256": "69a6ac116b380597b190d3adabe3b828f0afc9cde0aa5fe5e3441dfd5757c966"
+      },
+      {
+        "file": "spekpy/data/matl_def/Benzene.comp",
+        "bytes": 471,
+        "sha256": "b60f9d4f4f60268b95c5223e1c2a993ab441582e8ef00d3630d7d7ad75990335"
+      },
+      {
+        "file": "spekpy/data/matl_def/Beryllium Oxide.comp",
+        "bytes": 471,
+        "sha256": "b7d4b31af0fe35a03cb2203890b8f4327604061a726cb700aef0a5683a01b3a7"
+      },
+      {
+        "file": "spekpy/data/matl_def/Bi.comp",
+        "bytes": 356,
+        "sha256": "6fcadabea02dfaa18150b38a1b034e3c69310146139196a25b7859f6c9e6cda7"
+      },
+      {
+        "file": "spekpy/data/matl_def/Bismuth Germanium Oxide.comp",
+        "bytes": 560,
+        "sha256": "405159b9f7c2093ee554642e09e0d52f6015944babb6515c0e460beb0abaa530"
+      },
+      {
+        "file": "spekpy/data/matl_def/Blood (ICRP).comp",
+        "bytes": 1342,
+        "sha256": "2b346484353235227fb9e1e658460cd6ee1c329f80145106b4956eec2f3e52a1"
+      },
+      {
+        "file": "spekpy/data/matl_def/Blood, Whole (ICRU).comp",
+        "bytes": 1042,
+        "sha256": "cdf48a2624fdc1569f997b5559cfdf87fce86a5fd71b87b13fc07ad9d157de23"
+      },
+      {
+        "file": "spekpy/data/matl_def/Bone Substitute (SB3).comp",
+        "bytes": 760,
+        "sha256": "c9b7b46c1b4be47fbdba9258d2d34ed3f150432270ef6eaa958fa0d9f1256bd2"
+      },
+      {
+        "file": "spekpy/data/matl_def/Bone Substitute (SB5, Epoxy-based).comp",
+        "bytes": 767,
+        "sha256": "012b8c7462b8460273d7d45344051ca31d5ffb772d4bc8b1832f219905f77fc4"
+      },
+      {
+        "file": "spekpy/data/matl_def/Bone, Compact (ICRU).comp",
+        "bytes": 901,
+        "sha256": "a0538c21ffc4b707012fc0c9f80e8a2902e895970763beb30e3874edf69483b1"
+      },
+      {
+        "file": "spekpy/data/matl_def/Bone, Cortical (ICRP).comp",
+        "bytes": 986,
+        "sha256": "a53a7b03302f5710c7e8395c9b8fb67fb93db6848c0dc4296125bc1a71841102"
+      },
+      {
+        "file": "spekpy/data/matl_def/Bone, Cortical (ICRU).comp",
+        "bytes": 968,
+        "sha256": "ee2cfe76fe37e7462999eb6a4a2685bc1d4936a917ad3e297772885aada48caf"
+      },
+      {
+        "file": "spekpy/data/matl_def/Bone-Equivalent Plastic (B-100).comp",
+        "bytes": 780,
+        "sha256": "7234a4a1a25cb45264eeb1767d7de84c03797d360792e9754aa89ad4a4abd57a"
+      },
+      {
+        "file": "spekpy/data/matl_def/Bone-Equivalent Plastic (B-110).comp",
+        "bytes": 779,
+        "sha256": "c211e59229a54889437a317c755e7775e3edcadf101577d1aaba00f1c3a6cbe8"
+      },
+      {
+        "file": "spekpy/data/matl_def/Boron Carbide.comp",
+        "bytes": 469,
+        "sha256": "3407fc8a260f2faddd97d164d65e7cb82b8987e90e3f5893142cf20ea3594c34"
+      },
+      {
+        "file": "spekpy/data/matl_def/Boron Oxide.comp",
+        "bytes": 470,
+        "sha256": "7af6ee66d2e2e4844e1eb4830c46726ea2442e7d671fbe8fb2e8a4e51333800a"
+      },
+      {
+        "file": "spekpy/data/matl_def/Br.comp",
+        "bytes": 359,
+        "sha256": "3787f6e894c3248ac9476e7e52f6ad3a1c729b4e40ff724ae497b5c20242bae3"
+      },
+      {
+        "file": "spekpy/data/matl_def/Brain (ICRP).comp",
+        "bytes": 1265,
+        "sha256": "52faa612dfc7a2357db696f775bd1bb395f812b71c7a75024d71ac54108989bd"
+      },
+      {
+        "file": "spekpy/data/matl_def/Brain, Grey and White Matter (ICRU).comp",
+        "bytes": 982,
+        "sha256": "bcd5a0b0e8fcf6fb64bccf6427cd4e4661a386b262fb0bc62f0fb6542b998e8c"
+      },
+      {
+        "file": "spekpy/data/matl_def/Breast Tissue (ICRU).comp",
+        "bytes": 895,
+        "sha256": "86c356fed2d4c8140ec1203f51c987cc79f1c48ae690c3fcff9edfdc8a0e368c"
+      },
+      {
+        "file": "spekpy/data/matl_def/Breast Tissue Substitute (BR12, Epoxy-based).comp",
+        "bytes": 783,
+        "sha256": "b77ef43ea429fdb66ff27a2bcb644418b4d2dba025904c65bb6ed9aa2f222dfa"
+      },
+      {
+        "file": "spekpy/data/matl_def/Breast Tissue Substitute (Griffith).comp",
+        "bytes": 856,
+        "sha256": "f5fcac61f7d4b0f414d2e02abe18c6da3a594f9bbeb5b1bd4e1dcc963a8284ce"
+      },
+      {
+        "file": "spekpy/data/matl_def/Butane.comp",
+        "bytes": 473,
+        "sha256": "7fd7bf98356b42556444a2f8876e63fad4bee767c082554e472ec179f934bd71"
+      },
+      {
+        "file": "spekpy/data/matl_def/C.comp",
+        "bytes": 353,
+        "sha256": "ab2b1414f27e371d8c2346d8b051a596288f329094a6f87af066f92d4c1d3bbd"
+      },
+      {
+        "file": "spekpy/data/matl_def/Ca.comp",
+        "bytes": 356,
+        "sha256": "3100718748f1f46b528d208a2098017bbf650fc549e8e2eab600f36eda5a9b60"
+      },
+      {
+        "file": "spekpy/data/matl_def/Cadmium Sulfide.comp",
+        "bytes": 480,
+        "sha256": "e7708fcd385789c91df65146af63e874a87ddaabeb27f84d1ac8a22c54975e16"
+      },
+      {
+        "file": "spekpy/data/matl_def/Cadmium Telluride.comp",
+        "bytes": 482,
+        "sha256": "c7cf5d44c250a3d142af71cb532fd0a145a471ff3b6f32850b26e38abd1b2ad6"
+      },
+      {
+        "file": "spekpy/data/matl_def/Cadmium Tungstate.comp",
+        "bytes": 555,
+        "sha256": "f223d85a147fafb13237b08c19e40eaed4399679c0e74fe182b3821be4dee07f"
+      },
+      {
+        "file": "spekpy/data/matl_def/Calcium Carbonate.comp",
+        "bytes": 554,
+        "sha256": "52a12199bb29a4a915c5a7dbfce97e1084c8e75a9a0cb89ec5d7f2d020f0451b"
+      },
+      {
+        "file": "spekpy/data/matl_def/Calcium Fluoride.comp",
+        "bytes": 480,
+        "sha256": "abe86b131ea5cd0be11f1c853da1dbba50d8134098263e9f485bf379efa78015"
+      },
+      {
+        "file": "spekpy/data/matl_def/Calcium Oxide.comp",
+        "bytes": 477,
+        "sha256": "fc006590a4416cf864be8de29f6f007a6f7a80bddc74b34ec80c888d4c06ac0b"
+      },
+      {
+        "file": "spekpy/data/matl_def/Calcium Sulfate.comp",
+        "bytes": 548,
+        "sha256": "bd4e16edc954b99a0fc488ca99f578ca4530bfd043aa15f6fa05c88595bca984"
+      },
+      {
+        "file": "spekpy/data/matl_def/Calcium Tungstate.comp",
+        "bytes": 554,
+        "sha256": "509c6cbcec05cecdee13b7e8f0d28c4fb0b0d1f30dd916aa7b6dd0ee91c4063b"
+      },
+      {
+        "file": "spekpy/data/matl_def/Cameron Wax.comp",
+        "bytes": 615,
+        "sha256": "943da1e1501aec7a60a2639d7f4ea2f62ad581f5b7a84260d39da0ad7aa63340"
+      },
+      {
+        "file": "spekpy/data/matl_def/Carbon Dioxide.comp",
+        "bytes": 481,
+        "sha256": "c4c3064f2548aeafcb88f4153455d248de0b8fef8297c41e3486cf2ad39923bf"
+      },
+      {
+        "file": "spekpy/data/matl_def/Carbon Disulfide.comp",
+        "bytes": 476,
+        "sha256": "64d31168d2a2c1272cdfa9439d215c0298506d958a1d8dfcadd70f2fabbbc595"
+      },
+      {
+        "file": "spekpy/data/matl_def/Carbon Monoxide.comp",
+        "bytes": 482,
+        "sha256": "4e51e2c2fc74885c0b29ba4c40fbf6f79007edeb38a752b76cd834b96c7b5e99"
+      },
+      {
+        "file": "spekpy/data/matl_def/Carbon Tetrachloride.comp",
+        "bytes": 480,
+        "sha256": "edfb837736a1db74190a32c570337bf6a75c9c680fd7f3f76793a18703aa9f25"
+      },
+      {
+        "file": "spekpy/data/matl_def/Cd.comp",
+        "bytes": 356,
+        "sha256": "efa0a7f2e2f97081ef8505c72e44e98fd6e1f8c40fbfda2b90ad79f0f9d122dc"
+      },
+      {
+        "file": "spekpy/data/matl_def/Ce.comp",
+        "bytes": 356,
+        "sha256": "3e071f9a5b29ddb464668e30cbebc6c8a0af696a746e29f84192f86ca83232c4"
+      },
+      {
+        "file": "spekpy/data/matl_def/Cell Nucleus (ICRU).comp",
+        "bytes": 751,
+        "sha256": "6744998e6cbe29e1eda947dc995bdfc7bf3b958b90b5029d9a402a036a54f054"
+      },
+      {
+        "file": "spekpy/data/matl_def/Cell Nucleus (Typical).comp",
+        "bytes": 766,
+        "sha256": "50e5ce561e4ef448853c26135605002b2ca0b8f7c993da2b29d7b5b17c695c2e"
+      },
+      {
+        "file": "spekpy/data/matl_def/Cellophane.comp",
+        "bytes": 559,
+        "sha256": "0fc20453a1a642f8edde6d351381b444b2ebf99d9bbca4f11db0d1dded288252"
+      },
+      {
+        "file": "spekpy/data/matl_def/Cellulose Acetate (Cellophane).comp",
+        "bytes": 566,
+        "sha256": "848432d7506a85cb400b5573c039e0ad3c5da90c3d4063993adbc434e0f58bee"
+      },
+      {
+        "file": "spekpy/data/matl_def/Cellulose Acetate Butyrate.comp",
+        "bytes": 556,
+        "sha256": "b8c547d696234f3fee51237b0aa4acbbb49a6a29fb584b008ba2f5d49fce4963"
+      },
+      {
+        "file": "spekpy/data/matl_def/Cellulose Nitrate.comp",
+        "bytes": 621,
+        "sha256": "0466bee818e0999be40ac7e53dad6e57a48e71039ae0f7d63c03baca1bc16857"
+      },
+      {
+        "file": "spekpy/data/matl_def/Cesium Chloride.comp",
+        "bytes": 480,
+        "sha256": "314ec4449fbc263495ae302c9e7a45172688a790dec0ad5b13eb8644c45d8c55"
+      },
+      {
+        "file": "spekpy/data/matl_def/Cesium Fluoride.comp",
+        "bytes": 479,
+        "sha256": "cfb81f9e1cb9f7f5540bb1ed3da6b9c5ac6fec1dc95018501a51f2bfdf48592c"
+      },
+      {
+        "file": "spekpy/data/matl_def/Cesium Iodide.comp",
+        "bytes": 478,
+        "sha256": "a38af43ee49d39d68adad22bad154eeddd9c63a1a01b443d606ab42a4b7260dc"
+      },
+      {
+        "file": "spekpy/data/matl_def/Chlorobenzene.comp",
+        "bytes": 547,
+        "sha256": "76f1f8cb19029d3485206587de8837b4c2b7e27667a5d392af657b07a89813e6"
+      },
+      {
+        "file": "spekpy/data/matl_def/Cl.comp",
+        "bytes": 357,
+        "sha256": "9ea7318d0c169aa08fb028d61d24ed93f4bc35134dad60b524261acef83a20a8"
+      },
+      {
+        "file": "spekpy/data/matl_def/Co.comp",
+        "bytes": 355,
+        "sha256": "29598ffdacb6d6bd8a9b1ba39a14f3f22b804f408249e6569d4435f22a74c415"
+      },
+      {
+        "file": "spekpy/data/matl_def/Concrete (Ordinary).comp",
+        "bytes": 1067,
+        "sha256": "1f72a9206a9b9348b3d826d54095a5b7e50bf4fa75b41a1773bf7125f61fca85"
+      },
+      {
+        "file": "spekpy/data/matl_def/Concrete (Ordinary, Type 03).comp",
+        "bytes": 1230,
+        "sha256": "36fb0cb893ba3e86f37c75714d4c107f08b63cce34e10f17191914f962e19c97"
+      },
+      {
+        "file": "spekpy/data/matl_def/Concrete (Ordinary, Type 04).comp",
+        "bytes": 1083,
+        "sha256": "a3a9212b0f1f13f1d5c84d6d593c965064b6f9018f74f49e7aa904434039f4a1"
+      },
+      {
+        "file": "spekpy/data/matl_def/Concrete Barite (Type BA).comp",
+        "bytes": 1004,
+        "sha256": "ed02fe4e1cdc45b3cd525a4e6d5aba375e59710ddc529e8359fb44128ef36e79"
+      },
+      {
+        "file": "spekpy/data/matl_def/Concrete Limonite and Steel (Type LS).comp",
+        "bytes": 1009,
+        "sha256": "b1c2dc784d4d6bd68a52e2b017e1ec71767f670fda623eb39cc553f4e2a9baff"
+      },
+      {
+        "file": "spekpy/data/matl_def/Concrete Magnetite (Type M).comp",
+        "bytes": 1224,
+        "sha256": "393c1bf2967ab6d46ad0b69c0489eef37c2b96ebac638b82d3676b9a9ef93982"
+      },
+      {
+        "file": "spekpy/data/matl_def/Concrete Magnetite and Steel (Type MS2).comp",
+        "bytes": 1020,
+        "sha256": "76072679033d8d2ffd487130e35ab1b76d7139fd90263409e68fd37d47dd04ff"
+      },
+      {
+        "file": "spekpy/data/matl_def/Concrete Serpentine (Type S).comp",
+        "bytes": 1154,
+        "sha256": "c523c599150fe2044f24aabf3d78032e34dc421f8a63d6a572f89e363f377310"
+      },
+      {
+        "file": "spekpy/data/matl_def/Concrete.comp",
+        "bytes": 1058,
+        "sha256": "4df7f5b19826e515d97edd7316c49e505380ce72b472d74615b2773cc6c7d9fa"
+      },
+      {
+        "file": "spekpy/data/matl_def/Copper Alloy (Admiralty Metal).comp",
+        "bytes": 559,
+        "sha256": "da3b6086ae0290aebb08c5cb2a0e843570e3616da840cffe21591b7b03fef7c5"
+      },
+      {
+        "file": "spekpy/data/matl_def/Copper Alloy (Bell Metal).comp",
+        "bytes": 482,
+        "sha256": "8fb77f9f7c593e34da93301c5e77de3b343a89f8106dccb9e23baeb6698bb966"
+      },
+      {
+        "file": "spekpy/data/matl_def/Copper Alloy (Cartridge Brass).comp",
+        "bytes": 485,
+        "sha256": "b7901587167236e6f628fd46b73af9021893742f2a79a351eb5a394eb4acc9bc"
+      },
+      {
+        "file": "spekpy/data/matl_def/Copper Alloy (Commercial Bronze).comp",
+        "bytes": 487,
+        "sha256": "3b4462956c437ab2ad39b301b596fe14d129b84a414b09afd8d1598986721256"
+      },
+      {
+        "file": "spekpy/data/matl_def/Copper Alloy (Commercial Leaded Bronze).comp",
+        "bytes": 570,
+        "sha256": "e16f1f7ba37d05c1dca8b49891566e89a1744c57409812eb13834323b9d4b401"
+      },
+      {
+        "file": "spekpy/data/matl_def/Copper Alloy (Free Cutting Brass).comp",
+        "bytes": 556,
+        "sha256": "a7d3733b7359f2b8e0861300b643cf010a89c394402e789d9a1a97067aa6b48b"
+      },
+      {
+        "file": "spekpy/data/matl_def/Copper Alloy (Gunmetal).comp",
+        "bytes": 549,
+        "sha256": "49c6565a065a657d216785b57bfe7cbcb0ba397a664c99f3a1c0373adbe283b2"
+      },
+      {
+        "file": "spekpy/data/matl_def/Copper Alloy (Low Brass).comp",
+        "bytes": 479,
+        "sha256": "bae8989b99c56e4f5943ada9e663e4bc995f5f2ab2f2c6e6456e3c817bb15811"
+      },
+      {
+        "file": "spekpy/data/matl_def/Copper Alloy (Manganese bronze).comp",
+        "bytes": 702,
+        "sha256": "1df383eb50d6b2badb38a398662b029938aef2c31949b27bb42ec226909e1414"
+      },
+      {
+        "file": "spekpy/data/matl_def/Copper Alloy (Muntzmetal).comp",
+        "bytes": 482,
+        "sha256": "ae21dea465b51996a8825bdac9519ffd5454d5a1f204d995fe795378c5e9a906"
+      },
+      {
+        "file": "spekpy/data/matl_def/Copper Alloy (Naval Brass).comp",
+        "bytes": 555,
+        "sha256": "db641f4482d609b50bf0fdf754e730997f3160ddffdd1ac20a6780339dad34d9"
+      },
+      {
+        "file": "spekpy/data/matl_def/Copper Alloy (Red Brass).comp",
+        "bytes": 476,
+        "sha256": "693880b6cd785c64164317ba4fdbdfb2853ee9abf413cd234f849ce0ff476d3f"
+      },
+      {
+        "file": "spekpy/data/matl_def/Copper Alloy (Yellow Brass).comp",
+        "bytes": 484,
+        "sha256": "80486637622945663e9c27529d85d335872e110eb48e3f3cc02f366d13377e41"
+      },
+      {
+        "file": "spekpy/data/matl_def/Cr.comp",
+        "bytes": 356,
+        "sha256": "1a423081798ad5c08388c3c887c2c007709cf4a6cf071cb2055bd96d0e376e3b"
+      },
+      {
+        "file": "spekpy/data/matl_def/Cs.comp",
+        "bytes": 356,
+        "sha256": "a36ffe77dd6d1ab29e2b8d4296f245d98f77054ab73dd681451dc1d1e86703bb"
+      },
+      {
+        "file": "spekpy/data/matl_def/Cu.comp",
+        "bytes": 356,
+        "sha256": "b42be1c41be9de426b1ff3eddfe0c7a1d7c82f1911ba7a723bf7174d6a4566ff"
+      },
+      {
+        "file": "spekpy/data/matl_def/Cyclohexane.comp",
+        "bytes": 475,
+        "sha256": "6b74619e11c9e7faed3810235520222712db7eedc79435f93bd2159e8e060be3"
+      },
+      {
+        "file": "spekpy/data/matl_def/Delrin.comp",
+        "bytes": 546,
+        "sha256": "ee7b5a811ed46f6ff4b72a4b06f8da3fde9be0a9be9870a373ded2e2c30b73f6"
+      },
+      {
+        "file": "spekpy/data/matl_def/Dichlorodiethyl Ether.comp",
+        "bytes": 628,
+        "sha256": "a57a29b84aeac660d5e8be14f858a10b61eaa2aee32eeaf95c3b3723650bbcb9"
+      },
+      {
+        "file": "spekpy/data/matl_def/Diethyl Ether.comp",
+        "bytes": 550,
+        "sha256": "96056b4bdc1c36aebead17ef0c1f101e6e4b84f03f1b8746d19d20752a84de94"
+      },
+      {
+        "file": "spekpy/data/matl_def/Dimethylsulf Oxide.comp",
+        "bytes": 625,
+        "sha256": "ff5c502f277281436d8b7d2a64bdfa41efe861823fdafcfab3e6039929254b0f"
+      },
+      {
+        "file": "spekpy/data/matl_def/Dosimeter Solutiom, 0.015 M Ceric Ammonium Sulfate.comp",
+        "bytes": 727,
+        "sha256": "334769a8ffce5034e240cc2e856b86965865e4c600c22500222d0d37acbef295"
+      },
+      {
+        "file": "spekpy/data/matl_def/Dosimeter Solution, 0.0015 M Ceric+0.0030 M Cerous Sulfate.comp",
+        "bytes": 665,
+        "sha256": "d3331f1c142c6bbcccd89892230225b32d84a23945f15b79570de97ef0d4b15c"
+      },
+      {
+        "file": "spekpy/data/matl_def/Dosimeter Solution, 0.010 M Ceric+0.010 M Ceroussulfate.comp",
+        "bytes": 662,
+        "sha256": "02bde021d6e52db61afef5bef956ba09e0e86ed72f81f5902b6d269d2101ad48"
+      },
+      {
+        "file": "spekpy/data/matl_def/Dosimeter Solution, 0.015 M Ceric+0.015 M Cerous Sulfate.comp",
+        "bytes": 663,
+        "sha256": "f1096f0bdfea68a48fcc681b905decbc50543ed2f56345d795b7fcc77756b3b9"
+      },
+      {
+        "file": "spekpy/data/matl_def/Dosimeter Solution, 0.020 M Cric Ammonium Sulfate.comp",
+        "bytes": 733,
+        "sha256": "b23a43fb89bc82f2fde715c9dd6768bbc69a5567138eb0e29e5326f072061081"
+      },
+      {
+        "file": "spekpy/data/matl_def/Dosimeter Solution, Ethanol-Monochlorobenzene.comp",
+        "bytes": 650,
+        "sha256": "00ebfb53931fb446cf66181b6eb0b0073805d8afaffb0e9b63a57c25a2040137"
+      },
+      {
+        "file": "spekpy/data/matl_def/Dosimeter Solution, Ferrous Ammonium Sulfate (Standard Fricke).comp",
+        "bytes": 886,
+        "sha256": "c238f075663ba8846ed320814ec0e5cda34dd679a4da536028eae4f7b966daa8"
+      },
+      {
+        "file": "spekpy/data/matl_def/Dosimeter Solution, Ferrous Ammonium Sulfate (Super Fricke).comp",
+        "bytes": 739,
+        "sha256": "1d7478a0c3229bc84f9956eda44d21e3e453269c4ce8a51af10403d7ba1bb9c2"
+      },
+      {
+        "file": "spekpy/data/matl_def/Dosimeter Solution, Ferrous Sulfate (Standard Fricke).comp",
+        "bytes": 805,
+        "sha256": "67ca88a6f9a5069ec22ffdee967ed530e6398dabcd8c47ddc6e6115b6b5b3c21"
+      },
+      {
+        "file": "spekpy/data/matl_def/Dosimeter Solution, Ferrous Sulfate (Super Ficke).comp",
+        "bytes": 656,
+        "sha256": "26273da63013f9f57d9c6ebaf3ac2361078b4661c5d132c3bb1c54123da58480"
+      },
+      {
+        "file": "spekpy/data/matl_def/Dosimeter Solution, Potassium Dichromate (Standard).comp",
+        "bytes": 805,
+        "sha256": "e66b47becc9ab3dc5297814274fd10dd073442c56e97cd02871ed377a5551b6f"
+      },
+      {
+        "file": "spekpy/data/matl_def/Dosimter Solution, Potassium Dichromate (Hi-Dose).comp",
+        "bytes": 804,
+        "sha256": "cabc9b29b996090ca2a1343e62f26770d7e49ead15f92ef4973ae5ca188a6560"
+      },
+      {
+        "file": "spekpy/data/matl_def/Dy.comp",
+        "bytes": 356,
+        "sha256": "0dbc9300a6c2661bccecf96e335fe2fc51904e7a933b0ecca1516f616c771a27"
+      },
+      {
+        "file": "spekpy/data/matl_def/Er.comp",
+        "bytes": 356,
+        "sha256": "eac9b0962824678dccfe421d6f329851205f77f31cd15702bf31ad0273663857"
+      },
+      {
+        "file": "spekpy/data/matl_def/Ethane.comp",
+        "bytes": 473,
+        "sha256": "1e53b2e4759a47cb321313f35c9705c02d691ecc38bcf53b6d469af72a52b42d"
+      },
+      {
+        "file": "spekpy/data/matl_def/Ethoxyethanol.comp",
+        "bytes": 550,
+        "sha256": "2d4984290a6335ca52fcdcdfff151f6b1a7f241a3b3dd88ea129cfed8aafa997"
+      },
+      {
+        "file": "spekpy/data/matl_def/Ethyl Acetate.comp",
+        "bytes": 550,
+        "sha256": "8284d160ec58666ce349921ab967fe2510b997817722886041059b1b1240cf24"
+      },
+      {
+        "file": "spekpy/data/matl_def/Ethyl Alcohol.comp",
+        "bytes": 550,
+        "sha256": "95e403acc1f6604c06f7edf116bc9d984caf626f55f564fcf1a12699b0aa34a6"
+      },
+      {
+        "file": "spekpy/data/matl_def/Ethyl Cellulose.comp",
+        "bytes": 546,
+        "sha256": "5adbaad8abf900971d572813c4f8f8f23fb4f22737cd55f9f83d97ce0c607d64"
+      },
+      {
+        "file": "spekpy/data/matl_def/Ethyl Ether.comp",
+        "bytes": 548,
+        "sha256": "98d44a87cd92e98b3f43dbaf6522ca02636466ce915a5f7dd579a38a94cc5e41"
+      },
+      {
+        "file": "spekpy/data/matl_def/Ethylene Ethene.comp",
+        "bytes": 482,
+        "sha256": "ad0cd0b2735de2768f24be37f6845bd782fe2446b61c747acb5d6214261ebe7d"
+      },
+      {
+        "file": "spekpy/data/matl_def/Ethylene Glycol.comp",
+        "bytes": 548,
+        "sha256": "104bf01781c81592541e08a0362914ec1e11837dc6c1dfd53ee3b6a4ce308a9d"
+      },
+      {
+        "file": "spekpy/data/matl_def/Eu.comp",
+        "bytes": 356,
+        "sha256": "cf70a2a5dae266f189dd03a4668786a108eb3058e3ccbe2acad2f44038b29082"
+      },
+      {
+        "file": "spekpy/data/matl_def/Eye Lens (ICRP).comp",
+        "bytes": 616,
+        "sha256": "4a0c48a63bccf2eb1094eef328d675ce472901e6516c9d75c2ce1778b1afc6b7"
+      },
+      {
+        "file": "spekpy/data/matl_def/Eye Lens (ICRU).comp",
+        "bytes": 896,
+        "sha256": "d2625c5cd3c951c77f4b53156935085acace761612e4148c1c63ced654076081"
+      },
+      {
+        "file": "spekpy/data/matl_def/F.comp",
+        "bytes": 357,
+        "sha256": "3de02bd7fa8e1407397ff307fdf1e174dedcc7d9ece1fa6fdf73222c3cb03227"
+      },
+      {
+        "file": "spekpy/data/matl_def/Fe.comp",
+        "bytes": 356,
+        "sha256": "3b3cf3b178b04ad63320cb2f5a52b808d799fdf0e6a9af1bfcb137cfbf813b9b"
+      },
+      {
+        "file": "spekpy/data/matl_def/Ferric Oxide.comp",
+        "bytes": 476,
+        "sha256": "f805914cf47ae08ee7b17570b626d57910faae8baf2b60c4411c5a7917be0dca"
+      },
+      {
+        "file": "spekpy/data/matl_def/Ferroboride.comp",
+        "bytes": 475,
+        "sha256": "0f09a78e01814f488728497cb3c842811fb7b2d539ddaf4d30cfa2875773449c"
+      },
+      {
+        "file": "spekpy/data/matl_def/Ferrous Oxide.comp",
+        "bytes": 477,
+        "sha256": "661da9ef57f5fb624923eb272bbfe48694ecf35f07c8836feeddc3bbd75ffe4e"
+      },
+      {
+        "file": "spekpy/data/matl_def/Fr.comp",
+        "bytes": 356,
+        "sha256": "9fd43697455ca1a260d44787c1dc0381b2ce74a60a97b01658e8c01385312391"
+      },
+      {
+        "file": "spekpy/data/matl_def/Freon (12).comp",
+        "bytes": 542,
+        "sha256": "df58b07923c6c51c44ba975bb97f7e6229de2f9ac26831263103239a582bfae6"
+      },
+      {
+        "file": "spekpy/data/matl_def/Freon (12b2).comp",
+        "bytes": 543,
+        "sha256": "16c0cd576c75d4ab4e80ce44b583ab1e9419f632b499021b8945490663a32140"
+      },
+      {
+        "file": "spekpy/data/matl_def/Freon (13).comp",
+        "bytes": 548,
+        "sha256": "b338afbf7789963e9b96f49112db1682e9d20cf706732cafb39dbdc976fba9e7"
+      },
+      {
+        "file": "spekpy/data/matl_def/Freon (13b1).comp",
+        "bytes": 543,
+        "sha256": "77fe718f5c72a73aaba9bfea650571f86945433fb428e9402f37fd63d4699f40"
+      },
+      {
+        "file": "spekpy/data/matl_def/Freon (13i1).comp",
+        "bytes": 543,
+        "sha256": "409e85ce9dbba8e56782c3dbad15aa2ad1699c4917c01e8f392550ea475b0c2b"
+      },
+      {
+        "file": "spekpy/data/matl_def/GI-tract Intestine (ICRU).comp",
+        "bytes": 972,
+        "sha256": "23b048783fa2221d179a520377e40f36446e7d576f721b9a0dfb4503e09ffef2"
+      },
+      {
+        "file": "spekpy/data/matl_def/Ga.comp",
+        "bytes": 355,
+        "sha256": "457b748e16ceffb0bcaf475c67ef74b68948068a548815bd455e186941730cab"
+      },
+      {
+        "file": "spekpy/data/matl_def/Gadolinium Oxysulfide.comp",
+        "bytes": 558,
+        "sha256": "2efbb758d4f65e3390f7f791331d54bfca7eb3d8e27c3f275225d125aa91c31f"
+      },
+      {
+        "file": "spekpy/data/matl_def/Gallium Arsenide.comp",
+        "bytes": 481,
+        "sha256": "ed7b697e3c340392524be19029dff4db5f105254edfaf7aa02df61fdcd4311c5"
+      },
+      {
+        "file": "spekpy/data/matl_def/Gd.comp",
+        "bytes": 355,
+        "sha256": "2ebe5b60b61c02d17975956111a6ecc3b4aa51bb6ca6a40bc8b89a7b91fa70c2"
+      },
+      {
+        "file": "spekpy/data/matl_def/Ge.comp",
+        "bytes": 356,
+        "sha256": "73f930982f3f3cdacde377b012a48631c058fb2b88d03b60c1b300035e9dabdc"
+      },
+      {
+        "file": "spekpy/data/matl_def/Gel in Photographic Emulsion (Standard Nuclear).comp",
+        "bytes": 722,
+        "sha256": "61099e6e00deccf8b2b6e9f2b91b1095f79e4b2f0653a4ee5f06f42d886a510b"
+      },
+      {
+        "file": "spekpy/data/matl_def/Glass (Lead).comp",
+        "bytes": 698,
+        "sha256": "13585a8c6b8799262c60412af39a93eab5747699bbbddcee6f712bbe97cf1b44"
+      },
+      {
+        "file": "spekpy/data/matl_def/Glass (Plate).comp",
+        "bytes": 623,
+        "sha256": "71a33a464dc4562c9af43d112351080d70a3752a13105d30f8f078201d9b983b"
+      },
+      {
+        "file": "spekpy/data/matl_def/Glass Borosilicate (Corning Pyrex 7740).comp",
+        "bytes": 792,
+        "sha256": "535b31a4f1bf1d9d406d5c05c79b31418c540edd34d134b7e5af9d7fd2abbe85"
+      },
+      {
+        "file": "spekpy/data/matl_def/Glucose (Dextrose).comp",
+        "bytes": 549,
+        "sha256": "d1ae983551aa7d9490fa3d02b8692e7c609c3fea6cb35589d497bb11a788364e"
+      },
+      {
+        "file": "spekpy/data/matl_def/Glutamine.comp",
+        "bytes": 613,
+        "sha256": "fd2db2cb6c067d2f9b40312d573f59eb772620c336cafc1718b0376f4e95383b"
+      },
+      {
+        "file": "spekpy/data/matl_def/Glycerol.comp",
+        "bytes": 541,
+        "sha256": "2f818134ddef1c137196be1df8f0a09a0e14dce0762093020cb1d1c15c4497cf"
+      },
+      {
+        "file": "spekpy/data/matl_def/Glyceryl Trioleate (Olein).comp",
+        "bytes": 562,
+        "sha256": "3af77f8deb0a0652ef3390d25f41a01cd3fb9a2fc798cb48294ae7ee4b6c4edb"
+      },
+      {
+        "file": "spekpy/data/matl_def/Guanine.comp",
+        "bytes": 610,
+        "sha256": "72e99adc9a49d65dbdb91f4db9fb68a5ee6073dbb80b3ed35386d7317cd8cfea"
+      },
+      {
+        "file": "spekpy/data/matl_def/Gypsum (Plaster of Paris).comp",
+        "bytes": 636,
+        "sha256": "af231c8e551f962a6bdd7e1fc4bf65386f363a20da47799c04ba56763efeda8a"
+      },
+      {
+        "file": "spekpy/data/matl_def/H.comp",
+        "bytes": 358,
+        "sha256": "8811c5244f831f1811caee78a1cf16cbe1159e6084427236071a199d4bb28ef1"
+      },
+      {
+        "file": "spekpy/data/matl_def/He.comp",
+        "bytes": 359,
+        "sha256": "b18b0fa3dd8679cc32e17f3ccc37939ca6cdb49695843cecde452b1c13154d93"
+      },
+      {
+        "file": "spekpy/data/matl_def/Heart, Blood Filled (ICRU).comp",
+        "bytes": 1050,
+        "sha256": "e3d3e22a6eb202d7e58ef42496fccf5ad52d47e536c47dda616ea62ab6ee4732"
+      },
+      {
+        "file": "spekpy/data/matl_def/Hf.comp",
+        "bytes": 356,
+        "sha256": "d1d581570bbe29cfc35f88d8e2c3a96c377d58419b752940e942b7ab55d69019"
+      },
+      {
+        "file": "spekpy/data/matl_def/Hg.comp",
+        "bytes": 356,
+        "sha256": "5807c4beed530cd6e201acd511754c84b55e89e9fbd3d9634345962c8c163a4b"
+      },
+      {
+        "file": "spekpy/data/matl_def/Ho.comp",
+        "bytes": 355,
+        "sha256": "ff80b6e51b86456164ce37a12868013ae9eeee5abb07e243d6bf3864123fb4b1"
+      },
+      {
+        "file": "spekpy/data/matl_def/Hydrogen Peroxide.comp",
+        "bytes": 480,
+        "sha256": "929e76b7335107f9287a24171297dd5e11656d93cb522082804efaf4923e01e7"
+      },
+      {
+        "file": "spekpy/data/matl_def/I.comp",
+        "bytes": 355,
+        "sha256": "baafc6476aa0539ac97e7149ef7048b9353a2266dd73d911b0d1aaa73c78d24a"
+      },
+      {
+        "file": "spekpy/data/matl_def/In.comp",
+        "bytes": 356,
+        "sha256": "851d1c9f4efacc396e34ff80cb658a1b07814cbf57bbb2833ee086e3c0592410"
+      },
+      {
+        "file": "spekpy/data/matl_def/Ir.comp",
+        "bytes": 356,
+        "sha256": "45dfcf546448e336d1fdff2912f7aff15855b5f518d015e2a5197e7a9acbd317"
+      },
+      {
+        "file": "spekpy/data/matl_def/K.comp",
+        "bytes": 356,
+        "sha256": "44c0a563df4f1be61d2547b82bb3bbe29bc3ac5044ea7929082e4f973247b83e"
+      },
+      {
+        "file": "spekpy/data/matl_def/Kapton Polyimide Film.comp",
+        "bytes": 624,
+        "sha256": "71b8e8020f360c5af548ec1e5168f49c3ad2837a483a05a9a8031ec9d2687dfb"
+      },
+      {
+        "file": "spekpy/data/matl_def/Kapton.comp",
+        "bytes": 613,
+        "sha256": "4478ed25037c899f69220753be5cc81bf9418dd0848d22859d53d1adacdb0fa0"
+      },
+      {
+        "file": "spekpy/data/matl_def/Kidney (ICRU).comp",
+        "bytes": 1031,
+        "sha256": "9ee30c44e70ddf66d7a94c36e851d50e241b2580f7a944dff6a6177004236525"
+      },
+      {
+        "file": "spekpy/data/matl_def/Kovar.comp",
+        "bytes": 747,
+        "sha256": "2794af7b5e6d350c2864f29bd20bd746ab413d845322ab4a6f2d8bde00883252"
+      },
+      {
+        "file": "spekpy/data/matl_def/Kr.comp",
+        "bytes": 359,
+        "sha256": "cda59ab8d07970882d2cdfa72497e86d62739823d1718ecfef7c0cd357ca5f10"
+      },
+      {
+        "file": "spekpy/data/matl_def/La.comp",
+        "bytes": 356,
+        "sha256": "13916b6a91c71a07b4fdb4881dc0588f3bd815b23520a9d5fd0342b91416a910"
+      },
+      {
+        "file": "spekpy/data/matl_def/Lanthanum Oxybromide.comp",
+        "bytes": 558,
+        "sha256": "6a4c399c7416e81604b19bc5ec45c5bd54dd822ba35b2ca05fb3df04741f7eef"
+      },
+      {
+        "file": "spekpy/data/matl_def/Lanthanum Oxysulfide.comp",
+        "bytes": 558,
+        "sha256": "71ad2eea21c36a02c7fe6ee5e41b79e3b0f82bbd0631117fc654b4dc20766df0"
+      },
+      {
+        "file": "spekpy/data/matl_def/Lead Alloy (Babbitt Metal Pb and As-based).comp",
+        "bytes": 636,
+        "sha256": "737c659e044f71aec9a4450074ca0bd94a3b2dab7e643b338918f932b681a010"
+      },
+      {
+        "file": "spekpy/data/matl_def/Lead Alloy (Babbitt Metal Pb-based).comp",
+        "bytes": 557,
+        "sha256": "9050a763d9c172998bd11b47e2b2c73aa4ddd904c836b1befa50e5e46f82705a"
+      },
+      {
+        "file": "spekpy/data/matl_def/Lead Oxide.comp",
+        "bytes": 474,
+        "sha256": "ca99b2592063b31144b5dfb2f5128ac86d65a23bce09c1209ab9d17118dedfe1"
+      },
+      {
+        "file": "spekpy/data/matl_def/Lexan.comp",
+        "bytes": 551,
+        "sha256": "6668eba87f6d3f6cd7ebba5278ebfed0136ed29d100f23a5c59e8d02c4cd9594"
+      },
+      {
+        "file": "spekpy/data/matl_def/Li.comp",
+        "bytes": 356,
+        "sha256": "7ce6df7daf9ef115d273ed87e9502e0b658be82568d29de82807a81fe28a33db"
+      },
+      {
+        "file": "spekpy/data/matl_def/Lincolnshire Bolus Muscle Substitute (ICRU).comp",
+        "bytes": 636,
+        "sha256": "d798e70ee708934b505a4b0e30e1d7106c077eea2b6f95b0692ec5d2ba026023"
+      },
+      {
+        "file": "spekpy/data/matl_def/Lincolnshire Bolus Muscle Substitute.comp",
+        "bytes": 640,
+        "sha256": "b6c53b6d6c7a759712fbe509743e6da18a5fb3336ff16e9263ce15d2d600788c"
+      },
+      {
+        "file": "spekpy/data/matl_def/Lipid Substitute (EVA-28).comp",
+        "bytes": 561,
+        "sha256": "99230b9c3f3cb2ee7b2de3db312a07b3324eb4727bef955a0fe3c429ef8d0b72"
+      },
+      {
+        "file": "spekpy/data/matl_def/Lithium Amide.comp",
+        "bytes": 545,
+        "sha256": "90c24d0362b5b2e60ea40bc0d2f656c0d944bf4608aeb0095ef2b0cf0769a7a7"
+      },
+      {
+        "file": "spekpy/data/matl_def/Lithium Carbonate.comp",
+        "bytes": 552,
+        "sha256": "94fab39d8508f9fc0dc4b3c5d6ea8866fc36d08198d0233ea7d909657f0e3327"
+      },
+      {
+        "file": "spekpy/data/matl_def/Lithium Fluoride.comp",
+        "bytes": 475,
+        "sha256": "af9ae1ee922ce93bc31e1f66a1d0ad5e4d8af8f946f2225797888f6695e2aa87"
+      },
+      {
+        "file": "spekpy/data/matl_def/Lithium Hydride.comp",
+        "bytes": 479,
+        "sha256": "166069e0a98fb724fbf30450fb82be9605dad6c86860055d7588735fb0480c05"
+      },
+      {
+        "file": "spekpy/data/matl_def/Lithium Iodide.comp",
+        "bytes": 474,
+        "sha256": "655b0941456cc01c2d06781f2c7b1396eaeb7a65c2ef64bedfb8a2510e48ff9d"
+      },
+      {
+        "file": "spekpy/data/matl_def/Lithium Oxide.comp",
+        "bytes": 470,
+        "sha256": "512c82a90f3aab7e1dbf74e4791c49249ea1c010ae6efbb7d24b9d5ba7cdc867"
+      },
+      {
+        "file": "spekpy/data/matl_def/Lithium Tetraborate.comp",
+        "bytes": 554,
+        "sha256": "34db0e7a80c540c39cfe2c80958544e84ae3fbda0ff9c32ac4f59a13bfed036a"
+      },
+      {
+        "file": "spekpy/data/matl_def/Liver (ICRU).comp",
+        "bytes": 963,
+        "sha256": "b955b1714f3e85288af9afe4ba67969160ca5f33f464f4808e631c4923738de9"
+      },
+      {
+        "file": "spekpy/data/matl_def/Lu.comp",
+        "bytes": 356,
+        "sha256": "b5ab12dd0ca7fff61dc01d87f7f97b297395cc47c0e78334c7cbf281cf93d214"
+      },
+      {
+        "file": "spekpy/data/matl_def/Lung Inflated (ICRU).comp",
+        "bytes": 973,
+        "sha256": "870b56a5ed775bd19219f918e9612ac3b49c81e09209ad56e9a47865fe0365ea"
+      },
+      {
+        "file": "spekpy/data/matl_def/Lung Substitute (Alderson, Epoxy-based).comp",
+        "bytes": 706,
+        "sha256": "778a6e39e558706a053df258087bfb0c18679250d03c433c1bf5f3e4c15a9051"
+      },
+      {
+        "file": "spekpy/data/matl_def/Lung Substitute (Griffith, Polyurethane-based).comp",
+        "bytes": 872,
+        "sha256": "444d0e2ac3a317736412ad5c411359e08a85b4cdac641710d43a65379b9ed454"
+      },
+      {
+        "file": "spekpy/data/matl_def/Lung Substitute (LN10-75, Epoxy-based).comp",
+        "bytes": 843,
+        "sha256": "23c45eaf69bcded73bb5a8b9b8af15fcffe174b5beebfc8fd62a05df58554ec9"
+      },
+      {
+        "file": "spekpy/data/matl_def/Lung Tissue (ICRP).comp",
+        "bytes": 1273,
+        "sha256": "a25c6dd8f63a07889735f5d8789c4a638ac9a8f78b7966b2794fc593ec072c95"
+      },
+      {
+        "file": "spekpy/data/matl_def/Lung Tissue (ICRU).comp",
+        "bytes": 965,
+        "sha256": "3112baa13850856dabf065c56d4cee3a60209e19850d07ac03bfcc06c562c8b6"
+      },
+      {
+        "file": "spekpy/data/matl_def/Lymph (ICRU).comp",
+        "bytes": 817,
+        "sha256": "6291d57ec88000e5ac4236f30c9420254c08095aa640086b5b3d880a9326712e"
+      },
+      {
+        "file": "spekpy/data/matl_def/Magnesium Carbonate.comp",
+        "bytes": 556,
+        "sha256": "ae2e5c45587b48270dfa19f2f8d28707bac94f16ae365d3ac3d43b83ee56d0c0"
+      },
+      {
+        "file": "spekpy/data/matl_def/Magnesium Fluoride.comp",
+        "bytes": 482,
+        "sha256": "cf21e9d61db2f9e61bd3fb849aa7e7ed8670b28bc4539216efa72d8b040be3d8"
+      },
+      {
+        "file": "spekpy/data/matl_def/Magnesium Orthosilicate (Powder).comp",
+        "bytes": 565,
+        "sha256": "5c6ff658f1603716a56c4227b8a797848a98094b84f775a9328db196fff5c5ab"
+      },
+      {
+        "file": "spekpy/data/matl_def/Magnesium Orthosilicate.comp",
+        "bytes": 556,
+        "sha256": "e48203eb7f930e5b56cfaebdefc4d036f0443954c40ba001610b02fe145b43d2"
+      },
+      {
+        "file": "spekpy/data/matl_def/Magnesium Oxide.comp",
+        "bytes": 479,
+        "sha256": "2066a82fb3e2632ba4bdd36fa12ccdf0675548a8ead87e9ff61dcd1cc4d33123"
+      },
+      {
+        "file": "spekpy/data/matl_def/Magnesium Tetraborate.comp",
+        "bytes": 552,
+        "sha256": "d01981f0e03d3f0efa9372c0d31cbdedee5a5a79015af4692914e4bae870f08c"
+      },
+      {
+        "file": "spekpy/data/matl_def/Mercuric Iodide.comp",
+        "bytes": 478,
+        "sha256": "d42b8fd42d81e32bdcaac2dfe67c71f6246c3f746e6a82e99e98b89878b5af48"
+      },
+      {
+        "file": "spekpy/data/matl_def/Methane.comp",
+        "bytes": 475,
+        "sha256": "f214ff149769d49bb1859cf9dd361d0823163ade05306099b37326f3b55c06c4"
+      },
+      {
+        "file": "spekpy/data/matl_def/Methanol.comp",
+        "bytes": 545,
+        "sha256": "3e26783fcdcf7e366530e144f6e1b3ee0b56df96cf78ad1876bc29e626b726d5"
+      },
+      {
+        "file": "spekpy/data/matl_def/Mg.comp",
+        "bytes": 356,
+        "sha256": "dc4c611d73e182585ae269b3e3d7b6f9eba46d1fe42bbed8f9de299340a5cfd9"
+      },
+      {
+        "file": "spekpy/data/matl_def/Mn.comp",
+        "bytes": 356,
+        "sha256": "4385fdd6abe535221f0e8d33863f75886fce038740622c4944497855f8ef803a"
+      },
+      {
+        "file": "spekpy/data/matl_def/Mo.comp",
+        "bytes": 356,
+        "sha256": "08b1d22f8be5da4d3b340d6d8cfccb2ab12cdd0e66611cbc3e2dc004374892e0"
+      },
+      {
+        "file": "spekpy/data/matl_def/Muscle Skeletal (ICRP).comp",
+        "bytes": 1275,
+        "sha256": "3f65d7ab64ad05bbd870b336eaf79c03bf8784871e700f6de94de9d32ab93c0a"
+      },
+      {
+        "file": "spekpy/data/matl_def/Muscle Skeletal (ICRU).comp",
+        "bytes": 968,
+        "sha256": "5e6ec467108f34b5e6e04ef38af558c553c65d25d805d673ae1021db7cef2358"
+      },
+      {
+        "file": "spekpy/data/matl_def/Muscle Straiated (ICRU).comp",
+        "bytes": 978,
+        "sha256": "de4eea27fb461f9da656a9d7c32bc93db4a8d594a0abb28ad728eeb906e78977"
+      },
+      {
+        "file": "spekpy/data/matl_def/Muscle Substitute (Alderson, Rubber-based Composition A).comp",
+        "bytes": 731,
+        "sha256": "7af02bd514a1a6e9fb76a39bab1c982d5ba3e6b587c9d5d2d57d516901927c90"
+      },
+      {
+        "file": "spekpy/data/matl_def/Muscle Substitute (Alderson, Rubber-based Composition B).comp",
+        "bytes": 795,
+        "sha256": "09f525f5238ea1aca20f0dde4204a4d34cf863466cf3fb9ed65e3ddda68ed7b6"
+      },
+      {
+        "file": "spekpy/data/matl_def/Muscle Substitute (Griffith, Polyurethane-based).comp",
+        "bytes": 797,
+        "sha256": "a1cc992f438837ab445995763629cb3c670964ea0061c856970184069db005c7"
+      },
+      {
+        "file": "spekpy/data/matl_def/Muscle Substitute (RM-1, Polyethylene-based).comp",
+        "bytes": 706,
+        "sha256": "6f204714e30996a47f104296790de0997ea7fab2970a6dea885797b3fa8628e4"
+      },
+      {
+        "file": "spekpy/data/matl_def/Muscle-Equivalent Gel Frigerio et al (ICRU).comp",
+        "bytes": 844,
+        "sha256": "d8c33c6ae6c4e4483e321710b004737b55f807b71f2d90eb592d169aff560cc5"
+      },
+      {
+        "file": "spekpy/data/matl_def/Muscle-Equivalent Gel Frigerio et al.comp",
+        "bytes": 713,
+        "sha256": "79e81f7570135acbc5b9cda258a889f81045d93315805d6279290e942e64c654"
+      },
+      {
+        "file": "spekpy/data/matl_def/Muscle-Equivalent Gel Rossi.comp",
+        "bytes": 618,
+        "sha256": "03b3afde6f2fd68a0fccac8207ef5a5458d50dceedd76ec86a75476154bf6d59"
+      },
+      {
+        "file": "spekpy/data/matl_def/Muscle-Equivalent Liquid (Goodman Liquid).comp",
+        "bytes": 650,
+        "sha256": "aaa422e8e1ccaa18037354c002bf2683e7cdd27c24ad48579af8bed283faecbd"
+      },
+      {
+        "file": "spekpy/data/matl_def/Muscle-Equivalent Liquid Frigerio et al.comp",
+        "bytes": 1155,
+        "sha256": "ec6fc106adf1f0e45af39e68583a8a69c96d369b71a022450097af1cc7a7a057"
+      },
+      {
+        "file": "spekpy/data/matl_def/Muscle-Equivalent Liquid Without Sucrose.comp",
+        "bytes": 649,
+        "sha256": "d3aede4b75ea534547b191db6a16360d06cef187ad6c2ed850cd01c83ceb0a03"
+      },
+      {
+        "file": "spekpy/data/matl_def/Muscle-Equivalent Liquid with Sucrose (Rossi Liquid).comp",
+        "bytes": 656,
+        "sha256": "4528d82e9fadedfe821f53c364a9f64e757fe477aba8ad71ca11402356217564"
+      },
+      {
+        "file": "spekpy/data/matl_def/Mylar.comp",
+        "bytes": 553,
+        "sha256": "3a6b451ea2a48e68d5a832f02a6dff6809e3fdaf6212dd045798221b5a3aad3f"
+      },
+      {
+        "file": "spekpy/data/matl_def/N,N-Dimethylformamide.comp",
+        "bytes": 631,
+        "sha256": "48f3d999905e2ddd785ab9aaf0d2710fd3195a09616c708a6eeba4cb97c53454"
+      },
+      {
+        "file": "spekpy/data/matl_def/N-Butyl Alcohol.comp",
+        "bytes": 552,
+        "sha256": "5e64f26bbb3ecff114e2f5d30b560406ab3fb7c4210c07f4bacf7c5bda585a4d"
+      },
+      {
+        "file": "spekpy/data/matl_def/N-Decane (Liquid).comp",
+        "bytes": 481,
+        "sha256": "a9aa900cff089f4576434102693de30479e28d2f15c71283f8f36ed48e408834"
+      },
+      {
+        "file": "spekpy/data/matl_def/N-Decane.comp",
+        "bytes": 475,
+        "sha256": "fbacc67adec4e29d3ca5ce062048ce47f1b0fd5e39f2c7bdd0a8ef8a3b0e4646"
+      },
+      {
+        "file": "spekpy/data/matl_def/N-Heptane (Liquid).comp",
+        "bytes": 482,
+        "sha256": "b2709f130a65ea02c54702645cdf3c7dd4d763b555fed82bb60dc4dc8b015304"
+      },
+      {
+        "file": "spekpy/data/matl_def/N-Heptane.comp",
+        "bytes": 476,
+        "sha256": "f1daf4305ff7311c0c03a88891d5d49209d26909fcf64e71966654b86c93a8c2"
+      },
+      {
+        "file": "spekpy/data/matl_def/N-Heptyne (Liquid).comp",
+        "bytes": 482,
+        "sha256": "45e634a9fcad313f711e8340d5436dab7f34a81ae4729c791c1cc23da4f3ebb3"
+      },
+      {
+        "file": "spekpy/data/matl_def/N-Heptyne.comp",
+        "bytes": 476,
+        "sha256": "5501a59b91695b4bfdf8956dc282545865e32be749f3f56d3a00bfdf1671a7a1"
+      },
+      {
+        "file": "spekpy/data/matl_def/N-Hexane (Liquid).comp",
+        "bytes": 481,
+        "sha256": "36f09ff4a2e8425fd8870048612640b8813f099ba071e0bc70d8f8b07a8c28a7"
+      },
+      {
+        "file": "spekpy/data/matl_def/N-Hexane.comp",
+        "bytes": 475,
+        "sha256": "fb99914863433fcd7ba32d1715b70e31c701e4a0c353e75b2fb817b1f7723a90"
+      },
+      {
+        "file": "spekpy/data/matl_def/N-Hexyne (Liquid).comp",
+        "bytes": 477,
+        "sha256": "cfa01e5871f479a92fb60b7389ddb0a0bf2742d9a9058b28cb9c1f91da9353b6"
+      },
+      {
+        "file": "spekpy/data/matl_def/N-Hexyne.comp",
+        "bytes": 475,
+        "sha256": "c20521664928c5431253c269d9631fe10b6f5b91e59c9ac2cd325dc93ef1a50c"
+      },
+      {
+        "file": "spekpy/data/matl_def/N-Nonane (Liquid).comp",
+        "bytes": 481,
+        "sha256": "3384da2e5a457fae3ed6c68328a152340663c65a741bcbf8849e71e9b0e31936"
+      },
+      {
+        "file": "spekpy/data/matl_def/N-Nonane.comp",
+        "bytes": 475,
+        "sha256": "03adae1d062f488d2a00efab3f2aef9ddbb012918d56468ecf6ff3168d375341"
+      },
+      {
+        "file": "spekpy/data/matl_def/N-Pentane (Liquid).comp",
+        "bytes": 482,
+        "sha256": "cba456c86e4eb8c276753e19759aefb83f7c4c21762f67e6fb9c6cb6994ddc16"
+      },
+      {
+        "file": "spekpy/data/matl_def/N-Pentane.comp",
+        "bytes": 476,
+        "sha256": "bbd408bbe153d8f20acf941b8f406dfa97915f356fff4e409841ad5dfb5473bb"
+      },
+      {
+        "file": "spekpy/data/matl_def/N-Pentyne (Liquid).comp",
+        "bytes": 482,
+        "sha256": "f72c028666adfae6d82a57d210234ce2868eb96815ef9b0ddcbc6fdd069801c4"
+      },
+      {
+        "file": "spekpy/data/matl_def/N-Pentyne.comp",
+        "bytes": 476,
+        "sha256": "66f5f67707831acdc989189bd9afd4be37db12271e12130708a97137523cf4f0"
+      },
+      {
+        "file": "spekpy/data/matl_def/N-Propyl Alcohol.comp",
+        "bytes": 553,
+        "sha256": "a8f21149b5856c3dbf237e12ddc22ee308d735ae1a7221478d0692b9424a85bd"
+      },
+      {
+        "file": "spekpy/data/matl_def/N.comp",
+        "bytes": 357,
+        "sha256": "756e3f919f35269caafe739ed2dfaf5eb938f8089274add37a305c1ac428e0e4"
+      },
+      {
+        "file": "spekpy/data/matl_def/Na.comp",
+        "bytes": 357,
+        "sha256": "e5fb351b41566361f6d296b02a430a595f686d0ccdf9edb16e58f714b76647ef"
+      },
+      {
+        "file": "spekpy/data/matl_def/Napthalene.comp",
+        "bytes": 469,
+        "sha256": "feddcb98bd87987480f44077549c6e4d28d3762c034642caf6b95f2c4d0ed7ea"
+      },
+      {
+        "file": "spekpy/data/matl_def/Nb.comp",
+        "bytes": 356,
+        "sha256": "b6c83e321242d6b24f4b08d7d255acf23dec124e60748719d558026680b4d032"
+      },
+      {
+        "file": "spekpy/data/matl_def/Nckel Alloy (Hastelloy B).comp",
+        "bytes": 908,
+        "sha256": "ebf5f807485c6d1cec6d39b528fa4e9e46b8e7a996a3365b02ccdcedcfcd4981"
+      },
+      {
+        "file": "spekpy/data/matl_def/Nd.comp",
+        "bytes": 355,
+        "sha256": "a92da2330f5bf316732fa7a0c08cbf02fdb033dd2a7bafd4743afb968174da41"
+      },
+      {
+        "file": "spekpy/data/matl_def/Ne.comp",
+        "bytes": 360,
+        "sha256": "74115bac96ce266ca4f33494a4de2c4dbad80754170adb79b6fcd525ec818251"
+      },
+      {
+        "file": "spekpy/data/matl_def/Ni.comp",
+        "bytes": 355,
+        "sha256": "5535cb41a76ea495ef3b573362344f62f749e83aa50b090283d70e537412d6ca"
+      },
+      {
+        "file": "spekpy/data/matl_def/Nickel Alloy (Iconel).comp",
+        "bytes": 834,
+        "sha256": "c9c95cf05bd534789634e366e9838776a4340ea4ab73b43191703b1b12006cbf"
+      },
+      {
+        "file": "spekpy/data/matl_def/Nickel Alloy (Monel).comp",
+        "bytes": 760,
+        "sha256": "3439379209168071e08311ce20b9e262f7ab866703a8881f548100c8abc4ee2d"
+      },
+      {
+        "file": "spekpy/data/matl_def/Nickel Alloy (Mumetal).comp",
+        "bytes": 545,
+        "sha256": "cbc65b915cd8af17765c4c04666604549c49447bf58f7daff2268958de93114b"
+      },
+      {
+        "file": "spekpy/data/matl_def/Nickel Alloy (Nichrome).comp",
+        "bytes": 621,
+        "sha256": "37ff6c27c9843258f3ec44597d48ccbba9a4e80c92942bb4ba7b1d0e82c40097"
+      },
+      {
+        "file": "spekpy/data/matl_def/Nitrobenzene.comp",
+        "bytes": 619,
+        "sha256": "0a2b1634b879cf967f9eaa5b22ea6daf2ba97ba778ec5477e505356c119c1f53"
+      },
+      {
+        "file": "spekpy/data/matl_def/Nitrocellulose.comp",
+        "bytes": 618,
+        "sha256": "a0f0c0bb4276c90a1499335f76f4b921518b1b40cc98159706176e74e34e5e22"
+      },
+      {
+        "file": "spekpy/data/matl_def/Nitrous Oxide.comp",
+        "bytes": 480,
+        "sha256": "e93c85e3b10f789c9e1cb72e9ac15a2b4626915cdafd54421ec51ad84f784e99"
+      },
+      {
+        "file": "spekpy/data/matl_def/Nylon (Dupont Elvamide 8062M).comp",
+        "bytes": 633,
+        "sha256": "99c8acf09a06ea8fbbf62aee41fa82362a3ab75ade05076cec87f862bc41f68b"
+      },
+      {
+        "file": "spekpy/data/matl_def/Nylon (Rislan, Type 11).comp",
+        "bytes": 628,
+        "sha256": "38917d516abb4215af1b625845a25a6ba04b86b0c5930a1876c4144f1cd625cb"
+      },
+      {
+        "file": "spekpy/data/matl_def/Nylon (Type 6 And Type 66).comp",
+        "bytes": 630,
+        "sha256": "89660bdf4b272e723405de099aa0de54c2ffad28f7844b1677b65100f502c2f7"
+      },
+      {
+        "file": "spekpy/data/matl_def/Nylon (Type 6-10).comp",
+        "bytes": 619,
+        "sha256": "969e24052f67a6a709235687d10a740e0bb11d1d6514509538d26dfc57742cbf"
+      },
+      {
+        "file": "spekpy/data/matl_def/O.comp",
+        "bytes": 357,
+        "sha256": "b25bf0762a1acc3737b689644ae1d816cfeae140bcb217f5311ea551bc1c95ce"
+      },
+      {
+        "file": "spekpy/data/matl_def/Octane Liquid.comp",
+        "bytes": 473,
+        "sha256": "c55c25dd544cebf480eec7d9faddcde47541bbe2370b61848ccadd25eb246ac6"
+      },
+      {
+        "file": "spekpy/data/matl_def/Octane.comp",
+        "bytes": 473,
+        "sha256": "53d171b517595e695ad514bb73bf58aab29288eba4fa71eb5a5684d14cc08578"
+      },
+      {
+        "file": "spekpy/data/matl_def/Os.comp",
+        "bytes": 356,
+        "sha256": "f10ecb2342aaf5a95e571670484847e3ef19c4c7bc6eef24624b932612b1bacb"
+      },
+      {
+        "file": "spekpy/data/matl_def/Ovary (ICRU).comp",
+        "bytes": 959,
+        "sha256": "976fa4053bbcaefc39498159587509c1e030859664dd56280061923aa5258155"
+      },
+      {
+        "file": "spekpy/data/matl_def/P.comp",
+        "bytes": 354,
+        "sha256": "71bc77620ecdcce10ca4d75681af6b30cbb99974cbf6a71bc00fbd118ae8d222"
+      },
+      {
+        "file": "spekpy/data/matl_def/Pa.comp",
+        "bytes": 356,
+        "sha256": "2b4795015f1db3ea5d9bb12a50a584cc0407ebd0236842ea110368dbb5e99c98"
+      },
+      {
+        "file": "spekpy/data/matl_def/Pancreas (ICRU).comp",
+        "bytes": 962,
+        "sha256": "5adf8ea5b642f86db09a239ddfe8d209e8912925a6ce18b0e7fb98bd138097be"
+      },
+      {
+        "file": "spekpy/data/matl_def/Pb.comp",
+        "bytes": 356,
+        "sha256": "e8732f954e36e79e67a5dfe122803eb4343ee237a4ca703a62b711aaa650e7a9"
+      },
+      {
+        "file": "spekpy/data/matl_def/Pd.comp",
+        "bytes": 356,
+        "sha256": "34a07f49f2e3bda592012f61bd583125d918531cfd8a905d87318295a5b9df03"
+      },
+      {
+        "file": "spekpy/data/matl_def/Perspex.comp",
+        "bytes": 579,
+        "sha256": "23daf1a7554ded97ce2c4a353fb2398e7dc60cce022f6ae86d10ec95e7a17180"
+      },
+      {
+        "file": "spekpy/data/matl_def/Photographic Emulsion (Kodak Type AA And M).comp",
+        "bytes": 782,
+        "sha256": "ea96170fceca11b173c21809fd3d0d1f11e1313a7bdec35bc384ee678c9a85ff"
+      },
+      {
+        "file": "spekpy/data/matl_def/Photographic Emulsion (Standard Nuclear).comp",
+        "bytes": 940,
+        "sha256": "92c158b028a7503457c753c59f96abdc9a1a132c33edf9337b7282a8e9cb2d0a"
+      },
+      {
+        "file": "spekpy/data/matl_def/Photographic Emulsion, Silverhalidesin (Standard Nuclear).comp",
+        "bytes": 596,
+        "sha256": "022ad1ac6c424b24086b71819b4dac6faf7bbcbb1b18cb632453e629ca511f9a"
+      },
+      {
+        "file": "spekpy/data/matl_def/Plastic Scintillator (Vinyltoluene-based).comp",
+        "bytes": 498,
+        "sha256": "7658c7e0fdffaa65c1dfb5627d414e29c7df9c371539cdfefe146dde0d74300e"
+      },
+      {
+        "file": "spekpy/data/matl_def/Plutonium Dioxide.comp",
+        "bytes": 477,
+        "sha256": "fc6613cfb4e1afd0056a0f264480235ab9a691e680c0b6a9b934c43d6a466b36"
+      },
+      {
+        "file": "spekpy/data/matl_def/Pm.comp",
+        "bytes": 356,
+        "sha256": "9d156eef76c8516ddc897eb7d5a8ee39ba65b9f015fa59600ac44572d63a5ac4"
+      },
+      {
+        "file": "spekpy/data/matl_def/Po.comp",
+        "bytes": 356,
+        "sha256": "b336acf9a48ddfd995eeb2d97ca0ef02429c3cd6762ac06705240a4fa128affe"
+      },
+      {
+        "file": "spekpy/data/matl_def/Polyacrylonitrile.comp",
+        "bytes": 548,
+        "sha256": "5ac567df5b47f4d41306229da7e7a1ff53627fabd54908409dcf051df93f8359"
+      },
+      {
+        "file": "spekpy/data/matl_def/Polybromostyrene.comp",
+        "bytes": 548,
+        "sha256": "18f6c55f70977111dfc00330dff0c68061c726c2cb668fb2b740fb1ccdebd09f"
+      },
+      {
+        "file": "spekpy/data/matl_def/Polycarbonate (Makrolon or Lexan).comp",
+        "bytes": 563,
+        "sha256": "79c1e8bf4c133920d0777cb8d1168eac6584771f4c04e268998c1422ee81f2be"
+      },
+      {
+        "file": "spekpy/data/matl_def/Polychlorostyrene.comp",
+        "bytes": 548,
+        "sha256": "7df3c3d2c30796896b472af1877bc94e2cce69858235c2254a6a52b7f0d24f1d"
+      },
+      {
+        "file": "spekpy/data/matl_def/Polyethylene Terephthalate (Mylar).comp",
+        "bytes": 565,
+        "sha256": "d8219ed340145ebab5313aa67260959c3ef93d4e5c38cdf39e5bc8015aee6bc2"
+      },
+      {
+        "file": "spekpy/data/matl_def/Polyethylene.comp",
+        "bytes": 476,
+        "sha256": "cda6117fe01aecaeb21e9f39ed339c10328c31792191af1a128d6384b8853baa"
+      },
+      {
+        "file": "spekpy/data/matl_def/Polymethyl Methacrylate (Lucite Perspex or Plexiglas).comp",
+        "bytes": 589,
+        "sha256": "7ea09c6e7cf4e635a0fc8c7af5fb0f9f0e0bb116392f4a44393264b6993ca146"
+      },
+      {
+        "file": "spekpy/data/matl_def/Polyoxymethylene (Delrin).comp",
+        "bytes": 557,
+        "sha256": "1ab18d024b4622b0f12504bc978cff25a1339d55b5a4cf6312e49c7dbb70a6a5"
+      },
+      {
+        "file": "spekpy/data/matl_def/Polypropylene.comp",
+        "bytes": 477,
+        "sha256": "fe610e7a94f4bd7fce11a183c508c695fb7a0db94b0ad72bec9d659e0632925a"
+      },
+      {
+        "file": "spekpy/data/matl_def/Polystyrene.comp",
+        "bytes": 474,
+        "sha256": "361041b489282455d3f5b6ad234c26aba3543bbf7d75437f8f43fa9172a0014a"
+      },
+      {
+        "file": "spekpy/data/matl_def/Polytetrafluoroethylene (Teflon).comp",
+        "bytes": 490,
+        "sha256": "5a7211e1841f6f3976e30047525f084f88fd11c71979e9820800a4e925fb2e82"
+      },
+      {
+        "file": "spekpy/data/matl_def/Polytrifluorochloroethylene.comp",
+        "bytes": 563,
+        "sha256": "bf26fff2e8d44ef151b457fd1d031f64ae1e60fbf4eaef87af240849f02dcbb6"
+      },
+      {
+        "file": "spekpy/data/matl_def/Polyurethane.comp",
+        "bytes": 616,
+        "sha256": "203188650695134b98cc1069d1aad314fef0f9b8d17636cd842434c146798840"
+      },
+      {
+        "file": "spekpy/data/matl_def/Polyvinyl Acetate.comp",
+        "bytes": 553,
+        "sha256": "2e611c51788f11879a3f366239dc4791771abce05e162cd02d6c9a6158aaa43a"
+      },
+      {
+        "file": "spekpy/data/matl_def/Polyvinyl Alcohol.comp",
+        "bytes": 547,
+        "sha256": "925f3582529f5b5fd9853f376a94a259fcf75a89a01c24c7e8831eee8012a06b"
+      },
+      {
+        "file": "spekpy/data/matl_def/Polyvinyl Butyral.comp",
+        "bytes": 548,
+        "sha256": "ad02b83f33d3191d81b1f533b8e88300190c020233ce8b5442ee40bf6d60630a"
+      },
+      {
+        "file": "spekpy/data/matl_def/Polyvinyl Chloride.comp",
+        "bytes": 548,
+        "sha256": "554c5fe74e723007291206e8107b7cd2e85776add46becdb2fbaea933788a6ed"
+      },
+      {
+        "file": "spekpy/data/matl_def/Polyvinyl Pyrrolidone.comp",
+        "bytes": 625,
+        "sha256": "af108a2201176d72974fa98482daf743111950b29535f2ac78803aedea430ce2"
+      },
+      {
+        "file": "spekpy/data/matl_def/Polyvinylidene Chloride (Saran).comp",
+        "bytes": 562,
+        "sha256": "dbf6e8a9928e2cf52dd84b63d955f8878e93d5d90d5040affe4300d75d2e397a"
+      },
+      {
+        "file": "spekpy/data/matl_def/Polyvinylidene Fluoride (Kynar).comp",
+        "bytes": 561,
+        "sha256": "1f670e0b6caaa22a452da61f1dd016c4a08b899ef79ef761b1791f1a34831d26"
+      },
+      {
+        "file": "spekpy/data/matl_def/Potassium Iodide.comp",
+        "bytes": 481,
+        "sha256": "b2dd43de6fea290a7101458e80773b84ac30e84ad9f61f691378b4d4c6aa2495"
+      },
+      {
+        "file": "spekpy/data/matl_def/Potassium Oxide.comp",
+        "bytes": 479,
+        "sha256": "94d274577f181caee4cb8f4c325aee32990802fd328115e973621a264abecf4e"
+      },
+      {
+        "file": "spekpy/data/matl_def/Pr.comp",
+        "bytes": 356,
+        "sha256": "65c06fbb5c7d65441ad9145fe8c35026849636b8f988bb37adfe9a9045bed379"
+      },
+      {
+        "file": "spekpy/data/matl_def/Propane (Liquid).comp",
+        "bytes": 480,
+        "sha256": "15aaa39b2b6cd6b62ea304c9d95da098a4544a58cdb282f167d8046f1dc4f843"
+      },
+      {
+        "file": "spekpy/data/matl_def/Propane.comp",
+        "bytes": 474,
+        "sha256": "cf6714d190f98f401b741ee03ca6a9f659a9acee9314b0cbe2f7ae79f1175e7e"
+      },
+      {
+        "file": "spekpy/data/matl_def/Propylene Propene (Liquid).comp",
+        "bytes": 490,
+        "sha256": "bfd562ca44908f9dec209db3e45463c67d8a85af9dfa0eb4b59ab2fc8d477116"
+      },
+      {
+        "file": "spekpy/data/matl_def/Propylene Propene.comp",
+        "bytes": 485,
+        "sha256": "6c2758339c43f7776197eab1cf665f7efaac4ec278c666cee0fb20c23f1bd33d"
+      },
+      {
+        "file": "spekpy/data/matl_def/Pt.comp",
+        "bytes": 356,
+        "sha256": "29100c1499639a3a4d9fbe5ccdf8f415704fde080672fe1832f901c2c526e963"
+      },
+      {
+        "file": "spekpy/data/matl_def/Pyridine.comp",
+        "bytes": 544,
+        "sha256": "8277c9928e028ac101a2bbbd36401acb0d09b41ac604fe983df31cf1efc291f8"
+      },
+      {
+        "file": "spekpy/data/matl_def/Ra.comp",
+        "bytes": 355,
+        "sha256": "4653997fabaa945e6516795346b5d033ff9ea593727303c50f0c04684908a809"
+      },
+      {
+        "file": "spekpy/data/matl_def/Radiochromicdye Film (Nylon-based).comp",
+        "bytes": 626,
+        "sha256": "a61238a24ebec78d3baf059de24a0fd7c2101a56a6939f8ef714b3d6b01c9c5c"
+      },
+      {
+        "file": "spekpy/data/matl_def/Rb.comp",
+        "bytes": 356,
+        "sha256": "394f8cbc66cf9dce05f9db383d731343d93a0b95636839b8c1920ede8c81efd8"
+      },
+      {
+        "file": "spekpy/data/matl_def/Re.comp",
+        "bytes": 356,
+        "sha256": "389038db38774c4ea32c69ef0c966f7216395f4b576e30aea8b230bb493da669"
+      },
+      {
+        "file": "spekpy/data/matl_def/Red Marrow Skeletal (ICRU).comp",
+        "bytes": 973,
+        "sha256": "ef3ac22c54fbd0c7549796ef18338a095474cddf72f9e1d8ac6b7b9985302c17"
+      },
+      {
+        "file": "spekpy/data/matl_def/Red Marrow Substitute (RM-G1, Water-based Gel).comp",
+        "bytes": 1017,
+        "sha256": "d687ebca07bb59ceac025894e9ce9c37802353a989750068fc13a5cf8b4c3957"
+      },
+      {
+        "file": "spekpy/data/matl_def/Red Marrow Substitute (RM-L3, Aqueous).comp",
+        "bytes": 1007,
+        "sha256": "1a70e1cb483e3561901b13faee696efaa2dbdf39921db8eac25cb0a582758f03"
+      },
+      {
+        "file": "spekpy/data/matl_def/Red Marrow Substitute (RM-SR4, Epoxy-based).comp",
+        "bytes": 1079,
+        "sha256": "d97d526b623a0b2eae4997d133ef4136d6fcd18cbe7aad2dcc41ee74e7bd7501"
+      },
+      {
+        "file": "spekpy/data/matl_def/Rh.comp",
+        "bytes": 356,
+        "sha256": "dfdebde09d3a2b8c2e8eaff8d3aeda0e0d9ebd1a2ed144f35a675e381b5e506e"
+      },
+      {
+        "file": "spekpy/data/matl_def/Rice Powder.comp",
+        "bytes": 548,
+        "sha256": "32e79e7a376c4f598c60680cc7804557441f9e7ec90a032ea5e1e981310108ec"
+      },
+      {
+        "file": "spekpy/data/matl_def/Rn.comp",
+        "bytes": 359,
+        "sha256": "ba81a1ca8f755a22ebabdcc4b24a741fb1dcae9cea0432ff141462c964b906e6"
+      },
+      {
+        "file": "spekpy/data/matl_def/Ru.comp",
+        "bytes": 356,
+        "sha256": "d55e2530293abb59dffe11a6e6f3b57973d0af7fe6b7bb8c31967449b9e88549"
+      },
+      {
+        "file": "spekpy/data/matl_def/Rubber (Butyl).comp",
+        "bytes": 478,
+        "sha256": "b1ce2c2089e24a7dc9926da7f5b371a36d29fb443a48f08815f6946ca4c31bde"
+      },
+      {
+        "file": "spekpy/data/matl_def/Rubber (Natural).comp",
+        "bytes": 480,
+        "sha256": "ef96c373bc9b252d4246798d9d120e344976fc8a9869658a0cf94dee44a03ece"
+      },
+      {
+        "file": "spekpy/data/matl_def/Rubber (Neoprene).comp",
+        "bytes": 548,
+        "sha256": "93a63a96ef2a3677aa21a32d24d65f570a6f81912f0016f419dcc59c31c0f5e8"
+      },
+      {
+        "file": "spekpy/data/matl_def/S.comp",
+        "bytes": 354,
+        "sha256": "326c96f787600ff74097c3aaad26db9b0779e0aeddba20e189417bada32957c0"
+      },
+      {
+        "file": "spekpy/data/matl_def/Sb.comp",
+        "bytes": 356,
+        "sha256": "60e92174abe96b2ae460d4746a97f0a26d9195d537f8f41613d0acda6e30687a"
+      },
+      {
+        "file": "spekpy/data/matl_def/Sc.comp",
+        "bytes": 356,
+        "sha256": "c41abb82b6230629e2fa87ca1d6627258609a3f829af63c050703e07ab919f37"
+      },
+      {
+        "file": "spekpy/data/matl_def/Se.comp",
+        "bytes": 355,
+        "sha256": "42c27fc5b0a0e8c8dab8f6069be5ae9a679300ae6d1f8663662b851524918431"
+      },
+      {
+        "file": "spekpy/data/matl_def/Si.comp",
+        "bytes": 356,
+        "sha256": "2a122b523b2510237c5beab4bbfa0cc40c2044cbcef26fc6456edaf119bcdecc"
+      },
+      {
+        "file": "spekpy/data/matl_def/Silicon Dioxide (Quartz).comp",
+        "bytes": 488,
+        "sha256": "02b56227ccfe856198ab503ea0edfc6e1a8e1c75fe967227811b84de7859875d"
+      },
+      {
+        "file": "spekpy/data/matl_def/Silicon Dioxide.comp",
+        "bytes": 479,
+        "sha256": "bf3b200c559b244f460b7e0340fdbf9dda3327921566316452d437d2fdbd7d5b"
+      },
+      {
+        "file": "spekpy/data/matl_def/Silicon Nitride.comp",
+        "bytes": 479,
+        "sha256": "3c300d482f8f6fcde637cb6fffaf5bce06a4e9991ce6e2754d2ccc4f4bb2186e"
+      },
+      {
+        "file": "spekpy/data/matl_def/Silver Bromide.comp",
+        "bytes": 475,
+        "sha256": "d4d159600b42d3235310b6daeb9c7b6aca1b611657c3c465f13858a7a28a88e4"
+      },
+      {
+        "file": "spekpy/data/matl_def/Silver Chloride.comp",
+        "bytes": 480,
+        "sha256": "398814b2b054130ba19712d6d2b6aa05a912e59609495638f4a29e82e1c84aeb"
+      },
+      {
+        "file": "spekpy/data/matl_def/Silver Iodide.comp",
+        "bytes": 478,
+        "sha256": "85148cd3c21f46d2ad864bb1d6cd71fc7d31d5d5a81dd2c7c3a2b1d1199f62f2"
+      },
+      {
+        "file": "spekpy/data/matl_def/Skeletal Cartilage (ICRU).comp",
+        "bytes": 900,
+        "sha256": "ade45ab7f08087980d2cb4accb1f38c3aacf13d6f2cdab7053671656c0d9446b"
+      },
+      {
+        "file": "spekpy/data/matl_def/Skeletal Spongiosa (ICRU).comp",
+        "bytes": 1191,
+        "sha256": "241d0deeb71a4ce2e626f9ff8206e3e7df580a82ccdb7ba6e356bbec01499307"
+      },
+      {
+        "file": "spekpy/data/matl_def/Skin (ICRP).comp",
+        "bytes": 1262,
+        "sha256": "567190e04ae353bace7e2620f0d8ef5f9ba82eaeee39d2d89ffbca065200fdc9"
+      },
+      {
+        "file": "spekpy/data/matl_def/Skin (ICRU).comp",
+        "bytes": 956,
+        "sha256": "e844e95dfb16904c7bbb3630cc75e180834a4669edfe5cfd2408edd3e1ddf1bf"
+      },
+      {
+        "file": "spekpy/data/matl_def/Skin Substitute (SK2, Polyethylene-based 1.09g_cm-3).comp",
+        "bytes": 645,
+        "sha256": "26b23d3897d07115a30ff114cdfac5d205760602af845ba789a54b571e0a7a5c"
+      },
+      {
+        "file": "spekpy/data/matl_def/Skin Substitute (SK2, Polyethylene-based 1.19g_cm-3).comp",
+        "bytes": 650,
+        "sha256": "0e9c3e2b3104e0914f8bb83ddc4e8b34d7a06be83d7e48cb1d22536fd2f3bc47"
+      },
+      {
+        "file": "spekpy/data/matl_def/Sm.comp",
+        "bytes": 356,
+        "sha256": "934a86b4eed4c1180028f68697593a4a5b0f51260db673c6483c9446df645026"
+      },
+      {
+        "file": "spekpy/data/matl_def/Sn.comp",
+        "bytes": 356,
+        "sha256": "b5e3b85707e6413b2d9d8e3e3de1d53b1454d1f125c77fe72523d852a9ff861e"
+      },
+      {
+        "file": "spekpy/data/matl_def/Sodium Carbonate.comp",
+        "bytes": 553,
+        "sha256": "0bab34a5bdee50e91f2840a2b4a53e789d0427d74410a15c6bb4ac81e817e95e"
+      },
+      {
+        "file": "spekpy/data/matl_def/Sodium Chloride.comp",
+        "bytes": 476,
+        "sha256": "a17f6b069976d4aa52b452ffb6f2c523409861fe5211721dff7924d485e7892c"
+      },
+      {
+        "file": "spekpy/data/matl_def/Sodium Dioxide.comp",
+        "bytes": 479,
+        "sha256": "6bfc438e5b84d4f819ffe7b8f5e5795b01ab7b7d693f084a35c717e8b946dfed"
+      },
+      {
+        "file": "spekpy/data/matl_def/Sodium Monoxide.comp",
+        "bytes": 474,
+        "sha256": "79ce5ebbfdf99365a00487a26dcbaac198252c52a572bc96ba6b722497eb2463"
+      },
+      {
+        "file": "spekpy/data/matl_def/Sodium Nitrate.comp",
+        "bytes": 550,
+        "sha256": "c76b6de965b93578b741124696b545fde87778a25ec158d73d6545d697dfaf1a"
+      },
+      {
+        "file": "spekpy/data/matl_def/Soil (Typicalloam Seltzer).comp",
+        "bytes": 1070,
+        "sha256": "77b0a8d8ece63a5b554ac675173323baef051c6963a98dab5988379874b6bfea"
+      },
+      {
+        "file": "spekpy/data/matl_def/Solder Plumber (50-50).comp",
+        "bytes": 477,
+        "sha256": "8fdc37f8d2720d0b903a0ffac83d93c14d2950c7d0644d651c10be3385907987"
+      },
+      {
+        "file": "spekpy/data/matl_def/Solder Soft (40-60).comp",
+        "bytes": 474,
+        "sha256": "765c6d0446d4ed95f90a6a1b1855e7f32a940c351b332b4a4ee0457fff3cb8bb"
+      },
+      {
+        "file": "spekpy/data/matl_def/Solder Soft (67-33).comp",
+        "bytes": 476,
+        "sha256": "dc175dbd263acad97dd470f335fd21c1dce8bc981df89782aece4081be23bb65"
+      },
+      {
+        "file": "spekpy/data/matl_def/Spleen (ICRU).comp",
+        "bytes": 965,
+        "sha256": "30a0ca261d15a00e299201d92a58881e6821590943cf1bc1643cf74b12f228ba"
+      },
+      {
+        "file": "spekpy/data/matl_def/Sr.comp",
+        "bytes": 356,
+        "sha256": "3398b6458cfcc9635efc99b3e3fcf1ac7d042f0caa9b4731f618a5165e359c4f"
+      },
+      {
+        "file": "spekpy/data/matl_def/Steel, Stainless (Type 302).comp",
+        "bytes": 766,
+        "sha256": "8fbc5b908337e08de10507abb790a67968ff5f99cbdadee89bf7610f572f2255"
+      },
+      {
+        "file": "spekpy/data/matl_def/Steel, Stainless (Type 316l).comp",
+        "bytes": 768,
+        "sha256": "1a8d6b66a64a9abd5971e20d32237a6d217cb87a95861f0af90e3872a2ea144d"
+      },
+      {
+        "file": "spekpy/data/matl_def/Stilbene.comp",
+        "bytes": 472,
+        "sha256": "0c0ab764aa0e04f385014cdfe7bda7a834c49b71f4a8d2fd0da9a83a0993f4cf"
+      },
+      {
+        "file": "spekpy/data/matl_def/Sucrose.comp",
+        "bytes": 539,
+        "sha256": "ba179b7684fd4f645819a23c3625877e4cf9dd7a6f41913226d0c6cd73c5602b"
+      },
+      {
+        "file": "spekpy/data/matl_def/Ta.comp",
+        "bytes": 356,
+        "sha256": "4dcb7dda60801d559abf3a9b327cf3c8894d34bff8890255a9ba9bae749fff92"
+      },
+      {
+        "file": "spekpy/data/matl_def/Tb.comp",
+        "bytes": 356,
+        "sha256": "670d4378c61eb94a6d983a872691789f9053c86dbd0be138560a1fde4e1c83d4"
+      },
+      {
+        "file": "spekpy/data/matl_def/Tc.comp",
+        "bytes": 356,
+        "sha256": "806c4f759e36c9e5764c15958c6eee0778101a60039705a7a9a8b38aa67553f3"
+      },
+      {
+        "file": "spekpy/data/matl_def/Te.comp",
+        "bytes": 356,
+        "sha256": "020af0a7a9713456120bc553454c71e2eaedc5ca7ca1ee3f1880d090e3b8a6a4"
+      },
+      {
+        "file": "spekpy/data/matl_def/Teflon.comp",
+        "bytes": 479,
+        "sha256": "8c5b0bae8753f0b1e8156c3160b664171be05a918be2ad9189844cea3f06b0ca"
+      },
+      {
+        "file": "spekpy/data/matl_def/Temex Muscle Substitute (Rubber-based).comp",
+        "bytes": 864,
+        "sha256": "fe17f37beaa6119cec9a6c0dac752edc659fecc56c56e06ed9439ed78d159e4f"
+      },
+      {
+        "file": "spekpy/data/matl_def/Terphenyl.comp",
+        "bytes": 468,
+        "sha256": "c8ea0fcb3dee915ae0359a086ded8706cc74ea0865b7daf8c3cde029d41cf3a0"
+      },
+      {
+        "file": "spekpy/data/matl_def/Testes (ICRP).comp",
+        "bytes": 1268,
+        "sha256": "ad95f302a9817c6428a248267d1b95d7ff1f36e591b48c9a0515939aee70cb05"
+      },
+      {
+        "file": "spekpy/data/matl_def/Testes (ICRU).comp",
+        "bytes": 959,
+        "sha256": "680a1b3925568ac4decb1ee87918b941077719443cd98622379e589e3ea26c87"
+      },
+      {
+        "file": "spekpy/data/matl_def/Tetrachloroethylene.comp",
+        "bytes": 479,
+        "sha256": "c33d2a5d9f6e3e3434d3ab545e9b6e59423d25af87d3f75354aac54715eb69d3"
+      },
+      {
+        "file": "spekpy/data/matl_def/Th.comp",
+        "bytes": 356,
+        "sha256": "c176de5e1b7d3a62ff5c257c19b3bca34002b16c6fb5962fa004f1cef8bbd61c"
+      },
+      {
+        "file": "spekpy/data/matl_def/Thalliumchloride.comp",
+        "bytes": 481,
+        "sha256": "3e3b8a8ae7a197601eaa0dff42c3e9afe4c7b685234e73a99e3c7fbb42faba2b"
+      },
+      {
+        "file": "spekpy/data/matl_def/Thyroid (ICRU).comp",
+        "bytes": 1033,
+        "sha256": "ef771ba4b5c7a1ba64a83f39653e079e2553fcf472420ac56cfdc5430eab2f57"
+      },
+      {
+        "file": "spekpy/data/matl_def/Thyroid Substitute (TH-L2, Aqueous).comp",
+        "bytes": 1000,
+        "sha256": "c19c6246d9fc3e1a4e643484638911c285f1abf8e41d95015cf2d11dae5863d4"
+      },
+      {
+        "file": "spekpy/data/matl_def/Ti.comp",
+        "bytes": 356,
+        "sha256": "5c87593403e4e531371c6125514d0e637665b87c54f7312aabd8f338bcdfeee3"
+      },
+      {
+        "file": "spekpy/data/matl_def/Tissue Substitute (MS20).comp",
+        "bytes": 773,
+        "sha256": "aa31918ff9162efec158972d9202b07faa8e66f799ac30d1095c24bd6e90babc"
+      },
+      {
+        "file": "spekpy/data/matl_def/Tissue, Soft (ICRP).comp",
+        "bytes": 1274,
+        "sha256": "1bfc6454c9e21c6d75986eab0953b9a8cf254aefdf37634fcb79a1b51d79d4b2"
+      },
+      {
+        "file": "spekpy/data/matl_def/Tissue, Soft Four Component (ICRU).comp",
+        "bytes": 631,
+        "sha256": "bbf384a51941e746ae3ca5ef446129868c10ae08e7bc1bf43888185ea8ac6e12"
+      },
+      {
+        "file": "spekpy/data/matl_def/Tissue-Equivalent Gas (Ethylene Ethane-based).comp",
+        "bytes": 658,
+        "sha256": "6ed0639d5e85b5da22c2a5bc1a7eb161d19cd2819e2ceb83ed9db3cf647838be"
+      },
+      {
+        "file": "spekpy/data/matl_def/Tissue-Equivalent Gas (Hydrogen-based).comp",
+        "bytes": 652,
+        "sha256": "74b9395ed1dcf3441521c54e71117f9d7142c82c5bbccb3b2abe65b322224bae"
+      },
+      {
+        "file": "spekpy/data/matl_def/Tissue-Equivalent Gas (Methane-based).comp",
+        "bytes": 649,
+        "sha256": "851227212266f96a55731522ff6f55ac1c130a000b900a97d1e3d7177eb5c372"
+      },
+      {
+        "file": "spekpy/data/matl_def/Tissue-Equivalent Gas (Propane-based).comp",
+        "bytes": 649,
+        "sha256": "affbe755592137bd1e0c828dd7127328d33b7a480446a9a483db56fc3ae48dc6"
+      },
+      {
+        "file": "spekpy/data/matl_def/Titanium Dioxide.comp",
+        "bytes": 480,
+        "sha256": "4ee0a7e66afd378e5acd35eca9abd8206172594a6b0cdb6287bb263d7a4c52c3"
+      },
+      {
+        "file": "spekpy/data/matl_def/Tl.comp",
+        "bytes": 356,
+        "sha256": "01374ef609ee57f5ecb7a0590117ecaa0b1640567795b90c39fbb9708e228de1"
+      },
+      {
+        "file": "spekpy/data/matl_def/Tm.comp",
+        "bytes": 356,
+        "sha256": "a10a14793b7d11aabe860319062e7419dfb41d2ef07a15cba4fe40e4af18d0f3"
+      },
+      {
+        "file": "spekpy/data/matl_def/Toluene.comp",
+        "bytes": 469,
+        "sha256": "ce8768b1cb36621abc53383b7e41fa7f5aa386e43280b6833b94ca13597046ea"
+      },
+      {
+        "file": "spekpy/data/matl_def/Trichloroethylene.comp",
+        "bytes": 550,
+        "sha256": "72788d5177748b3f1fe86a2e39d9fb628bb61e20582c47c43903a981a59ce74f"
+      },
+      {
+        "file": "spekpy/data/matl_def/Trichloromethane (Chloroform).comp",
+        "bytes": 562,
+        "sha256": "74c582d1c87746646bc0db7b5de8fb06e5521fe1f9b931d9bf52008230c7e13a"
+      },
+      {
+        "file": "spekpy/data/matl_def/Triethyl Phosphate.comp",
+        "bytes": 624,
+        "sha256": "376e4930ba50fbc5d74743bb0dc84aefdd547d041dd16988d23f85532365dd90"
+      },
+      {
+        "file": "spekpy/data/matl_def/Tungsten Alloy (Mallory 2000).comp",
+        "bytes": 553,
+        "sha256": "4f653b7256f65a46c40727174d33a56d436c318017f68460e5cb9cf8ddf1eb4f"
+      },
+      {
+        "file": "spekpy/data/matl_def/Tungsten Alloy (Type A2).comp",
+        "bytes": 545,
+        "sha256": "77abfbeff5e331a931d0359005cacef373231c0906cec81afd98843020c2b37f"
+      },
+      {
+        "file": "spekpy/data/matl_def/Tungsten Alloy (Type B2).comp",
+        "bytes": 546,
+        "sha256": "c0feaa9bfc5a9e0b202f5e519584c4d014b1a054b310327cec53c7e06f50482a"
+      },
+      {
+        "file": "spekpy/data/matl_def/Tungsten Alloy (Type C2).comp",
+        "bytes": 546,
+        "sha256": "24e66a7768baea4bb17548c6d70c03406c1f22c663fdcc14fd63659087f8ed5c"
+      },
+      {
+        "file": "spekpy/data/matl_def/Tungsten Hexafluoride.comp",
+        "bytes": 485,
+        "sha256": "3216acb4d164ace6cb99fdede735b91080efa970c99d2a5bc3e7372bbc63563d"
+      },
+      {
+        "file": "spekpy/data/matl_def/U.comp",
+        "bytes": 394,
+        "sha256": "ffa2cc510580c4f678116f40326ad16f529c7b35955d17a471c161ec2d85a38a"
+      },
+      {
+        "file": "spekpy/data/matl_def/Uranium Dicarbide.comp",
+        "bytes": 477,
+        "sha256": "940cf345541a30ae9614f41248b29905207cd206b9ea4d1ad185f87e8c7bd94f"
+      },
+      {
+        "file": "spekpy/data/matl_def/Uranium Monocarbide.comp",
+        "bytes": 479,
+        "sha256": "94f1a4b2707ff9be32b4b73fcbbddff91cea741b04c6f958e7231d685cb208f9"
+      },
+      {
+        "file": "spekpy/data/matl_def/Uranium Oxide.comp",
+        "bytes": 473,
+        "sha256": "5869ca0d3f39a6d4691c3d99d2ba13ce5c768d25e23ef36c0158ecc475cb49a4"
+      },
+      {
+        "file": "spekpy/data/matl_def/Uranyliodate Alpha.comp",
+        "bytes": 628,
+        "sha256": "a9d4ae21e9f47e919848fc78929f69928d326c990a36da26a08596293ecf226b"
+      },
+      {
+        "file": "spekpy/data/matl_def/Urea.comp",
+        "bytes": 609,
+        "sha256": "c1661c3a88cad9c59e3ce8275fb9966ed27879b8293321540a85dae4d1585dd7"
+      },
+      {
+        "file": "spekpy/data/matl_def/V.comp",
+        "bytes": 355,
+        "sha256": "6f6aa899a36a6056ad65438e6f6c887276c8cdb5844d8aeded94d52aeff7af27"
+      },
+      {
+        "file": "spekpy/data/matl_def/Valine.comp",
+        "bytes": 609,
+        "sha256": "263be29c6715aaac407089bf9354df66d87685af39c4a7b4e814ed6a5e8fb4cc"
+      },
+      {
+        "file": "spekpy/data/matl_def/Viton Fluoroelastomer.comp",
+        "bytes": 551,
+        "sha256": "6b9fd313e4b4ead3db90ed2c9cb62a81105524dbc1f2acce51f863815b1c6145"
+      },
+      {
+        "file": "spekpy/data/matl_def/W.comp",
+        "bytes": 355,
+        "sha256": "3f65f40f00476854fb893dfc3e40491c430da67e24a17186f996bb04c5ddaa03"
+      },
+      {
+        "file": "spekpy/data/matl_def/WT1 Water Substitute (Epoxy-based).comp",
+        "bytes": 768,
+        "sha256": "ec374132acc076ac11544b78a62618088e45bf259b67375e61243fe9ed4123ea"
+      },
+      {
+        "file": "spekpy/data/matl_def/Water Substitute (RW-1, Polyethene-based).comp",
+        "bytes": 710,
+        "sha256": "43e790a5f14a01adeec2f45c894f28c3b666373fe7459ff1477f72c89a961bd5"
+      },
+      {
+        "file": "spekpy/data/matl_def/Water, Liquid 75.comp",
+        "bytes": 473,
+        "sha256": "cadb167ec12560f8e48e621f7ce4cc47308186ef1517976cd0e3ff8853d3a68d"
+      },
+      {
+        "file": "spekpy/data/matl_def/Water, Liquid 78.comp",
+        "bytes": 473,
+        "sha256": "934ecccadb1e27a329418d178e084bf60036c79418535cf3c728c8f01b20ecdd"
+      },
+      {
+        "file": "spekpy/data/matl_def/Water, Liquid.comp",
+        "bytes": 470,
+        "sha256": "4cec7ebf45008dc87758cc5891368777d711af980a16952d72671dbd892e7b9d"
+      },
+      {
+        "file": "spekpy/data/matl_def/Water, Vapor.comp",
+        "bytes": 480,
+        "sha256": "b809b7f1e77ee6c6695991734459cbbb20716bf0de41054d62ab7108628c4552"
+      },
+      {
+        "file": "spekpy/data/matl_def/Water.comp",
+        "bytes": 458,
+        "sha256": "6dbbea1815b81473ee74a307f272638b9c3ff64bc6a31bf77063bb4759e2e1cc"
+      },
+      {
+        "file": "spekpy/data/matl_def/Wax, M3.comp",
+        "bytes": 686,
+        "sha256": "d21f7b0beb534378f42088f51dc8a72313f4da3229efd530e57b8562832f3187"
+      },
+      {
+        "file": "spekpy/data/matl_def/Wax, Mix D.comp",
+        "bytes": 692,
+        "sha256": "c65acf5b1f52f9d5320a67d50997c1045f57e49d576bdb55baeea544ff993528"
+      },
+      {
+        "file": "spekpy/data/matl_def/Wax, Paraffin (ICRU).comp",
+        "bytes": 476,
+        "sha256": "7102e8f729da9943db652299db177f0ee5cec1771ab536f3c9937decbf3fb7ec"
+      },
+      {
+        "file": "spekpy/data/matl_def/Wax, Paraffin.comp",
+        "bytes": 477,
+        "sha256": "faf024c6c46d4503f3438e8da91f4092b07991e7d2cf7fccb79abd667b800b59"
+      },
+      {
+        "file": "spekpy/data/matl_def/Witt Liquid.comp",
+        "bytes": 617,
+        "sha256": "4ef3dbce3c911b09cfa97af46ac5d6fa9da9ede28241f7c0a68f3939334e05f7"
+      },
+      {
+        "file": "spekpy/data/matl_def/Xe.comp",
+        "bytes": 359,
+        "sha256": "504b4f0bf6258469229f1e1da83ccfcf55d5f5817eb97924a33634edf21f0ab6"
+      },
+      {
+        "file": "spekpy/data/matl_def/Xylene.comp",
+        "bytes": 464,
+        "sha256": "e696ee13ecc29bf8f65205e6044cb2df53810dac796312d4c1a33190a8473c8e"
+      },
+      {
+        "file": "spekpy/data/matl_def/Y.comp",
+        "bytes": 355,
+        "sha256": "ae9851a182e3259ec983cfcd304b85c925157eefe261d11d8b8748a8f153d68b"
+      },
+      {
+        "file": "spekpy/data/matl_def/Yb.comp",
+        "bytes": 356,
+        "sha256": "dc12938aa7a135976d374f61ed2e729bd73fd44d50b22a6c66eb55a0918d6b87"
+      },
+      {
+        "file": "spekpy/data/matl_def/Yellow Marrow, Skeletal (ICRU).comp",
+        "bytes": 841,
+        "sha256": "ad7e5df592565806be4f9e2f7f05993b7e0d7b660ba0da10093a6cafa785ebee"
+      },
+      {
+        "file": "spekpy/data/matl_def/Zinc Sulfide.comp",
+        "bytes": 477,
+        "sha256": "594a986064004821762764dec03ac41e1029c0c901312d7518bc111fd37ee105"
+      },
+      {
+        "file": "spekpy/data/matl_def/Zircaloy-2.comp",
+        "bytes": 761,
+        "sha256": "cb24b05e1513c7e2471ffeff694f9f832bdcfff288ecbd768902af38b890c6a6"
+      },
+      {
+        "file": "spekpy/data/matl_def/Zircaloy-4.comp",
+        "bytes": 687,
+        "sha256": "667e4fc8af1d711826fcc518e95db692d16b3d398608f8937d63b569dc8a6fae"
+      },
+      {
+        "file": "spekpy/data/matl_def/Zn.comp",
+        "bytes": 356,
+        "sha256": "db50ed5b67c6233b01939a23d95db77b47bf62400067838b0d0fc66ae58ca96e"
+      },
+      {
+        "file": "spekpy/data/matl_def/Zr.comp",
+        "bytes": 356,
+        "sha256": "dc63421ac56541f75140feebe5e50ed095df63dc9acd46fbe7d0e07992ae6278"
+      },
+      {
+        "file": "spekpy/data/matl_usr/.gitkeep",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "file": "spekpy/data/state_def/CCRI_NIST_BIPM100.state",
+        "bytes": 1514,
+        "sha256": "7abc8ea7d815b2e3da33c9b8bcebde1d249311cd262c8a48d5c886d50df8cfdf"
+      },
+      {
+        "file": "spekpy/data/state_def/CCRI_NIST_BIPM135.state",
+        "bytes": 1570,
+        "sha256": "30e856a709f6d07a91a11f993900aaad153a2f8ff3002e066152cecfaad455d5"
+      },
+      {
+        "file": "spekpy/data/state_def/CCRI_NIST_BIPM180.state",
+        "bytes": 1571,
+        "sha256": "37bd3e9e319efb99cdcab7a14e1f3f302eaf4f9bbb67ad90582ff82c0832d654"
+      },
+      {
+        "file": "spekpy/data/state_def/CCRI_NIST_BIPM250.state",
+        "bytes": 1571,
+        "sha256": "77f8f0ba2222562698f28b0ce862f081da6988c8f803045110fbae12229f9c2c"
+      },
+      {
+        "file": "spekpy/data/state_def/CCRI_NIST_BIPM30.state",
+        "bytes": 1512,
+        "sha256": "59628f2eadf8529577a306e93698aa7feb32cbfc37068784688c8f4b70b6648f"
+      },
+      {
+        "file": "spekpy/data/state_def/CCRI_NIST_BIPM40.state",
+        "bytes": 1571,
+        "sha256": "5e159428ffdc2397a3567ac2b6237fc644cdb3e14f3be44321b1b9c63f2cce18"
+      },
+      {
+        "file": "spekpy/data/state_def/CCRI_NIST_BIPM50a.state",
+        "bytes": 1514,
+        "sha256": "59a8c6e14ad160ce05cfa37fc921afda2ab13b3c79a81d79b69f3fc65cf7b4a6"
+      },
+      {
+        "file": "spekpy/data/state_def/CCRI_NIST_BIPM50b.state",
+        "bytes": 1512,
+        "sha256": "b1f8e3552a827795c6688f8056d8daa52102722a59dcf2f66e354d284c1beae3"
+      },
+      {
+        "file": "spekpy/data/state_def/ISO_NIST_HK100.state",
+        "bytes": 1566,
+        "sha256": "1007dcdd89d55f513c22176f04b27dcde182c37527e9a0183df63cea2ee7a1fb"
+      },
+      {
+        "file": "spekpy/data/state_def/ISO_NIST_HK200.state",
+        "bytes": 1511,
+        "sha256": "e0515eccd5ac621aa143e54cdceee198413e2c65e43f1cd66cd521910a8bc294"
+      },
+      {
+        "file": "spekpy/data/state_def/ISO_NIST_HK250.state",
+        "bytes": 1509,
+        "sha256": "4abdca087e0661ea9efd7defbc466ad16f3261e5dbb19429455a6d7533a97473"
+      },
+      {
+        "file": "spekpy/data/state_def/ISO_NIST_HK280.state",
+        "bytes": 1511,
+        "sha256": "d43377fca1a0dc12e1b287658c451e6796c9b51ce655cee9a9d8d55512549cf5"
+      },
+      {
+        "file": "spekpy/data/state_def/ISO_NIST_HK30.state",
+        "bytes": 1509,
+        "sha256": "14c38f13c0e41f4bdf7ee3fca66dd927a41d37b59eab2eac699d018d31bed414"
+      },
+      {
+        "file": "spekpy/data/state_def/ISO_NIST_HK300.state",
+        "bytes": 1511,
+        "sha256": "bdfb0e7f7b0546b0517b6cf64c2e20ed61ae1c7125f915bcda2e7fbfa4707c26"
+      },
+      {
+        "file": "spekpy/data/state_def/ISO_NIST_HK60.state",
+        "bytes": 1509,
+        "sha256": "73c7c1689dc16a67462cd982e2e7ec084541ec420471a99a2654c84fdc013027"
+      },
+      {
+        "file": "spekpy/data/state_def/ISO_NIST_LK100.state",
+        "bytes": 1564,
+        "sha256": "c7080ec9d5d4a660fa52f17523e259a82c17b68955b20f81ccd069358645d2b1"
+      },
+      {
+        "file": "spekpy/data/state_def/ISO_NIST_LK125.state",
+        "bytes": 1565,
+        "sha256": "da227263a813e107fc7711488f9c2ddd385c90e6ce45df1920d074081812493c"
+      },
+      {
+        "file": "spekpy/data/state_def/ISO_NIST_LK170.state",
+        "bytes": 1620,
+        "sha256": "7c80f9db8605f6d448fa0e399ca19ea42a473d2bc9166719aac87b3a3a8f16fb"
+      },
+      {
+        "file": "spekpy/data/state_def/ISO_NIST_LK210.state",
+        "bytes": 1620,
+        "sha256": "af4d6edeef3d06d0b9b5e35e0f4c5317c194704b1acde62a56ce8651ac923717"
+      },
+      {
+        "file": "spekpy/data/state_def/ISO_NIST_LK240.state",
+        "bytes": 1620,
+        "sha256": "093fcdd121f1d157ba9c07f86a7e8f2e59ee53a6c78026acbe71f7fb645fa007"
+      },
+      {
+        "file": "spekpy/data/state_def/ISO_NIST_LK30.state",
+        "bytes": 1564,
+        "sha256": "349d00483e94fb2f640721d967d413b7a3883ba887ced7ee592164dbba11a51d"
+      },
+      {
+        "file": "spekpy/data/state_def/ISO_NIST_LK35.state",
+        "bytes": 1507,
+        "sha256": "7f8057f81d265e44dfae3de18691e57c70b277476678ee746027856e053679ca"
+      },
+      {
+        "file": "spekpy/data/state_def/ISO_NIST_LK55.state",
+        "bytes": 1507,
+        "sha256": "3210eb621f6f511a3209b41ff810e1563c9cd2529c4ae5aa458fa72ce6e6cc37"
+      },
+      {
+        "file": "spekpy/data/state_def/ISO_NIST_LK70.state",
+        "bytes": 1508,
+        "sha256": "36bed1adcef56facd8e9d65e4e0635f9af4b6c1de6e50bd11595a0b742192226"
+      },
+      {
+        "file": "spekpy/data/state_def/ISO_NIST_NS100.state",
+        "bytes": 1508,
+        "sha256": "a4590dd54fb4b67861809cd5cc6e7c760fd6b44023ba80d8ff64eb9c45233a6c"
+      },
+      {
+        "file": "spekpy/data/state_def/ISO_NIST_NS120.state",
+        "bytes": 1565,
+        "sha256": "34d8ad1952837772fe0675ece0caf0fc2b83feff8ce16529a3c91e30859aeefd"
+      },
+      {
+        "file": "spekpy/data/state_def/ISO_NIST_NS150.state",
+        "bytes": 1508,
+        "sha256": "3711b6470b18f7970ae06508c564b524b46b9502e61585aab839b1cb11c55777"
+      },
+      {
+        "file": "spekpy/data/state_def/ISO_NIST_NS200.state",
+        "bytes": 1621,
+        "sha256": "f9d07407b691369d91de7b5fa82629f94b35f801c482a23e2fbf055a913ed26e"
+      },
+      {
+        "file": "spekpy/data/state_def/ISO_NIST_NS250.state",
+        "bytes": 1564,
+        "sha256": "6e72c86d960db1f6cfc74c2df2e38fe730c90dec2f5d73db427782cb339504e9"
+      },
+      {
+        "file": "spekpy/data/state_def/ISO_NIST_NS30.state",
+        "bytes": 1509,
+        "sha256": "ed77ec91e1f2dbc5529a5822640a1affd4d0314d6698ed6990984c7595dfdf5d"
+      },
+      {
+        "file": "spekpy/data/state_def/ISO_NIST_NS300.state",
+        "bytes": 1564,
+        "sha256": "c7200cd6f13d436e4c8609b1d9307dd13edcfff58fd605e2d11b07a405818c5a"
+      },
+      {
+        "file": "spekpy/data/state_def/ISO_NIST_NS40.state",
+        "bytes": 1509,
+        "sha256": "8ed0e0ec207dbed4580c08075e8d103a5638d5b543b3c2ca62f8f8fedba43387"
+      },
+      {
+        "file": "spekpy/data/state_def/ISO_NIST_NS60.state",
+        "bytes": 1508,
+        "sha256": "2e9cdebd823a7a04d698ff3eb2f9011ca8bd9e3d9e9a506e045111ca5f21d5db"
+      },
+      {
+        "file": "spekpy/data/state_def/ISO_NIST_NS80.state",
+        "bytes": 1506,
+        "sha256": "88081579aa96d398a91edd4e7c26634024076f432d9827494fde333088386bf9"
+      },
+      {
+        "file": "spekpy/data/state_def/ISO_NIST_WS110.state",
+        "bytes": 1511,
+        "sha256": "0230f43f78511178d101447d51860c2a3cd1ce1c77043d9da3674bc56b110945"
+      },
+      {
+        "file": "spekpy/data/state_def/ISO_NIST_WS150.state",
+        "bytes": 1509,
+        "sha256": "369812be320a9da89d343bfb6dee7de8cc73dc75cd8f5676154f637eeacc4865"
+      },
+      {
+        "file": "spekpy/data/state_def/ISO_NIST_WS200.state",
+        "bytes": 1509,
+        "sha256": "da0eb798c0344fcc97c61a4999766b62d20591abda6ee1b999b21a5b1cd54a08"
+      },
+      {
+        "file": "spekpy/data/state_def/ISO_NIST_WS250.state",
+        "bytes": 1507,
+        "sha256": "1c05b16b0123e446924f52ac0e2007514834845852160679819c8ada07e58874"
+      },
+      {
+        "file": "spekpy/data/state_def/ISO_NIST_WS300.state",
+        "bytes": 1509,
+        "sha256": "5de85fb6cbc673a3a38dfc853f097bb1328c9d9a3e948c67112663cc74bcd501"
+      },
+      {
+        "file": "spekpy/data/state_def/ISO_NIST_WS60.state",
+        "bytes": 1508,
+        "sha256": "2f160823a8f0882faadebb4336ba323fc630be7229846844e40a0b06db16dd7b"
+      },
+      {
+        "file": "spekpy/data/state_def/ISO_NIST_WS80.state",
+        "bytes": 1509,
+        "sha256": "ef5b4bb789002c6883532f119c5f5409e94f7cdbbbe886f926ba027208e1e1c5"
+      },
+      {
+        "file": "spekpy/data/state_def/MEDPHYSPT1_DIFF_Mo_Mo35_12.state",
+        "bytes": 1113,
+        "sha256": "544142252a5a04d386f964f187494977519b953a4560416d381baf1756ba8536"
+      },
+      {
+        "file": "spekpy/data/state_def/MEDPHYSPT1_DIFF_W_M100_12.state",
+        "bytes": 1111,
+        "sha256": "97c124a0c8f7aaac6fd3a691e77bce2354d8aa2e6338ee55c49c544b63867d6b"
+      },
+      {
+        "file": "spekpy/data/state_def/MEDPHYSPT1_DIFF_W_M300_12.state",
+        "bytes": 1166,
+        "sha256": "c0418b08c61d58e77cf32eb6849ad2f65b9943276c245ce0b0aff41fa3ed78c5"
+      },
+      {
+        "file": "spekpy/data/state_def/MEDPHYSPT1_DIFF_W_M30_12.state",
+        "bytes": 1108,
+        "sha256": "6dfae9a005b25af917950d2416ce56131bb433e28d71df3e116de62da94e7496"
+      },
+      {
+        "file": "spekpy/data/state_def/MEDPHYSPT1_KQP_Mo_Mo35_12.state",
+        "bytes": 1111,
+        "sha256": "859b9102a1e2d3805353243c275762b29a7e2f344e8ede9607c7bcb3c0c84b59"
+      },
+      {
+        "file": "spekpy/data/state_def/MEDPHYSPT1_KQP_W_M100_12.state",
+        "bytes": 1109,
+        "sha256": "43d433e6d6ff784e8cc10111ecb3929a7d13d5c03dafff71529ed5b4597ab121"
+      },
+      {
+        "file": "spekpy/data/state_def/MEDPHYSPT1_KQP_W_M300_12.state",
+        "bytes": 1164,
+        "sha256": "3fed83626839ee0284424b53f9653ae04ff11a59bc7568ccf36ff91db7c2948e"
+      },
+      {
+        "file": "spekpy/data/state_def/MEDPHYSPT1_KQP_W_M30_12.state",
+        "bytes": 1106,
+        "sha256": "c604e9bbf2b85100d5a58f8a777389bac97137882ee0c9cd821c02c1dee30690"
+      },
+      {
+        "file": "spekpy/data/state_def/MEDPHYSPT1_SIM_Mo_Mo35_12.state",
+        "bytes": 1111,
+        "sha256": "8a4c56eba6217b5eff58eac65054b435bc6f3587ebc0e8630d8521b0e0bcfddc"
+      },
+      {
+        "file": "spekpy/data/state_def/MEDPHYSPT1_SIM_W_M100_12.state",
+        "bytes": 1109,
+        "sha256": "5ded22587bf6ef45299f2db9eda4a5b10e291aa996b627dd3df5b5f74fe3841d"
+      },
+      {
+        "file": "spekpy/data/state_def/MEDPHYSPT1_SIM_W_M300_12.state",
+        "bytes": 1164,
+        "sha256": "8d49920152af1880a7658c554e1c140c1c2d0e29a14b4081cf0cc9d53856e8d4"
+      },
+      {
+        "file": "spekpy/data/state_def/MEDPHYSPT1_SIM_W_M30_12.state",
+        "bytes": 1106,
+        "sha256": "026e6928bc311af6e3724c3d6dfcd6782b2022aca07e6a3b8703f5f9de5aa6f4"
+      },
+      {
+        "file": "spekpy/data/state_def/MEDPHYSPT1_UNI_Mo_Mo35_12.state",
+        "bytes": 1111,
+        "sha256": "bf24ba1d84c6443b337c382f7dda8f9366c38dc61b3fd13b3d5e275155dfc1ab"
+      },
+      {
+        "file": "spekpy/data/state_def/MEDPHYSPT1_UNI_W_M100_12.state",
+        "bytes": 1109,
+        "sha256": "6d7d6801fba50bbd78495cef770083005bf23620577dd4fbcd83a0cef1a4f28e"
+      },
+      {
+        "file": "spekpy/data/state_def/MEDPHYSPT1_UNI_W_M300_12.state",
+        "bytes": 1164,
+        "sha256": "97f68fc600e0c4b991e6ed827a4fac11d26ce530663a42a9c6c703660cac9c0e"
+      },
+      {
+        "file": "spekpy/data/state_def/MEDPHYSPT1_UNI_W_M30_12.state",
+        "bytes": 1106,
+        "sha256": "2496442105a115d905dc9a355d68e133ab575015e01f2349237f358b2eb46ccc"
+      },
+      {
+        "file": "spekpy/data/state_def/MEDPHYSPT2_KQP_Mo_Mo25_12.state",
+        "bytes": 1109,
+        "sha256": "49333e1fe11e3142eb2602d007cb29597833a81d17b7c52865827959d29b3871"
+      },
+      {
+        "file": "spekpy/data/state_def/MEDPHYSPT2_KQP_Mo_Mo25_21.state",
+        "bytes": 1109,
+        "sha256": "13b19b5276896504753a14fa6a8a022a9e897b3732b66ec69a96bf7c3b9b097f"
+      },
+      {
+        "file": "spekpy/data/state_def/MEDPHYSPT2_KQP_Mo_Mo25_3.state",
+        "bytes": 1107,
+        "sha256": "2c1b5efda2c9e5ab37c82ba051b67a881fbb084aced7ed328a6bcf0f0a1aff3e"
+      },
+      {
+        "file": "spekpy/data/state_def/MEDPHYSPT2_KQP_Mo_Mo35_12.state",
+        "bytes": 1109,
+        "sha256": "a6f78ad5669b4835c664ac05b423324052164f9101966e548760de016570be0d"
+      },
+      {
+        "file": "spekpy/data/state_def/MEDPHYSPT2_KQP_Mo_Mo35_21.state",
+        "bytes": 1109,
+        "sha256": "9d41186231e88a15d53109743232ae437967d8f8952819a0750d865804216cad"
+      },
+      {
+        "file": "spekpy/data/state_def/MEDPHYSPT2_KQP_Mo_Mo35_3.state",
+        "bytes": 1107,
+        "sha256": "5560109e810bb6dac4e08ac81c3d69248bd26f9ad0d1f55d46d12533d63985eb"
+      },
+      {
+        "file": "spekpy/data/state_def/MEDPHYSPT2_KQP_W_M100_12.state",
+        "bytes": 1107,
+        "sha256": "d2f9d1d68886827ca2d1e5c57210c96c98df523ea8ba1191bf4c4cb053be8a79"
+      },
+      {
+        "file": "spekpy/data/state_def/MEDPHYSPT2_KQP_W_M100_21.state",
+        "bytes": 1107,
+        "sha256": "2ed6d6f9c08f34743557c258cc65c66b248a64c1106b6e1cc5bcd11d9de6c496"
+      },
+      {
+        "file": "spekpy/data/state_def/MEDPHYSPT2_KQP_W_M100_3.state",
+        "bytes": 1105,
+        "sha256": "904f64d01a2b2b1f1996313ca0abff2dcc3f06fcbc1b629fbc44a8e4ca753494"
+      },
+      {
+        "file": "spekpy/data/state_def/MEDPHYSPT2_KQP_W_M300_12.state",
+        "bytes": 1162,
+        "sha256": "bed245187b169a8f24c320b70344b4c0604b8a81479b05a71808f1b1f8b0d248"
+      },
+      {
+        "file": "spekpy/data/state_def/MEDPHYSPT2_KQP_W_M300_21.state",
+        "bytes": 1162,
+        "sha256": "67bcc63ff59214f70f0516aa80ef2555bcc795f4a8d5c4076b49c8307c11cee9"
+      },
+      {
+        "file": "spekpy/data/state_def/MEDPHYSPT2_KQP_W_M300_3.state",
+        "bytes": 1160,
+        "sha256": "803ffb6adbea9183d7fc6daef0d5751a6336e95063181ed2060d36a43591eea5"
+      },
+      {
+        "file": "spekpy/data/state_def/MEDPHYSPT2_KQP_W_M30_12.state",
+        "bytes": 1104,
+        "sha256": "12ae0031c04277f8489fae75ba6a24a2d6700fdcf917dc12af2cfdabc155f07d"
+      },
+      {
+        "file": "spekpy/data/state_def/MEDPHYSPT2_KQP_W_M30_21.state",
+        "bytes": 1104,
+        "sha256": "33371b4c3b6d60275c562f1ffe8ba8568e301bb06a52e5a7552bad38f40fde1b"
+      },
+      {
+        "file": "spekpy/data/state_def/MEDPHYSPT2_KQP_W_M30_3.state",
+        "bytes": 1102,
+        "sha256": "411b379138f85d7e79d92df718e962c7c3d45eedf3f21db6044325cee6b3a388"
+      },
+      {
+        "file": "spekpy/data/state_def/MEDPHYSPT2_KQP_W_M50_12.state",
+        "bytes": 1105,
+        "sha256": "1eb97078d303393f1d91ed5b809975505d1e4c6bd76a22b940ff4c0bd007c88e"
+      },
+      {
+        "file": "spekpy/data/state_def/MEDPHYSPT2_KQP_W_M50_21.state",
+        "bytes": 1105,
+        "sha256": "081abbc7f64b6c8f956bb496f23cd8e99cb86a98de136891d415b10ea68af4e2"
+      },
+      {
+        "file": "spekpy/data/state_def/MEDPHYSPT2_KQP_W_M50_3.state",
+        "bytes": 1103,
+        "sha256": "f919271dff6fe5c48eff29d4a84ba166d1fd55dfb5e2ea8c0759104acfae966e"
+      },
+      {
+        "file": "spekpy/data/state_def/NIST_NIST_H100.state",
+        "bytes": 1562,
+        "sha256": "a1c4b7fd8de4348f8c0dc7cd09d725fa73005948c3b7dc2dacf407882623ee98"
+      },
+      {
+        "file": "spekpy/data/state_def/NIST_NIST_H150.state",
+        "bytes": 1618,
+        "sha256": "fb73a6a1052575c78447ddb9567eaf85eb2642951453db1f901a8c34a19d543c"
+      },
+      {
+        "file": "spekpy/data/state_def/NIST_NIST_H200.state",
+        "bytes": 1674,
+        "sha256": "89975e2b2467ba1fcbee50af5b81542d86f1621faa15c1c6d0a1e2c000410e54"
+      },
+      {
+        "file": "spekpy/data/state_def/NIST_NIST_H250.state",
+        "bytes": 1675,
+        "sha256": "25aef98e1b82e5f0abe09e4d5c495069bb1703a96e2d06df078ca11423c6d210"
+      },
+      {
+        "file": "spekpy/data/state_def/NIST_NIST_H30.state",
+        "bytes": 1505,
+        "sha256": "df894be7b132a56d9751698ce7d47eab60e3eaa42368613fc9c5464501c3cf97"
+      },
+      {
+        "file": "spekpy/data/state_def/NIST_NIST_H300.state",
+        "bytes": 1618,
+        "sha256": "5fca4ec713509f5b05d93f85959b9fff06b97ac520fad45977c81daf955320b7"
+      },
+      {
+        "file": "spekpy/data/state_def/NIST_NIST_H40.state",
+        "bytes": 1563,
+        "sha256": "b66487e02f1d41d701e1e93e155248ceafe026b1308b978f4bd4c262ae065fc2"
+      },
+      {
+        "file": "spekpy/data/state_def/NIST_NIST_H50.state",
+        "bytes": 1559,
+        "sha256": "e2e25a7cbfc2be788c781dfead588bfe78f4c225d90a0838fd7cda272b4caaa8"
+      },
+      {
+        "file": "spekpy/data/state_def/NIST_NIST_H60.state",
+        "bytes": 1560,
+        "sha256": "c27866e10f46274f10aac45d8894f9c0740a8b77cebbb9a3e52a85a383f615e2"
+      },
+      {
+        "file": "spekpy/data/state_def/NIST_NIST_L100.state",
+        "bytes": 1508,
+        "sha256": "243b2fb9147182a416f73a4647950e7e5051e10227c6e9c54ec35a71ca411af9"
+      },
+      {
+        "file": "spekpy/data/state_def/NIST_NIST_L30.state",
+        "bytes": 1505,
+        "sha256": "2e080066c1b672847eae4cce4d64cbcc06cae43f9e165b9e90572b5231ab5ffc"
+      },
+      {
+        "file": "spekpy/data/state_def/NIST_NIST_L40.state",
+        "bytes": 1507,
+        "sha256": "6c4d9300bf319a8b7fac398172fe6c6739c08429c5054b1ca132f9087189e14c"
+      },
+      {
+        "file": "spekpy/data/state_def/NIST_NIST_L50.state",
+        "bytes": 1507,
+        "sha256": "12e466cb01a7c7e0f649a3ce738a774065e6167231edb43263e22fb9fecea219"
+      },
+      {
+        "file": "spekpy/data/state_def/NIST_NIST_L80.state",
+        "bytes": 1507,
+        "sha256": "a82311427f7ae274f9bb2ea8d6597960066e0b512a98d198e88df348322127a2"
+      },
+      {
+        "file": "spekpy/data/state_def/NIST_NIST_M100.state",
+        "bytes": 1507,
+        "sha256": "bc08989ffa37358127fde3b95a91725473a421161195c4def1ce63daaac66986"
+      },
+      {
+        "file": "spekpy/data/state_def/NIST_NIST_M120.state",
+        "bytes": 1509,
+        "sha256": "d8f18bb9ebe979aac57dcf0ab7125af321d676a9f46817510515f60ced19da5f"
+      },
+      {
+        "file": "spekpy/data/state_def/NIST_NIST_M150.state",
+        "bytes": 1565,
+        "sha256": "08fb3e80c70b90766c82308be13f6c3d98b2fe9deb8c040b29661d04474322e6"
+      },
+      {
+        "file": "spekpy/data/state_def/NIST_NIST_M200.state",
+        "bytes": 1566,
+        "sha256": "33063562362b69751886956fd5e5918e82fd4374fee4884ebff00da5f217bf7e"
+      },
+      {
+        "file": "spekpy/data/state_def/NIST_NIST_M250.state",
+        "bytes": 1564,
+        "sha256": "6385ddad1351fede14b722cafc1827b2412ec0a5549762b606e62ddc6cdcc3fd"
+      },
+      {
+        "file": "spekpy/data/state_def/NIST_NIST_M30.state",
+        "bytes": 1506,
+        "sha256": "89fe0c544298f29a3641ac704fd008700f8dc6aa1d44fe6cd116027afe22ecc1"
+      },
+      {
+        "file": "spekpy/data/state_def/NIST_NIST_M300.state",
+        "bytes": 1563,
+        "sha256": "04d6458f39d58b8af409bbb0a2800edc469e41befbabddfc38a5ad89266fcc44"
+      },
+      {
+        "file": "spekpy/data/state_def/NIST_NIST_M40.state",
+        "bytes": 1507,
+        "sha256": "7a2cea447c8710a8ad713bcecb20211ff4488e5ff4fd82fa6f3c809b03e061b7"
+      },
+      {
+        "file": "spekpy/data/state_def/NIST_NIST_M50.state",
+        "bytes": 1507,
+        "sha256": "1eef4379fa8662aa5b09cbe7f660ebc8699163336f4ff3603105636a11555622"
+      },
+      {
+        "file": "spekpy/data/state_def/NIST_NIST_M60.state",
+        "bytes": 1507,
+        "sha256": "cf51095caf5326693b63fdd796cf6224583a9f07b8d1f4265edb60fdc9e94f4e"
+      },
+      {
+        "file": "spekpy/data/state_def/NIST_NIST_M80.state",
+        "bytes": 1506,
+        "sha256": "ec04a119babed1a8d7726fe79447335ba2cf6184c4e345a44ed620a9ce2c32b6"
+      },
+      {
+        "file": "spekpy/data/state_def/NIST_NIST_S60.state",
+        "bytes": 1506,
+        "sha256": "df354bed22b9ec1638ca90527a61857d0ed210720bf5c2ce4171ec501bcd773c"
+      },
+      {
+        "file": "spekpy/data/state_def/NIST_NIST_S75.state",
+        "bytes": 1506,
+        "sha256": "c5e8d85b30ff7a30fc8a279e0582dfcb5af59140ff6d81611797ce1e5473c3fa"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_DIN_A100.state",
+        "bytes": 1639,
+        "sha256": "5f9b9c93e6c805a9ffba2f0a24b3bb1bde905822381424a0eee52dbdb4434395"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_DIN_A120.state",
+        "bytes": 1693,
+        "sha256": "306407a22dab7d997951105a8ae52ba47254715494cd3092edb05cc4fbf5f384"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_DIN_A150.state",
+        "bytes": 1639,
+        "sha256": "9e5af21bdc74e7bbaeb1105f2e321edf17e30cccffa0c74a1562c7b2f9b2710d"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_DIN_A200.state",
+        "bytes": 1749,
+        "sha256": "7010def15f38af0e04e8d4ce7d6d63c27e8a2f27d04d716be12d868fc1774ab7"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_DIN_A250.state",
+        "bytes": 1693,
+        "sha256": "4223799651d10752cee1786587e2877ab1d4387e6e180da11092b6b592cf6110"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_DIN_A30.state",
+        "bytes": 1584,
+        "sha256": "7a907bfd66750b9478921887c68479600460d2e7dfc3baa8a7bc402b34d3dc0f"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_DIN_A300.state",
+        "bytes": 1694,
+        "sha256": "af0dd51b6ffbb5438efdef08958bfaf1bf7d2329d18a8227c7ca8168cbaf9462"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_DIN_A40.state",
+        "bytes": 1639,
+        "sha256": "24d0402a0d181d59bf3786d231aef7739c230111f0199d2a612af058a95e020b"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_DIN_A60.state",
+        "bytes": 1637,
+        "sha256": "f66c79fb1c74cefcb3ed352b53fa237cf5488bdb34e7a6e69e2f44405313b634"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_DIN_A80.state",
+        "bytes": 1637,
+        "sha256": "81f2fe94e9648d16bfc2e507f03de61e202c1069d4632a155c00587d7a15c82b"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_DIN_B110.state",
+        "bytes": 1640,
+        "sha256": "66d879b6bc9248650171074d5ef8cb2a5aee5fe0b78b3e347a1692f048f23954"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_DIN_B150.state",
+        "bytes": 1639,
+        "sha256": "cbbab25d4333c0323bf8446d9a53f0845ed9f6494b8a4aac0e79d529cbbdac13"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_DIN_B200.state",
+        "bytes": 1639,
+        "sha256": "0df4def900dcb7e96dbdca4d045242f5be290c7fd09ac691a0c50f060b4d8c1c"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_DIN_B250.state",
+        "bytes": 1640,
+        "sha256": "0d46fca85d5f4e59c43bb456a2609b5e711411ffd63d71b5a222e9a3da51570a"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_DIN_B30.state",
+        "bytes": 1585,
+        "sha256": "490c0e387c24fa008522c29fafac18c7d5601f548f8314f3b278cf749cf2fbfa"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_DIN_B300.state",
+        "bytes": 1640,
+        "sha256": "4d976768a0b81b33c5c189da1a3efdaa9d6904aa76f472e4eff2d8b2e469e1e6"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_DIN_B40.state",
+        "bytes": 1584,
+        "sha256": "911ce99355beeba4e040dcf0c6ffaf85edf63503cd6d326d1ef2fbc0d755c449"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_DIN_B60.state",
+        "bytes": 1635,
+        "sha256": "bb74fea7abd83f2af570bf17a1e9b0ff697334e7bb5f853498a594ccd28fb8dd"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_DIN_B80.state",
+        "bytes": 1636,
+        "sha256": "8b104a6c9a8ce4f8cdca012808e9016e2c2414ce759d22e988fd7c35041f1ce9"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_DIN_C100.state",
+        "bytes": 1640,
+        "sha256": "78d02d5eb872392035f0d19215a585ef0fde2ce18bd11fbd7878d76ded2ee944"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_DIN_C150.state",
+        "bytes": 1640,
+        "sha256": "83aaa7b56d4f3c5028f08b5146b2c4b4efd37e159e212319cedfe25acd1cca9f"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_DIN_C200.state",
+        "bytes": 1639,
+        "sha256": "37114b23e6d3f66dcdf574673f9c53c215add0ec9e884d0be6fc7f48abf7fe44"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_DIN_C250.state",
+        "bytes": 1640,
+        "sha256": "a5c458acfcd18fc1dede118e81fe0ad81cc7442062a80a053b6a8c054acda06f"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_DIN_C30.state",
+        "bytes": 1586,
+        "sha256": "a17d4bde806520e5f90d181db5c6b558366e6f9f81f1131ced01c84a8d3b423a"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_DIN_C300.state",
+        "bytes": 1639,
+        "sha256": "f8ae7ef377fb1c3810d0af06ccaa577aca85cc7c209aa4b809e7c90a999fbcf2"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_DIN_C40.state",
+        "bytes": 1585,
+        "sha256": "a7f0331a2758b7074c441b6b90651df09594042a16e90c3f6fe87bdf692b8ccc"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_DIN_C60.state",
+        "bytes": 1583,
+        "sha256": "22997fba3184a88bd7071ba1dd0b99cf5c32495b10fcee53a1b23785e27e9389"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_DIN_C80.state",
+        "bytes": 1582,
+        "sha256": "e289850e4320c796cb6124ae9240326d23887d94f5719862e6a7c14904c70d50"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_IEC_RQA10.state",
+        "bytes": 1586,
+        "sha256": "fd38dff51ff079a8c5802d9a5bacc4d819aaf68b1ef8739fbdb4c3b035dcc596"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_IEC_RQA2.state",
+        "bytes": 1585,
+        "sha256": "671fd4f9f0769f0c360f24ee5a1ccdcb3c47094cf08955824e66c106795492d6"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_IEC_RQA3.state",
+        "bytes": 1584,
+        "sha256": "6e800db3634d0a8a187ec70fb50118f5bdbf4d91d44a8dd2b1f9137ee14446bd"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_IEC_RQA4.state",
+        "bytes": 1583,
+        "sha256": "2554688d3b3b7bc9f8fede9b5f596880faf9016826f67c2858851c2131da4083"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_IEC_RQA5.state",
+        "bytes": 1583,
+        "sha256": "8eb548d74e4d5027a2ff4352c7cec2f621a033fe937a1727d63e8e609637fac6"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_IEC_RQA6.state",
+        "bytes": 1583,
+        "sha256": "655e42b2431cec9a577e5cef8b5bec9d61b781348f8e67de8a35beb5342a5b49"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_IEC_RQA7.state",
+        "bytes": 1584,
+        "sha256": "e9812d0220ed6f3ccce5edf1e37f4f7e10f003947551aea80c5b91408d0ad12e"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_IEC_RQA8.state",
+        "bytes": 1584,
+        "sha256": "4cac5bdb840b2f8a6ca85d1861fa6b230e78917bd4344918f91ed5c1304336d8"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_IEC_RQA9.state",
+        "bytes": 1586,
+        "sha256": "94368cac018aa9f2233d3dc525d892681682341b78bfcae6073424bc067fe2a3"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_IEC_RQR10.state",
+        "bytes": 1584,
+        "sha256": "2157c5d44760da8b3fd568be7ba8d07cd9d1e02d4afea09a5efb46c4d4a79adb"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_IEC_RQR2.state",
+        "bytes": 1585,
+        "sha256": "c9c0411c73a9f27ddf9fbaa388955f5d69b531d16d7c6d9a946f57e2736a5399"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_IEC_RQR3.state",
+        "bytes": 1584,
+        "sha256": "bdd8ffdb512442ddf469e6b0d57ba366f9b646fd331f86c8c77a68933e66fc38"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_IEC_RQR4.state",
+        "bytes": 1583,
+        "sha256": "0d82f12ba0c1b5f5b7a0bb02c2ff51c28084bd03ecc71e03b7d144d860385126"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_IEC_RQR5.state",
+        "bytes": 1584,
+        "sha256": "b1c921e4886c43ef0b79f9fc5e86f51026ebd1bd2a25fa592e7435b33aeef69c"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_IEC_RQR6.state",
+        "bytes": 1584,
+        "sha256": "4e7301b3a0a5f3cf688bc06b5bbffb0654e1b15f11056685604b39cf742f1d5c"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_IEC_RQR7.state",
+        "bytes": 1583,
+        "sha256": "bbb4a20b20b8024728343a21be57a1e2a62eb082094f3eb1645b4e7d00719f30"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_IEC_RQR8.state",
+        "bytes": 1584,
+        "sha256": "31f6e6919cdc64561b534184183f83b7bb3ee7a12ab5cddc71a3a6665381db83"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_IEC_RQR9.state",
+        "bytes": 1583,
+        "sha256": "22c7da05963ad256e8fd4ebdf5b5a551bccd99426a87db38309ecabf3be6275d"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_IEC_RQT10.state",
+        "bytes": 1639,
+        "sha256": "4f67a18c7ad3a01194f05ff35495a52a7c11a354e67369e0288f2477e86d64f1"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_IEC_RQT8.state",
+        "bytes": 1637,
+        "sha256": "d6805ef0e864c11484f9950be227cbf1d5dcf0874d3ef17d661c91927ada7768"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_IEC_RQT9.state",
+        "bytes": 1638,
+        "sha256": "d5c5060848bcac044227a8be3e98e352fc494c5f13215fd02f3db508172de8a2"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_ISO_H100.state",
+        "bytes": 1640,
+        "sha256": "4324bb61ba6f59dbad95e787923eb78795b063a3154aad412ca2983024dd3f4b"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_ISO_H200.state",
+        "bytes": 1639,
+        "sha256": "6e0053bb07b68364ef493e0eed273da4dc0a7adfd5e3e048e773491268e4996a"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_ISO_H250.state",
+        "bytes": 1640,
+        "sha256": "91fe983ec9ca8f663fb38eb6a4b60d013288e603c10e87b8f578336efceef680"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_ISO_H280.state",
+        "bytes": 1640,
+        "sha256": "9b30f4757badd712e3fbfd577087d2b7ec8c37e797c6fdf90dca88e06e18a393"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_ISO_H30.state",
+        "bytes": 1586,
+        "sha256": "50ac44bb3e8759575be7672cb58f595160f584ac62154afcf2b750a8f1378b4e"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_ISO_H300.state",
+        "bytes": 1639,
+        "sha256": "9ce9ce20b979358e3e509bbce462d83d917b7d805882191ed3c1a2c369e300cd"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_ISO_H60.state",
+        "bytes": 1583,
+        "sha256": "14378dd1a04ac3c00f8dbfc7844b9cb834c0e4bd20ebe71c933e776cef39662b"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_ISO_L100.state",
+        "bytes": 1694,
+        "sha256": "ee554400da05d4d646d73a4dfee8cccc1324c143da27defae116b80575646c06"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_ISO_L125.state",
+        "bytes": 1695,
+        "sha256": "bbf7d14e6371954333a83f5213fa0deed5042df3517320d1402f526b1196a78d"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_ISO_L170.state",
+        "bytes": 1749,
+        "sha256": "46036bfd9f546e1494fef9dc05dfdd2d91b34ee4e2871893acbbf49335f3c5b1"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_ISO_L210.state",
+        "bytes": 1750,
+        "sha256": "990edb0eab920ba52beee87e235408f39a45b280b1dd939b2224d6d253d10a49"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_ISO_L240.state",
+        "bytes": 1749,
+        "sha256": "9b12d290af963608c08ecf310836c0c6d3e7b20a1049eed11a545fb151ce26e9"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_ISO_L30.state",
+        "bytes": 1641,
+        "sha256": "8de9da3b7bd09f69d44b2053ca329bdd901d4aebdc90962f7552962c64289f68"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_ISO_L35.state",
+        "bytes": 1640,
+        "sha256": "eea64c93bd0372a09aa8bc1ca7c0fc935d0db22a3b8302eeddbef321c8753508"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_ISO_L55.state",
+        "bytes": 1636,
+        "sha256": "26bb80f59753c028c80d99aa92bbfb0c7b21c4ea3a363478b8cc5524590743a8"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_ISO_L70.state",
+        "bytes": 1637,
+        "sha256": "544b0113f33423a6b3ce97660ac777871fa3b06efca62a6060b0991757f61207"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_ISO_N100.state",
+        "bytes": 1639,
+        "sha256": "b49090c29479bbdce90e18700a308dd07c75dc22b838520fb2320ec2aca0cbc2"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_ISO_N120.state",
+        "bytes": 1693,
+        "sha256": "187b5cf773104963bf52cade36ca45cdc7dc7be1ec0c68b53642541a7ac7ffd8"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_ISO_N150.state",
+        "bytes": 1639,
+        "sha256": "9aa369237ee49c0936cd70220d1b05b145d20abc28b87f0137b20b6b28a32c09"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_ISO_N200.state",
+        "bytes": 1749,
+        "sha256": "1608218abd2fffbe7b50f624858f774709ac28d9c052e2c0a8335106c35786e0"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_ISO_N250.state",
+        "bytes": 1693,
+        "sha256": "38486dc905baee7e1ce08cbf1bbf21c6c16b89cb9ee23cae8a2f0e2675841388"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_ISO_N30.state",
+        "bytes": 1584,
+        "sha256": "34fc8d716843af4902566a63b85c5996a2013903cd7a89b5780b62e36c9caf60"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_ISO_N300.state",
+        "bytes": 1694,
+        "sha256": "81afe539f4d8ee544e4261431e32cf158ecc17abbfacd7e881d738bd84cbfb94"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_ISO_N40.state",
+        "bytes": 1639,
+        "sha256": "d12c68b2b00bfdbed2af2bb1b1bbff5359ab09f347ae5c74df5fa27a85c03627"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_ISO_N60.state",
+        "bytes": 1637,
+        "sha256": "fe5f0a1c008dec88086bd880282906af9afa96c2dea955e05a3819ad6d759c88"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_ISO_N80.state",
+        "bytes": 1637,
+        "sha256": "813d5b30c5ed26698a706252752fafe42f19e68273e1b102516399a122f632d7"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_ISO_W110.state",
+        "bytes": 1640,
+        "sha256": "931d4607b08b2803496bb3037566692de04a13db1111935eccea946fb1a2b327"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_ISO_W150.state",
+        "bytes": 1639,
+        "sha256": "6636612de214b767fbae1cc4bbe4a092c0d3c88cca0f88657695a927a2a1c4d3"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_ISO_W200.state",
+        "bytes": 1639,
+        "sha256": "244b5cf0954bab20f2209d9cadaca741be7a576740ec337bde8ac0e897be1472"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_ISO_W250.state",
+        "bytes": 1640,
+        "sha256": "a2df38d10371663523609764bcd7872b7ceaebec8fa25f9fcb1b52ac765229d1"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_ISO_W300.state",
+        "bytes": 1640,
+        "sha256": "546438afa678aadf161fbb4365319a9b591681a2daa0c1658956d6b7911335a5"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_ISO_W60.state",
+        "bytes": 1635,
+        "sha256": "dc5a87f2cb2c7fab78fc8fa062df9fe61ef4e0e89379790a3130363c64c71363"
+      },
+      {
+        "file": "spekpy/data/state_def/PTB_ISO_W80.state",
+        "bytes": 1636,
+        "sha256": "1dd91b45c50808599ffe5c9ff2a14b107b435c4b7cbec0125daceca1e60ef9b7"
+      },
+      {
+        "file": "spekpy/data/state_def/SSM_BIPM_CCRI100.state",
+        "bytes": 1540,
+        "sha256": "3a806377960ddcff2818682c7cbfd0e097a6e6814e05fb33f2d8cc581184c8ee"
+      },
+      {
+        "file": "spekpy/data/state_def/SSM_BIPM_CCRI135.state",
+        "bytes": 1596,
+        "sha256": "49ef3e5e424df021446803d23dd10c6adb0100f22eb626914466a342e93f9d3d"
+      },
+      {
+        "file": "spekpy/data/state_def/SSM_BIPM_CCRI180.state",
+        "bytes": 1595,
+        "sha256": "ad8929a528f39c3fef5b7ae41861b886078564d64a3c2fe62bd79099ea0e5f4c"
+      },
+      {
+        "file": "spekpy/data/state_def/SSM_BIPM_CCRI250.state",
+        "bytes": 1596,
+        "sha256": "99298fe12f19b92a225c57a5811c4aea2e9cfd6fc13f101b6c31fd3c6fcde0a8"
+      },
+      {
+        "file": "spekpy/data/state_def/SSM_BIPM_CCRI50(a).state",
+        "bytes": 1542,
+        "sha256": "c2bde22729c00e298d5109be9468ab76fdac8bea17cd2ebd28689c0df9c879f7"
+      },
+      {
+        "file": "spekpy/data/state_def/SSM_BIPM_CCRI50(b).state",
+        "bytes": 1540,
+        "sha256": "462cd61eca86f6eeb8ce51fa499ca56bd8e2a65fb8c29278f90580e5160a7c7d"
+      },
+      {
+        "file": "spekpy/data/state_def/SSM_IEC_RQA10.state",
+        "bytes": 1535,
+        "sha256": "f4acf3e7afc2b46b492004866a6af876c3a27430a14f240b5f40174cf04def63"
+      },
+      {
+        "file": "spekpy/data/state_def/SSM_IEC_RQA2.state",
+        "bytes": 1535,
+        "sha256": "a0e2771d7c2177c4e477429e178a99250318a5ac9efa837b419b747678e4f85d"
+      },
+      {
+        "file": "spekpy/data/state_def/SSM_IEC_RQA3.state",
+        "bytes": 1534,
+        "sha256": "c7a50cc0d8ca3e707a759e533142fbd63a4b17419420330afc4bc24f6774b216"
+      },
+      {
+        "file": "spekpy/data/state_def/SSM_IEC_RQA4.state",
+        "bytes": 1534,
+        "sha256": "f4f60b474080125c8600d325bf7a992e61733872096937c425c899c644d204ae"
+      },
+      {
+        "file": "spekpy/data/state_def/SSM_IEC_RQA5.state",
+        "bytes": 1534,
+        "sha256": "9c1bac77834f2b94c8a2fe4ef0bd6fca85459d8dcbb23a5136795ca9e8365328"
+      },
+      {
+        "file": "spekpy/data/state_def/SSM_IEC_RQA6.state",
+        "bytes": 1534,
+        "sha256": "5a1b69a85000542ad9d80fc0b1ef090f24aacb8a0d40aace0505e35d4aec74b3"
+      },
+      {
+        "file": "spekpy/data/state_def/SSM_IEC_RQA7.state",
+        "bytes": 1534,
+        "sha256": "98f36cdbd4aeb5e21c5b9ad5ac86c1ef13a6aa642bd03bf1d0fb703d6d1cab67"
+      },
+      {
+        "file": "spekpy/data/state_def/SSM_IEC_RQA8.state",
+        "bytes": 1534,
+        "sha256": "34754ecfae939d563955cf90950b3139b3bdb3eb59c1a79cd64039fbbf6e8cf2"
+      },
+      {
+        "file": "spekpy/data/state_def/SSM_IEC_RQA9.state",
+        "bytes": 1534,
+        "sha256": "438a573d6ff3e66c71f0d431a0d8f852272395dae34024744bf537beb81964e5"
+      },
+      {
+        "file": "spekpy/data/state_def/SSM_IEC_RQR10.state",
+        "bytes": 1537,
+        "sha256": "f47a2e31bc97c2af4662ffdbb2ccedf8fb74425bf98acc07a49e7fc8bfb473cb"
+      },
+      {
+        "file": "spekpy/data/state_def/SSM_IEC_RQR2.state",
+        "bytes": 1535,
+        "sha256": "d521204c9ad7e31d94388ae26c46488e5497f493872eae03bc543e0867f528f1"
+      },
+      {
+        "file": "spekpy/data/state_def/SSM_IEC_RQR3.state",
+        "bytes": 1535,
+        "sha256": "a58d576c5681942e393fb297dda5e428c8e3960bf78942a5c9e0df7fd77cec49"
+      },
+      {
+        "file": "spekpy/data/state_def/SSM_IEC_RQR4.state",
+        "bytes": 1535,
+        "sha256": "cffef65682a439a0b8bf36b49bff288cd91cd3515bfd826fcf392ce6a1005509"
+      },
+      {
+        "file": "spekpy/data/state_def/SSM_IEC_RQR5.state",
+        "bytes": 1535,
+        "sha256": "d2b01aefa7d1470243593e0718e507274d7ad1132a63565e3b0b83a746d05d63"
+      },
+      {
+        "file": "spekpy/data/state_def/SSM_IEC_RQR6.state",
+        "bytes": 1535,
+        "sha256": "c7d1ad57df1c3f745d9525befcde1f72baeb32a528ede4d24aa58e3a956bc595"
+      },
+      {
+        "file": "spekpy/data/state_def/SSM_IEC_RQR7.state",
+        "bytes": 1535,
+        "sha256": "8aba852d201a40af1b7920fa2fc623a16267f37581cd575197a9bc3324b13250"
+      },
+      {
+        "file": "spekpy/data/state_def/SSM_IEC_RQR8.state",
+        "bytes": 1536,
+        "sha256": "3825edd9aeadd5eb6a48ff2939b30bf37f3d0b1f4d1f86df0f230e713bdc4f82"
+      },
+      {
+        "file": "spekpy/data/state_def/SSM_IEC_RQR9.state",
+        "bytes": 1536,
+        "sha256": "767bb77cc9c299519886faea305018dd060519a1e984c1e98b55bb312fb99c0e"
+      },
+      {
+        "file": "spekpy/data/state_def/SSM_IEC_RQT10.state",
+        "bytes": 1594,
+        "sha256": "d075d7e96538d93e7b1e0cb689975998dee98a266d4ab5137b911ad3830709e6"
+      },
+      {
+        "file": "spekpy/data/state_def/SSM_IEC_RQT8.state",
+        "bytes": 1592,
+        "sha256": "8446ba5f2371e01db5b8edc86b087aae0f217e515f2f96ec6cf8926971e8b67c"
+      },
+      {
+        "file": "spekpy/data/state_def/SSM_IEC_RQT9.state",
+        "bytes": 1593,
+        "sha256": "87b1215c1433e443526f948f3ed48cd96a102d5a152860c109043a500443e20d"
+      },
+      {
+        "file": "spekpy/data/state_def/SSM_ISO_L100.state",
+        "bytes": 1646,
+        "sha256": "b216b70a12b77743dae78d14f1e0da60bec5d8cbbbace625a0ded86470ab7a9e"
+      },
+      {
+        "file": "spekpy/data/state_def/SSM_ISO_L125.state",
+        "bytes": 1593,
+        "sha256": "9ddf3e686f257079f9520258163c27f09826e1cb1c6222b54e32aabbf2d84066"
+      },
+      {
+        "file": "spekpy/data/state_def/SSM_ISO_L170.state",
+        "bytes": 1649,
+        "sha256": "8f6366752a3f991edf3dc0eea6e8ae6dd5494fb1923707cca9f454a92b5c9ea6"
+      },
+      {
+        "file": "spekpy/data/state_def/SSM_ISO_L210.state",
+        "bytes": 1649,
+        "sha256": "d86ecdd7f784fbdb932579d912e59406cbb39324e65a5ebcfda444662ed074d0"
+      },
+      {
+        "file": "spekpy/data/state_def/SSM_ISO_L240.state",
+        "bytes": 1649,
+        "sha256": "55cfd56dce19868426cf055f297aa5f50a4cbe34346d6d6079f0bdde7fac54ed"
+      },
+      {
+        "file": "spekpy/data/state_def/SSM_ISO_L35.state",
+        "bytes": 1535,
+        "sha256": "bca985765e2b832a62c4214c3245258cd887318c8791cae962a957bdbd673bd9"
+      },
+      {
+        "file": "spekpy/data/state_def/SSM_ISO_L55.state",
+        "bytes": 1590,
+        "sha256": "f98dfd3498117d6ff81c57a2f381027c3c8fcda443801cd87ce03a9351b0ad2d"
+      },
+      {
+        "file": "spekpy/data/state_def/SSM_ISO_L70.state",
+        "bytes": 1589,
+        "sha256": "ef756daa6946922a9d5149336f4ff71933bdfe260c74f7bc7da527f6ac4131a3"
+      },
+      {
+        "file": "spekpy/data/state_def/SSM_ISO_N100.state",
+        "bytes": 1590,
+        "sha256": "6dfdaf12ba03b2b8347ce2c3cd841b2fb7ef3c507631da91f45b959d9b70677a"
+      },
+      {
+        "file": "spekpy/data/state_def/SSM_ISO_N120.state",
+        "bytes": 1647,
+        "sha256": "b3528f5b2ef77b7c36a4c71a7c59c8f8dcd8566bad7b531a01fc85fbadfb0d3b"
+      },
+      {
+        "file": "spekpy/data/state_def/SSM_ISO_N150.state",
+        "bytes": 1592,
+        "sha256": "3d9887d610698367fa07b1fc00f68faa41b1eda12fd6aaf20c11be94aadf1192"
+      },
+      {
+        "file": "spekpy/data/state_def/SSM_ISO_N200.state",
+        "bytes": 1702,
+        "sha256": "02711d3f4c13adea94d4387b54a7b8c219d77ff2bacea5e90a38c874466fca7c"
+      },
+      {
+        "file": "spekpy/data/state_def/SSM_ISO_N250.state",
+        "bytes": 1592,
+        "sha256": "d372bf35fba3e555a83b9ae84d8831a8d79b53583426ce57891ea6fb7fcab9ff"
+      },
+      {
+        "file": "spekpy/data/state_def/SSM_ISO_N300.state",
+        "bytes": 1590,
+        "sha256": "94712ebc6c60e2b4e2f6ea7c0c758ce60d58de8c15aefe4da51c2fe15f3479d3"
+      },
+      {
+        "file": "spekpy/data/state_def/SSM_ISO_N40.state",
+        "bytes": 1590,
+        "sha256": "9bdcbfbd6cf1991c2fa247279740ea7c7cc8f419164385732854f3efe7b78d03"
+      },
+      {
+        "file": "spekpy/data/state_def/SSM_ISO_N60.state",
+        "bytes": 1590,
+        "sha256": "409ac487a7305d0e0ddaf7ea4d6f4d96172e93b58ecaa143e0c6963d168b6e69"
+      },
+      {
+        "file": "spekpy/data/state_def/SSM_ISO_N80.state",
+        "bytes": 1590,
+        "sha256": "b0a3d6b7fb337471c6fa3979e32a40fc8fcff4a0f698350d209bfc5aa3df7eec"
+      },
+      {
+        "file": "spekpy/data/state_usr/.gitkeep",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/CSDA.npz",
+        "bytes": 20308,
+        "sha256": "ce618beefeb26332a8431c323823b8b1d9dcdd74e7d921cb477c82d6966822d8"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/FluorescenceZ24.npz",
+        "bytes": 192826,
+        "sha256": "55415f149f799ac785f47344072a290c84151b41b2ecb25366146563aba96a8e"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/FluorescenceZ29.npz",
+        "bytes": 401644,
+        "sha256": "b9460fad7693af61932ff5ea57feedb8db701b41195cfafaf94b0ae139702861"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/FluorescenceZ42.npz",
+        "bytes": 787264,
+        "sha256": "ffba4b70563cca6e7305769c3b2775b8aeb1f31c034cc9f6e7e86288be6c1c81"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/FluorescenceZ45.npz",
+        "bytes": 787264,
+        "sha256": "76cec007b95357778726814ad30814520d3707f462fbf2b9d41c47e5bd49f3f7"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/FluorescenceZ47.npz",
+        "bytes": 771256,
+        "sha256": "d2f37567e335c9067127090fe4577d8bc0ee608f4380eb3158553273d4ecc5da"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/FluorescenceZ74.npz",
+        "bytes": 1491616,
+        "sha256": "dd3958cf7c09e2b37c37b53fd7e4adf275e651e1c4fe4080e5c74f3566142c16"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/FluorescenceZ79.npz",
+        "bytes": 530428,
+        "sha256": "8e3c3e07c48dbd91e3f2f243c6621ea662d4bc51af2d0e83da6abf38c96cbc72"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/KQP.npz",
+        "bytes": 90830931,
+        "sha256": "f82bc65b8dab06aa5742ba29c7addea8aca0e9a4f8d1c5be993c8b5af29e3ebe"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/MassAttCoeff_Z24.npz",
+        "bytes": 2320,
+        "sha256": "59f743368405ecea998b4bbf03a063ee796d57fcbe4f98cbe2312ec496707690"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/MassAttCoeff_Z24_woRa.npz",
+        "bytes": 2320,
+        "sha256": "870eb49ad38ca3292991eb79706c2b8c0c1b5b005d0e13d5d57a728927635e7b"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/MassAttCoeff_Z29.npz",
+        "bytes": 2560,
+        "sha256": "c59f01b5e14dc6ac2817cf129c930a54a5ef3c6441da63656cce86261eb5d274"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/MassAttCoeff_Z29_woRa.npz",
+        "bytes": 2560,
+        "sha256": "bc9a2461b44b0e0fd2cf30587b42ce0c265fcc44a38552ab4b186e4a67a81a31"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/MassAttCoeff_Z42.npz",
+        "bytes": 1908,
+        "sha256": "0e1449be90f524001c4b08f8b5066f026cf4827a68e0846e1cc571da3bc8f58d"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/MassAttCoeff_Z42_woRa.npz",
+        "bytes": 1908,
+        "sha256": "7d94a6b40af51fe60f3dd1be320d6c3f2d48cfa471978fc43cc4a7d604dd504f"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/MassAttCoeff_Z45.npz",
+        "bytes": 1916,
+        "sha256": "a97424b27bfe12a46fe1534889a4f9e1cbd793439b6156a697228a37ffcd2ffe"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/MassAttCoeff_Z45_woRa.npz",
+        "bytes": 1916,
+        "sha256": "e13f0db4d7ad1450ddb3a9bc49d1ca1824528579f71b12a464a3a846dd67dfd6"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/MassAttCoeff_Z47.npz",
+        "bytes": 3088,
+        "sha256": "7f0adc8ea3ddde0d5e18755dbb0ed4b817c40c7d6301292fbf95f03c988e6225"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/MassAttCoeff_Z47_woRa.npz",
+        "bytes": 3088,
+        "sha256": "b70db7aa2ce2e70a491dd84072d82ba1107d79c6b2e18741d86e6643ee241908"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/MassAttCoeff_Z74.npz",
+        "bytes": 2636,
+        "sha256": "0bf5da96b21a17cbee419a51fd99bea83f4177c8bd95ae6e49fe508ef1503489"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/MassAttCoeff_Z74_woRa.npz",
+        "bytes": 2636,
+        "sha256": "d255ec544e6db2caa90f533391969203d2f6b896e3056c0801b24c8130401308"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/MassAttCoeff_Z79.npz",
+        "bytes": 4176,
+        "sha256": "d397fd6e71e48ae8f4282fda2c54245f5ed35b2ae0ecb6a9f95c402c0bb2bd71"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/MassAttCoeff_Z79_woRa.npz",
+        "bytes": 4176,
+        "sha256": "62d585a87f1831fce637fb28a5a40b40e7e39b60dda6c34920b11242b04a3004"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/NIST.npz",
+        "bytes": 47440,
+        "sha256": "71cd5bc3a7ace64a3ec7a33129617be9702f563662957cf9bf42d816410c2275"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/Z24ch.npz",
+        "bytes": 2936,
+        "sha256": "97c9218091a0ed60a7f465399d8c3697a4405c118d418773cda4544a11b2f5c3"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/Z29_1.npz",
+        "bytes": 2477572,
+        "sha256": "df8218e8dc33e0810bbb23b3608d5f920649b4b5c57838d74b5cf17b49f71ef6"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/Z29_2.npz",
+        "bytes": 2477572,
+        "sha256": "15b6433ae4e28db91ad1c22a3344165be55984b1cf3b1754530e68ce3f44888d"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/Z29_3.npz",
+        "bytes": 2477572,
+        "sha256": "a8e554361a2531e6bb8b2325f52a43a1438efe4a117ac2f33d77505a0f879f4f"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/Z29_4.npz",
+        "bytes": 2477572,
+        "sha256": "8b473acf3bfca9eb839731cc8a2c612c8c4bb36a972de8d132000c6a66b4f0af"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/Z29_5.npz",
+        "bytes": 2477572,
+        "sha256": "61fa08f92b348880d9919597438a857ed0d529c8b1e309f001ea60b224b54c09"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/Z29_6.npz",
+        "bytes": 2477572,
+        "sha256": "9e83741451d13a7928e211fe9ea456348e99ce65a10a3a798de349789e7e13d2"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/Z29_E0sim.npz",
+        "bytes": 294,
+        "sha256": "143221fb5763868396433f8363dce58c459f7bb74018585779a0921496c5dd55"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/Z29ch.npz",
+        "bytes": 2968,
+        "sha256": "1170bcf0505ae8ee1f6a747dd0b060c04150ad49891248bd15e4645804f8c6c7"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/Z42_1.npz",
+        "bytes": 2186356,
+        "sha256": "f657c97fe4c9f4f5adcd647651caaba55091a3277012569c2f891cefcbee1eb9"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/Z42_2.npz",
+        "bytes": 2186356,
+        "sha256": "bf9e1a6e8f52ba02d97ae2ec09f73e1689910075a34fa23da338c2bb64e70ee9"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/Z42_3.npz",
+        "bytes": 2186356,
+        "sha256": "55688b71ed61d0f47999abfbac870c048c6127b41ad55b128c72ad288895dff1"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/Z42_4.npz",
+        "bytes": 2186356,
+        "sha256": "8f1a4a64ab4438dd683c555b6846db174f8e1caa1aecb8a56df5bb11ac65bc2d"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/Z42_5.npz",
+        "bytes": 2186356,
+        "sha256": "faa14a1ca2cf85569b05652cd6b9dfc461c29670b3ae11b5d8093aa42d521fef"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/Z42_6.npz",
+        "bytes": 2186356,
+        "sha256": "a03acaf247ec8099391a922af26965592655f8a69cfdecc861647da3efea9ed6"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/Z42_E0sim.npz",
+        "bytes": 294,
+        "sha256": "143221fb5763868396433f8363dce58c459f7bb74018585779a0921496c5dd55"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/Z42ch.npz",
+        "bytes": 3184,
+        "sha256": "de4ec0d8abc330145e279669b4d69c29db2d5b01145cb87ceb5ab4ec3d63224f"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/Z45_1.npz",
+        "bytes": 2186356,
+        "sha256": "3855ecc3b3f6b5b17b4f23600e10e2b7e706557af6d2d0ffd4aa00e5bc86e265"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/Z45_2.npz",
+        "bytes": 2186356,
+        "sha256": "ef8102a05c1d425644c096acaa84b924198fa3b785232ba03d5413a79b104f32"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/Z45_3.npz",
+        "bytes": 2186356,
+        "sha256": "5f1aae3e103e0d80d8a23d9853ec5e4562c4b5c174955a62f6faca64034ed334"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/Z45_4.npz",
+        "bytes": 2186356,
+        "sha256": "9f166866ae6e4a18f6786008e5e28fb8212c52a001e2edb94302e55ea41b2c50"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/Z45_5.npz",
+        "bytes": 2186356,
+        "sha256": "d05f5fc36cd541646296d66e2211477b1aa0f9b780229c24d9fc0a48d6390d04"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/Z45_6.npz",
+        "bytes": 2186356,
+        "sha256": "6e4e8ff786371af69de0bbd25d2d0b4db1b185de7d157b257bb05cf293bfbe23"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/Z45_E0sim.npz",
+        "bytes": 294,
+        "sha256": "143221fb5763868396433f8363dce58c459f7bb74018585779a0921496c5dd55"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/Z45ch.npz",
+        "bytes": 3160,
+        "sha256": "64adc4ccb11cd7bd86503fadcdd5b4db18e3dff9de8c5b8d0ea4126f2e50401d"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/Z47ch.npz",
+        "bytes": 3176,
+        "sha256": "7db4a417f4575710f5f199f6d3790a816e2d6a665d2876be6d4caa2b4dcd577c"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/Z74_1.npz",
+        "bytes": 2186356,
+        "sha256": "c325a66c0a6844ee8c0022c6df2ce6985b41eb29adf4c727cb02e1da3264baba"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/Z74_10.npz",
+        "bytes": 2186356,
+        "sha256": "d6bae00f68422f1d7683fa3bf10f51cd4f8e42366d1689100a0576fdc06f561b"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/Z74_11.npz",
+        "bytes": 2186356,
+        "sha256": "fa60518ddc8d8a28ee4088e0ce96ba95e25c9d9693b75be35a54f662c9d78c73"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/Z74_12.npz",
+        "bytes": 2186356,
+        "sha256": "d9a21bbf77180f590ba3d426d98d77180805e4a67940beeb5e1cac350c905dcd"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/Z74_13.npz",
+        "bytes": 2186356,
+        "sha256": "a273b7af58bcde2dc0e4df2ac63e4f38160bb59502b5c26e0a7d34214c40873e"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/Z74_14.npz",
+        "bytes": 2186356,
+        "sha256": "0d726e54c5f4bd37aeb21b9bfea549291ba18004ee304f3feaaf891e994d8110"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/Z74_15.npz",
+        "bytes": 2186356,
+        "sha256": "7c32fa5aa2fbfdda4ad29ff9179075cbbdcf3bd7bc9bd855801ad107c328ef45"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/Z74_16.npz",
+        "bytes": 2186356,
+        "sha256": "0dee39469fdce6c246ca58d8d82fe55c390f2df5d5e0d3ce69526a7e58b779ca"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/Z74_17.npz",
+        "bytes": 2186356,
+        "sha256": "338d42d4d486f025ec11ae9e5c09db72123f99e35ff2537aa51313b4d85ea74b"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/Z74_2.npz",
+        "bytes": 2186356,
+        "sha256": "655a221171587f8dae81bf2696dc94ba89325d04c5f61e4f583baeee8a4426b3"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/Z74_3.npz",
+        "bytes": 2186356,
+        "sha256": "7ab286222fa358ea2a52ece7af541ddef2174b9d98116d88737f4415b47680b9"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/Z74_4.npz",
+        "bytes": 2186356,
+        "sha256": "0b027bf09d452633f5426b1704e96b19989fdba97e65e10fa83523ca2832adf0"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/Z74_5.npz",
+        "bytes": 2186356,
+        "sha256": "7ee8823c1abcfa41bf72583e15ba10b0d05a221af6e28e32efc28d6162bd5e7d"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/Z74_6.npz",
+        "bytes": 2186356,
+        "sha256": "2a3f3ee5ed76350d326f6a36034fc6575c3f8dc1362f1be01e327bb4296a93a4"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/Z74_7.npz",
+        "bytes": 2186356,
+        "sha256": "e29d8fc655adde8d2ec13147c9483320bd6b13ee14921f0ca550d9fee7c23bd8"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/Z74_8.npz",
+        "bytes": 2186356,
+        "sha256": "689e99d95a9c76799969294432a520e43e9b16ae5a23bebca595685895a1cd8d"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/Z74_9.npz",
+        "bytes": 2186356,
+        "sha256": "769a5bd7d627ff3cf59ef9d7ecd3368a953c633fbfae94b12a00f05a7598e84c"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/Z74_E0sim.npz",
+        "bytes": 338,
+        "sha256": "101d60cdf0c78925b4769d110ce02e42bf3d982b3c6cb19af139303d0326757f"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/Z74ch.npz",
+        "bytes": 3336,
+        "sha256": "ad27bd149ecb118db7df7ec1f02271935b264590f91e88d825d4a9d3981429a0"
+      },
+      {
+        "file": "spekpy/data/tables/advanced/Z79ch.npz",
+        "bytes": 3344,
+        "sha256": "d0cc6b19e1e59107063dc960d69d2bb46a8bc1fa16557cbc41511d930e92723f"
+      },
+      {
+        "file": "spekpy/data/tables/atwts.dat",
+        "bytes": 6303,
+        "sha256": "cfcff731b76bb54b7cab6e9fac0ba67f265c93b5916f5a7414fcaef9828a005c"
+      },
+      {
+        "file": "spekpy/data/tables/erange.dat",
+        "bytes": 1193,
+        "sha256": "caf4618fb716313e83b84d636d825be8943ea2771fb37cf181427e44b06724ca"
+      },
+      {
+        "file": "spekpy/data/tables/lines.dat",
+        "bytes": 2599,
+        "sha256": "518561d13692eae846d78e9438dc832c6dab245d9d72d3136c1d9a60365e332e"
+      },
+      {
+        "file": "spekpy/data/tables/ne.dat",
+        "bytes": 261479,
+        "sha256": "493a77cb690bb57573671c2357767559ebf086d419fa86d5d1613ce5e6fc4c55"
+      },
+      {
+        "file": "spekpy/data/tables/nist_brem.dat",
+        "bytes": 2496,
+        "sha256": "07dff108670954eeb34ab318c00ce95392d26645c918d35d82cb65ccfb77d800"
+      },
+      {
+        "file": "spekpy/data/tables/nist_mu.dat",
+        "bytes": 140407,
+        "sha256": "40334a100256d12897045958362942403c622f738a7edf23d3b9c6c5a735f436"
+      },
+      {
+        "file": "spekpy/data/tables/nist_muen_air.dat",
+        "bytes": 1026,
+        "sha256": "6fcf1b5e665f279dd92a646ddcdd2cb275b4e5e69b674a3ed1b7bbb54f585496"
+      },
+      {
+        "file": "spekpy/data/tables/nist_muen_water.dat",
+        "bytes": 1059,
+        "sha256": "f1c31a6f9bb66b8d0b44aaf96675774ff7eb7225bc36454fb016ea21c5df03fc"
+      },
+      {
+        "file": "spekpy/data/tables/pe.dat",
+        "bytes": 37634114,
+        "sha256": "58f9c0e8e81ab9a7a06f3d968bf07af826249df0159f05700ac7fd4a23842216"
+      },
+      {
+        "file": "spekpy/data/tables/pene_mu.dat",
+        "bytes": 1621722,
+        "sha256": "313985227c84a435bb234ce018946cec9b1c8465c7b90d1abe3247badabd6e6e"
+      },
+      {
+        "file": "spekpy/data/tables/pene_muen_air.dat",
+        "bytes": 3242,
+        "sha256": "52f34bce226cbb328bbdfe283e6d1ce512ef188e7ad293af0245688e90a2b6df"
+      },
+      {
+        "file": "spekpy/data/tables/pene_muen_water.dat",
+        "bytes": 2379,
+        "sha256": "0cd249e4e2391300649e87748167fec8111930acbaca0005bf83471b39aaf675"
+      }
+    ]
+  }
+]

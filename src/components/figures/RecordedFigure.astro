@@ -1,0 +1,53 @@
+---
+import FigurePlate from "./FigurePlate.astro";
+import VolumeFigures from "./VolumeFigures.astro";
+import DerivativeFigures from "./DerivativeFigures.astro";
+import DetectorFigures from "./DetectorFigures.astro";
+import TransportFigures from "./TransportFigures.astro";
+import provenance from "../../../public/generated/figure-rollouts/provenance.json";
+import "../../styles/recorded-figures.css";
+interface Props {
+  id: string;
+  title: string;
+  description: string;
+}
+const { id, title, description } = Astro.props;
+const sources = provenance.figures[id as keyof typeof provenance.figures];
+if (!sources) throw new Error(`Unprepared figure requested: ${id}`);
+// Renderer selection follows the immutable data ID, never its display number.
+const chapter = Number(id.split("-")[1]);
+const Contents =
+  chapter === 4
+    ? VolumeFigures
+    : chapter <= 6
+      ? DerivativeFigures
+      : chapter <= 8
+        ? DetectorFigures
+        : TransportFigures;
+---
+
+<FigurePlate {id} {title} {description}>
+  <div class="recorded-figure" data-prepared-figure={id}>
+    <Contents {id} />
+    <details class="recorded-data">
+      <summary>Figure data</summary>
+      <p>
+        Numerical examples recorded on 9 September 2026. <a
+          href="/generated/figure-rollouts/provenance.json"
+          >Sources and calculation records</a
+        >.
+      </p>
+      <ul>
+        {
+          sources.map((source) => (
+            <li>
+              <a href={`/generated/figure-rollouts/${source}`} download>
+                {source.replace(".json", "").replaceAll("-", " ")}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </details>
+  </div>
+</FigurePlate>

@@ -1,0 +1,281 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { loadTerminology } from "../lib/terminology";
+import {
+  renderTerminologyText,
+  terminologySearchText,
+} from "../lib/terminology-text";
+import "../styles/definition-notes.css";
+
+const registry = loadTerminology();
+const byId = new Map(registry.definitions.map((entry) => [entry.id, entry]));
+const tables = [
+  {
+    id: "symbols",
+    title: "Symbols",
+    kind: "symbol",
+    entries: registry.definitions.filter((entry) => entry.kind === "symbol"),
+  },
+  {
+    id: "terms",
+    title: "Terms",
+    kind: "term",
+    entries: registry.definitions.filter((entry) => entry.kind === "term"),
+  },
+  {
+    id: "frames",
+    title: "Frames and direction bases",
+    kind: "frame",
+    entries: registry.definitions.filter((entry) => entry.kind === "frame"),
+  },
+];
+const domains = [
+  ...new Set(registry.definitions.map((entry) => entry.domain)),
+].sort();
+---
+
+<BaseLayout
+  title="Symbols and terms — Differentiable Photon Transport"
+  description="The book’s canonical symbols, definitions, units and coordinate frames, with their defining sections."
+>
+  <section class="notation-index">
+    <header>
+      <p class="eyebrow">Reader’s reference</p>
+      <h1>Symbols, terms and frames</h1>
+      <p>
+        Because we use certain symbols repeatedly but sometimes with meanings
+        that are contingent on the particular chapter or section, I have created
+        a summary of the most important symbols with their meaning as they are
+        used in their context and how we define them.
+      </p>
+      <nav aria-label="Reference tables">
+        {
+          tables.map((table, index) => (
+            <a href={`#${table.id}`}>
+              Table R.{index + 1}: {table.title.toLowerCase()} (
+              {table.entries.length})
+            </a>
+          ))
+        }
+      </nav>
+    </header>
+    <form
+      class="notation-filters"
+      role="search"
+      aria-label="Search symbols and terms"
+      data-notation-filters
+      hidden
+    >
+      <label
+        >Find a symbol or term<input
+          type="search"
+          name="query"
+          placeholder="Name, meaning, units or LaTeX"
+          autocomplete="off"
+        /></label
+      >
+      <label
+        >Category<select name="kind"
+          ><option value="all">All entries</option>{
+            tables.map((table) => (
+              <option value={table.kind}>{table.title}</option>
+            ))
+          }</select
+        ></label
+      >
+      <label
+        >Domain<select name="domain"
+          ><option value="all">All domains</option>{
+            domains.map((domain) => (
+              <option value={domain}>{domain.replaceAll("-", " ")}</option>
+            ))
+          }</select
+        ></label
+      >
+      <button type="reset">Clear filters</button>
+      <p role="status" aria-live="polite" data-notation-count>
+        {registry.definitions.length} entries
+      </p>
+    </form>
+    {
+      tables.map((table, index) => (
+        <section id={table.id} class="notation-section" data-notation-section>
+          <h2>{table.title}</h2>
+          <div
+            class="notation-table-scroll"
+            tabindex="0"
+            role="region"
+            aria-label={`${table.title} table`}
+          >
+            <table>
+              <caption>
+                <span class="notation-table-number">Table R.{index + 1}</span>{" "}
+                {table.title} and their recorded meanings
+              </caption>
+              <thead>
+                <tr>
+                  <>
+                    <th scope="col">
+                      {table.kind === "symbol"
+                        ? "Symbol"
+                        : table.kind === "term"
+                          ? "Term"
+                          : "Frame or basis"}
+                    </th>
+                    <th scope="col">Meaning and qualifications</th>
+                    <th scope="col">
+                      {table.kind === "symbol"
+                        ? "Units and defining section"
+                        : "Defining section"}
+                    </th>
+                  </>
+                </tr>
+              </thead>
+              <tbody>
+                {table.entries.map((entry) => {
+                  const symbol = registry.symbols.find(
+                    (record) => `symbol-${record.id}` === entry.id,
+                  );
+                  const term = registry.terms.find(
+                    (record) => `term-${record.id}` === entry.id,
+                  );
+                  const frame = registry.frames.find(
+                    (record) => `frame-${record.id}` === entry.id,
+                  );
+                  const searchable = terminologySearchText(
+                    [
+                      entry.label,
+                      symbol?.latex,
+                      entry.definition,
+                      entry.notes,
+                      entry.units,
+                      entry.domain,
+                      ...entry.aliases,
+                      ...(frame ? Object.values(frame.axes) : []),
+                    ]
+                      .filter(Boolean)
+                      .join(" "),
+                  ).toLocaleLowerCase("en-GB");
+                  return (
+                    <tr
+                      id={entry.id}
+                      data-notation-entry
+                      data-kind={entry.kind}
+                      data-domain={entry.domain}
+                      data-search={searchable}
+                    >
+                      <th scope="row">
+                        <a class="notation-entry-link" href={`#${entry.id}`}>
+                          {entry.html ? (
+                            <span set:html={entry.html} />
+                          ) : (
+                            entry.label
+                          )}
+                        </a>
+                        {symbol && (
+                          <span class="notation-spoken">{entry.label}</span>
+                        )}
+                        {entry.aliases.length > 0 && (
+                          <span class="notation-aliases">
+                            Also: {entry.aliases.join(", ")}
+                          </span>
+                        )}
+                      </th>
+                      <td>
+                        <p set:html={entry.definitionHtml} />
+                        {entry.notes && (
+                          <p
+                            class="notation-qualification"
+                            set:html={entry.notesHtml}
+                          />
+                        )}
+                        {term && term.avoid.length > 0 && (
+                          <p>Distinguish from: {term.avoid.join(", ")}</p>
+                        )}
+                        {frame && (
+                          <>
+                            <dl class="notation-axes">
+                              {Object.entries(frame.axes).map(
+                                ([axis, definition]) => (
+                                  <>
+                                    <dt
+                                      set:html={renderTerminologyText(
+                                        axis,
+                                        registry.sections,
+                                      )}
+                                    />
+                                    <dd
+                                      set:html={renderTerminologyText(
+                                        definition,
+                                        registry.sections,
+                                      )}
+                                    />
+                                  </>
+                                ),
+                              )}
+                            </dl>
+                            <p>
+                              Handedness: {frame.handedness ?? "Not specified"}.
+                              {frame.relative_to && (
+                                <>
+                                  {" "}
+                                  Relative to{" "}
+                                  <a href={`#frame-${frame.relative_to}`}>
+                                    {byId.get(`frame-${frame.relative_to}`)
+                                      ?.label ?? frame.relative_to}
+                                  </a>
+                                  .
+                                </>
+                              )}
+                            </p>
+                          </>
+                        )}
+                      </td>
+                      <td>
+                        {entry.kind === "symbol" && (
+                          <p class="notation-units">
+                            {entry.units === "1" ? (
+                              "1 (dimensionless)"
+                            ) : (
+                              <Fragment
+                                set:html={
+                                  entry.unitsHtml ?? "No single unit applies"
+                                }
+                              />
+                            )}
+                          </p>
+                        )}
+                        <span class="notation-domain">
+                          {entry.domain.replaceAll("-", " ")}
+                        </span>
+                        <ul class="notation-sources">
+                          {entry.sources.map((source) => (
+                            <li>
+                              <a href={source.href}>{source.label}</a>
+                            </li>
+                          ))}
+                        </ul>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+          <p data-notation-empty hidden>
+            No entries match these filters.
+          </p>
+        </section>
+      ))
+    }
+  </section>
+</BaseLayout>
+
+<script>
+  import { initialiseNotationSearch } from "../lib/definition-notes";
+  const root = document.querySelector<HTMLElement>(".notation-index");
+  if (root) {
+    const dispose = initialiseNotationSearch(root);
+    document.addEventListener("astro:before-swap", dispose, { once: true });
+  }
+</script>

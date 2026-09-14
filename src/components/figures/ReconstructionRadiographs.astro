@@ -1,0 +1,228 @@
+---
+import { readFileSync } from "node:fs";
+import FigurePlate from "./FigurePlate.astro";
+import { recordedText } from "../../lib/recorded-text";
+import "../../styles/reconstruction-radiographs.css";
+
+interface Panel {
+  id: string;
+  label: string;
+  file: string;
+  width: number;
+  height: number;
+  limits: [number, number];
+  palette: "gray" | "RdBu_r";
+  masked_pixels: number;
+  low_clipped_pixels: number;
+  high_clipped_pixels: number;
+}
+interface RadiographCase {
+  id: "vertebrae" | "hap";
+  title: string;
+  aspect: number;
+  extent_uv_mm: [number, number, number, number];
+  extent_convention: string;
+  source_url: string;
+  qualification: string;
+  observation_display: string;
+  residual_display: string;
+  channels: { id: string; label: string; panels: Panel[] }[];
+}
+interface Props {
+  id: string;
+  caseId?: RadiographCase["id"];
+}
+const { id, caseId = "vertebrae" } = Astro.props;
+const study = JSON.parse(
+  readFileSync(
+    new URL(
+      "../../../public/generated/reconstruction-radiographs/study.json",
+      import.meta.url,
+    ),
+    "utf8",
+  ),
+) as { cases: RadiographCase[] };
+const record = study.cases.find((item) => item.id === caseId);
+if (!record) throw new Error(`Missing recorded radiograph case: ${caseId}`);
+const acquired = caseId === "hap";
+const base = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/generated/reconstruction-radiographs/`;
+const width = record.extent_uv_mm[1] - record.extent_uv_mm[0];
+const height = record.extent_uv_mm[3] - record.extent_uv_mm[2];
+const number = (value: number) => Number(value.toPrecision(4)).toString();
+const description = acquired
+  ? "The acquired fitting frame and effective-model prediction share detector samples and a display window. Residuals locate the remaining signal mismatch, with excluded samples marked in purple."
+  : "A complete withheld view compares observations, generating means and reconstructed predictions in three energy channels. Structured residuals reveal image disagreement that remains outside the fitting views.";
+---
+
+<FigurePlate {id} title={record.title} {description} width="full">
+  <dpt-reconstruction-radiographs data-acquired={acquired}>
+    <div class="reconstruction-radiograph-controls" hidden>
+      <fieldset class="reconstruction-radiograph-selector">
+        <legend class="reconstruction-radiograph-sr-only"
+          >Detector channel</legend
+        >
+        <div
+          class="reconstruction-radiograph-track"
+          style={`--channel-count:${record.channels.length}`}
+        >
+          {
+            record.channels.map((channel, index) => (
+              <label>
+                <input
+                  type="radio"
+                  name={`${id}-detector-channel`}
+                  value={channel.id}
+                  checked={index === 0}
+                  aria-controls={`${id}-panels-${channel.id}`}
+                  data-radiograph-choice
+                />
+                <span>{channel.label}</span>
+              </label>
+            ))
+          }
+        </div>
+      </fieldset>
+      <span>{acquired ? "Fitting frame 2" : "Withheld view 5"}</span>
+    </div>
+    <div class="reconstruction-radiograph-channels">
+      {
+        record.channels.map((channel) => (
+          <section
+            id={`${id}-panels-${channel.id}`}
+            data-radiograph-channel={channel.id}
+            aria-labelledby={`${id}-channel-${channel.id}`}
+          >
+            <h3 id={`${id}-channel-${channel.id}`}>
+              {channel.label}
+              <span>{acquired ? "Fitting frame 2" : "Withheld view 5"}</span>
+            </h3>
+            <div class="reconstruction-radiograph-panels">
+              {channel.panels.map((panel) => (
+                <div class="reconstruction-radiograph-panel">
+                  <h4>{panel.label}</h4>
+                  <div style={`aspect-ratio:${record.aspect}`}>
+                    <img
+                      src={`${base}${panel.file}`}
+                      width={panel.width}
+                      height={panel.height}
+                      alt={`${channel.label}: ${panel.label.toLowerCase()} of ${acquired ? "the acquired material phantom" : "the assigned CT-derived vertebral phantom"}. ${panel.palette === "gray" ? "Lighter pixels indicate greater negative log transmission." : "Blue is negative, pale is zero and red is positive. The sign follows the panel label."}`}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                  <p class="reconstruction-radiograph-window">
+                    {panel.palette === "gray" ? (
+                      <>
+                        Black {number(panel.limits[0])} · white{" "}
+                        {number(panel.limits[1])}
+                      </>
+                    ) : (
+                      <>
+                        Blue {number(panel.limits[0])} · pale 0 · red{" "}
+                        {number(panel.limits[1])}
+                      </>
+                    )}
+                  </p>
+                </div>
+              ))}
+            </div>
+            <details class="reconstruction-radiograph-clipping">
+              <summary>Display clipping in this channel</summary>
+              <ul>
+                {channel.panels.map((panel) => (
+                  <li>
+                    {panel.label}: {panel.low_clipped_pixels} below the window,{" "}
+                    {panel.high_clipped_pixels} above, {panel.masked_pixels}{" "}
+                    masked.
+                  </li>
+                ))}
+              </ul>
+              <p>Clipping affects the image display only.</p>
+            </details>
+          </section>
+        ))
+      }
+    </div>
+    <p class="reconstruction-radiograph-reading">
+      {
+        acquired ? (
+          <>
+            Total and High are acquired cumulative channels. Low is their
+            recorded difference. Residual: prediction − observation in
+            normalised transmission. Positive values mean overpredicted
+            transmission.
+          </>
+        ) : (
+          <>
+            Residual: (observation − prediction) / √max(predicted count, 1).
+            Positive values mean more observed photons than predicted. The
+            entire view was withheld from fitting.
+          </>
+        )
+      }
+    </p>
+    <details class="reconstruction-radiograph-data">
+      <summary>Recorded data and display</summary>
+      <p>
+        {record.channels[0]!.panels[0]!.width} × {
+          record.channels[0]!.panels[0]!.height
+        } detector samples, displayed at their physical aspect ratio. The extent is
+        {number(width)} × {number(height)} mm. {
+          recordedText(record.extent_convention)
+        }. These are the original selected samples. Enlargement adds no detector
+        resolution.
+      </p>
+      <p>{recordedText(record.qualification)}</p>
+      <p>
+        Observation display: <code>{record.observation_display}</code>. Residual
+        display: <code>{record.residual_display}</code>.
+      </p>
+      <p>
+        <a href={record.source_url}>Original data and attribution</a> · <a
+          href={`${base}study.json`}>Display records</a
+        > · <a href={`${base}provenance.json`}>Source identities</a>
+      </p>
+    </details>
+  </dpt-reconstruction-radiographs>
+</FigurePlate>
+
+<script>
+  class ReconstructionRadiographs extends HTMLElement {
+    connectedCallback() {
+      const choices = [
+        ...this.querySelectorAll<HTMLInputElement>("[data-radiograph-choice]"),
+      ];
+      const controls = this.querySelector<HTMLElement>(
+        ".reconstruction-radiograph-controls",
+      );
+      if (!choices.length || !controls) return;
+      const show = () => {
+        const index = Math.max(
+          0,
+          choices.findIndex((choice) => choice.checked),
+        );
+        const selected = choices[index]!;
+        selected.checked = true;
+        controls.style.setProperty("--selected-channel", String(index));
+        this.querySelectorAll<HTMLElement>("[data-radiograph-channel]").forEach(
+          (channel) => {
+            channel.hidden =
+              channel.dataset.radiographChannel !== selected.value;
+          },
+        );
+      };
+      choices.forEach((choice) => {
+        choice.onchange = show;
+      });
+      controls.hidden = false;
+      this.dataset.radiographReady = "true";
+      show();
+    }
+  }
+  if (!customElements.get("dpt-reconstruction-radiographs")) {
+    customElements.define(
+      "dpt-reconstruction-radiographs",
+      ReconstructionRadiographs,
+    );
+  }
+</script>

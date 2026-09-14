@@ -1,0 +1,148 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="About — Differentiable Photon Transport"
+  description="A three-volume guide to building an X-ray renderer: photon transport, neural and learned methods, and volume reconstruction. By Chris von Csefalvay."
+  citation={{ title: "About", part: "page" }}
+>
+  <section class="about-page">
+    <header>
+      <p class="eyebrow">About the book</p>
+      <h1>Building an X-ray renderer, one photon at a time.</h1>
+      <p class="about-page__author">By Chris von Csefalvay</p>
+    </header>
+    <div class="prose">
+      <p>
+        <em>Differentiable Photon Transport</em> is a series about building a differentiable
+        X-ray renderer in CUDA and Warp. We start with a ray passing through matter,
+        work out what a detector measures, and learn how to differentiate the calculation.
+        Those derivatives let us work backwards from an image to the geometry and
+        material that produced it.
+      </p>
+      <h2>Three volumes, one renderer</h2>
+      <ul>
+        <li>
+          <strong>Volume I: Foundations</strong> develops the physics, geometry and
+          numerical methods, from primary transmission to scattering and differentiable
+          transport. It closes with applications to registration, reconstruction and
+          acquisition design.
+        </li>
+        <li>
+          <strong>Volume II: Neural and learned methods</strong> will cover neural
+          representations and learned methods for photon transport and inverse imaging.
+        </li>
+        <li>
+          <strong>Volume III: Volume reconstruction</strong> will take the inverse
+          problem further, using the forward model and its derivatives to recover
+          three-dimensional material distributions from X-ray measurements.
+        </li>
+      </ul>
+      <p>
+        By the end of the series, you will have built what amounts to <a
+          href="https://mitsuba.readthedocs.io/en/stable/">Mitsuba</a
+        > for X-ray photons: a differentiable renderer that can simulate an acquisition
+        and work backwards from its images.
+      </p>
+      <h2>A book with executable source</h2>
+      <p>
+        The code listings come directly from the executable implementation. You
+        can follow a derivation into the kernel that implements it, run the
+        accompanying example and inspect the result. Interactive figures let you
+        explore the geometry and recorded calculations as you read.
+      </p>
+      <h2>About the author</h2>
+      <p>
+        I’m Chris von Csefalvay, a computational epidemiologist and AI
+        researcher. As a Principal in HCLTech’s AI Practice, I lead research on
+        post-training and clinical intelligence. I work on reinforcement
+        learning from verifiable rewards, preference optimisation and agentic
+        systems, with a particular interest in getting models to work reliably
+        beyond the demo.
+      </p>
+      <p>
+        My work also extends to physical AI and robotics simulation. With Tamás
+        Földi, I’m a principal investigator of the <a
+          href="https://hcltech-robotics.github.io/asset-factory-blueprint/"
+          >Asset Factory Blueprint</a
+        >, which turns photographs, scans and CAD into reproducible OpenUSD
+        assets and simulation environments. I’m also one of the creators of <a
+          href="https://ceres.cam/">CERES</a
+        >, which uses Meta Quest headsets to capture egocentric video and hand
+        motion for research.
+      </p>
+      <p>
+        I studied at Oxford and hold degrees from Cardiff and Robert Gordon
+        University. I’m a Fellow of the Royal Society for Public Health and a
+        Senior Member of IEEE.
+      </p>
+      <p>
+        You can find my projects on <a
+          href="https://github.com/chrisvoncsefalvay/">GitHub</a
+        > and my research and writing at <a
+          href="https://chrisvoncsefalvay.com/">chrisvoncsefalvay.com</a
+        >. My other books are <a href="https://posttraining.guide/"
+          ><em>The Craft of Post-Training</em></a
+        > (No Starch Press, 2026) and <a
+          href="https://computationalinfectiousdisease.com/"
+          ><em>Computational Modeling of Infectious Disease</em></a
+        > (Elsevier, 2023).
+      </p>
+      <h2>Corrections and questions</h2>
+      <p>
+        If you find an error, a broken figure or an explanation that does not
+        make sense, please <a
+          href="https://github.com/chrisvoncsefalvay/photon-transport-book/issues"
+          >open an issue on GitHub</a
+        >. A link to the page and a short description are enough. For a code
+        bug, include a small example if you can.
+      </p>
+      <p class="about-page__links">
+        <a href="/#contents">Explore the foundations</a>
+        <a href="https://github.com/chrisvoncsefalvay/photon-transport-book">
+          Browse the source on GitHub
+        </a>
+        <a href="/acknowledgements/">Acknowledgements</a>
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .about-page {
+    margin-inline: auto;
+    max-width: calc(var(--measure-prose) + 2 * var(--page-gutter));
+    padding: var(--space-8) var(--page-gutter) var(--space-6);
+  }
+
+  .about-page > header {
+    border-block-end: 1px solid var(--rule-strong);
+    margin-block-end: var(--space-7);
+    padding-block-end: var(--space-6);
+  }
+
+  h1 {
+    margin-block-start: var(--space-4);
+    text-wrap: balance;
+  }
+
+  .about-page__author {
+    color: var(--accent);
+    font-family: var(--font-prose);
+    font-size: var(--size-1);
+    font-style: italic;
+    margin-block-start: var(--space-5);
+  }
+
+  .about-page__links {
+    display: grid;
+    gap: var(--space-3);
+    margin-block-start: var(--space-6);
+  }
+
+  .about-page__links a {
+    text-underline-offset: 0.2em;
+    width: fit-content;
+  }
+</style>
