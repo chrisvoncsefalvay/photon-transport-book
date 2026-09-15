@@ -1,47 +1,55 @@
 # Differentiable Photon Transport — Volume I: Foundations
 
-[Read the book at photontransport.com](https://photontransport.com/).
+**Build a differentiable X-ray renderer from scratch, then use it to solve inverse problems.**
 
-This repository contains the book's text and executable NVIDIA Warp/CUDA
-examples. We develop differentiable photon transport using X-ray and C-arm
-imaging.
+By Chris von Csefalvay · [Read the book](https://photontransport.com/)
 
-The site is static. Figures that need expensive calculations use recorded
-simulation results, with downloadable numerical data and provenance. Those
-simulations run outside the browser.
+From zero to actual differentiable photon transport in CUDA/Warp without losing
+your sanity to physics, your livelihood to GPU rental and your will to live to
+maths.
 
-## Local site
+An X-ray image records what happened to photons on their way through an object.
+A differentiable renderer lets us work backwards: how should we change the
+object's pose or its material properties to explain that image? This book develops the physics, mathematics and GPU code needed to answer
+that question.
 
-Install Node.js 24 and the pnpm version pinned in `package.json`, then run:
+## What you will build
 
-```sh
-pnpm install --frozen-lockfile
-pnpm run dev
-```
+We begin with attenuation along a ray and build towards a renderer with a
+calibrated source, a three-dimensional volume and a detector. We derive its
+reverse calculation, use image differences to recover pose, and extend the
+model to include energy-dependent interactions and scattering. The later
+chapters use the resulting derivatives for registration, material reconstruction
+and choosing an additional view.
 
-Use `pnpm run build:vercel` to build the published snapshot, as described in
-[the deployment guide](DEPLOYMENT.md). Source listings are extracted at build
-time from marked regions in the executable Python sources.
+The implementation grows with the argument. You will write the operations that
+turn a volume into an image and an image discrepancy into a parameter update,
+with NVIDIA Warp and CUDA doing the computational work. Along the way, we
+examine why a modelling choice is useful, where an approximation breaks down,
+and how the methods relate to established work in rendering and inverse imaging.
 
-## Use the computational code
+## Who it is for
 
-The `python/dpt` package contains the renderer, derivatives and inverse solvers
-developed in the book. The [application examples](python/dpt/examples/README.md)
-provide runnable interfaces for registration, scalar attenuation reconstruction
-and acquisition selection with supplied data.
+The book is for researchers, engineers and programmers who want to understand
+and build differentiable imaging methods. Familiarity with Python, linear
+algebra and calculus will help. The X-ray physics and transport mathematics are
+developed as they become necessary.
 
-Python dependencies are managed with `uv`. Structural checks can run without a
-GPU; executing the Warp/CUDA operators requires a supported NVIDIA GPU and CUDA
-driver. Figure downloads preserve recorded numerical results and their
-provenance, including the model, parameters and computational precision.
+## Read and work along
 
-## Provenance and licensing
+Start with [Chapter 1](https://photontransport.com/chapters/introduction/), which
+sets out the problem and the route through the book. Each chapter connects its
+derivations to the accompanying [Python implementation](python/dpt/README.md).
+Use the supplied source to compare your own implementation at each stage.
 
-An explicit file allowlist controls what is exported from the authoring
-repository. The site's [snapshot record](https://photontransport.com/website-snapshot.json)
-identifies the source commit used for its build. Private notes, research
-material, review agents and promotion code stay in the authoring repository.
+The [application examples](python/dpt/examples/README.md) cover registration,
+attenuation reconstruction and acquisition selection. Running the GPU code
+requires a supported NVIDIA GPU and CUDA driver; the online book can be read
+without either.
 
-Code is licensed under Apache License 2.0; book text and editorial content are
-licensed under CC BY-NC 4.0. Third-party assets retain their own licences and
-must be recorded in `ATTRIBUTIONS.md` before inclusion.
+## Citation and licences
+
+See [CITATION.cff](CITATION.cff) for citation details and the archived edition.
+Code is licensed under [Apache License 2.0](LICENSE-CODE); book text and editorial
+content are licensed under [CC BY-NC 4.0](LICENSE-CONTENT). Third-party material
+is credited in [ATTRIBUTIONS.md](ATTRIBUTIONS.md).
