@@ -1,3 +1,0 @@
-# Offline NIfTI ingestion and display geometry only; not required by dpt.
-nibabel==5.4.2
-scikit-image==0.26.0

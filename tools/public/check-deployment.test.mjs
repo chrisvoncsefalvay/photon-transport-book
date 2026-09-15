@@ -138,6 +138,7 @@ test("authoring paths and dangling symlinks fail before dependency installation"
     "notes",
     "release",
     "tools/promotion",
+    "experiments",
   ]) {
     const { root } = await fixture(t);
     await mkdir(path.dirname(path.join(root, relative)), { recursive: true });
@@ -363,4 +364,28 @@ test("static output rejects private files and deployment environment files", asy
       /Ineligible static output/,
     );
   }
+});
+
+test("deployment rejects private experiment excerpts in a source manifest", async (t) => {
+  const { root, sources } = await fixture(t);
+  sources.regions[0].file = "experiments/study/run.py";
+  await writeFile(path.join(root, SOURCE_MANIFEST), JSON.stringify(sources));
+  await assert.rejects(
+    checkDeploymentInputs({ root, environment: {} }),
+    /includes private experiments/,
+  );
+});
+
+test("static output rejects archived experiment source copies", async (t) => {
+  const { root } = await outputFixture(t);
+  const file = path.join(
+    root,
+    "dist/generated/historical-sources/abc123/experiments/study/run.py",
+  );
+  await mkdir(path.dirname(file), { recursive: true });
+  await writeFile(file, "private experiment bytes");
+  await assert.rejects(
+    checkDeploymentOutput({ root, site: SITE }),
+    /private experiment source copies/,
+  );
 });

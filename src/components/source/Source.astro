@@ -162,7 +162,7 @@ const isCollapsible = source.code.split(/\r?\n/).length > 7;
     sources.length > 1 && (
       <noscript>
         <p class="source-listing__alternatives">
-          Other canonical sources:{" "}
+          Other source files:{" "}
           {sources.slice(1).map((entry) => (
             <a href={entry.url}>{entry.label}</a>
           ))}

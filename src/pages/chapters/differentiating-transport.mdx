@@ -23,7 +23,7 @@ A transport program can produce the right average image while its automatically 
 
 We need a derivative of the expected measurement to decide how to change the object or the source. That requires choosing a representation of the expectation, deriving an estimator for its derivative, and arranging the GPU calculation around that estimator. The probability calculation comes first. Giving a photon history a tape does not make it confess to the paths it did not take.
 
-We will implement the part for which this chapter derives a complete estimator: material-density changes in fixed cells and source-amplitude changes under a fixed source distribution. The code reuses [Chapter 9's history walk](/chapters/scattering-stochastic-transport/#listing-9-2), adds its likelihood contribution, and feeds independent estimates into a stochastic inverse solver. Moving the object or a detector edge remains a separate boundary-estimator problem. The implemented API rejects requests for these geometry derivatives.
+Build the derivative by extending [Chapter 9's history walk](/chapters/scattering-stochastic-transport/#listing-9-2). For material-density changes in fixed cells, accumulate the likelihood contribution along each history. For a source-amplitude change, differentiate the multiplier on its score. These estimates will feed a stochastic inverse solver whose signal and derivative calculations use independent histories.
 
 ## 10.1 Differentiate an expected measurement
 
@@ -91,7 +91,7 @@ $$
 
 In [equation (10.3)](#equation-10-3), the random numbers stay fixed while the sampled trajectory moves. The total derivative of $A_p$ includes the changing positions, energies and detector response along that trajectory. This is where automatic differentiation can carry a large amount of useful arithmetic.
 
-Mohamed and colleagues organise gradient estimation around pathwise, likelihood-score and measure-valued constructions. Their treatment is useful here because it makes the assumptions behind moving differentiation through an expectation explicit, including failures when the support changes. <Citation keys={["mohamed2020"]} />
+Mohamed and colleagues organise gradient estimation around pathwise, likelihood-score and measure-valued constructions, with different regularity and support requirements. For our walker, a likelihood score accounts for the changing probability of collision events without differentiating a categorical branch. Smooth transformations can use pathwise derivatives, while moving discontinuities need the treatment in §10.4. The choice follows the dependence of the measurement on the parameter. <Citation keys={["mohamed2020"]} />
 
 The pathwise and likelihood-score constructions represent the same derivative under their respective conditions. Adding their complete answers would count it twice. They can, however, handle different choices within one estimator. Consider a discrete choice $D$ with probabilities $q_\theta(d)$, followed by a continuous sample generated from independent base randomness. Let $A_p(\theta,d,U)$ be the resulting score. Differentiating the sum over $d$ and then its conditional integral gives
 
@@ -225,7 +225,7 @@ The direct amplitude branch instead evaluates the base score with amplitude one.
 
 Under [continuous absorption weighting](/chapters/scattering-stochastic-transport/#integrating-absorption-along-the-path), the density derivative has two sources. The scattering-path likelihood contributes $N_{s,m}-\int_{H\cap m}\kappa_s\,\mathrm ds$, where $N_{s,m}$ counts scattering events in the active material. Differentiating the explicit absorption weight contributes $-\int_{H\cap m}\kappa_a\,\mathrm ds$. Thus a complete detector contribution $X$ has derivative estimator $D_m=X[N_{s,m}-\int_{H\cap m}(\kappa_a+\kappa_s)\,\mathrm ds]$. The familiar total optical depth reappears, but its absorption part now comes from differentiating a weight. Treating every subtraction as a likelihood term would obscure which probability law we are differentiating.
 
-This argument holds for positive density multipliers, fixed coefficient zeros, geometry and source law, and a density-independent conditional scattering law. Interchanging the derivative and expectation still needs an integrable derivative. In the free-electron Compton model, density changes collision rates while the conditional energy-angle law stays fixed. Each segment uses the coefficients at its own energy. The derivative tests therefore include energy-dependent Compton coefficients and an independently differentiated primary-plus-single-scatter integral. A separate bound covers the omitted orders' derivative: bounding their detector score alone would leave precisely the quantity we care about unchecked.
+This argument holds for positive density multipliers, fixed coefficient zeros, geometry and source law, and a density-independent conditional scattering law. Interchanging the derivative and expectation still needs an integrable derivative. In the free-electron Compton model, density changes collision rates while the conditional energy-angle law stays fixed. Each segment uses the coefficients at its own energy. To check that calculation independently, differentiate the primary-plus-single-scatter integral and bound the derivative of the omitted scattering orders. A bound on their detector score alone is insufficient.
 
 A sampling proposal can simplify these terms. At a reference parameter $\theta_0$, choose a fixed history proposal $g$ that covers the physical integrand and its derivative throughout a neighbourhood. On a fixed domain with the same interchange conditions, importance sampling gives
 
@@ -294,7 +294,7 @@ There are several ways forward. Integrate a simple acceptance probability analyt
 
 Li and colleagues derive an edge-sampling estimator for differentiable rendering that evaluates the jump across visibility boundaries in addition to the smooth contribution. Their construction makes the missing term explicit: ordinary area samples almost surely miss the lower-dimensional boundary integral. The same mathematical issue appears in photon transport, although the material and detector model determine the boundary contribution that must be sampled. <Citation keys={["li2018edges"]} />
 
-The library's `CAPABILITIES` declaration consequently rejects moving geometry, active angular/energy laws and changing source distributions. Its accepted density derivative keeps material interfaces and detector faces fixed. Neither a replayed Philox counter nor the right SE(3) chart from earlier chapters supplies the missing moving-interface estimator. Enabling a pose parameter before deriving that term would give a familiar six-component array with an unfamiliar relationship to the derivative we wanted.
+We will keep material interfaces, detector faces and the source distribution fixed when differentiating density and amplitude. Adding moving geometry requires the corresponding interface contribution derived here; changing the source or conditional scattering law requires its probability derivative. These are additions to the estimator before they are additions to the parameter vector.
 
 The swept interval in [Figure](#figure-10-2) is the source of the boundary contribution.
 
@@ -308,13 +308,13 @@ The swept interval in [Figure](#figure-10-2) is the source of the boundary contr
 
 A long history can visit many materials before contributing to a detector pixel. Reverse differentiation needs the states at which its local factors were evaluated. Storing every position, energy, probability and weight for every history makes the memory cost grow with total path length. Recomputing the first event, then the first two, then the first three soon repeats a great deal of work: regenerating every prefix takes quadratic time in history length. A replay scheme should specify which states it reconstructs and how often.
 
-Path replay backpropagation, developed by Vicini and colleagues, reconstructs the local quantities needed for an adjoint calculation by revisiting sampled paths. Their method achieves constant path-local memory and work linear in path length within its stated formulation. Moving discontinuities still require additional treatment. Replay addresses the storage and evaluation of a derived estimator. It does not supply the missing boundary term. <Citation keys={["vicini2021prb"]} />
+Path replay backpropagation, developed by Vicini and colleagues, reconstructs local quantities for reverse differentiation using invertible local scattering Jacobians. Their formulation takes work linear in path length and constant path-local memory. We also regenerate histories to save storage, but accumulate a likelihood score during each forward replay for one selected parameter. This simpler organisation suits a small parameter set; their reverse-mode construction targets gradients with respect to many scene parameters. <Citation keys={["vicini2021prb"]} />
 
 Reproducibility starts with the identity of a history. Assign random draws to a source-history identifier, event index and sampling purpose, with a further draw index for rejection samplers. Splitting requires persistent descendant identifiers as well. Then compaction or a different GPU scheduling order can move work between threads without changing which variates belong to it. A global seed alone does not provide this property if thread scheduling determines who consumes the next number.
 
 During a backward replay at unchanged parameters, reproduce the same physical and sampling decisions. Retain enough information to reconstruct proposal densities, roulette probabilities, detector contributions and local states. A replay that encounters different random decisions is differentiating another realised computation. Within a parameter perturbation, however, the same variates are allowed to produce different decisions: that change is part of the finite difference.
 
-Our likelihood estimator needs one complete walk for each selected parameter, rather than reverse access to every arithmetic intermediate in that walk. `derivative_histories` can therefore start directly from resident source states and a `HistoryBatch`, so a preceding forward call is optional. Supplying an earlier batch and unchanged inputs reconstructs its histories. The random mapping is [the counter implementation in Listing 9.6](/chapters/scattering-stochastic-transport/#listing-9-6).
+To assemble `derivative_histories`, start from resident source states and a `HistoryBatch`, then run the walker with the selected parameter's likelihood accumulation. Reusing a batch at unchanged inputs reconstructs its histories, using [the counter implementation in Listing 9.6](/chapters/scattering-stochastic-transport/#listing-9-6). No preceding forward image is needed to evaluate this derivative estimator.
 
 <Source
   file="python/dpt/transport/derivatives.py"
@@ -324,7 +324,7 @@ Our likelihood estimator needs one complete walk for each selected parameter, ra
 
 Each call writes pixel, signed binary64 derivative and terminal status per original history. Several parameters can reuse those buffers sequentially. Memory is therefore proportional to histories plus detector outputs, with no history-by-event tape or retained material-by-history array, while work grows by a full replay for each active parameter. This is an intentional tradeoff for a small declared parameter set. It should be remeasured before extending the inverse problem to hundreds of material parameters.
 
-Original source and model arrays remain immutable until the launch finishes. A failed or truncated history invalidates the derivative batch exactly as it invalidates a forward estimate. The manual estimator computes first-order derivatives without a Warp tape. Its replay is specific to the likelihood estimator derived here. The path replay literature supplies context for memory reconstruction, not a licence to omit this estimator's probability terms.
+Keep source and model arrays immutable until replay finishes, and reject a derivative batch containing a failed or truncated history. This manual first-order calculation reconstructs the histories needed by §10.3's estimator without recording a Warp tape.
 
 For a central difference, let $Y_+$ and $Y_-$ be two simulation estimates made with common random numbers at $\theta+h$ and $\theta-h$. Write their variances as $V_+$ and $V_-$ and their covariance as $C$. The central difference $D_h$ satisfies
 
@@ -485,7 +485,7 @@ Report the parameter and its units, perturbation, history count, seed grouping, 
 
 For a vector parameter, also use [Chapter 5's directional checks](/chapters/differentiating-projection/#56-independent-directional-checks) and the pairing between Jacobian-vector and transpose-Jacobian products. These algebraic checks catch component ordering, frame and accumulation mistakes. They complement the expectation checks above, which catch missing probability and boundary contributions even when the implemented linear algebra is internally consistent.
 
-`experiments/transport-gradients/run.py` records independent replicate estimates of the squared-error loss derivative with respect to slab log density, against a reference calculated from analytic survival. Its result includes the parameter chart, source-history counts and uncertainty. Aperture-motion formulas remain useful for demonstrating the estimator that the current API lacks, but they must not be presented as results of its fixed-grid derivative kernel. The distinction prevents a successful absorption check from silently becoming evidence for pose gradients through hard boundaries.
+Begin the implementation checks with slab log density, where analytic survival gives an independent loss derivative. Repeat the estimate with independent batches and compare the discrepancy with its sampling uncertainty. Use the aperture example separately to check any boundary estimator you add.
 
 ## 10.8 A differentiable transport implementation
 
@@ -512,15 +512,15 @@ $$
 
 [Equation (10.18)](#equation-10-18) allows the implementation to accumulate a transpose-Jacobian product without materialising every pixel-by-parameter entry. The fixed weights combine detector scores before their history derivatives are accumulated. A random weight computed from the same noisy image requires the additional expectation analysis in §10.9.
 
-The current composition realises this contraction one supported parameter at a time: it averages sparse history derivatives into a reusable detector buffer, applies the fixed pixel weights and reduces on device. It does not retain the whole pixel-by-parameter Jacobian, but it does materialise one derivative image. That buffer also permits inspection of spatial sensitivity and reuses the original-history tally checks. Fusing the contraction directly into a history tally is a possible later execution choice with the same required estimator.
+Construct the contraction one parameter at a time: average its sparse history derivatives into a reusable detector buffer, apply the fixed pixel weights and reduce on the device. This stores one derivative image, which is useful for inspecting spatial sensitivity, and avoids retaining the entire pixel-by-parameter Jacobian. If memory traffic warrants fusing the weighted contraction into the history tally, preserve the same per-history estimator and original-history denominator.
 
-Extending the interface to other parameter sets would change where derivative contributions accumulate. A spatial material-field derivative could contribute to many volume entries, while a pose derivative would have six components that could be summed over histories. Those extensions first need suitable estimators; the present interface does not supply the moving-boundary terms needed for pose. Preserve [Chapter 3's frame and translation-before-rotation ordering](/chapters/frames-geometry-motion/#36-pose-parameters-and-local-updates). A transport estimator does not change what a pose parameter means. An implementation should expose whether each requested parameter uses pathwise terms, likelihood terms, boundary terms or a derived combination. A parameter silently omitted from an estimator is more difficult to diagnose than an explicitly unsupported one.
+The parameter set determines where contributions accumulate. A spatial material-field derivative can touch many volume entries; a pose derivative has six components summed over histories, with the interface terms from §10.4. Choose output buffers after deriving those contributions. For pose, retain [Chapter 3's frame and translation-before-rotation ordering](/chapters/frames-geometry-motion/#36-pose-parameters-and-local-updates).
 
-In Warp, differentiable arrays and a recorded launch sequence provide the arithmetic needed for continuous parts of the calculation. A custom derivative can combine those local derivatives with the chosen probability and boundary estimators. Retained states, replay and gradient accumulation then follow that estimator's requirements. Dynamic histories make the handling of overwritten intermediates particularly important. The [Warp 1.17.0 differentiation documentation](https://github.com/NVIDIA/warp/blob/v1.17.0/docs/user_guide/differentiability.rst) describes array gradient storage, custom replay and gradient functions, and dynamic-loop limitations. In particular, a dynamic loop does not automatically retain the intermediate values its adjoint may need. Store or reconstruct those values according to the backward calculation. Recording launches on a tape alone does not preserve a whole photon history.
+Warp provides array gradients and custom replay and gradient functions for the continuous arithmetic in an estimator. Dynamic loops can overwrite intermediate values needed by the reverse calculation, so explicitly store or reconstruct them. The [Warp differentiation documentation](https://github.com/NVIDIA/warp/blob/v1.17.0/docs/user_guide/differentiability.rst) explains those mechanisms and their limitations. Combine them with the probability and boundary terms derived for the measurement; allocate retained state according to what that backward calculation needs.
 
 Allocate volume data, cross-section tables, source state, queues, tallies and gradient buffers before the repeated solve. Record the dtype of each buffer and of reductions, because signed contributions can cancel strongly. Clear accumulated gradients between independent evaluations. Keep random-stream identities attached to work items during compaction. Queue overflow and a maximum interaction count require an explicit continuation or unbiased termination scheme: dropping the remaining histories changes both the expected image and its gradient.
 
-The execution review follows the data. Measure state reads and writes, saved intermediates and replay work, and count launches and inspect host synchronisation. Compare event divergence, queue occupancy and the contention of detector and volume atomics. Report memory use as a function of live histories, path length and parameter count. A replay scheme's small path-local state does not include the full volume, output image or parameter-gradient arrays.
+When choosing between storage and replay, measure state traffic, launches and host synchronisation alongside elapsed time. Inspect event divergence and detector-tally contention. Vary live histories and active parameters: a small path-local state can still accompany large source, detector and gradient arrays.
 
 A revised sampler needs derivative weights for its revised proposal. A faster reduction may change the accuracy of signed sums through its accumulation order. Caching a physics query must retain the parameter dependence of its result. The forward and derivative calculations must continue to describe the same physical expectation.
 
@@ -563,7 +563,7 @@ $$
 
 Independence factorises the expectation in [equation (10.20)](#equation-10-20). Within each batch, variance reduction and replay can still share random numbers according to their own estimator design. The two batches must remain independent conditional on the current parameters and any fixed pilot information.
 
-`independent_squared_gradient` makes the two batch identities part of the call. Its inputs are a mean image from A, a derivative-mean image from B, the fixed observation and fixed non-negative pixel weights. It writes binary64 pixel contributions, which the shared objective reducer sums on CUDA. Overlapping history ranges under the same seed are rejected before their product is formed. Random source batches also need distinct declared namespaces, but a fixed deterministic source may be shared. The namespace check enforces declared stream separation, and callers remain responsible for actually sampling their source inputs that way.
+Form the weighted residual from image A and multiply it by derivative image B in `independent_squared_gradient`. Its binary64 pixel contributions are then summed on CUDA. Give A and B non-overlapping history streams. Random source samples must also be independent between them; a fixed deterministic source may be shared. The call checks declared history ranges and source namespaces, so construct the source samples consistently with those declarations.
 
 <Source
   file="python/dpt/transport/estimators.py"
@@ -587,7 +587,7 @@ $$
 
 [Equation (10.21)](#equation-10-21) contains a penalty for simulation variance. If that variance depends on the parameters, minimising this expectation can favour parameters that are easier for the sampler. Increasing the photon budget changes the unwanted term. A solver should specify whether it targets a loss of the physical expectation or an expectation of a noisy loss.
 
-`TransportSquaredOracle` composes these operations for the optimiser. Preparation binds a fixed pencil or uniformly sampled rectangular `ParallelBeam`, immutable observations and coefficient tables, and reusable source/history/tally buffers. Active coordinates are absolute logarithms of selected material-density scales and, optionally, source amplitude. Each trial uploads that small parameter vector. A gradient replicate holds the A image while replaying B once per parameter, while a change replicate reuses its two independent factors at the incumbent and candidate.
+Assemble `TransportSquaredOracle` from a fixed pencil or uniformly sampled rectangular `ParallelBeam`, immutable observations and coefficient tables, and reusable source, history and tally buffers. Express selected density scales and source amplitude in absolute log coordinates. Each trial uploads that small vector, retains image A while replaying B for each derivative, and reduces the resulting loss gradient. For a candidate loss change, reuse each independent factor at both the incumbent and candidate.
 
 <Source
   file="python/dpt/transport/inverse.py"
@@ -595,7 +595,7 @@ $$
   caption="The transport objective and its parameter gradients"
 />
 
-The image arrays remain on CUDA. Status checks and scalar reductions return the quantities needed by the host controller. If an exception occurs, pending operations finish before the pinned staging buffer is reused. Replaying B for several parameters may correlate the components of one gradient estimate, which is permitted. Independent complete replicates supply the uncertainty used by the controller. The oracle records actual histories traced separately from the number of unique identities, because replay and evaluating two parameter points both cost work without creating new independent samples.
+Keep the image arrays on CUDA and return scalar reductions and status to the controller. Complete pending work before reusing a pinned staging buffer, including on failure. Replaying B across parameters can correlate components within one gradient vector; independent complete replicates supply its uncertainty. Count repeated trace work separately from unique histories when comparing the cost of this design.
 
 Nonlinear likelihoods require their own analysis. For an ideal Poisson count $d$ with positive expected count $y$, the negative log-likelihood up to a data-only constant has derivative
 
@@ -620,13 +620,13 @@ Even with independent batches, replacing the reciprocal in [equation (10.22)](#e
 
 Work in scaled parameter coordinates and choose optimisation steps in relation to the gradient uncertainty. Large steps cannot be justified merely because one noisy gradient has a large magnitude. Reusing histories over several nearby iterations can make the sampled objective easier to optimise, but fresh independent evaluations are needed to find out whether the expected objective improved. Increase the simulation budget when uncertainty prevents resolving a useful update, and keep acquisition noise separate from that numerical decision.
 
-The deterministic strong-Wolfe search in [Chapter 6](/chapters/recovering-pose/#66-the-canonical-optimisation-loop) assumes repeated evaluations of the same objective and derivative. `recover_expected_signal` instead separates proposal, acceptance and final-validation histories. The original linear policy moves by the trust radius in the negative gradient direction. In one dimension that discards the gradient's magnitude: a nearly correct density can receive the same step as a poor one, followed by several expensive experiments explaining why it was too large.
+The deterministic strong-Wolfe search in [Chapter 6](/chapters/recovering-pose/#66-the-canonical-optimisation-loop) assumes repeated evaluations of the same objective and derivative. For stochastic transport, separate the histories used to propose a step, assess its loss change and check the returned point. `recover_expected_signal` uses a trust region to bound the proposed move. A linear model moves to its boundary; a quadratic model can use curvature to choose a smaller correction near a solution.
 
-Selecting `proposal="quadratic"` uses the local model $\widehat g^Ts+\tfrac12s^TBs$ inside the Euclidean ball $\lVert s\rVert\leq\Delta$. In one dimension with positive curvature $B$, an interior minimiser is $s=-\widehat g/B$, provided $|\widehat g/B|<\Delta$. For fixed positive curvature, a smaller estimated slope therefore produces a smaller step without first shrinking the trust radius. The coordinates remain the declared log-parameter chart. The oracle estimates $B=\widehat J^TW\widehat J$ from resident derivative images, and its Jacobian columns and tiled Gram reductions stay on CUDA. Only the small gradient and matrix cross to the host. Preparation limits this dense path to 16 active parameters and checks its allocation budget explicitly.
+With `proposal="quadratic"`, minimise the local model $\widehat g^Ts+\tfrac12s^TBs$ inside the Euclidean ball $\lVert s\rVert\leq\Delta$. In one dimension with positive curvature $B$, an interior minimiser is $s=-\widehat g/B$, provided $|\widehat g/B|<\Delta$. Thus a smaller estimated slope produces a smaller step without first shrinking the trust radius. Keep the coordinates in the declared log-parameter chart. Estimate $B=\widehat J^TW\widehat J$ from the resident derivative images and reduce the Gram matrix on CUDA; only the small gradient and matrix need to reach the host solve.
 
-Squaring a noisy Jacobian generally biases this curvature estimate. We use it to propose a step, while the gradient still uses independent residual and derivative factors, and separate histories assess the candidate's actual loss change. The bounded host solve reports rank before damping. It can stabilise a singular system without pretending that the acquisition identifies every parameter. This follows the model-and-assessment organisation studied by Chen and colleagues, but their convergence analysis requires accuracy conditions which our empirical replicate bands do not establish. <Citation keys={["chen2018stochastic"]} />
+Squaring a noisy Jacobian generally biases this curvature estimate. Use it to propose the step, retain independent residual and derivative factors in the gradient, and assess the candidate's loss change with separate histories. Inspect rank before damping: stabilising a singular matrix does not add information to the acquisition. Chen and colleagues analyse this separation of random models and step assessment under probabilistic accuracy conditions. The empirical error bands used here are a practical decision rule, without those convergence guarantees. <Citation keys={["chen2018stochastic"]} />
 
-An interior step can now be much smaller than the radius. If a candidate is rejected, the controller reuses the incumbent's local model while contracting the radius, then buys fresh acceptance histories for the new candidate. If acceptance is inconclusive, it holds that candidate fixed while increasing the batch. A new accepted point requires a new model. Radius growth additionally requires a boundary-constrained step and sufficient agreement between predicted and estimated decrease.
+An interior step can be much smaller than the radius. If a candidate is rejected, reuse the incumbent's local model while contracting the radius, then draw fresh acceptance histories for the new candidate. If acceptance is inconclusive, hold the candidate fixed and increase the batch. Build a new model after an accepted move. Grow the radius only after a boundary-constrained step with sufficient agreement between predicted and estimated decrease.
 
 <Source
   file="python/dpt/stochastic_recovery.py"
@@ -634,15 +634,15 @@ An interior step can now be much smaller than the radius. If a candidate is reje
   caption="Choosing and testing steps with independent samples"
 />
 
-The acceptance band remains a chosen multiple of the empirical standard error across independent scalar replicates. Eight replicate error bars do not acquire simultaneous coverage merely because the controller consults them repeatedly. For stochastic sampling, an all-zero gradient and error estimate still trigger growth and eventually `sampling_unresolved`: no useful histories may have arrived. Only the preparation-verified deterministic absorption limit bypasses that safeguard, with a separately declared numerical gradient allowance.
+Assess loss changes using a chosen multiple of the empirical standard error across independent scalar replicates. These bands are heuristic: repeated consultation does not give them simultaneous coverage. Under stochastic sampling, an all-zero gradient and error estimate can mean that no useful histories arrived. Increase the batch and return `sampling_unresolved` if the available budget cannot resolve the estimate. The deterministic absorption limit instead uses a separately declared numerical gradient allowance.
 
-Before spending on another quadratic model, the controller reserves enough sampling budget for an acceptance checkpoint and a fixed-size final check. A provisional stationarity decision uses fresh held-out gradients. Those histories never select a candidate, and a failed check returns unresolved. The diagnostic record retains every model, acceptance look and reservation, including denied reservations and failed oracle calls. Unique random identities and executed replay work are counted separately. `gradient_band` describes the resulting numerical rule, but it does not establish parameter identifiability or universal statistical coverage.
+Reserve enough sampling budget to assess a candidate and check the returned point before spending on another model. Test provisional stationarity with fresh held-out gradients that never select a step. If that check fails, return an unresolved result. Keep this numerical stopping decision separate from the parameter-identifiability analysis in [Chapter 6](/chapters/recovering-pose/#65-single-view-ambiguity-and-identifiability).
 
 ## 10.10 Recover a source amplitude
 
-We can now run the whole inverse problem: choose an initial source amplitude, follow its accepted updates, and check the answer with histories that never chose a step. The designated run below takes four accepted updates from amplitude $a_0=0.08$ to $a=0.11670818$. Its final gradient check passes the unchanged $10^{-5}$ tolerance, as does a separately sampled reference. All 32 predeclared runs pass both checks. The first seed was chosen for this walkthrough before execution; it did not win an audition afterwards.
+The source-amplitude example connects the whole calculation: construct the scattering problem, estimate its signal and derivative independently, choose a step and assess the returned point with fresh histories. Its accepted trajectory shows two radius-limited moves followed by smaller corrections from the quadratic model.
 
-Keep the geometry and material fixed so that we can see what the stochastic optimiser is doing. An 80 keV pencil beam enters a 1 mm cube with absorption coefficient $0.3\ \mathrm{mm}^{-1}$ and isotropic elastic-scattering coefficient $0.1\ \mathrm{mm}^{-1}$. A single detector pixel spans $[-2,2]\times[-2,2]\ \mathrm{mm}$ at $z=2\ \mathrm{mm}$. The source is at $(0,0,-1)\ \mathrm{mm}$ and points along positive $z$. Continuous absorption weighting integrates out absorption events, while scattering paths and detector hits remain random. These are declared mathematical inputs; no anatomy, measured spectrum or acquired image is needed.
+Keep the geometry and material fixed so that we can see what the stochastic optimiser is doing. An 80 keV pencil beam enters a 1 mm cube with absorption coefficient $0.3\ \mathrm{mm}^{-1}$ and isotropic elastic-scattering coefficient $0.1\ \mathrm{mm}^{-1}$. A single detector pixel spans $[-2,2]\times[-2,2]\ \mathrm{mm}$ at $z=2\ \mathrm{mm}$. The source is at $(0,0,-1)\ \mathrm{mm}$ and points along positive $z$. Continuous absorption weighting integrates out absorption events, while scattering paths and detector hits remain random.
 
 <Source
   file="python/dpt/transport/recovery_experiments.py"
@@ -652,50 +652,28 @@ Keep the geometry and material fixed so that we can see what the stochastic opti
 
 Let $m$ be the expected detector score at unit amplitude and write $q=\log a$. Prescribe a target score $d=0.08$ with unit squared-error weight. The expected signal is $am$, so the objective is $\mathcal L(q)=\tfrac12(e^q m-0.08)^2$ and its derivative is $(am-0.08)am$. This simple expression gives us an independent way to assess the result. The optimiser still has to estimate its residual and derivative with independent histories: it receives neither $m$ nor the implied optimum $a_*=0.08/m$. The observation is fixed throughout; drawing more simulated photons improves numerical precision without changing the physical problem.
 
-### Run the complete example
+### Assemble the sampling batches
 
-Install the Python 3.12 GPU environment with `uv sync --group check --group gpu`, then run `bash experiments/transport-recovery/worked-example.sh /absolute/path/to/a/new-directory`. Choose a new output directory outside the checkout. The wrapper checks CUDA, generates the independent reference and runs the 32 seeds fixed in `worked-example.json`. Its final verification checks the stopping decisions against that reference and verifies the recorded source and output hashes. It returns an error if any run is unresolved or fails a check.
+Combine the fixed scattering problem above with the recovery loop from §10.9. Generate an independent estimate of the unit-amplitude response for checking the result, keeping it outside the optimiser. The following discussion follows one recorded trajectory.
 
-<Source
-  file="experiments/transport-recovery/worked-example.sh"
-  region="transport-scattering-worked-commands"
-  languageLabel="Shell"
-  caption="Generate the reference and run the complete prescribed recovery set"
-/>
-
-The sampling multiplier of sixteen applies to the whole calculation. Each proposal or acceptance estimate starts with eight independent pairs of 65,536 histories per factor; the per-factor ceiling and fixed final batch are 1,048,576. The unique-history budget is 256 million. The reference uses 256 batches of 1,048,576 histories under a separate fixed seed, `419003`. Increasing only the final check would leave the optimiser making its earlier decisions with the original uncertainty.
-
-Open `recovery/replicate-00/recovery.json` to follow the accepted amplitude values and read `result.reason` for the stopping decision. Its final-validation record and `reference_stationarity_pass` contain the checks used below. The remaining runs occupy `replicate-01/` through `replicate-31/`, and the independent reference is in `reference/scattering-reference/`. Each `run.json` records the configuration, source snapshots and output hashes needed to reproduce that calculation.
+Give proposal, acceptance and final checking separate history batches, with an independent stream for the reference. When uncertainty prevents useful decisions, increase sampling throughout the solve. Increasing only the final check leaves earlier decisions just as noisy.
 
 ### Follow the accepted updates
 
-The first two steps reach the trust-radius boundary and increase the amplitude substantially. The third is an interior quadratic-model step. After it, the estimated derivative changes sign, so the fourth makes a small correction in the opposite direction. A smaller gradient now produces a smaller proposed move; the radius need not be repeatedly halved to discover the appropriate scale.
+The first two steps reach the trust-radius boundary and increase the amplitude substantially. The third is an interior quadratic-model step. After it, the estimated derivative changes sign, so the fourth makes a small correction in the opposite direction. As the gradient shrinks, the proposed move shrinks without repeatedly halving the radius.
 
-In [Table 10.3](#table-10-3), the upper estimated loss change is the mean change plus twice its empirical standard error. Acceptance requires that upper value to lie below the negative threshold, which is one tenth of the predicted decrease with its sign reversed. All four comparisons pass; the independent reference also classifies every accepted step as a sufficient decrease.
-
-<div className="prose-table" role="region" aria-label="Accepted source-amplitude updates and their loss-change tests" tabIndex={0}>
-
-| Accepted update | Source amplitude | Upper estimated loss change |    Acceptance threshold |
-| --------------- | ---------------: | --------------------------: | ----------------------: |
-| 1               |       0.08841367 |     $-1.28279\times10^{-4}$ | $-1.22930\times10^{-5}$ |
-| 2               |       0.10798870 |     $-1.69986\times10^{-4}$ | $-1.61204\times10^{-5}$ |
-| 3               |       0.11703620 |     $-1.74035\times10^{-5}$ | $-1.77529\times10^{-6}$ |
-| 4               |       0.11670818 |     $-2.48797\times10^{-8}$ | $-2.53318\times10^{-9}$ |
-
-</div>
-
-[Figure](#figure-10-5) separates the progress of this one fit from the final checks across independent runs. Connecting the latter as though they were another optimisation trajectory would tell the wrong story.
+[Figure](#figure-10-5) follows the amplitude through these updates.
 
 <FigurePlate
   id="figure-10-5"
-  title="A completed stochastic recovery and its independent repeats"
-  description="Left: the initial amplitude and four accepted updates of the predesignated first run. Right: each of the 32 prescribed runs has a final gradient upper bound below the unchanged tolerance. These are empirical two-standard-error bounds; the separate seven-standard-error reference also passes every returned point."
+  title="Recovering source amplitude with a quadratic model"
+  description="Two radius-limited increases bring the amplitude towards the solution. An interior quadratic step and a small reverse correction then refine it."
 >
   <div class="recorded-figure">
-    <div class="recorded-panels">
+    <div>
       <RecordedPlot
         id="stochastic-worked-amplitude"
-        title="The designated first run"
+        title="Accepted amplitude updates"
         xLabel="Accepted update (0 = initial)"
         yLabel="Source amplitude"
         series={stochasticWalkthrough.amplitude_series}
@@ -703,22 +681,11 @@ In [Table 10.3](#table-10-3), the upper estimated loss change is the mean change
         yDomain={[0.075, 0.122]}
         xTicks={[0, 1, 2, 3, 4]}
       />
-      <RecordedPlot
-        id="stochastic-worked-certification"
-        title="All 32 stopping checks"
-        xLabel="Independent run (prescribed order)"
-        yLabel="Absolute gradient + 2 SE"
-        series={stochasticWalkthrough.certification_series}
-        xDomain={[0, 31]}
-        yDomain={[0, 0.0000115]}
-        xTicks={[0, 8, 16, 24, 31]}
-      />
     </div>
     <details class="recorded-data">
       <summary>Recorded plot values</summary>
       <p>
-        Recorded on 14 September 2026 with the canonical Warp implementation.
-        Download the{" "}
+        Simulation records for this example. Download the{" "}
         <a href="/generated/worked-examples/stochastic/replicate-00.json">
           complete first trajectory
         </a>
@@ -732,7 +699,7 @@ In [Table 10.3](#table-10-3), the upper estimated loss change is the mean change
         </a>{" "}
         and
         <a href="/generated/worked-examples/stochastic/provenance.json">
-          source and output hashes
+          data sources and computation details
         </a>
         .
       </p>
@@ -740,24 +707,14 @@ In [Table 10.3](#table-10-3), the upper estimated loss change is the mean change
   </div>
 </FigurePlate>
 
-At the fourth accepted point, the proposal batch gives a provisional gradient-band pass. The controller then spends its reserved final pool: eight fresh pairs of 1,048,576 histories, totalling 16,777,216 unique histories. The final estimate is $\widehat g=2.47140\times10^{-6}$ with empirical standard error $5.29035\times10^{-7}$. Hence $|\widehat g|+2\,\widehat{\mathrm{SE}}=3.52947\times10^{-6}<10^{-5}$. The recorded reason is `gradient_band`, with detail `held_out_gradient_band`. Those final histories confirm the returned point; they do not choose another update.
+After the fourth accepted update, assess the gradient with fresh histories. The stopping rule requires its absolute estimate plus twice its empirical standard error to lie below the declared tolerance. Here the independent reference also places the derivative inside that tolerance. Use the reference to check the returned point, keeping it out of step selection.
 
-The separate reference estimates $m=0.68565909$ with standard error $1.27405\times10^{-5}$. Propagating its seven-standard-error interval through $(am-0.08)am$ gives the derivative interval $[9.29440\times10^{-7},\,2.59571\times10^{-6}]$ at the returned amplitude. The entire interval lies within the required $\pm10^{-5}$ tolerance, so the reference also accepts this point as approximately stationary. Both uncertainty rules use heuristic error bands; the 32 successful repeats assess this fixed problem at the stated tolerance.
+### Sampling uncertainty and parameter error
 
-The first run used 26,214,400 unique histories and 30,408,704 traced histories including replay. Its prepared oracle occupied 88,080,492 device bytes and recorded 0.634 seconds of solve time on the GB10. Preparation and source recording are additional: the full 32-run recorder span was 33.49 seconds, and the separate reference took 3.66 seconds. These measured timings describe this execution, rather than an isolated throughput benchmark.
+If the gradient band crosses the tolerance, the sampling precision cannot resolve the stopping decision. Increasing the history count can narrow that band without changing the objective or relaxing the tolerance.
 
-### Why the smaller budget stopped
+A small gradient can also coexist with appreciable density error when strong attenuation makes the signal insensitive to density. The measurement is weakly sensitive to density in this regime. Curvature can improve the proposed step, but a precise density estimate may still require a more informative acquisition.
 
-The larger budget followed a specific diagnostic. At the original sampling scale, the first run of a fresh 32-seed evaluation accepted three steps and then returned `sampling_unresolved`. Its final upper gradient bound was $1.08001\times10^{-5}$, just above the same $10^{-5}$ gate. The separate reference interval also crossed the gate. Neither check could certify that point, so reporting its nearby amplitude as a successful recovery would have discarded the information the checks supplied. Eighteen of those 32 runs passed the controller; seventeen of the eighteen also passed the separate reference, while one remained reference-ambiguous.
-
-We therefore increased proposal, acceptance, final-check and reference sampling together by sixteen, targeting approximately fourfold smaller standard errors without changing the tolerance or observation. Development on the retained unsuccessful seed passed both checks. Only then was the fresh 32-seed sequence above frozen, with its first run again designated in advance. No seed was replaced after seeing its outcome. The contrast explains what the additional GPU work bought: enough precision to resolve useful corrections and then assess the resulting point.
-
-The two-layer absorption check in `experiments/transport-recovery/repair.py` becomes deterministic through continuous weighting. With quadratic proposals it reached the $10^{-5}$ gradient tolerance in three accepted steps and 45,056 ray evaluations. Independent attenuation arithmetic gave density error $1.01\times10^{-5}$ and true gradient $1.33\times10^{-7}$. This checks the conditioned absorption limit; scattering paths are absent from that test.
-
-A separate historical scattering cohort, preceding the original-budget comparison above, passed both checks in seventeen of 32 runs; fifteen returned unresolved. Some accepted changes were too small for its reference interval to classify. Those records give another example of sampling uncertainty preventing a conclusion, even when a returned parameter looks plausible.
-
-The 36-case absorption sweep supplies a different caution: every case met the absolute gradient tolerance, while only 22 had density error below $10^{-4}$. At high attenuation the expected signal, and consequently its density sensitivity, can be tiny. An accurate derivative of an uninformative measurement remains uninformative. Curvature helps choose a sensible step, but it cannot supply information that the acquisition never measured.
-
-Test what the fitted parameters predict in observations withheld from the fit, using fresh simulation histories as well. Fresh seeds test numerical generalisation, while withheld views or exposures test the imaging model. A source-intensity error, detector-response error or missing scatter component can all encourage the optimiser to change anatomy to compensate. Several parameter combinations may explain the same image even with an exact gradient. Inspect residuals and parameter sensitivities together before interpreting a fitted change as a physical one. A fit that trades source intensity against attenuation needs another constraint or another observation. Smaller Monte Carlo error cannot resolve that ambiguity.
+Check predictions on withheld views or exposures, using fresh simulation histories. Fresh histories assess numerical error; withheld observations test whether the fitted model predicts another measurement. Inspect residuals and parameter sensitivities together. If source intensity can trade against attenuation, constrain one of them or add an observation that separates their effects.
 
 <Bibliography keys={["mohamed2020", "li2018edges", "vicini2021prb"]} />

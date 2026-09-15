@@ -4,7 +4,7 @@
   "chapter": "transmission",
   "experiment": "transmission-contract",
   "source_commit": "d3cac5dc689ab3dd7ff13167ec6c62152150885a",
-  "generator": "public/generated/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/experiments/transmission-contract/run.py",
+  "generator": "experiments/archive/public-source-copies/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/experiments/transmission-contract/run.py",
   "mode": "deterministic-precomputed-sweep",
   "device": "NVIDIA GB10",
   "cuda_version": "12.9",
@@ -91,9 +91,6 @@
     "public/generated/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/python/dpt/validation/transport_weighted.py": "fd9ff5723ed9f6a7de8f7309158332ba51117e1134ff37310866f2ed9f20344c",
     "public/generated/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/python/dpt/validation/transport.py": "2c5e396ffd01e79a1d95ae02aaef3ffd90cc232987686ea923c86945a7d5568c",
     "public/generated/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/python/dpt/volumes.py": "0f486f3451b3d19c35d40241af02d2a216812797a4555b49496fd4ff52807e4b",
-    "public/generated/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/experiments/transmission-contract/run.py": "52ce24fc72bed607301f29d5816fcce398498e277cd4708211d041e1698e9cf4",
-    "public/generated/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/experiments/transmission-contract/profile_cuda.py": "294afdbb00ec7219a72634934938fd01ddc66f5f99996270dccc25a564c3b3a7",
-    "public/generated/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/experiments/transmission-contract/config.json": "0e1b51d937d1362ce5cb015ef5fc4608bc4eeb20579cb0e3cce43c57bc9fa66f",
     "public/generated/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/pyproject.toml": "6efe2a08e5249c29e43b979f6b51c71f5e7870184cfcf2513de16e0387b7a527",
     "public/generated/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/uv.lock": "19130bcf32aad884cd30b21f1fa69708a1240c7e7ef3a5dd1c8eb49b484c2865"
   },
@@ -104,5 +101,10 @@
     "public/generated/transmission-contract/validation.json": "bb4059400a8f31d66ef6679b3a8b9d41a8c96240d8d681e09326a0a3470824ec",
     "public/generated/transmission-contract/run.json": "e8cf2675b0e337426db7215266581270b5246cfc07bd0ddfc9c7ac12f794f3fb"
   },
-  "notes": "Generated CUDA sweeps and independent mathematical validation. Raw profiling, benchmark records and private run metadata remain outside this projection. Historical producer bytes are archived without modification at public/generated/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a; provenance.json there maps original names and verifies Git/run hashes. Scientific outputs and the original run.json remain unchanged; this is not a new execution or validation of current source."
+  "notes": "Generated CUDA sweeps and independent mathematical validation. Raw profiling, benchmark records and private run metadata remain outside this projection. Historical public package sources are retained in public/generated/historical-sources; private experiment producers are represented by private_source_digests and are retained only in the private authoring archive. Scientific outputs and the original run.json remain unchanged; this is not a new execution or validation of current source.",
+  "private_source_digests": {
+    "experiments/archive/public-source-copies/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/experiments/transmission-contract/run.py": "52ce24fc72bed607301f29d5816fcce398498e277cd4708211d041e1698e9cf4",
+    "experiments/archive/public-source-copies/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/experiments/transmission-contract/profile_cuda.py": "294afdbb00ec7219a72634934938fd01ddc66f5f99996270dccc25a564c3b3a7",
+    "experiments/archive/public-source-copies/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/experiments/transmission-contract/config.json": "0e1b51d937d1362ce5cb015ef5fc4608bc4eeb20579cb0e3cce43c57bc9fa66f"
+  }
 }

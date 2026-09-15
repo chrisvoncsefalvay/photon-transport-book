@@ -17,8 +17,6 @@ import RadiographFigure from "../../components/figures/RadiographFigure.astro";
 import ExactIllustrations from "../../components/figures/ExactIllustrations.astro";
 import SelectedRayFigure from "../../components/figures/SelectedRayFigure.astro";
 import TransmissionAveragingFigure from "../../components/figures/TransmissionAveragingFigure.astro";
-import Provenance from "../../components/Provenance.astro";
-import transmissionRun from "../../../public/generated/transmission-contract/run.json";
 
 Suppose our estimated pose puts the edge of a bone slightly to the left of where it appears in an X-ray. Moving the model changes which source-to-detector paths cross the bone, and how far they travel through it. Along some paths, bone replaces soft tissue, while along others, the reverse happens. To use that movement in registration, we need to predict the [resulting change in detector signal](/chapters/introduction/#13-what-a-sensitivity-image-tells-us).
 
@@ -26,7 +24,7 @@ Each extra layer removes a fraction of the photons that would otherwise reach th
 
 We can derive that dependence by following a photon through a short stretch of material. The attenuation coefficient specifies its local probability of an interaction per unit distance, conditional on survival so far. Applying this rule successively gives survival through the whole object. For a homogeneous material, it gives transmission as a function of thickness, and for several materials, it tells us how their contributions combine. The exponential attenuation law follows from this local rule.
 
-Moving the object changes the paths through the material while leaving its attenuation coefficients fixed.
+Our first implementation will turn one optical depth per detector pixel into transmission or expected counts. We will derive that operation, write its CUDA kernel and backward pass, and check both against slab calculations. The ray geometry comes next. Keeping those tasks separate lets us build and test this part of the renderer before a misplaced voxel can complicate the answer.
 
 ## 2.1 From incident photons to a transmission image
 
@@ -56,7 +54,7 @@ $$
 
 An expected count can be fractional, although the realised count $N_p$ is an integer. The deterministic renderer predicts $\lambda_p$ or $T_p$, depending on which quantity we compare with data. It can calculate either expectation directly, without sampling photons.
 
-To compare that deterministic prediction with a realised count, we also need a model of the count's fluctuations around its mean. The following calculation supplies the observation model used by the likelihood in [section 2.5](#a-noisy-logarithm); it does not add random sampling to the renderer.
+To compare the prediction with a realised count, we need a model of fluctuations around the mean. The calculation below supplies the observation model for the likelihood in [section 2.5](#a-noisy-logarithm).
 
 Conditional on exactly $m$ incident photons, assume independent survival events with the same probability $T_p$. Then
 
@@ -121,7 +119,7 @@ $$
 
 The remainder divided by $\Delta s$ tends to zero as the interval shrinks. Treating $\mu\Delta s$ as an exact interaction probability for an arbitrarily thick segment would eventually produce probabilities larger than one, which is a fairly decisive hint that the approximation has expired.
 
-[We use $L_p$ to denote **optical depth**](/appendix/x-ray-theory/#a5-attenuation-along-a-ray). Despite its letter, $L_p$ is dimensionless. We will use $d$ for the physical length of a homogeneous segment and $s$ for distance along a path. With that, we can now formulate the _dramatis personae_ of photon transmission. [Table 2.1](#table-2-1) collects the quantities and their units so that physical length and optical depth remain distinct.
+[We use $L_p$ to denote **optical depth**](/appendix/x-ray-theory/#a5-attenuation-along-a-ray). Despite its letter, $L_p$ is dimensionless. We will use $d$ for the physical length of a homogeneous segment and $s$ for distance along a path. [Table 2.1](#table-2-1) collects the quantities and their units so that physical length and optical depth remain distinct.
 
 <div className="prose-table" role="region" aria-label="Transmission quantities and units" tabIndex={0}>
 
@@ -159,7 +157,7 @@ $$
 =0.02059\ \mathrm{mm^{-1}}.
 $$
 
-This is a helpful figure, and anyone in synthetic radiography ought to know it if roused from sleep at 3am. The neighbouring NIST column contains the mass **energy-absorption** coefficient, $\mu_{\mathrm{en}}/\rho$. It concerns energy absorption and is not interchangeable with the total mass attenuation coefficient used for primary survival. The attenuation total includes scattering interactions as well as absorption. <Citation keys={["hubbell1995"]} />
+The neighbouring NIST column is easy to confuse with this one: it contains the mass **energy-absorption** coefficient, $\mu_{\mathrm{en}}/\rho$. It concerns energy absorption and is not interchangeable with the total mass attenuation coefficient used for primary survival. The attenuation total includes scattering interactions as well as absorption. <Citation keys={["hubbell1995"]} />
 
 For a non-negative coefficient with a finite integral along the path, optical depth is non-negative and transmission is strictly positive. Zero transmission occurs as an infinite-optical-depth limit, although finite-precision arithmetic can return zero much earlier.
 
@@ -546,9 +544,9 @@ This likelihood follows from the ideal counting model in [section 2.1](#21-from-
 
 ## 2.6 Evaluating transmission numerically
 
-In [the library outlined in section 1.7](/chapters/introduction/#17-from-transmission-to-transport), transmission sits between path integration and comparison with the observed image. It converts an array of optical depths into the requested primary-signal quantities and supplies derivatives with respect to its declared active inputs. Here we supply optical depths directly, using slabs and numerical test cases whose answers we can establish independently. [Chapter 4](/chapters/volumes-line-integrals/#46-a-gpu-projection-operator) will produce those inputs by integrating through a volume.
+We can now implement `transmit()`, the pointwise operation between path integration and image comparison. Start with arrays of known optical depths from the slab examples, allocate the desired outputs, then apply the formulas below independently at each pixel. [Chapter 4](/chapters/volumes-line-integrals/#46-a-gpu-projection-operator) will supply the same input array by integrating through a volume.
 
-The slab cases let us check behaviour near zero attenuation and in nearly opaque paths before we have rays to construct or a volume to sample. We will use the same transmission operation when those inputs come from the renderer.
+The function will live in `dpt.transmission`. Its interface should expose the physical inputs and the outputs the next stage needs, while keeping temporary storage out of repeated calls.
 
 For a collection of pixels, the deterministic operations are
 
@@ -580,7 +578,7 @@ A non-negative parameterisation may be appropriate when optimising an attenuatio
 
 ### One operator, several useful outputs
 
-The transmission operator, `dpt.transmission.transmit`, receives `L`, the optical-depth array produced by the path integrator. The `n0` argument supplies illumination when counts are wanted, and the `out_` arguments name the quantities the caller will consume. A count-domain registration objective will use `out_counts`, and a sensitivity calculation will also need the reverse operation developed below.
+Define `transmit()` around the optical-depth array `L`. The `n0` argument supplies illumination when counts are wanted, and the `out_` arguments identify caller-owned destinations. This makes the same kernel useful for count-domain fitting, transmission images and log-domain calculations.
 
 Its inputs are contiguous, one-dimensional CUDA arrays with binary32 storage, and the caller flattens the detector image and supplies each destination. Omitting `out_T` avoids storing a transmission image that the next operation does not need. The removed-primary fraction is a fourth, independently selectable output.
 
@@ -592,7 +590,7 @@ Its inputs are contiguous, one-dimensional CUDA arrays with binary32 storage, an
 
 `TransmissionSpec` fixes the representation of the open beam: a Python scalar, a one-element device array or one device value per pixel. A Python scalar is explicitly rounded to binary32 and treated as fixed. A device array may be declared active when its derivative is required. This prevents an accidental broadcast from silently changing an image-sized calibration problem into a single exposure parameter, or vice versa.
 
-Each output approximates its declared real-valued quantity independently. We do not require machine equality between `out_counts` and the product of `n0` with the rounded `out_T`, or between `out_removed` and one minus `out_T`. Those apparently helpful consistency checks would require the more informative output to inherit the rounding damage of the less informative one. The weak- and strong-attenuation cases below show why. The plots draw recorded CUDA samples in the browser. Move over a curve or use its sample slider to inspect the stored values. The slider selects an existing sample rather than evaluating another optical depth.
+Evaluate each requested quantity before rounding it into its output array. In particular, form counts from the internal exponential factor, rather than multiplying an already rounded `out_T` by `n0`. The weak- and strong-attenuation examples below show why the order matters. Use the plot's slider to inspect the recorded values.
 
 <FigurePlate
   id="figure-2-1"
@@ -656,7 +654,7 @@ An absolute error of $10^{-8}$ is excellent for a transmission near one and disa
 
 Storage precision and intermediate precision need separate decisions. Consider the mathematical stress input $L=110$ with an open-beam mean near $10^{30}$. Transmission is below the binary32 subnormal range, but the expected count is approximately $1.69\times10^{-18}$ and remains representable. Multiplying the open beam by a transmission value already stored as zero destroys that count. This is a test of numerical range, not a claim about a plausible clinical exposure.
 
-Our arrays remain binary32. The kernel keeps the exponential factor in a binary64 register until the requested products have been formed, then rounds each output independently. For $L\leq64$, it evaluates the ordinary binary32 exponential and promotes the result. Above that cutover it evaluates the exponential in binary64 from the exactly promoted input. At the cutover the binary32 exponential is still normal: promotion preserves its available precision, while the wider exponent range protects later products. The value 64 is an implementation boundary, with neighbouring representable inputs tested on both sides, and it has no physical significance.
+Keep the arrays in binary32 and the exponential factor in a binary64 register until the requested products have been formed. The kernel uses the ordinary binary32 exponential for $L\leq64$ and promotes its result. Above that cutover it evaluates the exponential in binary64 from the exactly promoted input. At 64 the binary32 result is still normal, so the wider path begins before the exponent range becomes a problem. Test neighbouring representable inputs on both sides of this numerical cutover.
 
 <Source
   file="python/dpt/kernels/transmission.py"
@@ -675,7 +673,7 @@ The kernel forms `count` directly from `factor`. The wider temporary lives withi
   <TransmissionPlot kind="tail" />
 </FigurePlate>
 
-The kernel disables fast mathematics and permits fused multiply-add contraction. FMA rounds a multiply-add once, whereas separate instructions round its product first. Flush-to-zero and approximate intrinsics are different choices that can change the small-value behaviour. NVIDIA's floating-point guide describes those distinctions. Our tests cover the selected settings rather than assuming that the word CUDA guarantees a particular elementary-function accuracy. <Citation keys={["nvidia130FloatingPoint"]} />
+Use compiler settings consistent with the error you intend to measure. This kernel disables fast mathematics and permits fused multiply-add contraction: FMA rounds a multiply-add once, while separate instructions round the product first. Flush-to-zero and approximate intrinsics can alter small-value behaviour. NVIDIA's floating-point guide explains these choices. <Citation keys={["nvidia130FloatingPoint"]} />
 
 ### Fusing the work that is actually requested
 
@@ -687,9 +685,9 @@ Each CUDA thread handles one pixel, computing and writing only the outputs the c
   caption="Writing the requested transmission outputs"
 />
 
-This fusion saves launches and repeated image traffic, neither of which is desirable if we want matters to proceed at pace. With a per-pixel beam and all four outputs, the pointwise forward operation requests two binary32 reads and four writes: 24 bytes per pixel before cache effects and transaction overhead. A transmission-only call needs one read and one write, or 8 bytes per pixel. These are traffic counts from the source, not measured DRAM bandwidth. Validation scans and scalar reductions have their own traffic and must be accounted for separately.
+This fusion saves launches and repeated image traffic. With a per-pixel beam and all four outputs, the pointwise forward operation requests two binary32 reads and four writes: 24 bytes per pixel before cache effects and transaction overhead. A transmission-only call needs one read and one write, or 8 bytes per pixel. These are traffic counts from the source, not measured DRAM bandwidth. Validation scans and scalar reductions have their own traffic and must be accounted for separately.
 
-We also avoid adding shared-memory staging to a pointwise calculation with no cross-pixel reuse. It would introduce storage and synchronisation without reducing the compulsory image reads. The branch at the precision cutover is different: pixels can take different arithmetic paths, so mixed ordinary and extreme inputs belong in profiling workloads. We check the numerical results and repeat the device measurements after changing either arithmetic path.
+Shared memory offers no reuse in this pointwise calculation, so staging the inputs there would add storage and synchronisation. The precision branch is a more useful performance question: mixed ordinary and extreme optical depths send neighbouring threads through different arithmetic paths. Include that mixture when measuring the kernel.
 
 Differentiating with respect to optical depth and the open-beam mean gives
 
@@ -717,7 +715,7 @@ The derivative is that of the declared smooth real-valued map, evaluated approxi
 
 Reusing rounded forward outputs is especially dangerous here. A large incoming weight can make $\bar T e^{-L}$ representable even when stored transmission is zero. A small open-beam mean and a large count cotangent can similarly produce a useful product after stored counts have underflowed. For removed fraction, `1 - stored_removed` can already be zero. The VJP therefore recomputes the factor from the original optical depth and forms weighted products in binary64 registers. It also computes the open-beam derivative directly: dividing counts by the open beam would fail at the perfectly valid input $n_0=0$.
 
-There is one local open-beam derivative per pixel when the beam is an active image. When the active beam is a single shared device value, its gradient instead sums $\bar\lambda_p e^{-L_p}$ over all pixels. The implementation forms binary64 partial sums in tiles of 256 pixels and reduces those partials through a fixed tree. The tree allocation, later reduction levels and final cast use the shared reduction code also used by projection and objectives, while the first stage retains this operator's range-sensitive products. This avoids sending every thread to contend for the same global scalar. It also avoids retaining a full-sized array of binary64 contributions: only the much smaller tree of partials is persistent. A separate reduction pass rereads optical depth and count cotangents. That cost is explicit, and the reduction must finish before its scalar result can be used.
+An active per-pixel beam needs one derivative per pixel. A shared beam instead needs the sum $\sum_p\bar\lambda_p e^{-L_p}$. Form binary64 partial sums in blocks, then reduce those partials through a tree. This bounds the persistent scratch and avoids a contended global update from every pixel. The separate reduction rereads optical depths and count cotangents, so include that traffic when comparing it with a fused alternative.
 
 <Source
   file="python/dpt/kernels/transmission.py"
@@ -731,19 +729,17 @@ The inverse helper follows the same rule: its VJP uses the original decrement an
 
 `prepare_transmission` binds a workspace to one CUDA stream and allocates its persistent diagnostics and any required scalar-reduction scratch. The caller allocates inputs, destinations and, for taped execution, gradient buffers. These buffers must remain alive until the stream has finished using them. Original inputs must also remain unmodified until backward completes, because recomputation deliberately reads them again. Two concurrent operations need separate workspaces or explicit serialisation: sharing an object in Python does not order GPU execution.
 
-The default checked call validates shape, dtype, device, capacity and actual memory-range overlap, then scans device values before launching numerical writes. It rejects unsupported layouts, so the caller must explicitly prepare contiguous inputs. An invalid depth is still invalid when illumination is zero: multiplying it by zero would conceal an upstream error. Failure diagnosis may copy the offending input back to identify its index, while a successful checked call only needs the small status result on the host.
+Validate array layout, device, length and memory overlap before launching the kernel. Check finite, nonnegative physical inputs as well. These checks belong at a deliberate boundary: the default call performs them, while `validate=False` lets a composition that already guarantees valid values omit the device scan and its synchronisation. Each new trial input still has to satisfy the same contract.
 
-Inside a composition whose current inputs are already guaranteed valid, `validate=False` omits the content scan and its synchronisation. Metadata checks remain. This boundary is useful for a warmed CUDA graph or a device-resident optimisation loop, but it transfers responsibility for the current values to the caller. Mutating an array after checking it does not preserve a certificate of good behaviour. Compilation and allocation must happen before graph capture, and graph replay then reuses the same buffers and launch structure.
+Prepare kernels and buffers before CUDA graph capture. Replay can then reuse the same addresses and launch structure. If one operation produces an input on another stream, express that dependency with an event and wait.
 
-Passing a tape explicitly records the library's custom first-order backward callback through Warp's `Tape.record_func`. Warp provides this hook for custom reverse work and tracks the participating arrays, while our adapter supplies the VJP and its buffer-consumption rules. <Citation keys={["warp117Tape"]} /> A shared input can influence the objective through several downstream operations, so its cotangent must add their contributions rather than overwrite an earlier one. Our adapter therefore accumulates input cotangents. It consumes ordinary output cotangents after all local contributions have been read, while explicitly retained gradients remain available. Before an independent reverse pass, `tape.zero()` clears the previous derivative sums so they are not included in the new calculation.
+Warp's `Tape.record_func` lets us connect this hand-written VJP to an enclosing reverse pass. <Citation keys={["warp117Tape"]} /> The callback must add contributions to shared input cotangents, consume ordinary output cotangents only after reading them, and preserve explicitly retained gradients. Call `tape.zero()` before an independent reverse pass so that it starts with empty derivative sums.
 
 After backward, `workspace.check_status()` waits for the owning stream and reports gradient-range failure before the optimiser accepts the result.
 
-Cross-stream producers and consumers require explicit events and waits. Internal stream scopes disable Warp's automatic entry synchronisation: once ownership is established, inserting another event and wait into every call would add ordering work without supplying a missing dependency.
+This VJP supplies first derivatives. The interface rejects attempts to record it for higher-order differentiation, which would need a derivative of the backward calculation itself.
 
-A VJP recorded on an enclosing tape is rejected: this operator supports first derivatives, and silently returning zero for a second derivative would be an especially unhelpful form of optimism.
-
-Supporting second derivatives would require another defined and independently verified differentiation boundary. [Chapter 5](/chapters/differentiating-projection/) develops the broader derivative execution problem once transmission is composed with geometry and integration.
+[Chapter 5](/chapters/differentiating-projection/) will compose this reverse operation with the derivatives of geometry and path integration.
 
 ## 2.7 Checks before adding geometry
 
@@ -806,7 +802,7 @@ For this smooth function, truncation error decreases quadratically with $h$ unti
 
 ### An oracle that does not repeat the kernel
 
-The test reference converts each supplied binary32 value into its exact decimal value before evaluating the mathematics at high precision. Comparing a GPU input rounded from a decimal literal with the unrounded literal would charge input quantisation to the kernel. The reference uses independent scalar `Decimal` expressions and explicit binary32 rounding, and it never calls the CUDA helper to obtain the expected answer. Increasing reference precision checks that the oracle itself has settled.
+Build the reference separately from the kernel. Convert the supplied binary32 value exactly before evaluating the formula at higher precision, then round the expected result to the output type. Otherwise, comparing a rounded GPU input with the original decimal literal charges input quantisation to the kernel. The scalar `Decimal` implementation below provides that independent path.
 
 <Source
   file="python/dpt/validation/transmission.py"
@@ -814,11 +810,11 @@ The test reference converts each supplied binary32 value into its exact decimal 
   caption="Closed-form reference paths"
 />
 
-These fixtures validate transmission at known optical depths. The ray integrator must independently recover those depths from the geometry and material field.
+Use these cases first with directly supplied optical depths, then reuse their expected answers when testing the ray integrator in Chapter 4.
 
-For normal outputs, the value tests use a budget of four binary32 units in the last place (ULPs) for transmission, removed fraction and the inverse, and eight for expected counts. A ULP measures spacing between neighbouring representable values at the result's magnitude. Subnormal results have their own one-ULP budget, and exact cases such as log negation are checked directly. The budgets are acceptance criteria, not statements that every value reaches the limit. Each independently requested output is compared with its own correctly rounded reference.
+Compare each output with its own rounded reference. Measure exponential error in units in the last place (ULPs), the spacing between neighbouring representable values; test the exact log negation separately.
 
-VJPs need a different error scale. Two large weighted contributions can nearly cancel, leaving a small correct gradient. Dividing the error by that residual would make the apparent relative error arbitrarily large. We instead scale the acceptance bound by the magnitudes of the contributing terms, with explicit rounding allowances, and scalar beam gradients also account for the reduction depth. The tests include cancellation, zero illumination, extreme weights and subnormal inputs.
+For VJPs, scale error by the magnitudes of the weighted contributions. Two large terms can nearly cancel, so dividing by their small residual would give a misleading relative error. Include the reduction depth when bounding a shared-beam gradient, and test cancellation as well as ordinary positive values.
 
 <Source
   file="python/dpt/validation/transmission.py"
@@ -826,21 +822,15 @@ VJPs need a different error scale. Two large weighted contributions can nearly c
   caption="Checking transmission derivatives across step sizes"
 />
 
-The finite-difference helper accepts a callback to the actual GPU operator. It checks that perturbed inputs remain distinct after binary32 rounding and retains every admissible step. At an interior point, agreement should improve over a range of steps before storage rounding dominates, while at zero, the helper uses a second-order one-sided stencil. Selecting only the smallest step would often select the least informative comparison. Agreement with both the independent analytic VJP and the directional sweep checks different failure modes.
+This helper calls the GPU operator at each perturbation. Verify that the perturbed inputs remain distinct after storage rounding. In the interior, look for improving agreement before round-off dominates. At zero optical depth, use the second-order one-sided stencil. The analytic VJP and this directional sweep provide complementary checks.
 
-### Execution is part of correctness
+### Reusing and timing the kernel
 
-A formula test cannot detect every GPU integration error. We therefore also need empty batches, lengths that leave a partial tile, and a scalar reduction large enough to require several levels. Reusing a large workspace for a smaller batch must not include stale partial sums. Output masks, fixed and active beam representations, overlapping array views, non-default streams and graph replay each exercise a distinct part of the contract. Tape tests compose transmission with surrounding kernels so that missing contributions or incorrectly consumed cotangents become observable.
+Exercise the workspace across repeated calls and changing batch sizes: a smaller batch must not inherit partial sums from the previous one. Clear scratch storage and consume adjoint seeds according to the rules in section 2.6.
 
-Device timing begins after compilation and warm-up. Checked-call timing includes the validation scan and status synchronisation, while CUDA-event batches measure the warmed stream interval, including gaps while the host submits work. Isolated per-kernel durations come from the profiler. Forward and backward measurements record requested outputs, pixel count, beam representation, precision settings, scratch size and launch structure. A short runtime without that context cannot tell us whether an optimisation removed work, hid a transfer or simply measured a smaller problem. Memory and synchronisation tools complement numerical tests, but a clean run in either category does not replace the other.
+Time warmed calls with the outputs your renderer needs. Include validation and synchronisation in the application cost; isolate kernel time when comparing fusion or reduction designs.
 
-<Source
-  file="experiments/transmission-contract/run.py"
-  region="transmission-experiment"
-  caption="Running and validating the transmission operator"
-/>
-
-To form an image, every detector pixel needs the correct path through the object. [Chapter 3](/chapters/frames-geometry-motion/) fixes the coordinate conventions for those paths and for moving the object while leaving its material attenuation coefficients unchanged.
+Once these checks pass, `transmit()` and its VJP can serve as the detector-facing part of your renderer. They accept optical depth without needing to know how it was obtained. To supply that array from an object, we next need a physical path for every detector pixel. [Chapter 3](/chapters/frames-geometry-motion/) builds those paths and their pose convention.
 
 <Bibliography
   keys={[
@@ -852,13 +842,3 @@ To form an image, every detector pixel needs the correct path through the object
     "warp117Tape",
   ]}
 />
-
-<Provenance
-  status="generated"
-  sourceCommit={transmissionRun.source_commit.slice(0, 12)}
-  updated={transmissionRun.finished_utc.slice(0, 10)}
->
-  Transmission plates are generated from the canonical CUDA library. The linked
-  run record identifies source and environment, while the validation data
-  distinguish numerical stress inputs from physical measurement data.
-</Provenance>

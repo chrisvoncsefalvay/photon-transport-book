@@ -391,10 +391,9 @@ const rotationRange = recordedRange(
         frame.
       </p>
       <p>
-        Projection and sensitivity colours use the recorded display scales. The
-        browser selects recorded projections, subtracts their stored counts in Δ
-        mode and transforms the supplied surfaces. It does not calculate photon
-        transport. <a href={assetUrl(data.provenance.url)}
+        Projection and sensitivity colours use fixed display scales. Each pose
+        selects a precomputed projection and its corresponding surface
+        transform. <a href={assetUrl(data.provenance.url)}
           >{data.provenance.label}</a
         >. Bone-label source: <a href="https://doi.org/10.5281/zenodo.10047292"
           >TotalSegmentator v2, CC BY 4.0</a

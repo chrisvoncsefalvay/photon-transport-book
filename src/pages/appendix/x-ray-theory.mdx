@@ -15,7 +15,7 @@ import ExactIllustrations from "../../components/figures/ExactIllustrations.astr
 import AnatomyFigure from "../../components/figures/AnatomyFigure.astro";
 import CArmFigure from "../../components/figures/CArmFigure.astro";
 
-Just as it's not necessary to be Ansel Adams in order to be competent at rendering, you do not need to know everything a radiologist knows (or at least ought to know) in order to be proficient at differentiable photon transport. It does, however, help to speak the same language. The purpose of this appendix is to reach that same language, and the understanding that's behind it.
+Just as it's not necessary to be Ansel Adams in order to be competent at rendering, you do not need to know everything a radiologist knows (or at least ought to know) in order to be proficient at differentiable photon transport. It does, however, help to speak the same language.
 
 An X-ray image is at the end of a measurement chain. An object attenuates the beam, a detector responds to the radiation that reaches it, and processing turns that response into a picture. Attenuation, transmitted radiation, detector output and displayed brightness have different units and statistics. A bright patch in a clinical image is not a material property you can copy into a renderer. To interpret it, you need to know how the image was acquired and processed.
 
@@ -43,13 +43,13 @@ In a projection, a foreground surface does not simply hide everything behind it 
 
 At diagnostic energies, the refractive index of body materials is very close to unity. Conventional projection radiography uses no image-forming lens and usually neglects refraction: the useful contrast comes chiefly from transmission through the volume. X-ray lenses and mirrors do exist, but they are not how an ordinary radiograph forms its image. For its primary beam, the natural mathematical object is a line integral of attenuation, rather than a visible surface with a shading model. <Citation keys={["dance2014"]} />
 
-Light and dark deserve a moment of care. Photographic film is sensitive to X-rays, but conventional screen–film radiography usually records light produced by an intensifying screen. After development and fixing, exposed regions are darker and unexposed regions remain transparent. On an illuminated film negative, strongly attenuating structures appear lighter and are called _radiopaque_. This is _radiopacity_. Weakly attenuating structures are _radiolucent_. These are conventions for that presentation, not an immutable relationship between material and displayed grey level. <Citation keys={["dance2014"]} /> To prevent us from getting more confused than we need to, DICOM distinguishes the relationship between stored values and incident X-ray intensity from the transformations used to present those values. It keeps track of how we arrive at displayed pixels separately from how the stored signal relates to the radiation. <Citation keys={["dicomPS33"]} />
+Light and dark deserve a moment of care. Photographic film is sensitive to X-rays, but conventional screen–film radiography usually records light produced by an intensifying screen. After development and fixing, exposed regions are darker and unexposed regions remain transparent. On an illuminated film negative, strongly attenuating structures appear lighter and are called _radiopaque_. This is _radiopacity_. Weakly attenuating structures are _radiolucent_. These are conventions for that presentation, not an immutable relationship between material and displayed grey level. <Citation keys={["dance2014"]} /> DICOM distinguishes how stored values relate to incident X-ray intensity from the transformations used to display them. <Citation keys={["dicomPS33"]} />
 
 <ProjectionSandbox id="figure-projection-sandbox" />
 
 ## A.2. Anatomical directions and projection names
 
-The second convention that we will need to wrap our heads around is directional terminology. Most of differentiability is about pose, and that of course presupposes a definition of what's where.
+To differentiate an image with respect to pose, we first need a coordinate convention.
 
 Clinical directions are defined relative to the patient, not the monitor or the room. _Anterior_ means towards the front of the body and _posterior_ towards the back. _Superior_ is towards the head and _inferior_ towards the feet. _Medial_ means towards the midline and _lateral_ away from it. For a limb, _proximal_ is nearer its attachment to the trunk and _distal_ farther away. A patient lying face upwards is _supine_. A patient lying face downwards is _prone_.
 
@@ -175,7 +175,7 @@ $$
 
 This is the Beer–Lambert model for uncollided radiation. It describes the surviving primary beam. Scattered photons collected by the detector require a separate contribution. <Citation keys={["dance2014"]} />
 
-Readers familiar with volume rendering have met this expression before: $T_p$ is the transmittance of an absorption-only volume model, with $\mu$ taking the role of the extinction coefficient. <Citation keys={["max1995"]} /> A differentiable X-ray renderer and a radiance-field renderer share this exponential transmittance. The spectrum, detector and measurement statistics determine what must be built around it. A familiar exponential does not make the rest optional.
+Readers familiar with volume rendering have met this expression before: $T_p$ is the transmittance of an absorption-only volume model, with $\mu$ taking the role of the extinction coefficient. <Citation keys={["max1995"]} /> We can reuse that exponential in an X-ray renderer, then compose it with spectral weighting, detector response and measurement statistics.
 
 A discrete implementation replaces the integral with a sum,
 
@@ -227,7 +227,7 @@ $$
 
 reducing it by approximately $18.6\%$.
 
-This calculation assumes a specified energy and material, a narrow primary beam, and no scattered contribution. It does not predict the complete signal from a clinical detector under a polychromatic exposure.
+This calculation describes a monoenergetic narrow primary beam through water. A clinical detector also integrates over the spectrum and may collect scattered photons, as the next sections explain.
 
 <ExactIllustrations
   kind="water-hvl"
@@ -311,7 +311,7 @@ $$
 
 where the basis functions $f_k$ describe the energy dependence and the coefficients $a_k$ describe its spatially varying contributions.
 
-A two-function basis has a physical motivation: away from absorption edges, photoelectric absorption and Compton scattering provide two different, smooth energy dependences that approximate attenuation in many body materials. Two sufficiently independent spectral measurements can then constrain their contributions, provided the measurement map is identifiable and adequately conditioned. Contrast-agent edges can require additional basis information. Counting two channels is not, on its own, a proof of anything. <Citation keys={["alvarez1976", "alvarez2017"]} />
+A two-function basis has a physical motivation: away from absorption edges, photoelectric absorption and Compton scattering provide two different, smooth energy dependences that approximate attenuation in many body materials. Two sufficiently independent spectral measurements can then constrain their contributions, provided the measurement map is identifiable and adequately conditioned. Contrast-agent edges can require additional basis information. <Citation keys={["alvarez1976", "alvarez2017"]} />
 
 ## A.7. Projection geometry, magnification, and blur
 
@@ -355,7 +355,7 @@ For inverse problems, source position, detector pose, principal point, and detec
 
 Some photons interact within the patient or surrounding objects and still reach the detector. Their contribution depends on the irradiated volume, composition, beam spectrum, geometry and scatter-rejection hardware. Scatter can vary substantially even when primary attenuation along a particular ray is unchanged. <Citation keys={["siewerdsen2001"]} />
 
-A differential cross-section describes how scattering probability varies with direction. For a free electron initially at rest, the Klein–Nishina formula describes Compton scattering and becomes increasingly forward-peaked as photon energy rises. Coherent scattering is also strongly forward-peaked and depends on the atomic form factor. Normalising an angular scattering distribution gives the corresponding phase function. Sampling such distributions is part of the stochastic transport planned for [chapter 9](/chapters/scattering-stochastic-transport/). Material models must also account for binding effects when the free-electron approximation is insufficient. <Citation keys={["dance2014"]} />
+A differential cross-section describes how scattering probability varies with direction. For a free electron initially at rest, the Klein–Nishina formula describes Compton scattering and becomes increasingly forward-peaked as photon energy rises. Coherent scattering is also strongly forward-peaked and depends on the atomic form factor. Normalising an angular scattering distribution gives a phase function. A stochastic renderer samples outgoing directions from this distribution; [Chapter 9](/chapters/scattering-stochastic-transport/) develops the transport calculation. Material models include binding effects where the free-electron approximation is insufficient. <Citation keys={["dance2014"]} />
 
 At the level of expected detector signals, write
 
@@ -392,7 +392,7 @@ $$
 
 is the local scatter-to-primary ratio under these assumptions.
 
-This derivation explains contrast dilution under the stated local approximation. It does not assume that scatter is constant across the image. A post-processing offset may imitate some of its appearance, but it misses the dependence on anatomy and acquisition.
+This local approximation explains contrast dilution. Across a complete image, compute scatter as a spatially varying contribution determined by anatomy and acquisition geometry.
 
 Collimation limits the irradiated region and can reduce scatter. An antiscatter grid rejects some scattered radiation, but also attenuates some primary radiation. Cropping an image after acquisition does neither. <Citation keys={["dance2014"]} />
 
@@ -474,11 +474,11 @@ This approximation deteriorates at low counts. A zero count has no finite logari
 
 <span id="figure-radiograph-noise" />
 
-The [recorded pelvic patches in Chapter 7](/chapters/same-pose-different-x-ray/#figure-radiograph-noise) show the same expected image at four count levels, with one fixed display window. The original sampling records distinguish a change in photon statistics from a change in displayed contrast.
+The [simulated pelvic patches in Chapter 7](/chapters/same-pose-different-x-ray/#figure-radiograph-noise) show one expected image at four count levels. A fixed display window lets us compare the noise directly.
 
 ### Indicative magnitudes
 
-Some scales help, provided we do not promote them into specifications. The IAEA handbook gives tube-potential ranges of 25–40 kV for mammography and 40–150 kV across general diagnostic radiology. It describes routine focal spots of 0.6–2.0 mm and fine spots of 0.3–1.0 mm, while mammography commonly uses 0.3 mm for contact imaging and 0.1 mm for magnification. Its flat-panel examples include a 200 μm sampling pitch. Actual hardware and protocols vary. <Citation keys={["dance2014"]} />
+The IAEA handbook gives representative tube-potential ranges of 25–40 kV for mammography and 40–150 kV across general diagnostic radiology. It describes routine focal spots of 0.6–2.0 mm and fine spots of 0.3–1.0 mm, while mammography commonly uses 0.3 mm for contact imaging and 0.1 mm for magnification. Its flat-panel examples include a 200 μm sampling pitch. These scales help when choosing a model’s spatial and spectral resolution. <Citation keys={["dance2014"]} />
 
 Detector exposure changes substantially between acquisition modes. A worked radiographic example in the handbook uses 2.5 μGy at the detector and a 115 cm source-to-image distance. Its full-field flat-panel fluoroscopy discussion gives 30–55 nGy per pulse. These are detector exposures, not patient entrance doses. Adult chest and abdominal examples use antiscatter grid ratios of 10:1 or 12:1. Those ratios describe grid geometry, not the fraction of scatter removed. <Citation keys={["dance2014"]} />
 
@@ -505,7 +505,7 @@ Resolving a high-contrast metal edge and detecting a faint soft-tissue feature p
 
 ## A.11. CT values and Hounsfield units
 
-A CT image is reconstructed from projection measurements. Its voxel values depend on the acquisition spectrum, calibration, reconstruction method, spatial resolution and artefacts. The volume estimates attenuation-related properties, but it does not directly inventory the patient’s materials. <Citation keys={["dance2014"]} />
+A CT image is reconstructed from projection measurements. Its voxel values depend on the acquisition spectrum, calibration, reconstruction method, spatial resolution and artefacts. The volume estimates attenuation-related properties under that acquisition and reconstruction model. <Citation keys={["dance2014"]} />
 
 Conventional CT numbers are expressed in **Hounsfield units**, or **HU**, using
 
@@ -560,7 +560,7 @@ $$
 \left(1+\frac{\mathrm{HU}}{1000}\right).
 $$
 
-This is an approximation for constructing a scalar attenuation field at a chosen energy $E_\ast$. It assumes that the CT values can be interpreted consistently with that energy and the chosen material model. The assumption needs to be stated.
+This approximates a scalar attenuation field at a chosen energy $E_\ast$, assuming the reconstructed CT values are consistent with that energy and material model.
 
 There is no universal conversion from HU to $\mu(E)$ at arbitrary energies. Calibration to physical properties needs assumptions about composition and the acquisition system. Stoichiometric calibration methods make those assumptions explicit and use calibration measurements rather than a universal image-value conversion. <Citation keys={["schneider1996"]} />
 
@@ -719,9 +719,9 @@ $$
 
 A single noiseless monochromatic transmission determines the product $\mu t$, but cannot independently determine both attenuation and thickness. Perfect derivatives do not remove this ambiguity. Autodiff has no jurisdiction over missing information. Additional views, spectral measurements, known geometry, or justified material information may supply the missing constraints.
 
-In larger inverse problems, pose, material properties, source output and processing parameters can compensate for one another unless the measurements constrain them sufficiently. A low loss shows that the model fits the selected observations. It does not establish a unique physical interpretation for every recovered parameter.
+In larger inverse problems, pose, material properties, source output and processing parameters can compensate for one another unless the measurements constrain them sufficiently. Independent calibration or additional measurements constrain those competing explanations.
 
-Keep the renderer’s output explicit. Label optical depth, transmission, detector expectation and noisy measurements as such, and keep display processing separate. Then a simplification can be judged against the task it needs to support, without first having to guess what its pixels mean.
+Choose the output domain when building the renderer: optical depth for a line-integral model, transmission for a primary-beam model, or detector expectation after spectral and detector weighting. Add observation noise and display processing as separate operations. This keeps each derivative tied to the quantity used by the inverse problem.
 
 <Bibliography
   keys={[

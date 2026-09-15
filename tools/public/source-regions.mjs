@@ -3,6 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { normaliseRepositoryPath } from "./lib/files.mjs";
+import { isPrivateExperimentPath } from "./lib/private-experiments.mjs";
 
 const START_MARKER =
   /^\s*(?:#|\/\/)\s*region\s+book:([A-Za-z][A-Za-z0-9._-]*)\s*$/;
@@ -108,6 +109,12 @@ export function sourceUrl({
   publicBuild = false,
 }) {
   const relativePath = normaliseRepositoryPath(filePath, "source file");
+  if (publicBuild && isPrivateExperimentPath(relativePath)) {
+    throw new SourceRegionError(
+      "Private experiment source cannot be used in a public build",
+      { filePath: relativePath },
+    );
+  }
   if (!repositoryUrl || !commit) {
     return null;
   }
@@ -143,6 +150,12 @@ export async function extractSourceRegion({
   publicBuild = false,
 }) {
   const relativePath = normaliseRepositoryPath(filePath, "source file");
+  if (publicBuild && isPrivateExperimentPath(relativePath)) {
+    throw new SourceRegionError(
+      "Private experiment source cannot be used in a public build",
+      { filePath: relativePath },
+    );
+  }
   const absoluteRoot = path.resolve(root);
   const absolutePath = path.resolve(absoluteRoot, relativePath);
   if (

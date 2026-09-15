@@ -20,7 +20,7 @@ We will retain straight, uncollided paths and let photon energy vary. The geomet
 
 The result is an expected primary signal. Scatter requires the additional paths in Chapter 9.
 
-This chapter supplies the physical operators used inside [Chapter 7's joint evaluator](/chapters/same-pose-different-x-ray/#listing-7-3). The existing geometric projector will integrate one field per material. `spectral_signal` will consume those paths, supplied attenuation tables and response-weighted photon populations. Its image feeds the detector and objective, and its reverse product supplies material-path seeds to the same projector. Keeping those boundaries explicit lets us change the energy model without rewriting ray geometry.
+Reuse the geometric projector to integrate one field per material, then pass those material paths to `spectral_signal`. That second operation combines them with attenuation tables and response-weighted photon populations. Its output enters the detector model and objective. In reverse, it returns material-path seeds to the projector. This is the chain needed by [Chapter 7's joint evaluator](/chapters/same-pose-different-x-ray/#listing-7-3), and it lets us change the energy model without changing ray geometry.
 
 ## 8.1 The source spectrum and its units
 
@@ -60,7 +60,7 @@ The source shape may depend on pixel through filtration or angular emission. A s
   caption="Converting a spectrum to photon populations"
 />
 
-This is a small host-side preparation operation. The repeated image calculation receives already prepared CUDA arrays and never asks Python to reconstruct a spectrum for each pixel. `Provenance` records the original source identity, checksum and rights alongside its description. Those fields identify the supplied input, but they do not certify its calibration. An analytic spectrum must name its defining construction rather than borrowing the name of a real X-ray tube.
+Prepare the spectrum once, then keep its photon populations in CUDA arrays across image evaluations. Attach the source model, units, energy grid and calibration information to the input so that a later change of spectrum has a defined physical meaning.
 
 ## 8.2 Energy-dependent material attenuation
 
@@ -106,9 +106,11 @@ $$
 
 The basis in [equation (8.3)](#equation-8-3) separates spatial integration from energy evaluation. $A_{pm}$ has units of millimetres, and it is a literal material length when $a_m$ is a material indicator. A fitted basis field can instead be a relative concentration, so its interpretation must follow its definition. The basis is a modelling assumption: a single CT number does not uniquely specify all its coefficients, as discussed in [Appendix A.11](/appendix/x-ray-theory/#a11-ct-values-and-hounsfield-units).
 
+This separation also underlies Alvarez–Macovski spectral reconstruction: energy-dependent basis functions multiply spatial coefficients, whose line integrals determine the measurements under each spectrum. That reconstruction solves for the line integrals from spectral measurements. Here we project supplied material fields to obtain them, then evaluate the same form of spectral forward map. Choosing material reference curves as our basis makes those paths directly interpretable in the renderer. <Citation keys={["alvarez1976", "alvarez2017"]} />
+
 Interpolation needs the same care as the field representation. Preserve non-negative coefficients and distinguish the two sides of an absorption edge. Smoothing a discontinuity into a continuous curve changes the spectral operator near that edge. Refining the energy quadrature cannot repair a coefficient table that has already removed the feature. XCOM supplies values immediately above and below constituent absorption edges, reflecting the discontinuities that a material mixture inherits. Its isolated-atom data also have limits near edges where molecular or solid-state effects matter. <Citation keys={["xcom"]} />
 
-`MaterialTable` performs that preparation without bundling a material database. A mass table requires its reference density, while a linear table rejects another density factor because it already contains one. The conversion property returns inverse millimetres, the unit needed by our millimetre paths. It also rejects a conversion that overflows or turns a positive coefficient into zero.
+Construct `MaterialTable` from the coefficient values and their units. Supply reference density for mass attenuation coefficients, then convert to inverse millimetres before combining them with millimetre paths. A linear attenuation table already includes density. Check that unit conversion preserves finite positive values.
 
 <Source
   file="python/dpt/materials.py"
@@ -116,7 +118,7 @@ Interpolation needs the same care as the field representation. Preserve non-nega
   caption="Material coefficients, units and absorption edges"
 />
 
-Two equal adjacent energies encode the below-edge and above-edge values in that order. `at_energies` requires an explicit side for an exact-edge query and interpolates between distinct neighbouring nodes elsewhere. Its default log–log interpolation requires positive coefficients, while the linear option permits zero. Neither extrapolates beyond the supplied support. These are declared numerical interpretations of a table, not additional physical measurements, and the coefficient uncertainty remains after interpolation has been performed perfectly.
+Represent an absorption edge with two adjacent entries at the same energy: below-edge value first, above-edge value second. `at_energies` then requires a side for an exact-edge query and interpolates between distinct neighbouring nodes elsewhere. Use log–log interpolation for positive coefficients or the linear option when zero is allowed, staying within the supplied energy support.
 
 ## 8.3 Polychromatic transmission
 
@@ -177,9 +179,9 @@ $$
   Normalised transmitted energy weighting after thickness d (keV⁻¹).
 </EquationNote>
 
-The slope in [equation (8.6)](#equation-8-6) is the surviving population's average coefficient. Its decline with thickness follows from the coefficient variance. When attenuation decreases with energy over the relevant band, this reweighting preferentially retains higher energies: beam hardening. Absorption edges can complicate the ordering by energy, while the variance identity still holds for fixed non-negative coefficients and weights.
+As the slab thickens, components with smaller attenuation coefficients contribute more of the surviving signal. The slope of its apparent optical depth is their weighted mean coefficient, and its derivative with respect to thickness is the negative coefficient variance ([equation (8.6)](#equation-8-6)). When attenuation decreases with energy over the relevant band, this preferential survival of higher energies is beam hardening. Absorption edges can complicate the energy ordering without invalidating the variance identity for fixed non-negative coefficients and weights.
 
-An exact two-energy example makes the effect visible without inventing a tube spectrum. Assign equal incident counting weights and illustrative coefficients $0.02$ and $0.04\,\mathrm{mm}^{-1}$. At $d=50\,\mathrm{mm}$,
+For an analytic two-energy beam, assign equal incident counting weights and illustrative coefficients $0.02$ and $0.04\,\mathrm{mm}^{-1}$. At $d=50\,\mathrm{mm}$,
 
 $$
 \begin{gathered}
@@ -189,7 +191,7 @@ $$
 \end{gathered}
 $$
 
-[Equation (8.7)](#equation-8-7) compares an exact transmitted mixture with the mean optical depth. The numbers define an analytic test, not tissue properties or a measured beam. At increasing thickness the lower coefficient contributes an increasing fraction of the surviving signal. Replacing the mixture by one fixed effective coefficient can match one thickness without matching the next.
+[Equation (8.7)](#equation-8-7) compares the transmitted mixture with the mean optical depth. As thickness increases, the lower coefficient contributes more of the surviving signal. One fixed effective coefficient can therefore match one thickness and miss the next.
 
 [Figure](#figure-8-1) shows how the transmitted mixture changes with thickness.
 
@@ -227,7 +229,7 @@ The coefficient $c_{pk}$ in [equation (8.8)](#equation-8-8) already includes an 
 
 Each material path is reused across energy nodes. This saves repeated volume traversal when the basis is exact for the chosen field model. It also makes the sources of approximation separable: ray quadrature determines $A_{pm}$, material representation determines which fields exist, and energy quadrature determines the final sum. Doubling all three resolutions at once can reduce error without revealing its source.
 
-The geometric composition uses the sampler and finite-ray quadrature already developed in [Chapter 4](/chapters/volumes-line-integrals/). `prepare_material_projection` binds material-major field and output views once. `project_material_paths` then schedules the canonical projector for each material. The Python loop runs over the small material count, while CUDA threads still perform every ray integral. Its output layout is `(material, pixel)`, flattened with pixels contiguous, so adjacent pixel threads read adjacent path values for a given material.
+Apply [Chapter 4's sampler and finite-ray quadrature](/chapters/volumes-line-integrals/) to each material field. Bind the field and output views once with `prepare_material_projection`, then let `project_material_paths` schedule a projection per material. CUDA threads perform the ray integrals. Store the results as `(material, pixel)` with pixels contiguous, so adjacent threads read adjacent paths for a given material.
 
 <Source
   file="python/dpt/material_projection.py"
@@ -235,9 +237,9 @@ The geometric composition uses the sampler and finite-ray quadrature already dev
   caption="Projecting material paths in millimetres"
 />
 
-The adapter's default `field_domain="fractions"` adopts a narrower basis than the general fields in [equation (8.3)](#equation-8-3): fixed-density material fractions lie in `[0, 1]` and sum to at most one at each voxel, and the remainder is vacuum. They use the same oriented sample-centre grid and constant extension to its half-cell support faces as the scalar projector.
+Choose the meaning of each input field before projecting it. With `field_domain="fractions"`, the fields are fixed-density material fractions in `[0, 1]`, their voxelwise sum is at most one, and any remainder is vacuum. Use the oriented sample-centre grid and constant extension to its half-cell support faces defined for the scalar projector.
 
-The validator accumulates stored fractions in binary64 and allows an excess of at most $2^{-24}$ above one: independently rounding a nonnegative partition to binary32 can create that much excess without changing its intended occupancy. Individual fractions must still lie in `[0, 1]`. Larger violations are rejected, never rescaled to sum to one. Silent renormalisation would change material amounts and their derivatives while leaving the array shape reassuringly intact.
+Check the fraction sum in binary64. Independently rounding a nonnegative partition to binary32 can leave an excess of at most $2^{-24}$ above one, which the validator allows. Each fraction must still lie in `[0, 1]`. Reject larger violations instead of renormalising the fields: changing their fractions would change the material being projected.
 
 The explicit `field_domain="nonnegative"` option instead accepts finite, nonnegative dimensionless equivalent-basis coefficients without upper or sum caps. Those coefficients are not volume fractions: their normalisation belongs in the supplied basis attenuation, in $\mathrm{mm}^{-1}$.
 
@@ -249,7 +251,7 @@ With paths available, `spectral_signal` launches the following pixel-owned sum. 
   caption="Summing the transmitted spectral contributions"
 />
 
-`optical_depth` combines material paths and coefficients in binary64. The exponential and the weight–response product retain that precision until the final store. Calling the scalar `transmit` interface on a prematurely narrowed depth would change this numerical contract. The physics is still [the same exponential survival law](/chapters/transmission/#26-evaluating-transmission-numerically), but its spectral inputs need the wider intermediate sum.
+Accumulate material paths times coefficients in binary64 inside `optical_depth`, and retain that precision through the exponential and weight–response product. Round only at the destination. This postpones rounding until each spectral contribution to [the exponential survival law](/chapters/transmission/#26-evaluating-transmission-numerically) has been formed.
 
 By default, paths and image outputs use binary32 storage. Setting `SpectralSpec(precision="float64")` retains binary64 paths, image means, image cotangents and path cotangents; the supplied coefficients, weights and response remain binary32. [Chapter 12](/chapters/reconstruction/) uses this option because rounding a predicted count can obscure the small loss decrease near a solution. Retaining precision through the loss and its reverse products lets the line search see the improvement that the gradient predicts.
 
@@ -273,7 +275,7 @@ $$
 
 [Equation (8.9)](#equation-8-9) evaluates the same positive sum in log space. Zero-weight terms are omitted, and if all weights vanish, the expected signal is zero and its logarithm is not finite. This numerical rearrangement does not authorise inserting a positive floor into the physical measurement model.
 
-The `spectral_signal` API returns the linear expected mean in its declared storage precision; it does not expose a spectral log-mean output. Binary64 intermediates extend the useful arithmetic range before storage, but cannot preserve a linear output below the destination's range. The retained-binary64 mode also rejects a nonzero exponential or intermediate product that rounds to zero: a later large factor could make the full contribution representable, so silently discarding it would be wrong. Taking a logarithm of the stored zero would not implement [equation (8.9)](#equation-8-9). A log-domain output would have to evaluate the log sum before rounding to the linear destination.
+Choose the output domain before choosing its storage. `spectral_signal` returns a linear mean, with binary64 intermediates and a binary32 or binary64 destination. A log-mean output would instead need to evaluate [equation (8.9)](#equation-8-9) before rounding to linear storage. In the retained-binary64 mode, an intermediate that underflows is rejected because a later large factor could make the full contribution representable.
 
 ## 8.5 What the detector measures
 
@@ -323,7 +325,7 @@ $$
 
 [Equation (8.11)](#equation-8-11) assumes a linear, specified spatial response. A shift-invariant blur is a special case. For a lossless redistribution on a complete readout, column sums equal one, while cropped boundaries or detection losses require different accounting. An energy-dependent blur belongs inside the spectral integral, so a single post-integral matrix is justified only when that separation is valid.
 
-The implemented `BlurSpec` declares a fixed, non-negative finite stencil with total weight at most one. Its array is a matrix rule on a finite detector: samples outside the image are zero. The same kernel factory produces `blur` and `blur_transpose`, changing the offset direction while retaining the weights and boundary support.
+Represent a fixed spatial response with `BlurSpec`: a non-negative finite stencil of total weight at most one, with zero outside the detector. Construct its transpose by reversing the offset direction while retaining the weights and boundary support. The shared kernel factory below generates both operations from that rule.
 
 <Source
   file="python/dpt/kernels/detector.py"
@@ -331,7 +333,7 @@ The implemented `BlurSpec` declares a fixed, non-negative finite stencil with to
   caption="The detector response and its discrete transpose"
 />
 
-Flipping the offsets is necessary for an asymmetric stencil. Applying the forward blur to a reverse seed would give the wrong product unless the actual finite matrix happened to be symmetric. Nor do we renormalise an edge row to conceal lost signal: that would alter the forward operator and its transpose. The small stencil uses binary64 storage and compensated binary64 accumulation, because a weak tail multiplied by a bright pixel can still contribute representable signal. Tests pair the forward and transpose products with an asymmetric stencil, so symmetry cannot let an incorrect reverse rule pass unnoticed.
+Use an asymmetric stencil when checking the forward–transpose pairing. A symmetric example can hide an accidental reuse of the forward operation. Keep the finite detector boundaries in both directions, including signal lost outside the image. Binary64 stencil storage and compensated accumulation retain weak tails whose products with bright pixels remain significant.
 
 Mean blur alone does not determine noise correlations. Model a Poisson population of independent photon events, and let $Q_p(E)$ be one event's output in pixel $p$. For a single incident stream with spectral intensity $n(E)$, compound-Poisson statistics give
 
@@ -372,7 +374,7 @@ Exclusive assignment of independent Poisson events to different pixels can yield
 
 Only after choosing this observation model should we choose a discrepancy. Independent Poisson bins justify a Poisson count likelihood under the corresponding assumptions. A Gaussian approximation needs an appropriate count regime and covariance model. Applying a negative logarithm changes both the noise distribution and its sensitivity to calibration, especially near zero signal.
 
-Observation generation is a separate API. `sample_poisson_counts` consumes count-domain means and writes integer draws. `sample_compound_poisson` consumes energy-bin arrival rates and prescribed per-event scores, sums the scored draws, and can be followed by `add_gaussian_read_noise`. This implements independent Poisson arrivals with the declared deterministic scores, and it does not infer a charge-sharing event law from a blur kernel or from the mean response alone.
+Generate observations after evaluating the expected image. For counts, `sample_poisson_counts` draws integers from count-domain means. For fixed per-event scores, `sample_compound_poisson` draws arrivals in energy bins and sums their contributions. Add electronic noise with `add_gaussian_read_noise` when required. A charge-sharing detector needs its own joint event response, as derived above.
 
 `ObservationIdentity` attaches randomness to an observation and global pixel, with separate domains for energy bins and read noise. Keeping that identity reproduces a draw when an image is processed in different chunks, while a fresh observation requires a fresh identity. `energy_offset` selects the first energy-bin counter domain, so chunks can share the same observation without reusing a bin.
 
@@ -424,7 +426,7 @@ $$
 
 Shared parameters need a further sum over pixels. Separate bounded reductions handle shared spectrum, response and coefficient derivatives, and they do not let every pixel atomically update one scalar. The coefficient reduction reuses the computed energy depth across material parameters while preserving each parameter's accumulation order. `wp.static` removes inactive output branches, so fitting pose alone does not also compute an unused calibration Jacobian.
 
-Original arrays remain unchanged until their reverse consumers finish. The manual spectral VJP rejects ambient tape recording and supplies first derivatives only, and it does not differentiate energy nodes or host table interpolation. [Chapter 7's evaluator](/chapters/same-pose-different-x-ray/#listing-7-3) currently activates material paths to recover pose, with named gain/exposure/offset groups outside this operator. The lower-level spectrum and response derivatives are available for a separately constrained inverse model, but their presence alone does not establish identifiability.
+Keep the original arrays unchanged until their reverse consumers finish. Wire the spectral material-path derivatives into the projector VJP, and handle gain, exposure and offset in the calibration operation. The manual spectral VJP computes first derivatives at fixed energy nodes and fixed table interpolation. It runs outside ambient tape recording. Spectrum and response derivatives can use the same interface when the inverse model includes those parameters.
 
 Normalisation can carry its own derivative. For a parameter-dependent open beam and positive signals,
 
@@ -442,7 +444,7 @@ Parameter constraints also affect identifiability. One scalar spectral measureme
 
 ## 8.8 Implement and validate the extended operator
 
-The spectral calculation takes material paths, physical coefficient tables and a detector response. [Listing 8.3](#listing-8-3) supplies the paths, [Listing 8.4](#listing-8-4) evaluates the spectral sum and [Listing 8.6](#listing-8-6) sends image derivatives back to those paths. This separation gives each stage an independent numerical reference before the stages are composed in a pose fit.
+Assemble and check the spectral renderer in the same order as its dependencies. First compare the material paths from [Listing 8.3](#listing-8-3) with known slab lengths. Feed those paths to [Listing 8.4](#listing-8-4) and check the one- and two-energy signals. Then use [Listing 8.6](#listing-8-6) to return an image seed to the paths, and compare its derivative with the analytic slab derivative. Only then attach the pose derivative and a numerical optimiser.
 
 A ray-owned kernel can keep a small set of material paths in registers and traverse energy nodes locally. If the material count becomes large, those registers can spill. An alternative stages paths in device memory and evaluates energies in a separate kernel. That exposes parallelism across energy but can increase intermediate storage and require reductions. Choose after measuring the intended material and energy dimensions.
 
@@ -467,8 +469,8 @@ Use analytic cases before comparison with independent physical software, then ma
 
 For a monochromatic slab the derivative reduces exactly to $-n_0R\mu e^{-\mu d}$. For the two-energy example it is the weighted sum of the two such terms. These references can be computed without calling the spectral quadrature being tested. Run step-size sweeps in material paths and pose, respecting non-negativity at boundaries and the declared rigid-update convention.
 
-`experiments/spectral-projection/run.py` executes this composition from supplied field, coefficient, spectrum and observation arrays. It records source and input digests with the objective and derivatives, and an explicit prediction export downloads numerical arrays after evaluation.
+Exercise the assembled calculation with supplied field, coefficient, spectrum and observation arrays. Inspect the expected image and its derivatives before attempting a pose fit.
 
 Photons that scatter into the detector follow paths absent from the spectral primary calculation. Including those contributions requires the event-by-event path model in [Chapter 9](/chapters/scattering-stochastic-transport/#91-beyond-the-uncollided-photon).
 
-<Bibliography keys={["hubbell1995", "xcom"]} />
+<Bibliography keys={["hubbell1995", "xcom", "alvarez1976", "alvarez2017"]} />

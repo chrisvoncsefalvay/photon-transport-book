@@ -20,7 +20,6 @@ interface ResultFigure {
   }[];
   measurements: { label: string; value: string; criterion: string }[];
   reading: string;
-  reproduction: string;
 }
 
 interface Props {
@@ -49,12 +48,32 @@ if (
 }
 const base = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/generated/worked-examples/${example}/`;
 const plots = workedExamplePlots(example);
+const explanations = {
+  registration: {
+    description:
+      "Two simulated count images of CT-derived anatomy constrain a rigid pose. The renderer uses assigned attenuation at 80 keV and starts from the identity transform.",
+    reading:
+      "The gradient curve shows progress towards a stationary pose. Target-point error shows how the recovered transform acts on the anatomy; the image panels show the corresponding change in the projections.",
+  },
+  reconstruction: {
+    description:
+      "Starting from uniform water, reconstruct water and bone fractions on a 16³ trilinear grid from 48 simulated views. The two replicates use independent measurement noise.",
+    reading:
+      "The objective and projected-gradient curves show the progress of each solve. Use the material selector to compare the recovered water and bone fractions with their assigned reference fields; signed errors reveal which regions are overestimated or underestimated.",
+  },
+  acquisition: {
+    description:
+      "Choose a second view using pose sensitivities, then compare its target-point error with a near-parallel view at the same exposure.",
+    reading:
+      "The selected view reduces mean squared target error by 71% across the eight paired noise realisations. Two pairs have higher error after selection: the criterion predicts an average over possible images, whereas each refit uses one particular noisy pair of images.",
+  },
+}[example];
 ---
 
 <FigurePlate
   {id}
   title={result.title}
-  description={result.description}
+  description={explanations.description}
   width="full"
 >
   <div class="application-results worked-example">
@@ -75,45 +94,13 @@ const plots = workedExamplePlots(example);
         <WorkedRaster {example} id={`${id}-materials`} />
       )
     }
-    <p class="application-reading">{result.reading}</p>
-    <div
-      class="application-result-tables application-table-scroll worked-example__table"
-      tabindex="0"
-      role="region"
-      aria-label="Recorded result and acceptance criteria"
-    >
-      <table>
-        <caption>Recorded result and acceptance criteria</caption>
-        <thead>
-          <tr
-            ><th scope="col">Quantity</th><th scope="col">Result</th><th
-              scope="col">Criterion</th
-            ></tr
-          >
-        </thead>
-        <tbody>
-          {
-            result.measurements.map((row) => (
-              <tr>
-                <>
-                  <th scope="row">{row.label}</th>
-                  <td>{row.value}</td>
-                  <td>{row.criterion}</td>
-                </>
-              </tr>
-            ))
-          }
-        </tbody>
-      </table>
-    </div>
+    <p class="application-reading">{explanations.reading}</p>
     <details class="application-details worked-example__data">
-      <summary>Reproduction and recorded data</summary>
+      <summary>Inspect the example data</summary>
       <div class="worked-example__links">
-        <p class="worked-example__recipe">
-          <a href={result.reproduction}>Run the complete example</a>
-        </p>
         <a href={`${base}data.json`} download>Download the numerical record</a>
-        <a href={`${base}provenance.json`}>Source and execution provenance</a>
+        <a href={`${base}study.json`} download>Full numerical results</a>
+        <a href={`${base}provenance.json`}>Data sources and computation</a>
       </div>
     </details>
   </div>
@@ -124,21 +111,10 @@ const plots = workedExamplePlots(example);
     font-family: var(--font-ui);
     line-height: 1.5;
   }
-  .worked-example caption {
-    text-align: left;
-    font-weight: 500;
-    margin-bottom: 0.6rem;
-  }
-  .worked-example td {
-    white-space: normal;
-  }
   .worked-example__links {
     display: flex;
     flex-wrap: wrap;
     gap: 0.6rem 1.5rem;
     padding-block: 0.35rem 0.65rem;
-  }
-  .worked-example__recipe {
-    margin: 0;
   }
 </style>

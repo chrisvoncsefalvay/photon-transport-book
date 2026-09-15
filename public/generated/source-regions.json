@@ -1,53 +1,8 @@
 {
   "schema_version": 1,
-  "source_commit": "6aec4fa7933665cc90013928579427b84d78853c",
+  "source_commit": "22cbc0d36e91582c18688f15653f114f7647027f",
   "repository_url": "https://github.com/chrisvoncsefalvay/photon-transport-book",
   "regions": [
-    {
-      "file": "experiments/transmission-contract/run.py",
-      "region": "transmission-experiment",
-      "language": "python",
-      "code": "def evaluate_sweep(wp: Any, np: Any, depths: Any, beam: float, device: Any) -> dict[str, Any]:\n    \"\"\"Execute all four canonical outputs, then check every stored value.\"\"\"\n    workspace = prepare_transmission(\n        TransmissionSpec(beam=\"scalar\"), device=str(device), max_pixels=len(depths)\n    )\n    optical_depth = wp.array(depths, dtype=wp.float32, device=device)\n    outputs = [wp.empty(len(depths), dtype=wp.float32, device=device) for _ in OUTPUT_NAMES]\n    transmit(\n        optical_depth,\n        beam,\n        workspace=workspace,\n        **dict(zip(OUTPUT_ARGUMENTS, outputs, strict=True)),\n    )\n    wp.synchronize_stream(workspace.stream)\n    measured = [output.numpy() for output in outputs]\n    cases: list[dict[str, Any]] = []\n    for index, depth in enumerate(depths):\n        reference = forward_reference(float(depth), beam)\n        checks = {}\n        for name, values in zip(OUTPUT_NAMES, measured, strict=True):\n            result = value_error(\n                float(values[index]), getattr(reference, name), counts=name == \"counts\"\n            )\n            exact_log = name != \"log_T\" or struct.pack(\"!f\", float(values[index])) == struct.pack(\n                \"!f\", -float(depth)\n            )\n            checks[name] = {\n                \"actual\": float(values[index]),\n                \"reference_decimal\": str(getattr(reference, name)),\n                \"ulps\": result.ulps,\n                \"allowed_ulps\": 0 if name == \"log_T\" else result.allowed_ulps,\n                \"passed\": result.passed and exact_log,\n            }\n            if not result.passed or not exact_log:\n                raise AssertionError(f\"{name} failed at optical depth {depth}: {checks[name]}\")\n        cases.append({\"optical_depth\": float(depth), \"checks\": checks})\n    return {\n        \"beam\": float(np.float32(beam)),\n        \"cases\": cases,\n        \"outputs\": {\n            name: values.tolist() for name, values in zip(OUTPUT_NAMES, measured, strict=True)\n        },\n        \"optical_depths\": depths.tolist(),\n    }\n\n",
-      "start_line": 126,
-      "end_line": 171,
-      "url": "/generated/source-files/experiments/transmission-contract/run.py.html#L126"
-    },
-    {
-      "file": "experiments/transport-recovery/worked-example.sh",
-      "region": "transport-scattering-worked-commands",
-      "language": "text",
-      "code": "DPT_EXAMPLE_OUTPUT=${1:?Pass a new absolute output directory outside the checkout}\nif [[ \"$DPT_EXAMPLE_OUTPUT\" != /* || -e \"$DPT_EXAMPLE_OUTPUT\" ]]; then\n  echo \"The output directory must be absolute and new.\" >&2\n  exit 2\nfi\nexport PYTHONPATH=python\n.venv/bin/dpt-check-gpu\n.venv/bin/python experiments/transport-recovery/repair.py \\\n  --mode reference --sampling-multiplier 16 \\\n  --output \"$DPT_EXAMPLE_OUTPUT/reference\"\n.venv/bin/python experiments/transport-recovery/repair.py \\\n  --mode stochastic --sampling-multiplier 16 --repetitions 32 \\\n  --seed-base 2026091501 \\\n  --reference \"$DPT_EXAMPLE_OUTPUT/reference/scattering-reference/reference.json\" \\\n  --output \"$DPT_EXAMPLE_OUTPUT/recovery\"\n.venv/bin/python experiments/transport-recovery/verify_walkthrough.py \\\n  --input \"$DPT_EXAMPLE_OUTPUT/recovery\" \\\n  --reference \"$DPT_EXAMPLE_OUTPUT/reference/scattering-reference/reference.json\"",
-      "start_line": 8,
-      "end_line": 25,
-      "url": "/generated/source-files/experiments/transport-recovery/worked-example.sh.html#L8"
-    },
-    {
-      "file": "experiments/worked-applications/run.py",
-      "region": "worked-application-sequence",
-      "language": "python",
-      "code": "            for replicate in range(replicates):\n                beam = protocol[\"acquisition\"][\"base_and_candidate_open_beam_per_pixel\"]\n                base_id = _observation(\n                    record, public, means, protocol, 0.0, beam, 2, replicate, seed\n                )\n                base = _fit(\n                    known_root,\n                    output,\n                    public,\n                    protocol,\n                    f\"base-{replicate:02d}\",\n                    [base_id],\n                    RigidTransform(),\n                    device,\n                )\n                accepted = rigid(base[\"pose_object_to_world\"])\n                decision_path = output / f\"decision-{replicate:02d}\"\n                selection = rank_design(\n                    known_root,\n                    output,\n                    public,\n                    protocol,\n                    {\n                        \"angles\": protocol[\"acquisition\"][\"candidate_angles_degrees\"],\n                    },\n                    accepted,\n                    decision_path,\n                    device,\n                )\n                # Selection is on disk before either future count image exists.\n                record.write_json(f\"decision-{replicate:02d}-binding.json\", selection)\n                pair = {\"replicate\": replicate, \"base\": base, \"selection\": selection}\n                for policy, angle in (\n                    (\"selected\", selection[\"selected_angle\"]),\n                    (\"near_parallel\", protocol[\"acquisition\"][\"fixed_view_degrees\"]),\n                ):\n                    future_id = _observation(\n                        record, public, means, protocol, angle, beam, 3, replicate, seed\n                    )\n                    pair[policy] = _fit(\n                        known_root,\n                        output,\n                        public,\n                        protocol,\n                        f\"{policy}-{replicate:02d}\",\n                        [base_id, future_id],\n                        accepted,\n                        device,\n                    )\n                results.append(pair)",
-      "start_line": 406,
-      "end_line": 455,
-      "url": "/generated/source-files/experiments/worked-applications/run.py.html#L406"
-    },
-    {
-      "file": "experiments/worked-applications/run.py",
-      "region": "worked-registration",
-      "language": "python",
-      "code": "            registration = _fit(\n                known_root,\n                output,\n                public,\n                protocol,\n                \"registration\",\n                reg_ids,\n                RigidTransform(),\n                device,\n            )",
-      "start_line": 393,
-      "end_line": 402,
-      "url": "/generated/source-files/experiments/worked-applications/run.py.html#L393"
-    },
-    {
-      "file": "experiments/worked-reconstruction/run.py",
-      "region": "worked-reconstruction-workflow",
-      "language": "python",
-      "code": "def run_worked_example(args: argparse.Namespace) -> dict[str, Any]:\n    \"\"\"Generate once, freeze both fits, then assess every prescribed replicate.\"\"\"\n    config = json.loads(args.config.read_text())\n    if config[\"replicates\"] != [0, 1]:\n        raise ValueError(\"the complete worked example requires both prescribed replicates [0, 1]\")\n    with RunRecorder(\n        private_output(args.output, repository_root(__file__)),\n        configuration={\"protocol\": config, \"development\": args.development},\n        sources=sources(args.config, {}),\n    ) as run:\n        acquisition = args.output / \"acquisition\"\n        acquisition_args = argparse.Namespace(**vars(args))\n        acquisition_args.output = acquisition\n        acquire(acquisition_args)\n        fits = {}\n        for replicate in config[\"replicates\"]:\n            fit_args = argparse.Namespace(**vars(args))\n            fit_args.acquisition = acquisition\n            fit_args.replicate = replicate\n            fit_args.output = args.output / f\"fit-rep{replicate}\"\n            fit(fit_args)\n            fits[replicate] = fit_args.output\n        # No reference or withheld assessment is opened until both fits exist.\n        outcomes = []\n        for replicate in config[\"replicates\"]:\n            evaluation_args = argparse.Namespace(**vars(args))\n            evaluation_args.acquisition = acquisition\n            evaluation_args.fit = fits[replicate]\n            evaluation_args.output = args.output / f\"evaluation-rep{replicate}\"\n            outcomes.append(evaluate(evaluation_args))\n        child_records = {\n            str(path.relative_to(args.output)): digest(path)\n            for path in sorted(args.output.glob(\"*/run.json\"))\n        }\n        summary = {\n            \"development\": args.development,\n            \"replicates\": outcomes,\n            \"numerical_passed\": all(row[\"numerical_passed\"] for row in outcomes),\n            \"accepted\": all(row[\"accepted\"] for row in outcomes),\n            \"all_fits_frozen_before_reference_evaluation\": True,\n            \"child_records_sha256\": child_records,\n        }\n        run.write_json(\"summary.json\", summary)\n    return summary\n\n",
-      "start_line": 933,
-      "end_line": 978,
-      "url": "/generated/source-files/experiments/worked-reconstruction/run.py.html#L933"
-    },
     {
       "file": "python/dpt/autodiff.py",
       "region": "autodiff-first-order-lifetime",

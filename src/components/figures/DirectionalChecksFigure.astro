@@ -88,7 +88,7 @@ const series = (item: (typeof data.cases)[number]) => {
         ))
       }
     </div><details class="recorded-data">
-      <summary>Exact fixture and recorded checks</summary><p>
+      <summary>Example field and numerical values</summary><p>
         A single ray passes through a 3 × 3 × 3 field with 1 mm spacing and x
         weights (1, 2, 1). The base coefficient is the stored FP32 value of 0.02
         mm⁻¹. Boundary-sample clamping within the half-cell support gives a 3 mm
@@ -101,18 +101,15 @@ const series = (item: (typeof data.cases)[number]) => {
         />
         for |t| &lt; 1 mm. The incident mean is 1,000 photons.
       </p><p>
-        The canonical operators use 1,024 samples per ray, FP32 fields/counts
-        and an FP64 pose VJP. Independent scalar FP64 forward checks agree
-        within 0.001 counts. The smooth derivative differs from the independent
-        analytic value by {
-          data.checks.smooth_derivative_absolute_error.toExponential(2)
-        } counts/mm. This software fixture checks numerical consistency, not physical
-        image accuracy.
+        The projection uses 1,024 samples per ray, single-precision fields and
+        counts, and a double-precision pose VJP. Compare the curves as the step
+        shrinks: crossing the knot mixes branches, while very small steps lose
+        accuracy through subtraction.
       </p><p>
         <a href="/generated/radiographs/directional-checks.json"
-          >Recorded values and checks</a
+          >Numerical values</a
         > · <a href="/generated/radiographs/provenance.json"
-          >Producer source digests</a
+          >Source and calculation details</a
         >
       </p>
     </details>

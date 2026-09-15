@@ -18,7 +18,7 @@ A photon removed from a primary ray has not necessarily disappeared. It may turn
 
 We will construct those paths as samples of a stated transport model. The random history is a computational device for estimating an expected detector signal. It is not the physical exposure itself, and its sampling noise is not the detector noise described in [Chapter 8](/chapters/spectral-transport-detector/#86-spatial-response-and-measurement-noise). Keeping those two uncertainties separate will matter even more when the estimates become gradients.
 
-The new package boundary is `dpt.transport`. It consumes a declared cell grid, partial interaction coefficients and source states, then returns one complete detector contribution per original history. A separate estimator turns those contributions into image means and uncertainty. This division keeps the transport law inspectable before a tally or inverse objective compresses its outputs. The deterministic primary operators remain useful as independent limiting cases and as the implementation used when uncollided transmission is the intended model.
+Turn the ray integrator into a photon walker by giving each history a position, direction, energy and random identity. It must advance to a collision or material boundary, update the state after scattering, and score an accepted detector crossing. Build that walk before the image reduction: one complete contribution per source history is enough to estimate both the mean image and its sampling uncertainty. The functions in `dpt.transport` will supply these operations.
 
 ## 9.1 Beyond the uncollided photon
 
@@ -52,7 +52,7 @@ The total coefficient is $\mu_t=\mu_{\mathrm{abs}}+\sum_a\mu_a$. Source illumina
 
 Setting the collision source to zero leaves the uncollided solution along each characteristic, whose attenuation is the exponential developed in [Chapter 2](/chapters/transmission/#24-heterogeneous-paths-and-optical-depth). Successive scattering events correspond to successive collision-source contributions. Monte Carlo samples those event sequences without explicitly storing a field over every position, direction and energy. The detector score is a linear functional of the resulting transport solution.
 
-`TransportSpec` declares the implemented subset of this model. Absorption terminates a history under the default analogue estimator, while continuous weighting integrates its survival factor instead (§9.6). Scattering uses either the explicitly idealised `isotropic-elastic` law or unpolarised `free-electron-compton`. Neither option supplies coherent form factors, bound-electron corrections or fluorescence. The caller provides compatible macroscopic absorption and scattering coefficients. Their sum defines total extinction, and linear interpolation between the declared energy nodes is part of this transport model.
+Choose the interaction law and absorption estimator through `TransportSpec`. The default analogue walk terminates on absorption. Continuous weighting, derived in §9.6, integrates absorption survival along scattering paths. The angular choice is idealised `isotropic-elastic` or unpolarised `free-electron-compton`, paired with compatible macroscopic coefficients. Their sum gives total extinction, and the walk interpolates those coefficients linearly between energy nodes.
 
 <Source
   file="python/dpt/transport/model.py"
@@ -62,7 +62,7 @@ Setting the collision source to zero leaves the uncollided solution along each c
 
 `MaterialGrid` stores material IDs in `(nz, ny, nx)` order, with x contiguous, but its origin is the lower cell face and its fields are axis-aligned and piecewise constant. [Chapter 4's grid](/chapters/volumes-line-integrals/#41-what-a-voxel-represents) instead places its origin at the first sample centre and interpolates a continuous interior field. Converting between them changes the field model and requires an explicit decision about cell locations and coefficients.
 
-There is a second layout boundary to observe: this package's `PlanarDetector.shape` is `(width, height)`, with an xy origin at the lower pixel faces and flat index `row * width + column`. The deterministic `DetectorGeometry` uses `(height, width)` and a first-pixel-centre origin. The transport detector is an axis-aligned plane above the grid. Passing the earlier detector metadata through unchanged would therefore alter both pixel placement and indexing, even if all the arrays still had the expected length.
+Place `PlanarDetector` on an axis-aligned plane above the grid. It uses `(width, height)`, an xy origin at the lower pixel faces, and flat index `row * width + column`. Convert the earlier `DetectorGeometry` explicitly: its shape is `(height, width)` and its origin is the first pixel centre. These choices determine which pixel owns a crossing.
 
 The event, crossing and angular-trial limits protect finite resources. Reaching a limit invalidates the estimate, but it does not turn the remaining photon into an absorption event. Leaving coefficient energy support also fails explicitly. These choices keep a numerical resource guard from becoming an undocumented physical cutoff.
 
@@ -130,7 +130,7 @@ For piecewise-constant cells, [equation (9.4)](#equation-9-4) can be solved by m
 
 Do not carry a physical distance sampled in one material unchanged into another. Carrying the remaining optical depth has the correct survival law. Resampling at a boundary can also be correct under exponential memorylessness with suitable conditioning, but mixing these two constructions without that argument invites double sampling or missed attenuation.
 
-The library uses residual optical depth. In `walk`, one CUDA thread carries position, direction, energy and the current draw through the whole history. The inner loop consumes that draw across cells, and only a completed collision advances the event identity used for the next draw. An arbitrary subdivision of a material region therefore does not introduce another random flight sample.
+Implement `walk` with one CUDA thread carrying the photon state and residual optical depth through a complete history. Its inner loop consumes the current draw across cells. Advance the event identity only after a collision, so subdividing one material into more cells leaves the sampled flight unchanged.
 
 <Source
   file="python/dpt/transport/kernels.py"
@@ -138,9 +138,9 @@ The library uses residual optical depth. In `walk`, one CUDA thread carries posi
   caption="Carrying sampled optical depth across material faces"
 />
 
-The collision branch advances by residual optical depth divided by local extinction. The boundary branch subtracts the optical thickness actually traversed. `enter_grid` handles initial cell ownership. `cross_faces` crosses every exactly tied face and assigns its coordinate from the grid face itself. Both are shared device functions in the same canonical file. There is no accumulated epsilon displacement to walk the photon away from a boundary. Vacuum consumes distance without consuming optical depth. Binary64 coordinates and path arithmetic retain these distinctions across anisotropic cells and long trajectories.
+In the collision branch, advance by residual optical depth divided by local extinction. At a boundary, subtract the optical thickness just traversed. Use `enter_grid` to assign the first cell and `cross_faces` to cross every exactly tied face, setting coordinates from the grid faces themselves. This avoids accumulating artificial epsilon displacements. Vacuum consumes distance without consuming optical depth. Binary64 coordinates and path arithmetic help retain these distinctions across anisotropic cells and long trajectories.
 
-The same walk also accumulates `density_score` for a selected active material. For now it is diagnostic state with a specific derivative purpose: [Chapter 10](/chapters/differentiating-transport/#103-differentiate-the-sampling-law) derives why a collision adds one and each traversed optical thickness subtracts from it. Forward tracing and derivative replay will therefore use the same flight and termination decisions, with no separate implementation of the physics to drift out of agreement.
+The `density_score` accumulator will be useful in [Chapter 10](/chapters/differentiating-transport/#103-differentiate-the-sampling-law): for a selected material, each collision adds one and each traversed optical thickness subtracts from it. Accumulating it alongside the flight gives the derivative calculation the same segments and termination decisions as the forward walk.
 
 A second approach uses a majorant $\bar\mu\geq\mu_t$ throughout a region. Sample candidate events at rate $\bar\mu$ and accept a real collision at position $\mathbf{x}$ with probability $\mu_t(\mathbf{x},E)/\bar\mu$. Rejected candidates are null events: position advances but energy, direction and physical weight do not change. In a homogeneous segment,
 
@@ -154,7 +154,7 @@ $$
 
 The thinning identity in [equation (9.5)](#equation-9-5) explains why null events preserve the target law. A loose majorant wastes work, whereas an underestimated majorant invalidates the acceptance probability. Clamping a ratio above one hides the invalid bound and biases the process. With regional or energy-dependent majorants, handle their boundaries and update the rate consistently.
 
-The `walk` engine uses explicit cell crossings. Null-collision tracking provides the alternative derived here.
+Use explicit cell crossings for the piecewise-constant grid here, where each segment's optical depth is available directly. Null-collision tracking is an alternative way to sample the same flight law when a valid majorant is available.
 
 [Figure](#figure-9-2) shows the different quantities advanced by the two flight samplers.
 
@@ -213,9 +213,9 @@ To turn [equation (9.7)](#equation-9-7) into a sampler, normalise it over solid 
   caption="Sampling the Compton angle and outgoing energy"
 />
 
-Rejection trials occupy their own counter domains. A rejected candidate cannot consume the next collision's free-flight draw, and exhausting the trial limit returns a failure status. Acceptance arithmetic uses binary64. This routine samples a conditional outcome after scattering has been selected, and it does not supply a material's macroscopic scattering coefficient or turn an arbitrary coefficient table into a free-electron model. That compatibility remains the caller's physical assumption.
+Give rejection trials their own random-counter domain so that angular retries leave the next collision's free-flight draw untouched. Evaluate acceptance in binary64 and return a failure if the trial limit is exhausted.
 
-Bound-electron scattering modifies this account through scattering functions, shell effects and Doppler broadening. Coherent scattering changes direction with negligible energy change in the elastic approximation, but its angular distribution depends on atomic form factors. An isotropic coherent sampler is an illustrative mathematical model, not a validated Rayleigh model for diagnostic imaging. Combining tabulated interaction probabilities with a free-electron final-state approximation is a deliberate approximation whose consequences require checking. The Geant4 manual distinguishes its free-electron treatment from a model with atomic-shell effects. NIST likewise describes coherent form factors and incoherent scattering functions in its tabulations. A total attenuation value cannot replace those differential models. <Citation keys={["geant4Compton", "hubbell1995"]} />
+Geant4 distinguishes free-electron Compton scattering from models with atomic-shell effects. Its broader models account for details such as electron binding and momentum that our Klein–Nishina sampler leaves out. Coherent scattering also needs an angular law based on atomic form factors, as described in NIST's tabulations. An isotropic elastic law is useful for isolating the walker, while a physical Rayleigh model requires those form factors. Keep total interaction rates and conditional outcome laws as separate functions so that either can be replaced with a compatible model. <Citation keys={["geant4Compton", "hubbell1995"]} />
 
 After sampling an angle, construct the outgoing direction relative to the incoming one. Choose a stable orthonormal pair $\mathbf{e}_1,\mathbf{e}_2$ perpendicular to $\boldsymbol{\omega}$, with $\mathbf{e}_2=\boldsymbol{\omega}\times\mathbf{e}_1$. Then
 
@@ -267,7 +267,7 @@ A photon leaving the object can still travel through vacuum to the detector. Lea
 
 For linear transport, primary and scattered scores can be separated by an interaction counter. A detector hit with zero physical scattering events belongs to the primary tally, and null events do not change that classification. Their sum must equal the total tally under the same source and detector rules.
 
-Both supported transport estimators write at most one detector hit per history. A convex cell grid followed by its external detector permits scoring the final escaped straight ray once. The analogue count score is the source importance weight times `source_amplitude`, while the ideal energy score also multiplies by the arrival energy in keV. Continuous absorption weighting, introduced in §9.6, includes the absorption survival weight along the realised path. Both use the same original source normalisation. An `energy-kev` score remains incident photon energy, with no electronics calibration or local dose interpretation. The total tally already includes uncollided survivors, so it must not be added to a separately calculated primary image.
+Score the final escaped ray once for the convex grid and external absorbing detector used here. Multiply source importance weight by `source_amplitude` for a count score, and by arrival energy as well for an ideal incident-energy score in keV. Continuous weighting adds absorption survival along the path. Retain the same source normalisation in both estimators. The resulting image contains primary and scattered arrivals together.
 
 ## 9.5 Estimators, variance and uncertainty
 
@@ -332,7 +332,7 @@ A confidence interval based on a Gaussian approximation needs enough effective c
 
 Keep simulation count $N$ separate from physical emitted population $N_{\mathrm{src}}$. The former controls numerical precision, while the latter scales the expected exposure. Halving Monte Carlo standard error costs roughly four times as many histories under fixed variance, whereas doubling a physical exposure changes the detector's expected counts and shot noise. They answer different questions.
 
-`history_moments` implements [equation (9.10)](#equation-9-10) from sparse `(pixel, score, status)` records. Its caller must supply IID source histories. A repeated deterministic source ray also qualifies because only the conditional transport draws are random. Deterministically stratified sources require independent complete-batch replications for their uncertainty calculation. This is a precondition on the sampling law, not a property the function can establish from the realised scores. There is no boolean argument that certifies it.
+`history_moments` implements [equation (9.10)](#equation-9-10) from sparse `(pixel, score, status)` records and requires IID source histories. Repeated launches of one deterministic source ray qualify when their conditional transport draws are independent. Deterministically stratified sources instead need independent complete-batch replications to estimate uncertainty. The caller must establish the sampling law. Realised scores alone cannot verify it.
 
 <Source
   file="python/dpt/transport/estimators.py"
@@ -340,11 +340,11 @@ Keep simulation count $N$ separate from physical emitted population $N_{\mathrm{
   caption="Estimating pixel means and their sampling variances"
 />
 
-The implementation first finds a magnitude scale for each pixel, sums normalised scores, then accumulates centred squared deviations. This avoids forming a potentially overflowing raw second moment and subtracting two nearly equal large quantities. Misses and absorption contribute zero but remain in `batch.count`, and the finishing pass includes their centred deviations even though they have no detector address. Averaging only the hits would estimate a conditional response to detection and give the wrong transmission.
+Build the moment reduction in three passes: find a magnitude scale per pixel, sum normalised scores, then accumulate centred squared deviations. This avoids overflow in raw second moments and cancellation between nearly equal large sums. Include misses and absorption as zero contributions in the original-history count and in the centred deviations. Averaging only detected histories would give a conditional response instead of transmission.
 
 `history_mean` shares the validation and scaled-mean passes without requesting a variance.
 
-Persistent moment scratch scales with detector pixels, while history outputs scale with launched histories, and neither contains a history-by-pixel matrix. The two output images give marginal variances of the pixel means. They do not make pixels independent, and summing those variances would not produce the uncertainty of a general image loss. Chapter 10 will estimate that scalar uncertainty across independent complete replicates.
+Allocate moment scratch per detector pixel and sparse output per history. The result gives marginal pixel-mean variances without a history-by-pixel matrix. To estimate uncertainty in an image loss, reduce each complete independent replicate to that scalar first, preserving the effects of pixel correlations. Chapter 10 uses this construction for optimisation.
 
 ## 9.6 Variance reduction without changing the answer
 
@@ -397,13 +397,13 @@ The distinction between stored coefficients and physical rates matters here. The
 
 For a detector-reaching path with specified scattering events, analogue sampling supplies a scattering-rate factor at each event and the flight-survival factor $\exp[-\int_H(\kappa_s+\kappa_a)\,\mathrm ds]$. The weighted walk retains the same scattering-rate and angular factors, but its flight survival contains only $\kappa_s$. Multiplying by $\exp(-\tau_a)$ restores the absorption part of the original survival factor. The path contribution therefore has the same weight in the expected detector signal, although the two algorithms sample it differently.
 
-The existing cell traversal performs both integrals. A scattering event interrupts the current segment, so only its travelled portion contributes absorption. Crossing a cell face carries the unused scattering optical depth into the next material, and the final segment to escape contributes absorption too. A cell with zero scattering therefore needs neither a fictitious collision nor division by a zero rate. Its absorption integral still counts. The `continuous_absorption` branch in [Listing 9.2](#listing-9-2) implements these choices inside the shared walk.
+Extend the same cell traversal to accumulate absorption along each travelled segment. A scattering event ends that segment at the collision. A cell crossing carries the remaining scattering optical depth onward, and the final segment to escape contributes absorption too. A zero-scattering cell therefore needs only boundary traversal and the absorption integral. The `continuous_absorption` branch in [Listing 9.2](#listing-9-2) puts these operations in the shared walk.
 
 We retain absorption depth as a binary64 logarithmic weight until scoring. Forming `exp(-tau)` first would discard a contribution when that intermediate underflows, even if a large source amplitude makes the final score representable. `attenuated_product4` combines the attenuation exponent with the original factors' binary exponents before the final rounding. Forward values and density derivatives each receive that treatment, so neither inherits the other's lost bits.
 
 With a fixed pencil source and zero scattering throughout the coefficient table, every history follows the same attenuation integral. Preparation can establish that this expectation is deterministic. A randomly positioned source over different material columns still produces different integrals, and scattering leaves random paths even for a fixed source. Zero empirical variance alone establishes neither case.
 
-Continuous weighting keeps the existing one-history, one-terminal-pixel accounting and 28-byte forward output record. It also keeps walking after absorption has made a contribution tiny, so some scattering histories cost more than their analogue counterparts. There is no weight cutoff or roulette concealed in this mode. Event or crossing exhaustion invalidates the estimate. Whether the changed sampling measure buys useful accuracy per second is an execution question, not a consequence of having written “variance reduction” above the code.
+Continuous weighting keeps one terminal detector contribution per history, but continues walking even when absorption has made its weight tiny. Some paths therefore cost more than their analogue counterparts. Compare uncertainty at equal runtime to decide whether removing absorption noise pays for the extra tracing. This mode uses neither a weight cutoff nor roulette.
 
 ## 9.7 Transport histories on the GPU
 
@@ -411,7 +411,7 @@ A history-owned kernel assigns a source history to a thread and follows it until
 
 An event-based design instead stores active states in queues and launches kernels for flights, collisions and scoring. Compaction can reduce inactive lanes and group similar work, at the cost of queue traffic, launch overhead and additional state storage. Sorting by material or energy may improve access patterns but also costs work. Neither organisation has an intrinsic speed advantage independent of the scene and hardware.
 
-Our implementation uses the history-owned organisation. `prepare_transport` binds resident material IDs and coefficient arrays to one CUDA stream. The caller supplies resident source positions, unit directions, importance weights and positive density scales, and owns every output destination. `trace_histories` validates the call and launches the history kernel. It never allocates a queue or transfers a source ray inside the launch path.
+Start with a history-owned kernel so the flight, collision and detector logic stay together. Prepare the resident material IDs and coefficient tables with `prepare_transport`. Allocate source positions, unit directions, importance weights, positive density scales and output destinations on the device, then supply them to `trace_histories`. It launches the walk on the prepared stream without moving source rays through the host.
 
 <Source
   file="python/dpt/transport/forward.py"
@@ -419,7 +419,7 @@ Our implementation uses the history-owned organisation. `prepare_transport` bind
   caption="Tracing histories into sparse score buffers"
 />
 
-Positions and directions use binary64 vectors, coefficients and scores use binary64, and pixel indices and terminal statuses use integers. The five forward outputs require 28 bytes per history, independent of its event count. Thread-local state grows with the chosen history algorithm rather than with an allocated record of every event. This avoids an event tape, but variable history lengths still cause divergence and can raise register demand.
+Use binary64 positions, directions, coefficients and scores, with integer pixel indices and terminal statuses. Store the terminal output per history and keep evolving state in the thread. Memory then grows with history count rather than total event count, although long, divergent paths can still increase register demand.
 
 [Figure](#figure-9-4) shows the state movement introduced by the two execution organisations.
 
@@ -462,7 +462,7 @@ On SM 70 and newer targets, every live lane in each tally pass reaches a ballot 
 
 </div>
 
-Keep cross-section tables and active state resident on the GPU across a batch. Allocate working buffers before the hot path, and make overflow a reported failure or a correct continuation mechanism. A hard event limit can protect a run from hanging, but reaching it invalidates an otherwise unqualified estimate unless a justified residual treatment exists. Reporting only the histories that finished is selection bias.
+Keep cross-section tables and working buffers on the GPU across batches. For queues or bounded history loops, propagate overflow and exhaustion to the caller or provide a continuation that preserves the estimator. Include every launched history in the accounting.
 
 Mixed precision needs a quantity-specific justification. Positions near thin boundaries, accumulated optical depths, small statistical weights and large image tallies have different error sensitivities. Validate coordinate units and tolerances at the actual scene scale. Use a CPU reference for independently specified formulas. Check race freedom and device precision in the CUDA execution, and measure occupancy and memory traffic with the profiler.
 
@@ -509,9 +509,9 @@ For an independent-code comparison, first make the physical models equal enough 
 
 Independent replications assess the empirical spread of estimates and the coverage of their intervals. They should also reveal whether changing a seed changes the result by an amount consistent with the reported uncertainty. Do not demand every stochastic comparison land within a fixed two-standard-error band: occasional excursions are expected, and repeated testing needs its own acceptance design.
 
-`experiments/transport-validation/run.py` checks the engine against an independently specified slab expectation and records the source and configuration. More detailed CUDA tests check layered survival, Compton angle–energy laws, history identity and tally moments. The sparse output records final energy and terminal status. It does not include the separate absorption and recoil totals needed for the energy ledger in [equation (9.14)](#equation-9-14). The null-collision and splitting checks in [Table 9.2](#table-9-2) apply when those samplers are used.
+Begin with the analytic slab-survival calculation, then exercise layered survival, the Compton angle–energy law and detector tally moments separately. To check the complete energy balance in [equation (9.14)](#equation-9-14), retain absorption and recoil totals in addition to the terminal energy recorded by the sparse output. Apply the null-collision and splitting checks in [Table 9.2](#table-9-2) when implementing those sampling alternatives.
 
-Only after these checks should a performance report compare history rate, time to a specified uncertainty, memory consumption and tally behaviour on a named GPU. A fast run with a biased termination rule has measured the cost of a different problem.
+Compare implementations by time to a specified uncertainty, alongside history rate, memory use and tally behaviour. These quantities expose the cost of the estimator and the GPU organisation together.
 
 The expected image is now an integral over random histories whose probabilities depend on the object. A derivative must account for those probabilities as well as for the score of each realised path. [Chapter 10](/chapters/differentiating-transport/) takes up that distinction: differentiating only the arithmetic left in one sampled trace can miss part of the expected derivative.
 

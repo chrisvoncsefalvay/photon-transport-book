@@ -1,84 +1,12 @@
 {
   "schema_version": 1,
-  "purpose": "Exact historical producer source archive for existing scientific figures; not a new execution or current-source validation.",
+  "purpose": "Historical public package sources and private producer digest records for existing scientific figures.",
   "source_commit": "d3cac5dc689ab3dd7ff13167ec6c62152150885a",
   "verification": "Every original source digest matches the unchanged original run.json and git show SOURCE_COMMIT:ORIGINAL_PATH byte for byte before copying.",
   "licence": "Apache-2.0 for archived repository code and configurations; no third-party data or dependency implementation is copied.",
-  "source_count": 79,
-  "source_bytes": 1067580,
+  "source_count": 70,
+  "source_bytes": 996590,
   "sources": {
-    "experiments/pose-sensitivity/common.py": {
-      "snapshot": "public/generated/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/experiments/pose-sensitivity/common.py",
-      "sha256": "869159e5363a726eb01d165b2361044f695dabd2bf4df06f6305091d65da6003",
-      "git_blob": "bb128c6cf28aa3c682360bbef6e62f161a905890",
-      "used_by": [
-        "introduction-pose-sensitivity"
-      ]
-    },
-    "experiments/pose-sensitivity/config.json": {
-      "snapshot": "public/generated/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/experiments/pose-sensitivity/config.json",
-      "sha256": "ef349fb794448ed5a19d012d21fabbd019d8001b08ad04ff41f7d522994fb995",
-      "git_blob": "de0c57a0981968590cb792ae09dbb88fbcaa523c",
-      "used_by": [
-        "introduction-pose-sensitivity"
-      ]
-    },
-    "experiments/pose-sensitivity/mesh.py": {
-      "snapshot": "public/generated/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/experiments/pose-sensitivity/mesh.py",
-      "sha256": "6b0c710e813e2fe787e9cad8c9b93060bdef30fcbf95cf9cbfd02ad2d7f0e8f9",
-      "git_blob": "f977e0d6e575141dabbf37f38e7bfcec7aff83f6",
-      "used_by": [
-        "introduction-pose-sensitivity"
-      ]
-    },
-    "experiments/pose-sensitivity/prepare.py": {
-      "snapshot": "public/generated/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/experiments/pose-sensitivity/prepare.py",
-      "sha256": "5cb410c4cf8cda5b36ca3cfcab539560f78a825a51ef7964a54b3624725fc4b4",
-      "git_blob": "9769b43837ce7a5815cb32902fff43bc446ddf75",
-      "used_by": [
-        "introduction-pose-sensitivity"
-      ]
-    },
-    "experiments/pose-sensitivity/requirements-volume.txt": {
-      "snapshot": "public/generated/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/experiments/pose-sensitivity/requirements-volume.txt",
-      "sha256": "3bf77cd4fc11c4143a7306ae67e3e92378f115ce7209a213973898985d43b3d7",
-      "git_blob": "faf76c55cc6081e5b44f97bd7db2f983b5c0ed28",
-      "used_by": [
-        "introduction-pose-sensitivity"
-      ]
-    },
-    "experiments/pose-sensitivity/run.py": {
-      "snapshot": "public/generated/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/experiments/pose-sensitivity/run.py",
-      "sha256": "db6634461966602c3056ae0057aa254a90b78b8ee7fd604c734b435bb754e930",
-      "git_blob": "b0eecd615912f3315f6a802453410e1f79db2189",
-      "used_by": [
-        "introduction-pose-sensitivity"
-      ]
-    },
-    "experiments/transmission-contract/config.json": {
-      "snapshot": "public/generated/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/experiments/transmission-contract/config.json",
-      "sha256": "0e1b51d937d1362ce5cb015ef5fc4608bc4eeb20579cb0e3cce43c57bc9fa66f",
-      "git_blob": "881c1ae6163f0187b27a6be9219d69b51b1201ab",
-      "used_by": [
-        "transmission-contract"
-      ]
-    },
-    "experiments/transmission-contract/profile_cuda.py": {
-      "snapshot": "public/generated/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/experiments/transmission-contract/profile_cuda.py",
-      "sha256": "294afdbb00ec7219a72634934938fd01ddc66f5f99996270dccc25a564c3b3a7",
-      "git_blob": "47acdbe3adf77078c2c15a281780782fa99f0925",
-      "used_by": [
-        "transmission-contract"
-      ]
-    },
-    "experiments/transmission-contract/run.py": {
-      "snapshot": "public/generated/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/experiments/transmission-contract/run.py",
-      "sha256": "52ce24fc72bed607301f29d5816fcce398498e277cd4708211d041e1698e9cf4",
-      "git_blob": "54c3318ddd7cf94aaedf38c678625c514126bca2",
-      "used_by": [
-        "transmission-contract"
-      ]
-    },
     "pyproject.toml": {
       "snapshot": "public/generated/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/pyproject.toml",
       "sha256": "6efe2a08e5249c29e43b979f6b51c71f5e7870184cfcf2513de16e0387b7a527",
@@ -859,5 +787,80 @@
         "public/generated/introduction-pose-sensitivity/run.json": "e943795daa5355de401ab7e1d20a6caaff5bcf78a6eddcdadef31304fbbad63f"
       }
     }
-  }
+  },
+  "private_sources": {
+    "experiments/pose-sensitivity/common.py": {
+      "sha256": "869159e5363a726eb01d165b2361044f695dabd2bf4df06f6305091d65da6003",
+      "git_blob": "bb128c6cf28aa3c682360bbef6e62f161a905890",
+      "used_by": [
+        "introduction-pose-sensitivity"
+      ],
+      "private_archive": "experiments/archive/public-source-copies/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/experiments/pose-sensitivity/common.py"
+    },
+    "experiments/pose-sensitivity/config.json": {
+      "sha256": "ef349fb794448ed5a19d012d21fabbd019d8001b08ad04ff41f7d522994fb995",
+      "git_blob": "de0c57a0981968590cb792ae09dbb88fbcaa523c",
+      "used_by": [
+        "introduction-pose-sensitivity"
+      ],
+      "private_archive": "experiments/archive/public-source-copies/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/experiments/pose-sensitivity/config.json"
+    },
+    "experiments/pose-sensitivity/mesh.py": {
+      "sha256": "6b0c710e813e2fe787e9cad8c9b93060bdef30fcbf95cf9cbfd02ad2d7f0e8f9",
+      "git_blob": "f977e0d6e575141dabbf37f38e7bfcec7aff83f6",
+      "used_by": [
+        "introduction-pose-sensitivity"
+      ],
+      "private_archive": "experiments/archive/public-source-copies/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/experiments/pose-sensitivity/mesh.py"
+    },
+    "experiments/pose-sensitivity/prepare.py": {
+      "sha256": "5cb410c4cf8cda5b36ca3cfcab539560f78a825a51ef7964a54b3624725fc4b4",
+      "git_blob": "9769b43837ce7a5815cb32902fff43bc446ddf75",
+      "used_by": [
+        "introduction-pose-sensitivity"
+      ],
+      "private_archive": "experiments/archive/public-source-copies/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/experiments/pose-sensitivity/prepare.py"
+    },
+    "experiments/pose-sensitivity/requirements-volume.txt": {
+      "sha256": "3bf77cd4fc11c4143a7306ae67e3e92378f115ce7209a213973898985d43b3d7",
+      "git_blob": "faf76c55cc6081e5b44f97bd7db2f983b5c0ed28",
+      "used_by": [
+        "introduction-pose-sensitivity"
+      ],
+      "private_archive": "experiments/archive/public-source-copies/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/experiments/pose-sensitivity/requirements-volume.txt"
+    },
+    "experiments/pose-sensitivity/run.py": {
+      "sha256": "db6634461966602c3056ae0057aa254a90b78b8ee7fd604c734b435bb754e930",
+      "git_blob": "b0eecd615912f3315f6a802453410e1f79db2189",
+      "used_by": [
+        "introduction-pose-sensitivity"
+      ],
+      "private_archive": "experiments/archive/public-source-copies/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/experiments/pose-sensitivity/run.py"
+    },
+    "experiments/transmission-contract/config.json": {
+      "sha256": "0e1b51d937d1362ce5cb015ef5fc4608bc4eeb20579cb0e3cce43c57bc9fa66f",
+      "git_blob": "881c1ae6163f0187b27a6be9219d69b51b1201ab",
+      "used_by": [
+        "transmission-contract"
+      ],
+      "private_archive": "experiments/archive/public-source-copies/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/experiments/transmission-contract/config.json"
+    },
+    "experiments/transmission-contract/profile_cuda.py": {
+      "sha256": "294afdbb00ec7219a72634934938fd01ddc66f5f99996270dccc25a564c3b3a7",
+      "git_blob": "47acdbe3adf77078c2c15a281780782fa99f0925",
+      "used_by": [
+        "transmission-contract"
+      ],
+      "private_archive": "experiments/archive/public-source-copies/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/experiments/transmission-contract/profile_cuda.py"
+    },
+    "experiments/transmission-contract/run.py": {
+      "sha256": "52ce24fc72bed607301f29d5816fcce398498e277cd4708211d041e1698e9cf4",
+      "git_blob": "54c3318ddd7cf94aaedf38c678625c514126bca2",
+      "used_by": [
+        "transmission-contract"
+      ],
+      "private_archive": "experiments/archive/public-source-copies/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/experiments/transmission-contract/run.py"
+    }
+  },
+  "private_source_count": 9
 }

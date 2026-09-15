@@ -35,7 +35,7 @@ numbering does not depend on the shell's working directory.
 CT plane through one simulated detector image to the recorded recovered bone
 surface. The CT raster retains its physical pixel aspect; its HU window differs
 from the radiograph's log window. The white model uses paper and the same mesh,
-threshold and camera as the Chapter 12 static display. Geometry was fixed during
+threshold and camera as the historical reconstruction study's static display. Geometry was fixed during
 this material fit; the separate registration example is not an intermediate
 step. The historical `figure-maisi-radiographs` anchor remains stable.
 

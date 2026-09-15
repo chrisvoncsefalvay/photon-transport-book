@@ -1,9 +1,0 @@
-{
-  "schema_version": 1,
-  "thickness_max_mm": 200.0,
-  "thickness_samples": 401,
-  "noise_samples_per_condition": 131072,
-  "noise_seed": 193717,
-  "projection_width": 24,
-  "projection_samples_per_ray": 128
-}

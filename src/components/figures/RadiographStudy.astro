@@ -373,9 +373,8 @@ const columns = kind === "noise" ? 4 : 3;
           </div>
           <p class="radiograph-note">
             The same 32 × 32 pixel patch at four exposure levels. Counts are
-            actual recorded draws from the canonical Poisson sampler. Each level
-            has a distinct observation identifier. The expected background is
-            defined by the patch's four-pixel border.
+            drawn from a Poisson distribution independently at each exposure.
+            The expected background is defined by the patch's four-pixel border.
           </p>
         </>
       )

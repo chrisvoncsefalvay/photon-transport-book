@@ -20,7 +20,7 @@ The difficulty extends beyond brightness. A different spectrum changes the relat
 
 A useful acquisition model keeps photons, detector signal and processed greyscale in their own units. It also needs observations that distinguish an acquisition change from a pose change. Otherwise the fit can trade one against the other while leaving the predicted image unchanged.
 
-The code now needs to expose those acquisition assumptions. We will extend [the pose evaluator from Chapter 6](/chapters/recovering-pose/#66-the-canonical-optimisation-loop) with named calibration parameters and multiple views, while retaining its fixed pose chart and optimiser. `SpectralPoseEvaluator` supplies this composition. Its material and spectral calculations are developed in [Chapter 8](/chapters/spectral-transport-detector/#84-energy-quadrature-and-material-paths). Here the question is which quantities a fit is allowed to change, and what evidence could distinguish them.
+A calibrated renderer should let you change exposure or gain without touching the ray integrator. Extend [the pose evaluator from Chapter 6](/chapters/recovering-pose/#66-the-canonical-optimisation-loop) by inserting a calibration operation between the predicted detector response and the loss. Give shared calibration parameters one place in the optimisation vector, even when several views use them. `SpectralPoseEvaluator` will combine these operations with the material and spectral calculation developed in [Chapter 8](/chapters/spectral-transport-detector/#84-energy-quadrature-and-material-paths).
 
 ## 7.1 Separate motion from acquisition changes
 
@@ -108,7 +108,7 @@ Dark observations constrain electronic offsets and readout noise. Open-beam obse
   description="The same low-contrast patch appears in recorded Poisson observations with 10–10,000 expected background counts per pixel. With the underlying synthetic projection and display window fixed, the increasing visibility comes from reduced relative count noise."
 />
 
-`CalibrationSpec` turns the mean-model ambiguity into an interface constraint. The input to `calibrate` is an expected detector response, after any declared spatial spread, and its output is gain times exposure times that response, plus the electronic offset. The output unit is required because a count image and an image in detector signal units admit different observation models. The low-level operator allows a fixed calibration map to vary across pixels, but an optimised gain or offset must be a shared scalar.
+Implement calibration as gain times exposure times the expected detector response, followed by the electronic offset. `CalibrationSpec` records the output unit and which quantities vary. Fixed calibration maps may differ across pixels. Keep fitted gain and offset scalar so that the image still constrains pose, and fix either gain or exposure because only their product enters the mean.
 
 <Source
   file="python/dpt/detector.py"
@@ -116,7 +116,7 @@ Dark observations constrain electronic offsets and readout noise. Open-beam obse
   caption="Calibration units and the exposure–gain ambiguity"
 />
 
-The rejection of simultaneously active exposure and gain follows directly from [equation (7.3)](#equation-7-3): their image derivatives cannot separate the two factors from the mean. The code therefore makes the caller fix one. Allowing both and waiting for the optimiser to discover the null direction would merely make the same identifiability calculation more expensive. A fitted per-pixel correction is excluded for a related reason: it could consume the residual that is supposed to constrain pose.
+Equation (7.3) gives the design test for a new calibration parameter: compare its image derivative with the derivatives already present. Gain and exposure produce the same image direction. A per-pixel correction is more extreme, since it can consume the entire residual. Restrict the fitted calibration to changes that the available observations can distinguish.
 
 Exposure controls may alter more than photon number. AAPM Task Group 125 describes fluoroscopic control systems that adjust tube potential, current, pulse width and filtration. Similar displayed brightness can therefore accompany different spectral and temporal conditions. The recorded acquisition settings help distinguish these changes from a scalar gain adjustment. <Citation keys={["rauch2012"]} />
 
@@ -179,7 +179,7 @@ $$
 
 A spatially uniform offset may represent a calibrated electronic bias. It cannot generally represent scatter, heel-effect variations or a spatially varying detector response. Their images need not be affine copies of the prediction.
 
-Profiling is available mathematically under the assumptions just derived. The library's recovery adapter instead fits the declared scale and offset jointly with pose. This permits named groups to share a parameter across views and permits explicit calibration priors. It does not evaluate [equation (7.5)](#equation-7-5) at each trial, so a result from that adapter must be described as a joint fit rather than an affine-profiled one.
+The recovery adapter fits the declared scale and offset jointly with pose, allowing named groups to share parameters across views and to carry explicit calibration priors. It does not eliminate scale and offset with [equation (7.5)](#equation-7-5) at each trial. Profiling remains an alternative under the assumptions derived above.
 
 ## 7.3 Spectrum, filtration and beam hardening
 
@@ -316,7 +316,7 @@ Giving every pixel an unconstrained additive correction would let the correction
 
 A change in collimation supplies useful physical evidence because it changes the illuminated material that produces scatter. Cropping an already acquired image removes pixels from analysis but leaves the photons that reached the retained pixels unchanged. Cropping therefore cannot reproduce the scatter reduction from physical collimation.
 
-The present spectral recovery composition contains primary signal, optional fixed spatial response and electronic calibration. It has no fitted scatter field. An externally supplied additive image would remain a prescribed background until a transport calculation or calibration justified calling it scatter. [Chapter 9](/chapters/scattering-stochastic-transport/#94-sources-boundaries-and-detector-scores) supplies complete-history detector scores, which include both primary and scattered arrivals, so adding that total to an existing primary image would count the primary twice.
+Keep scatter out of the electronic offset. The primary renderer we are assembling uses a fixed spatial response and electronic calibration. Adding a scatter model requires either a separately justified scattered contribution or replacement by [Chapter 9's total transport signal](/chapters/scattering-stochastic-transport/#94-sources-boundaries-and-detector-scores), which already includes uncollided arrivals.
 
 ## 7.5 Detector blur, noise and processing
 
@@ -474,7 +474,7 @@ provided the matrix being inverted is positive definite. [Equation (7.20)](#equa
 
 Multiple acquisitions can share an object pose while having separate exposures, or share detector response parameters while containing different known object poses. Sharing a parameter forces one value to explain every view in its group. Different viewing geometries can make a pose change and that nuisance change produce distinguishable collections of image changes, even when their effects overlap in one view. In the local analysis above, combine the views by stacking their residuals and Jacobian rows while keeping one column for each shared parameter. Write those dependencies before fitting. If every image has both a free exposure and a free scalar detector gain, their products remain confounded in the means. Adding images with the same freedom does not resolve it.
 
-The implemented multi-view problem takes the first of those arrangements: every `SpectralView` observes one shared object-to-world pose through its own fixed source and detector geometry. Each view also declares its observation domain and calibration group. Material fractions, coefficient tables, energy weights, detector response and any blur stencil remain fixed. This is enough to ask whether a pose estimate changes when a constrained calibration error is allowed to explain brightness, but it cannot infer an unknown spectrum or a moving object independently in each view.
+For the multi-view evaluator, give every `SpectralView` its fixed source and detector geometry, observation domain and calibration group. All views observe one shared object-to-world pose. Keep material fractions, coefficient tables, energy weights, detector response and any blur stencil fixed while fitting pose and the selected calibration scalars. This lets us isolate how a constrained intensity correction changes the pose estimate.
 
 <Source
   file="python/dpt/spectral_recovery.py"
@@ -484,9 +484,9 @@ The implemented multi-view problem takes the first of those arrangements: every 
 
 Read the forward calls in order: material paths produce a spectral mean, the optional spatial operator spreads it, calibration converts it to the observation's units, and the objective returns its image seed. The reverse calls follow those dependencies backwards. `calibration_vjp` separates nuisance derivatives from the image seed. `blur_transpose` returns that seed through the finite spatial response, and the spectral and material-projector VJPs finally return a pose derivative. `_assemble` weights and sums the view losses and pose derivatives in the fixed chart, and sums each nuisance derivative into its named group. No detector-by-parameter Jacobian is needed.
 
-Preparation allocates the image buffers and validates immutable inputs. A trial transfers only pose and calibration values to CUDA, while losses, small gradients and status words return at a declared checkpoint. That is why the repeated calls use `validate=False`: each operator retains its shape and ownership checks while avoiding repeated scans of fixed inputs. It remains necessary to inspect numerical status before accepting the trial. The inner `finally` also matters. Pinned host memory can still be in use by an asynchronous copy when an exception occurs, so draining the owning stream prevents the next trial from overwriting it prematurely.
+Prepare and validate immutable image inputs once, then reuse their buffers for each trial. Transfer the small pose and calibration vector to CUDA, run the forward and reverse operations, and return the loss and parameter gradient. Inspect numerical status before accepting a candidate. If an evaluation fails, wait for queued operations to finish before reusing its host buffer.
 
-A count-domain Poisson objective has stricter entry conditions here: unit gain, zero offset, no fitted gain or offset, no spatial blur and a detection-probability response. A general calibrated signal uses a declared signal-domain discrepancy. The adapter cannot infer the correct likelihood from the fact that an array happens to be non-negative.
+Choose the objective from the measurement process. The count-domain Poisson path requires unit gain, zero offset, no fitted gain or offset, no spatial blur and a detection-probability response. For a calibrated detector signal, use the discrepancy defined for those signal units and their noise model.
 
 ## 7.7 Controlled mismatch experiments
 
@@ -545,9 +545,9 @@ A controlled comparison uses the same pose initialisation rule, fit region and s
 
 Repeated noise draws can be paired across model variants to compare their response to the same observation. The repetitions must still be independent across trials when estimating uncertainty from them. For acquired data, record the calibration, exposure timing and reference-pose uncertainty alongside the image: those observations determine what the experiment can distinguish.
 
-The canonical driver, `experiments/acquisition-mismatch/run.py`, uses [the evaluator in Listing 7.3](#listing-7-3) to compare fixed calibration with the declared joint fit, starting both from the same pose and calibration references. Fitting views supply the objective and derivatives. Held-out views are evaluated only after fitting, using the fitted groups without another calibration fit. Their losses therefore answer a predictive question rather than providing another opportunity to tune the model.
+Construct each mismatch comparison from one observation and two fits: first hold calibration fixed, then fit the selected calibration parameters. Start both from the same pose and calibration references. After fitting, predict held-out views with the fitted parameter groups and no further calibration adjustment. Use [the evaluator in Listing 7.3](#listing-7-3) for both fits.
 
-The driver records accepted parameters and termination reasons as well as fitting and held-out losses. Its inputs still determine what those records establish. In particular, a vacuum field has no pose-dependent attenuation: recovering a gain from its open-beam signal cannot demonstrate pose recovery. Spatially informative fields and independent geometric references are required for that claim. Source and input digests make an experiment traceable, but they cannot make an unidentifiable experiment informative.
+Use spatially informative fields and an independent pose reference for the geometric comparison. A vacuum image is useful for checking gain, but contains no pose-dependent attenuation. Record pose error alongside fitting and held-out losses so that an intensity correction cannot conceal a worse geometric estimate.
 
 ## 7.8 Choose the next model term
 
