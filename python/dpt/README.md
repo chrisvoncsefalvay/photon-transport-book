@@ -1,16 +1,8 @@
 # Scientific library
 
-`dpt` contains the deterministic and bounded stochastic operators for Chapters 2–10, their recovery compositions, independent references and executable experiments. The 9 September 2026 execution pass tested the library on a real NVIDIA GB10 with Warp 1.17.0 and Python 3.12.13, ran all eight new experiment drivers, and checked representative paths with Compute Sanitizer and Nsight. The supplied-input spectral drivers used explicitly analytic contract fixtures; no measured material database or clinical validation is implied.
+`dpt` contains the deterministic and bounded stochastic operators for Chapters 2–10, recovery compositions, independent references and supplied-data application drivers. The public source includes the library and its tests. Study orchestration and raw execution records are maintained separately in the private authoring repository.
 
-A joint material-volume solver is now available as
-`dpt.material_reconstruction.MaterialReconstruction`. Its default fits supplied
-spectral photon counts with exact fraction constraints and canonical explicit
-adjoints. Explicit signal-WLS and nonnegative equivalent-basis modes are described
-below. The [spectral reconstruction experiment](../../experiments/spectral-reconstruction/README.md)
-prepares traceable water/bone coefficients and a declared simulated acquisition,
-then reconstructs a TCIA-derived assigned material phantom. The [worked reconstruction recipe](../../experiments/worked-reconstruction/README.md)
-provides the smaller matched-basis instructional case and explicitly checks
-stationarity, material recovery and withheld projections.
+`dpt.material_reconstruction.MaterialReconstruction` fits supplied spectral measurements with explicit adjoints and material constraints. Its default uses photon counts and volume fractions; signal-WLS and nonnegative equivalent-basis modes are described [below](#joint-material-volume-reconstruction). [Chapter 12](https://photontransport.com/chapters/reconstruction/) develops the reconstruction loop and shows recorded results from a CT-derived assigned-material example.
 
 ## Public entry points
 
@@ -153,15 +145,15 @@ The stochastic engine deliberately uses a different field model: axis-aligned pi
 
 ## Commands and acceptance
 
-The [application examples](examples/README.md) accompany Chapters 11–13: rigid registration, fixed-geometry attenuation reconstruction and selection of a further registration view. They require supplied arrays with recorded provenance. The [complete registration and acquisition recipe](../../experiments/worked-applications/README.md) connects the canonical drivers to generation and independent evaluation; all 25 prescribed fits reach the fixed gradient threshold and pass their geometric and reserved-view checks. The [stochastic walkthrough](../../experiments/transport-recovery/README.md#scaling-sampling-for-the-log-amplitude-walkthrough) likewise completes all 32 prescribed controller and independent-reference checks. The scalar attenuation example remains distinct from the joint material solver and its worked reconstruction above.
+The [application examples](examples/README.md) accompany Chapters 11–13: rigid registration, fixed-geometry attenuation reconstruction and selection of a further registration view. They accept supplied arrays with recorded provenance; the guide describes their case format and executable commands. The scalar attenuation example is distinct from the joint material solver documented above.
 
-The experiment directories contain thin real-operator drivers, configurations and their exact input/output contracts. Raw output directories are new, private and outside the repository. The [listed library-contract drivers](../../experiments/README.md#remaining-library-experiments) share root discovery, CLI options, output checks and complete package snapshots through `dpt.experiments`. Their `RunRecorder` writes new `run.json` records using schema version 2, `running`/`complete`/`failed`, and `finished_utc`; completion records execution and source integrity, not scientific success. The writer verifies source and output snapshots before recording completion; process interruption leaves `running`, never an invented success. Nothing in these drivers publishes a book artefact.
+[`dpt.experiments.RunRecorder`](experiments.py) records source/configuration snapshots and output hashes for these applications. It writes schema-version-2 `run.json` files with `running`, `complete` or `failed` status and a `finished_utc` timestamp when execution ends. Completion records execution and source integrity; evaluate numerical and physical accuracy separately. Output directories must be new and outside the source checkout.
 
 Run the CPU suite with `PYTHONPATH=python .venv/bin/python -m pytest tests/python`; add `--run-gpu` to require real CUDA, including the independent operator and composed-gradient references. Ruff and strict host Pyright check the Python boundary; Warp's executable annotations are excluded at the DSL-module boundary in `pyproject.toml`; strict checks still cover the host wrappers and tests. CPU CI is never CUDA evidence.
 
-`experiments/library-profile/` measures warmed canonical operators with allocated workspaces, explicit streams, status checkpoints and source snapshots. Its README gives Nsight commands and explains why CUDA event intervals can include host submission gaps. The GB10 profiles motivated separate projection compilation modules, separable FP64 interpolation, 128-thread spectral pixel launches, shared coefficient-gradient work and grouped transport atomics. These choices preserve FP32 interfaces, FP64 numerical work and explicit derivative lifetimes. Their benefit varies with workload; concentrated transport tallies improve substantially, while a dispersed case incurs a small overhead. Timings from a shared GPU are not isolated-device throughput guarantees.
+When profiling the library, prepare workspaces and warm required specialisations before measuring repeated operators. Report state traffic and synchronisation alongside elapsed time. CUDA event intervals can include host submission gaps, and concentrated detector tallies can behave differently from dispersed ones.
 
-The following transmission contract predates this authoring pass and remains the contract used by the composed primary operator.
+The transmission API below is used by the composed primary operator.
 
 ## CUDA transmission
 
@@ -199,4 +191,4 @@ Only first-order derivatives are supported. Recording a VJP on an ambient tape r
 
 ### Reproduction
 
-Run `PYTHONPATH=python uv run --group gpu pytest --run-gpu` from the repository root. Omitting `--run-gpu` keeps GPU modules out of CPU collection; requesting it requires real CUDA and does not silently skip an unavailable device. The canonical executable experiment and its commands are in `experiments/transmission-contract/`. The book extracts source regions from these same files rather than maintaining a second implementation.
+Run `PYTHONPATH=python uv run --group gpu pytest --run-gpu tests/python` from the source-checkout root. Omitting `--run-gpu` keeps GPU modules out of CPU collection; requesting it requires real CUDA and does not silently skip an unavailable device. The tests exercise [the transmission implementation](transmission.py) against [independent mathematical references](validation/transmission.py). The book renders excerpts from the same library source.

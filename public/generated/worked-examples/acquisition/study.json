@@ -39,6 +39,5 @@
       "criterion": "Below zero"
     }
   ],
-  "reading": "The selected view reduces mean squared target error by 71% relative to the near-parallel view. 2 of the 8 pairs have higher error after selection: the criterion predicts an average over possible count images, while each pair receives one noise realisation. This controlled example demonstrates the average benefit; it does not promise to beat every well-chosen fixed view.",
-  "reproduction": "https://github.com/chrisvoncsefalvay/photon-transport-book/tree/main/experiments/worked-applications"
+  "reading": "The selected view reduces mean squared target error by 71% relative to the near-parallel view. 2 of the 8 pairs have higher error after selection: the criterion predicts an average over possible count images, while each pair receives one noise realisation. This controlled example demonstrates the average benefit; it does not promise to beat every well-chosen fixed view."
 }

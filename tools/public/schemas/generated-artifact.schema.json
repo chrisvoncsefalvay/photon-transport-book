@@ -106,6 +106,14 @@
         "type": "string",
         "pattern": "^[0-9a-f]{64}$"
       }
+    },
+    "private_source_digests": {
+      "type": "object",
+      "description": "SHA256 records for private experiment producers. Bytes are checked when available in the private checkout; they are not distributed with public artefacts.",
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$"
+      }
     }
   }
 }

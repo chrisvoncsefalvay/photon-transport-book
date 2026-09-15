@@ -68,6 +68,5 @@
       "criterion": "\u2264 1 across all 12 withheld views"
     }
   ],
-  "reading": "The starting field is uniform water. Only the 48 fitting views enter either solve. Both fields and their stopping diagnostics are fixed before the evaluator opens assigned references and 12 disjoint withheld views. The mapping tests constrained stationarity; material and withheld errors test recovery under the declared matched model. All must pass.",
-  "reproduction": "https://github.com/chrisvoncsefalvay/photon-transport-book/tree/main/experiments/worked-reconstruction"
+  "reading": "The starting field is uniform water. Only the 48 fitting views enter either solve. Both fields and their stopping diagnostics are fixed before the evaluator opens assigned references and 12 disjoint withheld views. The mapping tests constrained stationarity; material and withheld errors test recovery under the declared matched model. All must pass."
 }

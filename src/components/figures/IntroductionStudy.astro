@@ -37,14 +37,18 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
                 />
               </div>
             </div>
-            <p>{recordedText(panel.note)}</p>
+            <p>
+              {panel.id === "reconstruction"
+                ? "Bone-fraction isosurface at 0.325."
+                : recordedText(panel.note)}
+            </p>
           </section>
         ))
       }
     </div>
     <p class="introduction-study__links">
-      <a href={`${base}/chapters/reconstruction/#figure-12-4`}
-        >Rotate the reconstruction and inspect its radiographs</a
+      <a href={`${base}/generated/introduction-study/study.json`} download
+        >Download the example data</a
       >. <a href={`${base}/generated/introduction-study/provenance.json`}
         >Source data and display rules</a
       >.

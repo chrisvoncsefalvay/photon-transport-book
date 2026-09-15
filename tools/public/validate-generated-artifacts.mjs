@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 
 import { canonicalPath, checkedPath, parseUniqueJson } from "./lib/files.mjs";
 import { assertSchema } from "./lib/schema.mjs";
+import { isPrivateExperimentPath } from "./lib/private-experiments.mjs";
 
 const GENERATED = "public/generated";
 const DIGEST = /^[0-9a-f]{64}$/;
@@ -68,6 +69,7 @@ export async function validateGeneratedArtifacts({
   const ownedOutputs = new Set();
   let outputs = 0;
   let sources = 0;
+  let privateSources = 0;
   for (const relative of manifests) {
     const manifest = parseUniqueJson(
       await readFile(await checkedPath(root, relative), "utf8"),
@@ -98,17 +100,42 @@ export async function validateGeneratedArtifacts({
       throw new Error(`${relative}: outputs must match output_digests exactly`);
     }
     canonicalPath(manifest.generator);
-    if (!Object.hasOwn(manifest.source_digests ?? {}, manifest.generator)) {
+    const privateDigests = manifest.private_source_digests ?? {};
+    for (const [file, digest] of Object.entries(privateDigests)) {
+      canonicalPath(file);
+      if (!isPrivateExperimentPath(file) || !file.startsWith("experiments/"))
+        throw new Error(
+          `${relative}: private source must lie under experiments/: ${file}`,
+        );
+      if (Object.hasOwn(manifest.source_digests ?? {}, file))
+        throw new Error(
+          `${relative}: source cannot be both public and private: ${file}`,
+        );
+      try {
+        await verifyDigests(root, { [file]: digest }, "private source", false);
+      } catch (error) {
+        if (error.code !== "ENOENT") throw error;
+      }
+    }
+    if (
+      !Object.hasOwn(manifest.source_digests ?? {}, manifest.generator) &&
+      !Object.hasOwn(privateDigests, manifest.generator)
+    ) {
       throw new Error(
-        `${relative}: generator must be included in source_digests`,
+        `${relative}: generator must be included in source_digests or private_source_digests`,
       );
     }
-    await verifyDigests(
-      root,
-      manifest.source_digests,
-      `${relative}: source_digests`,
-      false,
-    );
+    if (
+      Object.keys(manifest.source_digests ?? {}).length ||
+      !Object.keys(privateDigests).length
+    ) {
+      await verifyDigests(
+        root,
+        manifest.source_digests,
+        `${relative}: source_digests`,
+        false,
+      );
+    }
     await verifyDigests(
       root,
       manifest.output_digests,
@@ -123,9 +150,15 @@ export async function validateGeneratedArtifacts({
       ownedOutputs.add(output);
     }
     outputs += listed.length;
-    sources += Object.keys(manifest.source_digests).length;
+    sources += Object.keys(manifest.source_digests ?? {}).length;
+    privateSources += Object.keys(privateDigests).length;
   }
-  return { manifests: manifests.length, outputs, sources };
+  return {
+    manifests: manifests.length,
+    outputs,
+    sources,
+    ...(privateSources ? { privateSources } : {}),
+  };
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

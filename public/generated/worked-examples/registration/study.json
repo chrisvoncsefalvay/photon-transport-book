@@ -46,6 +46,5 @@
       "criterion": "\u2264 1 Poisson SD RMS in both views"
     }
   ],
-  "reading": "The optimiser sees the two count images, the known volume and fixed calibration. After fixing the result, the evaluator compares its action on the eight target points with their generating positions. The final gradient and target error answer different questions, and both pass.",
-  "reproduction": "https://github.com/chrisvoncsefalvay/photon-transport-book/tree/main/experiments/worked-applications"
+  "reading": "The optimiser sees the two count images, the known volume and fixed calibration. After fixing the result, the evaluator compares its action on the eight target points with their generating positions. The final gradient and target error answer different questions, and both pass."
 }

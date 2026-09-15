@@ -9,3 +9,5 @@ pnpm-lock.yaml
 # Recorded development protocol and generated receipts retain their bound bytes.
 experiments/worked-reconstruction/protocol-v1.json
 notes/worked-examples/**/*.json
+# Archived producer sources retain their original bytes for provenance.
+experiments/archive/

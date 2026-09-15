@@ -218,3 +218,48 @@ test("requires seeds for stochastic independent realisations", async (t) => {
     /requires independent-realisation seeds/,
   );
 });
+
+test("private producer hashes survive export without distributing producer bytes", async (t) => {
+  const { root, manifest, save } = await fixture(t);
+  manifest.private_source_digests = { ...manifest.source_digests };
+  manifest.source_digests = {};
+  await save();
+  const expected = { manifests: 1, outputs: 1, sources: 0, privateSources: 1 };
+  assert.deepEqual(await validateGeneratedArtifacts({ root }), expected);
+  await rm(path.join(root, source));
+  assert.deepEqual(await validateGeneratedArtifacts({ root }), expected);
+  await writeFile(path.join(root, output), "changed output");
+  await assert.rejects(validateGeneratedArtifacts({ root }), /SHA256 mismatch/);
+});
+
+test("private producer bytes are still checked when present", async (t) => {
+  const { root, manifest, save } = await fixture(t);
+  manifest.private_source_digests = { ...manifest.source_digests };
+  manifest.source_digests = {};
+  await save();
+  await writeFile(path.join(root, source), "changed private source");
+  await assert.rejects(validateGeneratedArtifacts({ root }), /SHA256 mismatch/);
+  await rm(path.join(root, source));
+  await symlink("/etc/hosts", path.join(root, source));
+  await assert.rejects(validateGeneratedArtifacts({ root }), /symlink/);
+});
+
+test("a missing public source cannot be reclassified as private", async (t) => {
+  const { root, manifest, save } = await fixture(t);
+  manifest.private_source_digests = { "python/dpt/missing.py": sha("missing") };
+  await save();
+  await assert.rejects(
+    validateGeneratedArtifacts({ root }),
+    /must lie under experiments/,
+  );
+});
+
+test("public and private source records must be disjoint", async (t) => {
+  const { root, manifest, save } = await fixture(t);
+  manifest.private_source_digests = { ...manifest.source_digests };
+  await save();
+  await assert.rejects(
+    validateGeneratedArtifacts({ root }),
+    /both public and private/,
+  );
+});

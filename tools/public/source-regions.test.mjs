@@ -112,3 +112,21 @@ test("public source URLs reject private repository targets", () => {
     /private development repository URL/,
   );
 });
+
+test("public extraction refuses experiment sources and their archived copies", async () => {
+  for (const filePath of [
+    "experiments/study/run.py",
+    "public/generated/source-files/experiments/study/run.py.html",
+    "public/generated/historical-sources/abc123/experiments/study/run.py",
+    "public/generated/worked-examples/inputs/reconstruction/physics/prepare_open_physics.py",
+  ]) {
+    await assert.rejects(
+      extractSourceRegion({ filePath, region: "example", publicBuild: true }),
+      /Private experiment source/,
+    );
+    assert.throws(
+      () => sourceUrl({ filePath, publicBuild: true }),
+      /Private experiment source/,
+    );
+  }
+});

@@ -8,6 +8,7 @@ chapterNumber: "01"
 
 import Citation from "../../components/citations/Citation.astro";
 import Bibliography from "../../components/citations/Bibliography.astro";
+import MarginNote from "../../components/marginalia/MarginNote.astro";
 import IntroductionStudy from "../../components/figures/IntroductionStudy.astro";
 import DirectionalChecksFigure from "../../components/figures/DirectionalChecksFigure.astro";
 import ExactIllustrations from "../../components/figures/ExactIllustrations.astro";
@@ -46,7 +47,13 @@ Even within one projection pipeline, several quite different quantities may be c
 
 </div>
 
-The first two are properties of a transmission calculation. The remaining quantities involve the detector and, eventually, the processing pipeline. The distinction becomes immediate when we differentiate. Increasing the thickness of a homogeneous attenuating slab reduces primary transmission. Its negative logarithm increases. A display transformation may reverse the visual polarity again. A derivative's sign makes sense only after we know which quantity was differentiated. [Appendix A.5](/appendix/x-ray-theory/#a5-attenuation-along-a-ray) develops the slab calculation, and [Appendix A.15](/appendix/x-ray-theory/#a15-what-these-distinctions-mean-for-differentiable-modelling) follows its consequences for differentiable models.
+The first two are properties of a transmission calculation. The remaining quantities involve the detector and, eventually, the processing pipeline. The distinction becomes immediate when we differentiate. Increasing the thickness of a homogeneous attenuating slab reduces primary transmission. Its negative logarithm increases. A display transformation may reverse the visual polarity again. A derivative's sign makes sense only after we know which quantity was differentiated.
+
+<MarginNote label="Transmission and its derivative">
+  For the slab derivation and its consequences for derivatives, see [Appendix
+  A.5](/appendix/x-ray-theory/#a5-attenuation-along-a-ray) and
+  [A.15](/appendix/x-ray-theory/#a15-what-these-distinctions-mean-for-differentiable-modelling).
+</MarginNote>
 
 The data labels deserve similar care. In DICOM's digital X-ray image module, `FOR PROCESSING` permits detector corrections, while `ORIGINAL` does not exclude processing such as unsharp masking. Neither label guarantees untouched photon measurements. The relevant transformations have to be recovered from the acquisition and processing information available to us. [Appendix A.12](/appendix/x-ray-theory/#a12-image-geometry-and-display-processing) explains the distinction between stored values, image geometry and presentation. <Citation keys={["dicomPS33"]} />
 
@@ -91,9 +98,26 @@ Here $n_{0,p}(E)\,\mathrm dE$ is the expected open-beam number of photons associ
 
 _Primary_ means uncollided through the object. The attenuation coefficient accounts for removal by absorption and scattering. Some photons that leave this primary history may still reach the detector after scattering, through paths absent from the equation. [Appendix A.4](/appendix/x-ray-theory/#a4-how-photons-interact-with-matter) describes the interactions, and [Appendix A.8](/appendix/x-ray-theory/#a8-scatter-changes-both-intensity-and-contrast) explains what the scattered contribution does to the image. <Citation keys={["hubbell1995", "siewerdsen2001"]} />
 
-The energy integral is already doing important work. Photons at different energies encounter different attenuation and produce different detector responses. In general, the integral cannot be replaced by an exponential evaluated at one universal effective energy. The source spectrum, transmitted material and detector weighting all matter. [Appendix A.3](/appendix/x-ray-theory/#a3-what-the-x-ray-source-produces) introduces the source, while [Appendix A.6](/appendix/x-ray-theory/#a6-why-a-clinical-exposure-is-not-generally-a-single-line-integral) explains why a clinical exposure is not usually one line integral. <Citation keys={["alvarez1976"]} />
+The energy integral is already doing important work. Photons at different energies encounter different attenuation and produce different detector responses. In general, the integral cannot be replaced by an exponential evaluated at one universal effective energy. The source spectrum, transmitted material and detector weighting all matter. <Citation keys={["alvarez1976"]} />
 
-A finite focal spot or detector aperture requires averaging contributions over different paths. Motion requires integration over time. Spatial signal spread requires a detector operator that mixes neighbouring locations. These effects cannot all be hidden inside an object-independent open-beam spectrum. Their geometrical and spatial consequences are developed in [Appendix A.7](/appendix/x-ray-theory/#a7-projection-geometry-magnification-and-blur), [Appendix A.9](/appendix/x-ray-theory/#a9-what-a-detector-measures) and [Appendix A.10](/appendix/x-ray-theory/#a10-resolution-is-more-than-pixel-spacing).
+<MarginNote label="The source spectrum">
+  [Appendix A.3](/appendix/x-ray-theory/#a3-what-the-x-ray-source-produces)
+  introduces the source spectrum. [Appendix
+  A.6](/appendix/x-ray-theory/#a6-why-a-clinical-exposure-is-not-generally-a-single-line-integral)
+  explains why a clinical exposure is not usually one line integral.
+</MarginNote>
+
+A finite focal spot or detector aperture requires averaging contributions over different paths. Motion requires integration over time. Spatial signal spread requires a detector operator that mixes neighbouring locations. These effects cannot all be hidden inside an object-independent open-beam spectrum.
+
+<MarginNote label="Aperture, detector response and resolution">
+  See [Appendix
+  A.7](/appendix/x-ray-theory/#a7-projection-geometry-magnification-and-blur)
+  for projection geometry and blur,
+  [A.9](/appendix/x-ray-theory/#a9-what-a-detector-measures) for detector
+  response and
+  [A.10](/appendix/x-ray-theory/#a10-resolution-is-more-than-pixel-spacing) for
+  spatial resolution.
+</MarginNote>
 
 A measurement also has a distribution. We will write it generally as
 
@@ -295,7 +319,7 @@ Automatic differentiation supplies the chain rule through a computation. Where t
 
 This machinery is enormously useful. It also makes it possible to obtain a convincing gradient tensor for an incomplete model. If a calibration step depends on active parameters but has been detached from the computation graph, that dependence is absent from the derivative even if its output affects every pixel. A custom kernel can return a backward result inconsistent with its forward calculation. Floating-point evaluation introduces numerical error. The object of analysis is the mathematical computation represented by those operations and derivative rules, rather than an ordinary derivative of the literal rounded machine map.
 
-The volume representation provides a more instructive example than a catalogue of programming mistakes. Suppose the sampled CT-derived field is treated as piecewise constant in axis-aligned voxels. Siddon's algorithm computes the line integral exactly for that representation, apart from floating-point error, by finding the relevant path lengths through the grid. The word _exactly_ concerns the voxel model. It makes no claim that the grid captures continuous anatomy exactly. <Citation keys={["siddon1985"]} />
+The volume representation provides a more instructive example than a catalogue of programming mistakes. Suppose the sampled CT-derived field is treated as piecewise constant in axis-aligned voxels. Siddon's algorithm computes the line integral exactly for that representation, apart from floating-point error, by finding the relevant path lengths through the grid. The exactness is with respect to this piecewise-constant field. <Citation keys={["siddon1985"]} />
 
 Alternatively, we might define a trilinearly interpolated field from the samples and integrate it numerically. We have now changed the function being projected. The field is continuous across interior cell faces, but its spatial derivative can jump there. Behaviour at the volume's exterior depends on the boundary convention. Nearest-neighbour sampling returns us to a piecewise-constant field, whose regions depend on the sample locations and boundary convention. The resulting pose derivatives belong to their respective representations.
 
@@ -313,7 +337,7 @@ $$
 
 Where the directional function is sufficiently smooth, the central difference has second-order truncation error in $h$. Reducing $h$ eventually makes subtraction and floating-point error more influential. At a kink, the symmetric difference need not approach either one-sided derivative or the framework's selected value. A useful check therefore examines an appropriate range of step sizes and understands which regime it is testing.
 
-Agreement establishes consistency between a forward calculation and its derivative over the cases checked. It does not establish that either calculation represents the acquisition accurately. Likewise, convergence of projected images under grid or quadrature refinement does not, by itself, establish convergence of their derivatives. We will examine both as numerical quantities.
+We will check both images and derivatives as we refine the grid and quadrature. Their numerical errors can behave differently, especially near interpolation and support boundaries.
 
 The implementation chapters carry this reasoning into CUDA/Warp kernels, explicit reverse operations and Warp tape composition. Reference calculations and derivative checks accompany the relevant algorithms. The arrays remain on the GPU across repeated evaluations, and the optimiser receives only the small control quantities it needs. We will account for the storage and recomputation behind each derivative before deciding what to retain between passes.
 
@@ -321,7 +345,7 @@ The implementation chapters carry this reasoning into CUDA/Warp kernels, explici
 
 ## 1.7 From transmission to transport
 
-We will build one Python package, `dpt`, and use it to run increasingly demanding image-formation and inverse experiments. The first complete application will take an attenuation volume with declared spatial coordinates, a calibrated source and detector, an observed projection in a specified measurement domain, and an initial rigid pose. It will render a predicted image, evaluate its disagreement with the observation, and use derivatives to update the pose. Its outputs will include the estimated transform and a record of the fit. In controlled recovery experiments, we will also measure error against a known pose: an attractive overlay is a rather generous unit test.
+The chapters build a differentiable renderer from scratch as one Python package, `dpt`. Each stage supplies an operation that the next stage needs: optical depth becomes transmission, rays turn a volume into optical depth, and the reverse calculation turns an image discrepancy into a parameter update. The first complete application will take an attenuation volume with declared spatial coordinates, a calibrated source and detector, an observed projection in a specified measurement domain, and an initial rigid pose. It will render a predicted image, evaluate its disagreement with the observation, and use derivatives to update the pose. Its output is the estimated transform. We will examine the error against a known pose as well as the image fit: an attractive overlay is a rather generous unit test.
 
 We will first complete this application with a deterministic primary-transmission model. That gives us a working renderer and pose-recovery loop to extend when we introduce energy dependence, detector effects and scattered histories. We can then examine how each change to the measurement model affects the recovered pose.
 
@@ -329,15 +353,15 @@ We will first complete this application with a deterministic primary-transmissio
 
 We begin in the middle of the eventual renderer, with a known optical depth. That lets us check the conversion from attenuation to signal before a coordinate error can impersonate a physics error.
 
-1. In [Chapter 2](/chapters/transmission/#26-evaluating-transmission-numerically), we implement `dpt.transmission.transmit`. It takes one optical depth per detector pixel and, when requesting expected counts, an open-beam expectation. It writes primary transmission, expected counts or log transmission to caller-owned device arrays. We also derive and independently check its local derivatives. The early experiments supply optical depths from specified slabs and numerical test cases, and they do not yet form an image from a volume.
-2. [Chapter 3](/chapters/frames-geometry-motion/) defines the source, detector pixel centres, coordinate frames and rigid-pose updates. From those definitions we construct source-to-detector rays in the volume's coordinates. The output of this stage is geometrical: it tells us where to evaluate the material field, but has not yet accumulated attenuation.
+1. In [Chapter 2](/chapters/transmission/#26-evaluating-transmission-numerically), we implement `dpt.transmission.transmit`. It takes one optical depth per detector pixel and, when requesting expected counts, an open-beam expectation. It writes primary transmission, expected counts or log transmission to caller-owned device arrays. We also derive and independently check its local derivatives. A homogeneous slab supplies the first input; Chapter 4 will supply it from a volume.
+2. [Chapter 3](/chapters/frames-geometry-motion/) defines the source, detector pixel centres, coordinate frames and rigid-pose updates. From those definitions we construct source-to-detector rays in the volume's coordinates. These rays tell Chapter 4 where to sample the material field.
 3. In [Chapter 4](/chapters/volumes-line-integrals/), we represent the sampled attenuation field, intersect rays with its support and integrate along the physical paths. This produces the optical-depth array that Chapter 2's transmission operation consumes. We now have the first volume-to-image renderer. We test it against independently known path integrals and examine convergence as the numerical resolution changes.
-4. [Chapter 5](/chapters/differentiating-projection/) connects derivatives through pose, coordinates, sampled fields, path integration and transmission. A correct derivative of the exponential alone is not a pose gradient. The assembled derivative must agree with independent perturbation checks. Interpolation and support boundaries need particular attention.
+4. [Chapter 5](/chapters/differentiating-projection/) connects derivatives through pose, coordinates, sampled fields, path integration and transmission. You will assemble the reverse pass that turns an image-space sensitivity into a six-component pose gradient, including the effects of interpolation and support boundaries.
 5. [Chapter 6](/chapters/recovering-pose/) adds an objective in the chosen comparison domain and a driver that repeatedly renders, differentiates and proposes pose updates. The volume and reusable buffers stay on the GPU across those iterations. Recovery experiments start from controlled initial poses and report pose error as well as image disagreement.
 
 ### How the package fits together
 
-The scientific implementation lives under `python/dpt/`. The modules in [Table 1.2](#table-1-2) are present in the accompanying library, and the chapter order describes how we arrive at their design. You can follow that argument from transmission onwards, or use the map to find the operation needed for an experiment.
+Use `python/dpt/` as the working implementation alongside the derivations. [Table 1.2](#table-1-2) maps the mathematical operations to the modules you will construct. The supplied source lets you compare your implementation with the complete renderer at each stage.
 
 <div className="prose-table" role="region" aria-label="Package responsibilities and their place in the build" tabIndex={0}>
 
@@ -350,7 +374,7 @@ The scientific implementation lives under `python/dpt/`. The modules in [Table 1
 | `dpt.spectral_recovery`, `dpt.spectral_inputs`                             | Fit a shared pose and declared calibration groups across supplied views, and keep evaluation views outside the fit.                | [Chapter 7](/chapters/same-pose-different-x-ray/), using Chapter 8's operators.                      |
 | `dpt.materials`, `dpt.material_projection`, `dpt.spectral`, `dpt.detector` | Project material paths, sum their energy-dependent transmission and apply the chosen detector model.                               | [Chapter 8](/chapters/spectral-transport-detector/).                                                 |
 | `dpt.transport`, `dpt.stochastic_recovery`                                 | Score random histories, estimate supported derivatives of their expected signal and make inverse updates with independent batches. | [Chapters 9](/chapters/scattering-stochastic-transport/)–[10](/chapters/differentiating-transport/). |
-| `dpt.validation`, `dpt.experiments`                                        | Check operators against independent references and record the inputs, source and outputs of an execution.                          | Throughout the implementation.                                                                       |
+| `dpt.material_reconstruction`, acquisition example driver                  | Recover material fields and select an informative additional view using the renderer and its derivatives.                          | [Chapters 12](/chapters/reconstruction/)–[13](/chapters/acquisition-design/).                        |
 
 </div>
 
@@ -358,23 +382,29 @@ For the first pose fit, `PrimaryPoseEvaluator` connects `project_optical_depth()
 
 The objects have different lifetimes. `GridSpec` and `DetectorGeometry` describe the fixed field lattice and acquisition geometry. A specification such as `TransmissionSpec` selects an operator's configuration, and its `prepare_*` function allocates reusable workspace on an explicitly chosen CUDA stream. The evaluator owns the image buffers connecting the operations. It prepares them once, then reuses them while the optimiser proposes new poses. `PoseChart` defines how six scaled optimiser coordinates produce a rigid transform. That chart stays fixed while L-BFGS retains differences between earlier iterates, because those differences must share a coordinate system.
 
-Preparation keeps allocations out of repeated device evaluation, but it does not remove every transfer. The recovery controller reads the scalar loss, a small gradient and status values before proposing its next trial. The volume and image buffers stay on the device. When a derivative recomputes a ray instead of saving all its samples, the original field and pose must remain unchanged until that reverse pass has finished. These ownership rules explain much of the machinery surrounding what may look, at first, like a modest exponential.
+Preparing the image workspaces once lets each trial reuse the same device buffers. Each trial then sends a few pose coordinates to the renderer and returns a loss and a small gradient; the volume and image arrays remain on the GPU. Chapter 5 explains which inputs must be retained when a reverse operation recomputes ray samples. These choices let us control the cost of a derivative as deliberately as the cost of a projection.
 
-An executable experiment under `experiments/` prepares inputs, calls the package and records its outputs. `projection-convergence/` separates quadrature error from field discretisation, while `projection-gradients/` checks the reverse calculation over a range of perturbation sizes. `pose-recovery/` then runs the assembled inverse problem on a declared analytic field. Its target comes from the same discrete renderer at a known pose, so recovery measures consistency of that software experiment. Physical validation needs independently supplied acquisitions and a defensible material model.
+Our design shares the volume-to-projection-to-loss construction used by DiffDRR. Its cited formulation vectorises Siddon's voxel traversal in PyTorch. We will instead integrate a trilinear field and write the projection and reverse operations in CUDA/Warp, making sampling, memory use and the treatment of boundaries explicit. Chapters 4 and 5 explain what that choice changes mathematically. <Citation keys={["gopalakrishnan2023diffdrr"]} />
 
-The book's listings are extracted from marked regions in those canonical source files. A listing's number locates the discussion, and its source link identifies the implementation and line range. Experiment records retain the configuration, source snapshots and output checksums needed to trace a numerical result back to its execution. Later figures can draw those recorded arrays in the book's visual style without acquiring a second implementation of the physics.
+The listings link to the complete functions, and each worked example provides its inputs and a runnable driver. Follow the derivation, implement the operation, then use the example to inspect its behaviour before connecting it to the next stage.
 
 ### Extending the measurement model
 
-With pose recovery working, [Chapter 7](/chapters/same-pose-different-x-ray/) introduces controlled exposure, gain and offset changes, then examines how a pose fit responds to those changes and to errors in its scene model. [Chapter 8](/chapters/spectral-transport-detector/) then implements energy-dependent materials, spectral integration and detector response. Spectral experiments require those operators, and scatter experiments must also wait for Chapter 9’s transport implementation. The distinctions in [Appendix A.13](/appendix/x-ray-theory/#a13-same-pose-different-x-ray) will become modelling choices rather than background reading.
+With pose recovery working, [Chapter 7](/chapters/same-pose-different-x-ray/) introduces controlled exposure, gain and offset changes, then examines how a pose fit responds to those changes and to errors in its scene model. [Chapter 8](/chapters/spectral-transport-detector/) then implements energy-dependent materials, spectral integration and detector response. The gain and offset example gives us a small calibration problem before we assemble the full spectral renderer. The distinctions in [Appendix A.13](/appendix/x-ray-theory/#a13-same-pose-different-x-ray) will become modelling choices rather than background reading.
 
 [Chapter 9](/chapters/scattering-stochastic-transport/) adds free flights, interactions and detector scoring, giving us a richer account of photon histories. In a detector domain where the response is linear, expected primary and scattered contributions can be added. After nonlinear processing, the corresponding image values generally cannot. Tracking this distinction from the beginning will make the extension less abrupt.
 
 Stochastic transport also introduces a second source of randomness into our work. The acquisition is noisy because the physical measurement is random. A Monte Carlo estimate of an expected signal is noisy because we have evaluated only a finite sample of simulated histories. Increasing that sample can reduce numerical estimation variance. It does not retrospectively increase the number of photons in the patient's recorded exposure.
 
-When we differentiate a stochastic estimator, we must ask whether it estimates the derivative of the intended expectation. Parameter-dependent sampling and moving discontinuities make that a mathematical problem in its own right. [Chapter 10](/chapters/differentiating-transport/) implements density derivatives on a fixed grid and derivatives of source amplitude, then uses independent batches in an expected-signal inverse problem. Moving-boundary derivatives require additional estimator terms and remain outside this implementation. The deterministic pose derivative from Chapter 5 cannot simply be carried through a sampled collision history. The distinction between [photon statistics and pixel statistics](/appendix/x-ray-theory/#photon-statistics-and-pixel-statistics) will remain useful throughout.
+When we differentiate a stochastic estimator, we must ask whether it estimates the derivative of the intended expectation. Parameter-dependent sampling and moving discontinuities make that a mathematical problem in its own right. [Chapter 10](/chapters/differentiating-transport/) implements density derivatives on a fixed grid and derivatives of source amplitude, then uses independent batches in an expected-signal inverse problem. The geometry stays fixed for these stochastic derivatives; moving-boundary terms are a separate extension discussed in that chapter. The distinction between [photon statistics and pixel statistics](/appendix/x-ray-theory/#photon-statistics-and-pixel-statistics) will remain useful throughout.
 
-This volume concerns image formation and the inverse problems built upon it. An image fit is not a clinical validation, and a detector signal is not absorbed dose. Readers interested in those radiation quantities should begin with [Appendix A.14](/appendix/x-ray-theory/#a14-radiation-quantities-and-dose).
+### Using the renderer you have built
+
+The final three chapters change what we ask the renderer to recover. [Chapter 11](/chapters/registration/) assembles a registration application around a known volume and several views. [Chapter 12](/chapters/reconstruction/) holds the geometry fixed and makes the material fields the unknowns, so the reverse pass must accumulate a gradient into the volume. [Chapter 13](/chapters/acquisition-design/) uses image sensitivities to choose the next view before acquiring it. The same forward operations serve all three; the parameterisation, objective and update rule change.
+
+By this point, you should be able to trace a detector residual back to the quantity you want to estimate, decide which intermediate arrays to retain, and replace a physical assumption without rebuilding the entire program. That is the purpose of constructing the renderer ourselves. The application chapters relate these choices to published registration, reconstruction and experimental-design methods, so you can see where the implementation follows established practice and where another choice would suit a different problem.
+
+The radiation quantities used in dose calculations are introduced separately in [Appendix A.14](/appendix/x-ray-theory/#a14-radiation-quantities-and-dose).
 
 For now, we need one path through an attenuating object. We will work out what reaches the detector, then move the object and work out what changes. That small calculation is the beginning of the renderer.
 

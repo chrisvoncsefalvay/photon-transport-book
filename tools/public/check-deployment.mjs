@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import { lstat, readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { isPrivateExperimentPath } from "./lib/private-experiments.mjs";
 
 export const PUBLIC_REPOSITORY = "chrisvoncsefalvay/photon-transport-book";
 export const SOURCE_MANIFEST = "public/generated/source-regions.json";
@@ -18,7 +19,7 @@ const PRIVATE_PATHS = [
   "assets-src",
   "tools/promotion",
   "tests/promotion",
-  "experiments/acquired-hap",
+  "experiments",
   ".beagle",
   "wandb",
 ];
@@ -141,6 +142,10 @@ export async function checkDeploymentInputs({
     throw new Error(
       "Deployment requires a generated public source manifest with its full author commit SHA",
     );
+  if (
+    sources.regions.some((region) => isPrivateExperimentPath(region.file ?? ""))
+  )
+    throw new Error("Deployment source manifest includes private experiments");
   return {
     sourceCommit: sources.source_commit,
     publicCommit:
@@ -175,6 +180,8 @@ export async function checkDeploymentOutput({
   const { walkFiles } = await import("./lib/files.mjs");
   const output = path.join(root, "dist");
   const files = await walkFiles(output);
+  if (files.some((file) => isPrivateExperimentPath(`public/${file}`)))
+    throw new Error("Static output contains private experiment source copies");
   if (!files.includes("index.html"))
     throw new Error("Static output lacks index.html");
   if (

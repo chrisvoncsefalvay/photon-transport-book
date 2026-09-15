@@ -1,7 +1,0 @@
-{
-  "schema_version": 1,
-  "layer_optical_depths": [0.3, 0.7],
-  "histories": 65536,
-  "replicates": 8,
-  "seed": 73129
-}

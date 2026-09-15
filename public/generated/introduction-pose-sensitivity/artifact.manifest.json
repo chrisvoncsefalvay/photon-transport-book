@@ -4,7 +4,7 @@
   "chapter": "introduction",
   "experiment": "pose-sensitivity",
   "source_commit": "d3cac5dc689ab3dd7ff13167ec6c62152150885a",
-  "generator": "public/generated/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/experiments/pose-sensitivity/run.py",
+  "generator": "experiments/archive/public-source-copies/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/experiments/pose-sensitivity/run.py",
   "mode": "deterministic-precomputed-sweep",
   "device": "NVIDIA GB10",
   "cuda_version": null,
@@ -238,12 +238,6 @@
     "public/generated/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/python/dpt/validation/transport_weighted.py": "fd9ff5723ed9f6a7de8f7309158332ba51117e1134ff37310866f2ed9f20344c",
     "public/generated/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/python/dpt/validation/transport.py": "2c5e396ffd01e79a1d95ae02aaef3ffd90cc232987686ea923c86945a7d5568c",
     "public/generated/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/python/dpt/volumes.py": "0f486f3451b3d19c35d40241af02d2a216812797a4555b49496fd4ff52807e4b",
-    "public/generated/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/experiments/pose-sensitivity/run.py": "db6634461966602c3056ae0057aa254a90b78b8ee7fd604c734b435bb754e930",
-    "public/generated/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/experiments/pose-sensitivity/common.py": "869159e5363a726eb01d165b2361044f695dabd2bf4df06f6305091d65da6003",
-    "public/generated/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/experiments/pose-sensitivity/prepare.py": "5cb410c4cf8cda5b36ca3cfcab539560f78a825a51ef7964a54b3624725fc4b4",
-    "public/generated/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/experiments/pose-sensitivity/mesh.py": "6b0c710e813e2fe787e9cad8c9b93060bdef30fcbf95cf9cbfd02ad2d7f0e8f9",
-    "public/generated/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/experiments/pose-sensitivity/config.json": "ef349fb794448ed5a19d012d21fabbd019d8001b08ad04ff41f7d522994fb995",
-    "public/generated/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/experiments/pose-sensitivity/requirements-volume.txt": "3bf77cd4fc11c4143a7306ae67e3e92378f115ce7209a213973898985d43b3d7",
     "public/generated/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/pyproject.toml": "6efe2a08e5249c29e43b979f6b51c71f5e7870184cfcf2513de16e0387b7a527",
     "public/generated/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/uv.lock": "19130bcf32aad884cd30b21f1fa69708a1240c7e7ef3a5dd1c8eb49b484c2865"
   },
@@ -372,5 +366,13 @@
     "public/generated/introduction-pose-sensitivity/rz-10-a3230426c290.f32": "1726c6882ea4aaa10c869dc677df7e9b6a0fbe40c4391202c21dbbfbf759f79c",
     "public/generated/introduction-pose-sensitivity/run.json": "e943795daa5355de401ab7e1d20a6caaff5bcf78a6eddcdadef31304fbbad63f"
   },
-  "notes": "Recorded canonical CUDA count projections and pose derivatives of a synthetic water-equivalent field. Display meshes are attributed augmented conditioning-mask derivatives. Raw volumes and private run metadata remain excluded. Historical producer bytes are archived without modification at public/generated/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a; provenance.json there maps original names and verifies Git/run hashes. Scientific outputs and the original run.json remain unchanged; this is not a new execution or validation of current source."
+  "notes": "Recorded canonical CUDA count projections and pose derivatives of a synthetic water-equivalent field. Display meshes are attributed augmented conditioning-mask derivatives. Raw volumes and private run metadata remain excluded. Historical public package sources are retained in public/generated/historical-sources; private experiment producers are represented by private_source_digests and are retained only in the private authoring archive. Scientific outputs and the original run.json remain unchanged; this is not a new execution or validation of current source.",
+  "private_source_digests": {
+    "experiments/archive/public-source-copies/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/experiments/pose-sensitivity/run.py": "db6634461966602c3056ae0057aa254a90b78b8ee7fd604c734b435bb754e930",
+    "experiments/archive/public-source-copies/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/experiments/pose-sensitivity/common.py": "869159e5363a726eb01d165b2361044f695dabd2bf4df06f6305091d65da6003",
+    "experiments/archive/public-source-copies/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/experiments/pose-sensitivity/prepare.py": "5cb410c4cf8cda5b36ca3cfcab539560f78a825a51ef7964a54b3624725fc4b4",
+    "experiments/archive/public-source-copies/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/experiments/pose-sensitivity/mesh.py": "6b0c710e813e2fe787e9cad8c9b93060bdef30fcbf95cf9cbfd02ad2d7f0e8f9",
+    "experiments/archive/public-source-copies/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/experiments/pose-sensitivity/config.json": "ef349fb794448ed5a19d012d21fabbd019d8001b08ad04ff41f7d522994fb995",
+    "experiments/archive/public-source-copies/historical-sources/d3cac5dc689ab3dd7ff13167ec6c62152150885a/experiments/pose-sensitivity/requirements-volume.txt": "3bf77cd4fc11c4143a7306ae67e3e92378f115ce7209a213973898985d43b3d7"
+  }
 }

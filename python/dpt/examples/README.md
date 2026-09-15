@@ -1,6 +1,6 @@
 # Application examples
 
-These drivers accompany Chapters 11–13. They use supplied acquisition data and the canonical `dpt` operators. Recorded numerical studies and their input preparation live under `experiments/`; the drivers do not bundle patient volumes or assume scanner calibration.
+These drivers accompany Chapters 11–13 and compose the public `dpt` operators with supplied acquisition data. Prepare the inputs using the case format below; the drivers require explicit attenuation units and acquisition calibration.
 
 | Module                            | Application                                   | Implemented scope                                                                                                  |
 | --------------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
@@ -8,13 +8,13 @@ These drivers accompany Chapters 11–13. They use supplied acquisition data and
 | `dpt.examples.reconstruction`     | Estimate a voxel attenuation field            | Fixed calibrated geometry, primary counts, positivity and a quadratic spatial penalty                              |
 | `dpt.examples.acquisition_design` | Select one further acquisition                | Rank supplied feasible candidates by local target uncertainty, using a known volume and a supplied prior precision |
 
-Chapter 12 includes joint spectral material reconstruction. The example reconstruction driver here estimates a single attenuation field. The separate `dpt.material_reconstruction` module supplies the joint material solver; its executed TCIA-derived study and physical-input contract are documented in [the spectral reconstruction experiment](../../../experiments/spectral-reconstruction/README.md). Chapter 13 explains continuous acquisition design, while its driver uses finite candidates because the required geometry and higher derivatives are outside the current operator contract.
+Chapter 12 includes joint spectral material reconstruction. The example reconstruction driver here estimates a single attenuation field; [`dpt.material_reconstruction`](../README.md#joint-material-volume-reconstruction) supplies the joint material solver. The acquisition-design driver ranks finite candidates using first-order pose sensitivities. Continuous geometry optimisation additionally needs mixed pose–acquisition derivatives.
 
-## Execution evidence and commands
+## Commands
 
-The [registration and acquisition study](../../../experiments/application-study/README.md) records the prescribed pose fits and selected/fixed/random view comparisons. The [reconstruction study](../../../experiments/reconstruction-study/README.md) records scalar Poisson, post-log PWLS and joint material development runs. Read each report's stopping status, source identity and acquisition assumptions before using its results. Static checks and a completed run are distinct from numerical or physical acceptance.
+The public edition includes these supplied-data drivers and recorded illustrations. Study-specific preparation and orchestration remain private. Use the application outputs and independent evaluation fields described below to assess a run on your own data.
 
-Use a source checkout with Python 3.12+ and the pinned `gpu` dependency group installed. These commands illustrate the supplied-case interface; use the linked experiment recipes for the recorded study inputs and settings.
+Use a source checkout with Python 3.12+ and the pinned `gpu` dependency group installed. Create a case JSON and its input arrays according to the following sections, then run the corresponding command:
 
 ```bash
 PYTHONPATH=python .venv/bin/python -m dpt.examples.registration \

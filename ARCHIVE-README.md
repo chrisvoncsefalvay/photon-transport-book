@@ -11,7 +11,7 @@ and C-arm imaging, with executable NVIDIA Warp/CUDA examples. The two archives
 preserve the same edition in complementary forms:
 
 - `photon-transport-book-1.0.0-source.zip` contains the public manuscript, website
-  source, computational recipes, figure assets, dependency lockfiles,
+  source, reusable computational code, figure assets, dependency lockfiles,
   citation metadata and licence notices.
 - `photon-transport-book-1.0.0-site.zip` contains the built website in `site/`,
   including its interactive figures, numerical display data and source listings.
@@ -26,8 +26,8 @@ python3 -m http.server 8000 --bind 127.0.0.1 --directory site
 
 Open <http://127.0.0.1:8000/> in a browser. Serving the files over HTTP allows
 JavaScript modules and recorded data to load. External references still require
-internet access. The static website needs no GPU; rerunning the computational
-experiments requires the environment described in the source archive's README.
+internet access. The static website needs no GPU. To use the Warp/CUDA operators
+and supplied-data application examples, follow the source archive's README.
 
 `CITATION.cff` and `release-metadata.json` identify the edition. The source
 manifest and website snapshot identify the authoring commit and the exact source

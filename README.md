@@ -7,8 +7,8 @@ examples. We develop differentiable photon transport using X-ray and C-arm
 imaging.
 
 The site is static. Figures that need expensive calculations use recorded
-results from the source files shown in the book. Those simulations run outside
-the browser.
+simulation results, with downloadable numerical data and provenance. Those
+simulations run outside the browser.
 
 ## Local site
 
@@ -23,13 +23,17 @@ Use `pnpm run build:vercel` to build the published snapshot, as described in
 [the deployment guide](DEPLOYMENT.md). Source listings are extracted at build
 time from marked regions in the executable Python sources.
 
-## Computational reproduction
+## Use the computational code
+
+The `python/dpt` package contains the renderer, derivatives and inverse solvers
+developed in the book. The [application examples](python/dpt/examples/README.md)
+provide runnable interfaces for registration, scalar attenuation reconstruction
+and acquisition selection with supplied data.
 
 Python dependencies are managed with `uv`. Structural checks can run without a
-GPU, but reproducing Warp/CUDA experiments requires a supported NVIDIA GPU and
-CUDA driver. Published artefact manifests record the generator, source commit,
-device, precision, parameters, and whether a result is exact, precomputed,
-recorded, or stochastic.
+GPU; executing the Warp/CUDA operators requires a supported NVIDIA GPU and CUDA
+driver. Figure downloads preserve recorded numerical results and their
+provenance, including the model, parameters and computational precision.
 
 ## Provenance and licensing
 

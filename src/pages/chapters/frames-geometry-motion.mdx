@@ -22,7 +22,7 @@ Now let's ask our renderer to rotate a vertebra about its centre. That centre sh
 
 We need to connect a detector array entry to a finite line segment through the object, then describe how that segment changes with pose. The attenuation field lives in physical object coordinates. Pixel indices, source locations and optimisation parameters must reach those coordinates through a chain whose directions and units we can inspect.
 
-This gives the next part of the [library introduced in Chapter 1](/chapters/introduction/#17-from-transmission-to-transport): `dpt.geometry`. Its small host objects describe the acquisition and pose. The projector will copy their fixed metadata into its prepared CUDA workspace, then construct rays on the device. We are establishing the inputs from which [Chapter 4](/chapters/volumes-line-integrals/#46-a-gpu-projection-operator) will compute the optical depths that `transmit()` already knows how to consume.
+Begin `dpt.geometry` with two small descriptions: a rigid transform and a calibrated detector. From them we will construct each finite source-to-pixel segment in object coordinates. This module stops at the endpoints and physical length. [Chapter 4](/chapters/volumes-line-integrals/#46-a-gpu-projection-operator) will integrate along them to produce the optical-depth array consumed by `transmit()`.
 
 ## 3.1 Naming and framing
 
@@ -167,7 +167,7 @@ The rightmost transform acts first on a column vector. Matching adjacent frame l
 
 Changing a point's coordinate description is a passive use of a transform, while physically moving the object while holding the world fixed is an active use of the same matrix algebra. To specify the latter, we change $\mathbf{G}_{WO}$ while keeping the source and detector poses fixed.
 
-`RigidTransform` makes these distinctions visible at the call site. `point()` includes translation, while `direction()` cannot accidentally inherit it. The same class describes any declared rigid map, but the projector takes its object-to-world instance. The code calls that map `T_WO`: it is exactly the transform denoted by $\mathbf{G}_{WO}$ in the prose. The code's letter `T` in this name carries no transmission meaning.
+Give `RigidTransform` separate `point()` and `direction()` methods so that translation is applied only where it belongs. Use the same class for each declared rigid map. The projector takes the object-to-world instance, called `T_WO` in the code and $\mathbf{G}_{WO}$ in the prose. The code's `T` here denotes a transform.
 
 <Source
   file="python/dpt/geometry.py"
@@ -175,9 +175,9 @@ Changing a point's coordinate description is a passive use of a transform, while
   caption="Rigid transforms of points and directions"
 />
 
-The immutable object checks the rotation's handedness and orthonormality when it is constructed. That check protects the transpose-as-inverse calculation on which every subsequent ray depends. `packed()` stores nine row-major rotation entries followed by three translation entries in binary64. Row-major storage says how to address the coefficients, and they still act on column vectors. The constant fourth row of the homogeneous matrix need not travel to the GPU at every trial pose.
+Check handedness and orthonormality when constructing the immutable transform, because every inverse ray map relies on the transpose being the inverse rotation. Its `packed()` method stores nine row-major rotation entries followed by three translation entries in binary64. Storage order determines how the kernel reads coefficients, while the matrix still acts on column vectors. The constant fourth row need not be stored.
 
-These Python methods handle calibration and a handful of pose coordinates. They do not perform the per-pixel ray calculations. The CUDA projector applies the same inverse map inside each ray's execution, using the prepared geometry and the current twelve-value pose buffer.
+Keep calibration and pose construction on the host, where they involve only a few coordinates. The projector will apply the inverse map independently to each ray on the GPU, reading the same twelve-value pose buffer.
 
 ## 3.3 Detector coordinates and pixel centres
 
@@ -573,7 +573,7 @@ $$
 
 This increment is expressed in the object's current coordinates. A pure right rotation turns the object about its own origin and keeps that origin's world position fixed. The same six numerical values generally produce different motions in these two equations.
 
-The library selects this **right update**. `compose_pose()` takes an anchor and the translation-first increment and returns their product in the order just derived. This choice lets us measure rotational lever arms from the declared object origin. It also fixes the meaning of the six pose derivatives returned by the projector, so a caller cannot substitute a world-frame increment without transforming the derivative too.
+Use the **right update** in `compose_pose()`: multiply the anchor by the increment in the order just derived. Rotational lever arms are then measured from the object origin, and the projector's six derivatives refer to that same local frame. A caller using world-frame increments must transform those derivatives.
 
 <Source
   file="python/dpt/geometry.py"
@@ -738,8 +738,8 @@ $$
 
 As $h$ decreases, this approaches the left point-motion expression in section 3.6 with $\boldsymbol{\xi}=\boldsymbol{\eta}$. Check a range of steps through the region where truncation error decreases and before round-off dominates. All three components of the point-displacement comparison are in millimetres, while rotation-matrix residuals are dimensionless. Set their tolerances separately for the chosen arithmetic and coordinate scale.
 
-In our `dpt` package, these conventions are checked by executable tests in `tests/python/test_geometry_contracts.py`. The tests exercise the storage and update conventions with explicit points before the projection tests introduce a volume. In particular, a mixed translation-and-rotation increment must exercise the exponential's translation factor: pure translation and pure rotation can each pass while that coupling is wrong. The package's later directional checks use the same right composition as [Listing 3.2](#listing-3-2).
+Before introducing a volume, test the transform and detector code with the explicit points above. Include a mixed translation-and-rotation increment: pure translation and pure rotation can each pass while the exponential's coupling is wrong. Use the right composition from [Listing 3.2](#listing-3-2) when checking the pose coordinates chosen for this renderer.
 
-The endpoints of the ray we get from this exercise are in the same physical frame as the attenuation field. The next operation is to locate their segment within the volume, map its points to voxel coordinates and integrate along it. That is the task of [Chapter 4](/chapters/volumes-line-integrals/).
+You can now turn a detector index and an object pose into two endpoints in physical object coordinates. Neither the array layout nor the rotation convention is left implicit. The next operation locates this segment inside a volume, maps its points to sample coordinates and accumulates attenuation along its physical length.
 
 <Bibliography keys={["dicomPS33", "lynch2017"]} />
