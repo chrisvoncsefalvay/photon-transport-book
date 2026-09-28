@@ -136,7 +136,7 @@ describe("site metadata", () => {
     expect(graph.find((node) => node["@type"] === "Book")).toMatchObject({
       name: BOOK_TITLE,
       url: SITE_URL,
-      author: { "@id": `${SITE_URL}#author` },
+      author: { "@id": "https://chrisvoncsefalvay.com/#person" },
       sameAs: BOOK_REPOSITORY,
       hasPart: chapters.map((chapter) => ({
         "@type": "Chapter",
