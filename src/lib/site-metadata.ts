@@ -30,7 +30,7 @@ export const readerPagePaths: readonly string[] = [
 ];
 
 const readerPaths = new Set(readerPagePaths);
-const authorId = `${SITE_URL}#author`;
+const authorId = `${AUTHOR_URL}#person`;
 const bookId = `${SITE_URL}#book`;
 const websiteId = `${SITE_URL}#website`;
 
@@ -95,6 +95,18 @@ export function createSiteMetadata({
       "@id": authorId,
       name: AUTHOR_NAME,
       url: AUTHOR_URL,
+      jobTitle: "Distinguished Engineer",
+      description:
+        "Chris von Csefalvay is a Distinguished Engineer in HCLTech’s Robotics Intelligence CoE, specialising in sensing and reasoning for embodied AI. His work brings together machine perception and world models, focusing on post-training to develop the reasoning that connects sensing to action, particularly in robotic surgery and other high-stakes domains.",
+      worksFor: {
+        "@type": "Organization",
+        name: "HCLTech",
+        url: "https://www.hcltech.com/",
+        department: {
+          "@type": "Organization",
+          name: "Robotics Intelligence CoE",
+        },
+      },
       sameAs: ["https://github.com/chrisvoncsefalvay/"],
     },
     {
